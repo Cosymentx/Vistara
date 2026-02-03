@@ -22,7 +22,7 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.vistara.aestheticwalls" />
+                  <option name="appId" value="com.obscura.wallpapers" />
                   <option name="mobileSdkAppId" value="1:677640523590:android:90e7b718aeae17e39edf47" />
                   <option name="projectId" value="vistara-efe57" />
                   <option name="projectNumber" value="677640523590" />

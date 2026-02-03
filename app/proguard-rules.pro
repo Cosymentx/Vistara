@@ -29,7 +29,7 @@
 # Gson TypeToken 相关
 -keep class com.google.gson.reflect.TypeToken { *; }
 
--keep class com.vistara.aestheticwalls.data.**{*;}
+-keep class com.obscura.wallpapers.data.**{*;}
 
 # Appsflyer
 -keep class com.appsflyer.** { *; }

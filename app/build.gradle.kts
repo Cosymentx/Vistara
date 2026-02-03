@@ -14,11 +14,11 @@ val keystoreProperties = Properties()
 keystoreProperties.load(keystorePropertiesFile?.inputStream())
 
 android {
-    namespace = "com.vistara.aestheticwalls"
+    namespace = "com.obscura.wallpapers"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.vistara.aestheticwalls"
+        applicationId = "com.obscura.wallpapers"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -119,8 +119,8 @@ dependencies {
     implementation(libs.compose.glide)
     // 添加Glide注解处理器
     ksp(libs.glide.compiler)
-    implementation(libs.accompanist.flowlayout)
-    implementation(libs.accompanist.swiperefresh)
+//    implementation(libs.accompanist.flowlayout)
+//    implementation(libs.accompanist.swiperefresh)
 
     // Hilt
     implementation(libs.hilt.android)
@@ -147,9 +147,9 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     // Accompanist
-    implementation(libs.accompanist.permissions)
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.drawablepainter)
+//    implementation(libs.accompanist.permissions)
+//    implementation(libs.accompanist.systemuicontroller)
+//    implementation(libs.accompanist.drawablepainter)
 
     // Media3 for video playback
     implementation(libs.androidx.media3.exoplayer)
@@ -206,7 +206,7 @@ tasks.register("buildInstallAndRun") {
                     "am",
                     "start",
                     "-n",
-                    "com.vistara.aestheticwalls/.ui.MainActivity"
+                    "com.obscura.wallpapers/.ui.MainActivity"
                 )
                 isIgnoreExitValue = true // 忽略退出代码
             }

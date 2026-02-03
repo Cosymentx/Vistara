@@ -1,11 +1,11 @@
-package com.vistara.aestheticwalls.data.repository
+package com.obscura.wallpapers.data.repository
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.vistara.aestheticwalls.data.remote.api.ApiService
-import com.vistara.aestheticwalls.data.remote.api.LoginRequest
-import com.vistara.aestheticwalls.data.remote.api.LoginResponse
+import com.obscura.wallpapers.data.remote.api.ApiService
+import com.obscura.wallpapers.data.remote.api.LoginRequest
+import com.obscura.wallpapers.data.remote.api.LoginResponse
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.flowOf

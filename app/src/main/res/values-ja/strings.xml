@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Vistara</string>
+    <string name="app_name">Obscura</string>
     <string name="search_hint">壁紙を検索…</string>
 
     <!-- 通知関連の文字列 -->

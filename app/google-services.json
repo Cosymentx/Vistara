@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:677640523590:android:90e7b718aeae17e39edf47",
         "android_client_info": {
-          "package_name": "com.vistara.aestheticwalls"
+          "package_name": "com.obscura.wallpapers"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "677640523590-91m93ireq8vgjrvg80vnl7evtin2uefa.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.vistara.aestheticwalls",
+            "package_name": "com.obscura.wallpapers",
             "certificate_hash": "b521dea182d36f2d424531e841a3f3a100b4f00a"
           }
         },

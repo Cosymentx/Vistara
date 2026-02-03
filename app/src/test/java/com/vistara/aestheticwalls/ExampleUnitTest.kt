@@ -1,4 +1,4 @@
-package com.vistara.aestheticwalls
+package com.obscura.wallpapers
 
 import org.junit.Test
 

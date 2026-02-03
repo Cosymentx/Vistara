@@ -1,4 +1,4 @@
-package com.vistara.aestheticwalls
+package com.obscura.wallpapers
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.vistara.aestheticwalls", appContext.packageName)
+        assertEquals("com.obscura.wallpapers", appContext.packageName)
     }
 }

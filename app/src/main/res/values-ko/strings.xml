@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Vistara</string>
+    <string name="app_name">Obscura</string>
     <string name="search_hint">배경화면 검색…</string>
 
     <!-- 알림 관련 문자열 -->

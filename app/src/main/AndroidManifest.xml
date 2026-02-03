@@ -24,7 +24,7 @@
         android:required="true" />
 
     <application
-        android:name=".VistaraApp"
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
