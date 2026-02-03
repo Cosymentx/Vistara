@@ -2,16 +2,16 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+//    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gradle.ksp)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.service)
 }
 
-val keystorePropertiesFile = rootProject.file("gradle.properties")
+val keystorePropertiesFile: File? = rootProject.file("gradle.properties")
 val keystoreProperties = Properties()
-keystoreProperties.load(keystorePropertiesFile.inputStream())
+keystoreProperties.load(keystorePropertiesFile?.inputStream())
 
 android {
     namespace = "com.vistara.aestheticwalls"
@@ -21,8 +21,8 @@ android {
         applicationId = "com.vistara.aestheticwalls"
         minSdk = 24
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 1
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -86,9 +86,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+//    kotlinOptions {
+//        jvmTarget = "17"
+//    }
     buildFeatures {
         compose = true
         buildConfig = true
