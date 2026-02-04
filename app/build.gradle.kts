@@ -116,9 +116,7 @@ dependencies {
     implementation(libs.androidx.material.icons.core)
 
     // StaggeredGrid for waterfall layout
-    implementation(libs.compose.glide)
-    // 添加Glide注解处理器
-    ksp(libs.glide.compiler)
+    // 使用Compose相关依赖（已移除Glide，统一采用Coil）
 //    implementation(libs.accompanist.flowlayout)
 //    implementation(libs.accompanist.swiperefresh)
 

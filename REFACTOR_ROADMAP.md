@@ -24,7 +24,7 @@ This document outlines the detailed plan to rewrite the Vistara application. The
 | ID | Task | Method / Strategy | Changes | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **1.1** | **Package Restructure** | **Feature-Based Packaging**<br>Move from `com.obscura.wallpapers.*` to `com.obscura.wallpapers.features.*`. | `ui` -> `features` (Split by screen)<br>`data` -> `core.data`<br>`utils` -> `core.common` | ⬜ 待办 |
-| **1.2** | **Build System** | **Dependency Swap & Update**<br>Replace libraries to change bytecode signatures. | Remove `Glide` -> Add `Coil`<br>Add `Kotlinx Serialization`<br>Update `Hilt` & `Compose` to latest. | ⬜ 待办 |
+| **1.2** | **Build System** | **Dependency Swap & Update**<br>Replace libraries to change bytecode signatures. | Remove `Glide` -> Add `Coil`<br>Add `Kotlinx Serialization`<br>Update `Hilt` & `Compose` to latest. | ⏳ 进行中 |
 | **1.3** | **Application Entry** | **Total Rewrite**<br>Create new `ObscuraApp` inheriting `HiltAndroidApp`. | Rename `App` -> `ObscuraApp`<br>Change init order of SDKs.<br>Move `ActivityProvider` -> DI Graph. | ✅ 已完成 |
 | **1.4** | **Main Activity** | **Navigation Host Rewrite**<br>Simplify `MainActivity` to a pure container. | Rename `MainActivity` -> `EntryActivity`<br>Remove `UnlockReceiver` logic from here (move to WorkManager/Service). | ✅ 已完成 |
 
@@ -32,6 +32,9 @@ This document outlines the detailed plan to rewrite the Vistara application. The
 - **1.3**：已新增 `ObscuraApp`，移除 `App`；已新增 `CurrentActivityHolder`（DI），移除 `ActivityProvider`；Manifest 已指向 `ObscuraApp`。
 - **1.4**：已新增 `EntryActivity`，移除 `MainActivity`；入口 Activity 仅负责导航与 `CurrentActivityHolder` 注册；解锁屏逻辑仅保留 Manifest 静态注册的 `UnlockWallpaperReceiver`，已从 Activity 中移除动态注册。
 - 编译已通过：`./gradlew clean assembleDebug` 成功。
+
+**Phase 1 进度说明（2026-02-04）**
+- **1.2**：已移除 `Glide` 及注解处理器，统一使用 `Coil`；`kotlinx-serialization` 尚未引入；`Hilt/Compose` 版本更新待办。
 
 **激进重构进度（文件名 / 方法名 / 逻辑顺序，不影响功能）**
 - **模块 1 - Application + DI**
