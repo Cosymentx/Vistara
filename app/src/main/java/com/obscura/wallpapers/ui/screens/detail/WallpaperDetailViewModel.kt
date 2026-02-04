@@ -33,7 +33,7 @@ import com.obscura.wallpapers.data.repository.UserRepository
 import com.obscura.wallpapers.data.repository.WallpaperRepository
 import com.obscura.wallpapers.manager.AppWallpaperManager
 import com.obscura.wallpapers.ui.screens.recharge.RechargePurchaseResult
-import com.obscura.wallpapers.utils.ImageUtil
+import com.obscura.wallpapers.utils.ImageProcessor
 import com.obscura.wallpapers.utils.NotificationUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -1096,7 +1096,7 @@ class WallpaperDetailViewModel @Inject constructor(
                     val originalBitmap = BitmapFactory.decodeStream(url.openStream())
 
                     // 应用高斯模糊
-                    val blurredBitmap = ImageUtil.applyGaussianBlur(
+                    val blurredBitmap = ImageProcessor.blurGaussian(
                         context, originalBitmap, radius = 25f, scale = 0.2f
                     )
 

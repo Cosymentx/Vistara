@@ -15,7 +15,7 @@ import com.obscura.wallpapers.data.remote.api.CreateOrderResponse
 import com.obscura.wallpapers.data.remote.api.PaymentMethod
 import com.obscura.wallpapers.data.repository.DiamondRepository
 import com.obscura.wallpapers.data.repository.UserRepository
-import com.obscura.wallpapers.utils.ActivityProvider
+import com.obscura.wallpapers.di.ActivityScopeHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +35,7 @@ class RechargeViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val diamondRepository: DiamondRepository,
     private val billingManager: BillingManager,
+    private val activityScopeHolder: ActivityScopeHolder,
 ) : AndroidViewModel(application) {
 
     companion object {
@@ -358,8 +359,7 @@ class RechargeViewModel @Inject constructor(
                         orderResponse.isGooglePay -> {
                             // 隐藏对话框
                             hidePaymentDialog()
-                            // 使用ActivityProvider获取Activity实例
-                            val activity = ActivityProvider.getMainActivity()
+                            val activity = activityScopeHolder.current()
                             if (activity != null) {
                                 purchaseDiamond(activity)
                             } else {

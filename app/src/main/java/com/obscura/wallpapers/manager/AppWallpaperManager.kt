@@ -22,7 +22,7 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.data.model.Wallpaper
 import com.obscura.wallpapers.data.model.WallpaperTarget
 import com.obscura.wallpapers.service.LiveWallpaperService
-import com.obscura.wallpapers.utils.ActivityProvider
+import com.obscura.wallpapers.di.ActivityScopeHolder
 import com.obscura.wallpapers.utils.NotificationUtil
 import com.obscura.wallpapers.utils.StringProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -50,7 +50,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class AppWallpaperManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val activityScopeHolder: ActivityScopeHolder,
 ) {
     companion object {
         private const val TAG = "AppWallpaperManager"
@@ -87,7 +88,7 @@ class AppWallpaperManager @Inject constructor(
         wallpaper: Wallpaper, target: WallpaperTarget, editedBitmap: Bitmap? = null, onComplete: (Boolean) -> Unit
     ) {
         try {
-            val activity = ActivityProvider.getMainActivity()
+            val activity = activityScopeHolder.current()
             Log.d(TAG, "Setting wallpaper: ${wallpaper.title}, target: ${wallpaper.isLive}")
             activity?.let {
                 if (wallpaper.isLive) {

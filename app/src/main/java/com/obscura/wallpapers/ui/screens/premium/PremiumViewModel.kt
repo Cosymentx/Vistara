@@ -20,9 +20,9 @@ import com.obscura.wallpapers.data.repository.DiamondRepository
 import com.obscura.wallpapers.data.repository.UserRepository
 import com.obscura.wallpapers.manager.ThemeManager
 import com.obscura.wallpapers.ui.screens.recharge.OrderCreationState
-import com.obscura.wallpapers.utils.ActivityProvider
-import com.obscura.wallpapers.utils.Constants.PRIVACY_POLICY_URL
-import com.obscura.wallpapers.utils.Constants.TERMS_OF_SERVICE_URL
+import com.obscura.wallpapers.di.ActivityScopeHolder
+import com.obscura.wallpapers.utils.AppConstants.PRIVACY_POLICY_URL
+import com.obscura.wallpapers.utils.AppConstants.TERMS_OF_SERVICE_URL
 import com.obscura.wallpapers.utils.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -45,7 +45,8 @@ class PremiumViewModel @Inject constructor(
     private val billingManager: BillingManager,
     private val stringProvider: StringProvider,
     private val themeManager: ThemeManager,
-    private val diamondRepository: DiamondRepository
+    private val diamondRepository: DiamondRepository,
+    private val activityScopeHolder: ActivityScopeHolder,
 ) : ViewModel() {
 
     companion object {
@@ -509,8 +510,7 @@ class PremiumViewModel @Inject constructor(
                         orderResponse.isGooglePay -> {
                             // 隐藏对话框
                             hidePaymentDialog()
-                            // 使用当前Activity实例
-                            val currentActivity = ActivityProvider.getMainActivity()
+                            val currentActivity = activityScopeHolder.current()
                             if (currentActivity != null) {
                                 // 调用Google Play支付
                                 Log.d(

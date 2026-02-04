@@ -13,28 +13,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * 网络工具类
- * 提供网络状态检查和监听功能
- */
 @Singleton
-class NetworkUtil @Inject constructor(
+class ConnectivityHelper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    
-    private val _networkState = MutableStateFlow(NetworkState())
-    val networkState: StateFlow<NetworkState> = _networkState.asStateFlow()
-    
+    private val _linkState = MutableStateFlow(LinkState())
+    val linkState: StateFlow<LinkState> = _linkState.asStateFlow()
+
     init {
-        registerNetworkCallback()
+        bindCallback()
     }
-    
-    /**
-     * 检查是否有网络连接
-     * @return 是否已连接到网络
-     */
-    fun isConnected(): Boolean {
+
+    fun hasConnection(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val network = connectivityManager.activeNetwork ?: return false
             val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
@@ -44,12 +35,8 @@ class NetworkUtil @Inject constructor(
             connectivityManager.activeNetworkInfo?.isConnected ?: false
         }
     }
-    
-    /**
-     * 检查是否连接到WiFi
-     * @return 是否已连接到WiFi
-     */
-    fun isWifiConnected(): Boolean {
+
+    fun hasWifi(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val network = connectivityManager.activeNetwork ?: return false
             val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
@@ -59,12 +46,8 @@ class NetworkUtil @Inject constructor(
             connectivityManager.activeNetworkInfo?.type == ConnectivityManager.TYPE_WIFI
         }
     }
-    
-    /**
-     * 检查是否连接到移动网络
-     * @return 是否已连接到移动网络
-     */
-    fun isMobileConnected(): Boolean {
+
+    fun hasCellular(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val network = connectivityManager.activeNetwork ?: return false
             val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
@@ -74,52 +57,37 @@ class NetworkUtil @Inject constructor(
             connectivityManager.activeNetworkInfo?.type == ConnectivityManager.TYPE_MOBILE
         }
     }
-    
-    /**
-     * 注册网络状态回调
-     */
-    private fun registerNetworkCallback() {
+
+    private fun bindCallback() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val networkRequest = NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build()
-                
             connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    updateNetworkState()
+                override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
+                    refreshState()
                 }
-                
                 override fun onLost(network: Network) {
-                    updateNetworkState()
+                    refreshState()
                 }
-                
-                override fun onCapabilitiesChanged(
-                    network: Network,
-                    networkCapabilities: NetworkCapabilities
-                ) {
-                    updateNetworkState()
+                override fun onAvailable(network: Network) {
+                    refreshState()
                 }
             })
         }
     }
-    
-    /**
-     * 更新网络状态
-     */
-    private fun updateNetworkState() {
-        _networkState.value = NetworkState(
-            isConnected = isConnected(),
-            isWifiConnected = isWifiConnected(),
-            isMobileConnected = isMobileConnected()
+
+    private fun refreshState() {
+        _linkState.value = LinkState(
+            isConnected = hasConnection(),
+            isWifiConnected = hasWifi(),
+            isMobileConnected = hasCellular()
         )
     }
-    
-    /**
-     * 网络状态数据类
-     */
-    data class NetworkState(
+
+    data class LinkState(
         val isConnected: Boolean = false,
         val isWifiConnected: Boolean = false,
         val isMobileConnected: Boolean = false
     )
-} 
+}

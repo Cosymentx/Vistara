@@ -46,7 +46,7 @@ import com.obscura.wallpapers.data.model.DiamondTransactionType
 import com.obscura.wallpapers.ui.icons.AppIcons
 import com.obscura.wallpapers.ui.theme.VistaraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
-import com.obscura.wallpapers.utils.ImageUtil
+import com.obscura.wallpapers.utils.ImageProcessor
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -272,7 +272,7 @@ fun DiamondProductCard(
             ) {
                 Image(
                     painter = painterResource(
-                        ImageUtil.getDrawableByName("ic_diamond${if (index < 6) (index + 1) else 6}")
+                        ImageProcessor.drawableIdForName("ic_diamond${if (index < 6) (index + 1) else 6}")
                             ?: R.mipmap.ic_diamond6
                     ), modifier = Modifier.size(40.dp), contentDescription = null
                 )

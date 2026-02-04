@@ -21,12 +21,31 @@ This document outlines the detailed plan to rewrite the Vistara application. The
 
 **Goal**: Establish a completely new project structure so that file paths and class names are 100% different.
 
-| ID | Task | Method / Strategy | Changes |
-| :--- | :--- | :--- | :--- |
-| **1.1** | **Package Restructure** | **Feature-Based Packaging**<br>Move from `com.obscura.wallpapers.*` to `com.obscura.wallpapers.features.*`. | `ui` -> `features` (Split by screen)<br>`data` -> `core.data`<br>`utils` -> `core.common` |
-| **1.2** | **Build System** | **Dependency Swap & Update**<br>Replace libraries to change bytecode signatures. | Remove `Glide` -> Add `Coil`<br>Add `Kotlinx Serialization`<br>Update `Hilt` & `Compose` to latest. |
-| **1.3** | **Application Entry** | **Total Rewrite**<br>Create new `VistaraApplication` inheriting `HiltAndroidApp`. | Rename `App` -> `VistaraApplication`<br>Change init order of SDKs.<br>Move `ActivityProvider` -> DI Graph. |
-| **1.4** | **Main Activity** | **Navigation Host Rewrite**<br>Simplify `MainActivity` to a pure container. | Rename `MainActivity` -> `EntryActivity`<br>Remove `UnlockReceiver` logic from here (move to WorkManager/Service). |
+| ID | Task | Method / Strategy | Changes | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **1.1** | **Package Restructure** | **Feature-Based Packaging**<br>Move from `com.obscura.wallpapers.*` to `com.obscura.wallpapers.features.*`. | `ui` -> `features` (Split by screen)<br>`data` -> `core.data`<br>`utils` -> `core.common` | ⬜ 待办 |
+| **1.2** | **Build System** | **Dependency Swap & Update**<br>Replace libraries to change bytecode signatures. | Remove `Glide` -> Add `Coil`<br>Add `Kotlinx Serialization`<br>Update `Hilt` & `Compose` to latest. | ⬜ 待办 |
+| **1.3** | **Application Entry** | **Total Rewrite**<br>Create new `ObscuraApp` inheriting `HiltAndroidApp`. | Rename `App` -> `ObscuraApp`<br>Change init order of SDKs.<br>Move `ActivityProvider` -> DI Graph. | ✅ 已完成 |
+| **1.4** | **Main Activity** | **Navigation Host Rewrite**<br>Simplify `MainActivity` to a pure container. | Rename `MainActivity` -> `EntryActivity`<br>Remove `UnlockReceiver` logic from here (move to WorkManager/Service). | ✅ 已完成 |
+
+**Phase 1 进度说明（2025-02-04）**
+- **1.3**：已新增 `ObscuraApp`，移除 `App`；已新增 `CurrentActivityHolder`（DI），移除 `ActivityProvider`；Manifest 已指向 `ObscuraApp`。
+- **1.4**：已新增 `EntryActivity`，移除 `MainActivity`；入口 Activity 仅负责导航与 `CurrentActivityHolder` 注册；解锁屏逻辑仅保留 Manifest 静态注册的 `UnlockWallpaperReceiver`，已从 Activity 中移除动态注册。
+- 编译已通过：`./gradlew clean assembleDebug` 成功。
+
+**激进重构进度（文件名 / 方法名 / 逻辑顺序，不影响功能）**
+- **模块 1 - Application + DI**
+  - 文件/类：`CurrentActivityHolder.kt` → `ActivityScopeHolder.kt`（类 `ActivityScopeHolder`），`AppModule.kt` → `CoreBindings.kt`（object `CoreBindings`）。
+  - 方法名：`setActivity`/`getActivity` → `attach`/`current`；`provideApplicationContext`/`provideDataStore`/`provideStringProvider` → `bindAppContext`/`bindPreferencesStore`/`bindStrings`。
+  - `ObscuraApp`：`initAppsFlyer` → `attachAttributionSdk`，`refreshUserProfile` → `syncUserProfile`，`handleDeepLink` → `resolveDeepLink`，`handleCampaignData` → `applyCampaign`；`onCreate` 内先 `syncUserProfile` 再 `attachAttributionSdk`；回调顺序与 when 分支顺序调整。
+- **模块 2 - EntryActivity**
+  - 变量/方法：`initialNavigation` → `pendingRoute`，`recreateContent` → `bindUi`，`handleNavigationIntent` → `applyIntentDestination`。
+  - 逻辑顺序：`onCreate` 中 splash 与 `contentReady` 提前，`bindUi` 内先取 `language` 再取 `darkTheme`/`dynamicColors`；`applyIntentDestination` 分支改为 `if (navigation != "settings") navigation else "settings"`。
+- **模块 4 - Utils**
+  - 文件/类：`ImageUtil.kt` → `ImageProcessor.kt`（object `ImageProcessor`），`NetworkUtil.kt` → `ConnectivityHelper.kt`（class `ConnectivityHelper`），`Constants.kt` → `AppConstants.kt`（object `AppConstants`）。
+  - 方法名：`applyGaussianBlur` → `blurGaussian`，`getDrawableByName` → `drawableIdForName`；`isConnected`/`isWifiConnected`/`isMobileConnected` → `hasConnection`/`hasWifi`/`hasCellular`，`registerNetworkCallback`/`updateNetworkState` → `bindCallback`/`refreshState`；`NetworkState` → `LinkState`。
+  - `UtilsModule`：`provideNetworkUtil` 移除（改用 `ConnectivityHelper` 构造注入），`provideNetworkMonitor` → `bindNetworkMonitor`。
+- 编译已通过：`./gradlew assembleDebug` 成功。
 
 ---
 

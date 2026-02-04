@@ -206,7 +206,7 @@ tasks.register("buildInstallAndRun") {
                     "am",
                     "start",
                     "-n",
-                    "com.obscura.wallpapers/.ui.MainActivity"
+                    "com.obscura.wallpapers/.ui.EntryActivity"
                 )
                 isIgnoreExitValue = true // 忽略退出代码
             }

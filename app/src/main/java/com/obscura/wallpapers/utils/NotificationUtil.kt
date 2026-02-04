@@ -13,7 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.data.model.Wallpaper
 import com.obscura.wallpapers.data.repository.UserPrefsRepository
-import com.obscura.wallpapers.ui.MainActivity
+import com.obscura.wallpapers.ui.EntryActivity
 import kotlinx.coroutines.runBlocking
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -101,7 +101,7 @@ class NotificationUtil @Inject constructor(
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun showWallpaperChangedNotification(wallpaper: Wallpaper) {
         // 创建点击意图
-        val intent = Intent(context, MainActivity::class.java).apply {
+        val intent = Intent(context, EntryActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent = PendingIntent.getActivity(
@@ -165,7 +165,7 @@ class NotificationUtil @Inject constructor(
             return
         }
         // 创建点击意图
-        val intent = Intent(context, MainActivity::class.java).apply {
+        val intent = Intent(context, EntryActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("file_path", filePath)
         }
@@ -196,7 +196,7 @@ class NotificationUtil @Inject constructor(
 
     /**
      * 显示视频壁纸待处理通知
-     * 当用户解锁屏幕时，如果有待设置的视频壁纸但当前上下文不是MainActivity，
+     * 当用户解锁屏幕时，如果有待设置的视频壁纸但当前上下文不是 EntryActivity，
      * 则显示此通知引导用户打开应用设置视频壁纸
      */
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)

@@ -17,7 +17,6 @@ import com.obscura.wallpapers.data.repository.UserRepository
 import com.obscura.wallpapers.data.repository.WallpaperRepository
 import com.obscura.wallpapers.manager.AppWallpaperManager
 import com.obscura.wallpapers.utils.NotificationUtil
-import com.obscura.wallpapers.utils.StringProvider
 import com.obscura.wallpapers.worker.AutoWallpaperWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -37,7 +36,8 @@ class AutoChangeViewModel @Inject constructor(
     private val userPrefsRepository: UserPrefsRepository,
     private val userRepository: UserRepository,
     private val wallpaperRepository: WallpaperRepository,
-    private val notificationUtil: NotificationUtil
+    private val notificationUtil: NotificationUtil,
+    private val appWallpaperManager: AppWallpaperManager,
 ) : ViewModel() {
 
     companion object {
@@ -336,10 +336,7 @@ class AutoChangeViewModel @Inject constructor(
 
                     // 实际设置壁纸的逻辑
                     if (wallpaper != null) {
-                        // 使用AppWallpaperManager设置壁纸
-                        val stringProvider = StringProvider(context)
-                        val wallpaperManager = AppWallpaperManager(context)
-                        wallpaperManager.setWallpaper(
+                        appWallpaperManager.setWallpaper(
                             wallpaper = wallpaper,
                             target = _autoChangeTarget.value,
                             onComplete = { success ->

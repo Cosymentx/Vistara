@@ -18,7 +18,7 @@ import com.obscura.wallpapers.data.model.WallpaperTarget
 import com.obscura.wallpapers.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.data.repository.WallpaperRepository
 import com.obscura.wallpapers.manager.AppWallpaperManager
-import com.obscura.wallpapers.utils.NetworkUtil
+import com.obscura.wallpapers.utils.ConnectivityHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -34,7 +34,7 @@ class AutoWallpaperWorker @Inject constructor(
     workerParameters: WorkerParameters,
     private val userPrefsRepository: UserPrefsRepository,
     private val wallpaperRepository: WallpaperRepository,
-    private val networkUtil: NetworkUtil,
+    private val connectivityHelper: ConnectivityHelper,
     private val appWallpaperManager: AppWallpaperManager,
 ) : CoroutineWorker(context, workerParameters) {
 
@@ -192,7 +192,7 @@ class AutoWallpaperWorker @Inject constructor(
             }
 
             // 检查网络状态
-            if (userSettings.autoChangeWifiOnly && !networkUtil.isWifiConnected()) {
+            if (userSettings.autoChangeWifiOnly && !connectivityHelper.hasWifi()) {
                 Log.d(TAG, "WiFi required but not connected")
                 return@withContext Result.retry()
             }

@@ -10,7 +10,7 @@ import com.obscura.wallpapers.data.model.AutoChangeSource
 import com.obscura.wallpapers.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.data.repository.WallpaperRepository
 import com.obscura.wallpapers.manager.AppWallpaperManager
-import com.obscura.wallpapers.utils.NetworkUtil
+import com.obscura.wallpapers.utils.ConnectivityHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +31,7 @@ class UnlockWallpaperReceiver : BroadcastReceiver() {
     lateinit var wallpaperRepository: WallpaperRepository
 
     @Inject
-    lateinit var networkUtil: NetworkUtil
+    lateinit var connectivityHelper: ConnectivityHelper
 
     @Inject
     lateinit var appWallpaperManager: AppWallpaperManager
@@ -68,7 +68,7 @@ class UnlockWallpaperReceiver : BroadcastReceiver() {
                     }
 
                     // 检查网络状态
-                    val wifiConnected = networkUtil.isWifiConnected()
+                    val wifiConnected = connectivityHelper.hasWifi()
                     Log.d(TAG, "WiFi连接状态: $wifiConnected, 是否需要WiFi: ${userSettings.autoChangeWifiOnly}")
                     if (userSettings.autoChangeWifiOnly && !wifiConnected) {
                         Log.d(TAG, "需要WiFi连接但当前未连接，不执行更换")
