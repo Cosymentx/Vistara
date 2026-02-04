@@ -1,24 +1,26 @@
 package com.obscura.wallpapers.data.model.pexels
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Pexels 搜索响应数据模型
  */
+@Serializable
 data class PexelsSearchResponse(
     val page: Int,
     
-    @SerializedName("per_page")
+    @SerialName("per_page")
     val perPage: Int,
     
     val photos: List<PexelsPhoto>,
     
-    @SerializedName("total_results")
+    @SerialName("total_results")
     val totalResults: Int,
     
-    @SerializedName("next_page")
+    @SerialName("next_page")
     val nextPage: String? = null,
     
-    @SerializedName("prev_page")
+    @SerialName("prev_page")
     val prevPage: String? = null
 ) 

@@ -1,10 +1,12 @@
 package com.obscura.wallpapers.data.model.wallhaven
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Wallhaven 壁纸详情响应
  */
+@Serializable
 data class WallhavenWallpaperResponse(
     val data: WallhavenWallpaper
 )
@@ -12,11 +14,12 @@ data class WallhavenWallpaperResponse(
 /**
  * Wallhaven 壁纸数据模型
  */
+@Serializable
 data class WallhavenWallpaper(
     val id: String,
     val url: String,
     
-    @SerializedName("short_url")
+    @SerialName("short_url")
     val shortUrl: String,
     
     val uploader: WallhavenUploader? = null,
@@ -26,22 +29,22 @@ data class WallhavenWallpaper(
     val purity: String,
     val category: String,
     
-    @SerializedName("dimension_x")
+    @SerialName("dimension_x")
     val dimensionX: Int,
     
-    @SerializedName("dimension_y")
+    @SerialName("dimension_y")
     val dimensionY: Int,
     
     val resolution: String,
     val ratio: String,
     
-    @SerializedName("file_size")
+    @SerialName("file_size")
     val fileSize: Int,
     
-    @SerializedName("file_type")
+    @SerialName("file_type")
     val fileType: String,
     
-    @SerializedName("created_at")
+    @SerialName("created_at")
     val createdAt: String,
     
     val colors: List<String>,
@@ -53,6 +56,7 @@ data class WallhavenWallpaper(
 /**
  * Wallhaven 上传者信息
  */
+@Serializable
 data class WallhavenUploader(
     val username: String,
     val group: String,
@@ -62,23 +66,25 @@ data class WallhavenUploader(
 /**
  * Wallhaven 头像
  */
+@Serializable
 data class WallhavenAvatar(
-    @SerializedName("200px")
+    @SerialName("200px")
     val large: String,
     
-    @SerializedName("128px")
+    @SerialName("128px")
     val medium: String,
     
-    @SerializedName("32px")
+    @SerialName("32px")
     val small: String,
     
-    @SerializedName("20px")
+    @SerialName("20px")
     val tiny: String
 )
 
 /**
  * Wallhaven 缩略图
  */
+@Serializable
 data class WallhavenThumbs(
     val large: String,
     val original: String,
@@ -88,19 +94,20 @@ data class WallhavenThumbs(
 /**
  * Wallhaven 标签
  */
+@Serializable
 data class WallhavenTag(
     val id: Int,
     val name: String,
     val alias: String,
     
-    @SerializedName("category_id")
+    @SerialName("category_id")
     val categoryId: Int,
     
     val category: String,
     
-    @SerializedName("purity")
+    @SerialName("purity")
     val purity: String,
     
-    @SerializedName("created_at")
+    @SerialName("created_at")
     val createdAt: String
 ) 

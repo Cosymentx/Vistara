@@ -3,19 +3,18 @@ package com.obscura.wallpapers.di
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
-import com.obscura.wallpapers.data.remote.ApiResult
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.obscura.wallpapers.BuildConfig
 import com.obscura.wallpapers.data.remote.ApiCallHelper
 import com.obscura.wallpapers.data.remote.ApiKeyManager
-import com.obscura.wallpapers.data.remote.ApiUsageTracker
 import com.obscura.wallpapers.data.remote.ApiSource
+import com.obscura.wallpapers.data.remote.ApiUsageTracker
+import com.obscura.wallpapers.data.remote.AuthInterceptor
+import com.obscura.wallpapers.data.remote.api.ApiService
 import com.obscura.wallpapers.data.remote.api.PexelsApiService
 import com.obscura.wallpapers.data.remote.api.PixabayApiService
 import com.obscura.wallpapers.data.remote.api.UnsplashApiService
 import com.obscura.wallpapers.data.remote.api.WallhavenApiService
-import com.obscura.wallpapers.data.remote.api.ApiService
-import com.obscura.wallpapers.data.remote.AuthInterceptor
 import com.obscura.wallpapers.data.repository.AuthRepository
 import com.obscura.wallpapers.data.repository.UserRepository
 import dagger.Module
@@ -23,12 +22,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
 import okhttp3.Cache
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -44,7 +44,7 @@ object NetworkModule {
     private const val BASE_URL = "https://api.vistaraai.xyz/"
 
     /**
-     * 提供Gson实例，用于JSON序列化/反序列化
+     * 提供Gson实例，用于非网络场景（Room转换等）
      */
     @Provides
     @Singleton
@@ -53,6 +53,19 @@ object NetworkModule {
             .setLenient()
             .registerTypeAdapterFactory(com.obscura.wallpapers.data.remote.ApiResultAdapterFactory())
             .create()
+    }
+
+    /**
+     * 提供Kotlinx Serialization的Json实例
+     */
+    @Provides
+    @Singleton
+    fun provideJson(): Json {
+        return Json {
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+            isLenient = true
+        }
     }
 
     /**
@@ -119,7 +132,8 @@ object NetworkModule {
             var request = chain.request()
 
             // 检查网络连接
-            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
             val networkInfo = connectivityManager.activeNetworkInfo
             val isConnected = networkInfo != null && networkInfo.isConnected
 
@@ -163,10 +177,10 @@ object NetworkModule {
      */
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .client(okHttpClient)
             .build()
     }
@@ -213,7 +227,10 @@ object NetworkModule {
 
                 if (rateRemaining <= 5) { // 当剩余5个请求时就开始警告
                     // 如果剩余请求数很少，设置速率限制状态
-                    android.util.Log.w("UnsplashInterceptor", "API rate limit almost reached: $rateRemaining/$rateLimit remaining")
+                    android.util.Log.w(
+                        "UnsplashInterceptor",
+                        "API rate limit almost reached: $rateRemaining/$rateLimit remaining"
+                    )
 
                     if (rateRemaining <= 0) {
                         // 如果剩余请求数为0，设置速率限制状态，时间较长
@@ -228,11 +245,22 @@ object NetworkModule {
             } else {
                 // 检查是否是速率限制错误
                 if (response.code == 403 || response.code == 429) {
-                    android.util.Log.e("UnsplashInterceptor", "API rate limit exceeded: ${response.code}")
-                    apiUsageTracker.trackApiError(ApiSource.UNSPLASH, "Rate Limit Exceeded", response.code)
+                    android.util.Log.e(
+                        "UnsplashInterceptor",
+                        "API rate limit exceeded: ${response.code}"
+                    )
+                    apiUsageTracker.trackApiError(
+                        ApiSource.UNSPLASH,
+                        "Rate Limit Exceeded",
+                        response.code
+                    )
                     apiUsageTracker.setApiRateLimited(ApiSource.UNSPLASH)
                 } else {
-                    apiUsageTracker.trackApiError(ApiSource.UNSPLASH, "HTTP ${response.code}", response.code)
+                    apiUsageTracker.trackApiError(
+                        ApiSource.UNSPLASH,
+                        "HTTP ${response.code}",
+                        response.code
+                    )
                 }
             }
 
@@ -262,13 +290,13 @@ object NetworkModule {
     @Singleton
     @Named("unsplashRetrofit")
     fun provideUnsplashRetrofit(
-        gson: Gson,
+        json: Json,
         @Named("unsplashHttpClient") client: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(UnsplashApiService.BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
 
@@ -318,7 +346,10 @@ object NetworkModule {
 
                 if (rateRemaining <= 5) { // 当剩余5个请求时就开始警告
                     // 如果剩余请求数很少，设置速率限制状态
-                    android.util.Log.w("PexelsInterceptor", "API rate limit almost reached: $rateRemaining/$rateLimit remaining")
+                    android.util.Log.w(
+                        "PexelsInterceptor",
+                        "API rate limit almost reached: $rateRemaining/$rateLimit remaining"
+                    )
 
                     if (rateRemaining <= 0) {
                         // 如果剩余请求数为0，设置速率限制状态，时间较长
@@ -333,11 +364,22 @@ object NetworkModule {
             } else {
                 // 检查是否是速率限制错误
                 if (response.code == 403 || response.code == 429) {
-                    android.util.Log.e("PexelsInterceptor", "API rate limit exceeded: ${response.code}")
-                    apiUsageTracker.trackApiError(ApiSource.PEXELS, "Rate Limit Exceeded", response.code)
+                    android.util.Log.e(
+                        "PexelsInterceptor",
+                        "API rate limit exceeded: ${response.code}"
+                    )
+                    apiUsageTracker.trackApiError(
+                        ApiSource.PEXELS,
+                        "Rate Limit Exceeded",
+                        response.code
+                    )
                     apiUsageTracker.setApiRateLimited(ApiSource.PEXELS, 600000L) // 10分钟
                 } else {
-                    apiUsageTracker.trackApiError(ApiSource.PEXELS, "HTTP ${response.code}", response.code)
+                    apiUsageTracker.trackApiError(
+                        ApiSource.PEXELS,
+                        "HTTP ${response.code}",
+                        response.code
+                    )
                 }
             }
 
@@ -367,13 +409,13 @@ object NetworkModule {
     @Singleton
     @Named("pexelsRetrofit")
     fun providePexelsRetrofit(
-        gson: Gson,
+        json: Json,
         @Named("pexelsHttpClient") client: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(PexelsApiService.BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
 
@@ -382,13 +424,13 @@ object NetworkModule {
     @Singleton
     @Named("pexelsVideoRetrofit")
     fun providePexelsVideoRetrofit(
-        gson: Gson,
+        json: Json,
         @Named("pexelsHttpClient") client: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(PexelsApiService.VIDEO_BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
 
@@ -408,7 +450,14 @@ object NetworkModule {
             override suspend fun getCuratedPhotos(page: Int, perPage: Int) =
                 photoService.getCuratedPhotos(page, perPage)
 
-            override suspend fun searchPhotos(query: String, page: Int, perPage: Int, orientation: String?, size: String?, color: String?) =
+            override suspend fun searchPhotos(
+                query: String,
+                page: Int,
+                perPage: Int,
+                orientation: String?,
+                size: String?,
+                color: String?
+            ) =
                 photoService.searchPhotos(query, page, perPage, orientation, size, color)
 
             override suspend fun getPhoto(id: String) =
@@ -424,7 +473,13 @@ object NetworkModule {
             override suspend fun getPopularVideos(page: Int, perPage: Int) =
                 videoService.getPopularVideos(page, perPage)
 
-            override suspend fun searchVideos(query: String, page: Int, perPage: Int, orientation: String?, size: String?) =
+            override suspend fun searchVideos(
+                query: String,
+                page: Int,
+                perPage: Int,
+                orientation: String?,
+                size: String?
+            ) =
                 videoService.searchVideos(query, page, perPage, orientation, size)
 
             override suspend fun getVideo(id: String) =
@@ -491,13 +546,13 @@ object NetworkModule {
     @Singleton
     @Named("pixabayRetrofit")
     fun providePixabayRetrofit(
-        gson: Gson,
+        json: Json,
         @Named("pixabayHttpClient") client: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(PixabayApiService.BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
 
@@ -568,13 +623,13 @@ object NetworkModule {
     @Singleton
     @Named("wallhavenRetrofit")
     fun provideWallhavenRetrofit(
-        gson: Gson,
+        json: Json,
         @Named("wallhavenHttpClient") client: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(WallhavenApiService.BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
 

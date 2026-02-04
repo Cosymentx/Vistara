@@ -1,10 +1,12 @@
 package com.obscura.wallpapers.data.model.pexels
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Pexels 视频数据模型
  */
+@Serializable
 data class PexelsVideo(
     val id: Int,
     val width: Int,
@@ -14,10 +16,10 @@ data class PexelsVideo(
     val duration: Int, // 视频时长（秒）
     val user: PexelsVideoUser, // 视频作者
     
-    @SerializedName("video_files")
+    @SerialName("video_files")
     val videoFiles: List<PexelsVideoFile>, // 不同质量的视频文件
     
-    @SerializedName("video_pictures")
+    @SerialName("video_pictures")
     val videoPictures: List<PexelsVideoPicture> // 视频预览图
 )
 
@@ -25,6 +27,7 @@ data class PexelsVideo(
  * Pexels 视频文件数据模型
  * 表示不同质量的视频文件
  */
+@Serializable
 data class PexelsVideoFile(
     val id: Int,
     val quality: String, // 视频质量，如"hd", "sd"
@@ -37,6 +40,7 @@ data class PexelsVideoFile(
 /**
  * Pexels 视频预览图数据模型
  */
+@Serializable
 data class PexelsVideoPicture(
     val id: Int,
     val picture: String, // 预览图URL
@@ -46,6 +50,7 @@ data class PexelsVideoPicture(
 /**
  * Pexels 视频作者数据模型
  */
+@Serializable
 data class PexelsVideoUser(
     val id: Int,
     val name: String, // 作者名称
@@ -55,20 +60,21 @@ data class PexelsVideoUser(
 /**
  * Pexels 视频搜索响应数据模型
  */
+@Serializable
 data class PexelsVideoSearchResponse(
     val page: Int,
     
-    @SerializedName("per_page")
+    @SerialName("per_page")
     val perPage: Int,
     
-    @SerializedName("total_results")
+    @SerialName("total_results")
     val totalResults: Int,
     
     val videos: List<PexelsVideo>,
     
-    @SerializedName("next_page")
+    @SerialName("next_page")
     val nextPage: String? = null,
     
-    @SerializedName("prev_page")
+    @SerialName("prev_page")
     val prevPage: String? = null
 )

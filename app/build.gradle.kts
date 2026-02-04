@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
 //    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.gradle.ksp)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.service)
@@ -132,9 +133,11 @@ dependencies {
 
     // Retrofit & OkHttp
     implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.gson)
 
     // Room
     implementation(libs.androidx.room.ktx)

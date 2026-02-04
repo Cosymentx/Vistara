@@ -1,25 +1,27 @@
 package com.obscura.wallpapers.data.model.pexels
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Pexels 集合数据模型
  */
+@Serializable
 data class PexelsCollection(
     val id: String,
     val title: String,
     val description: String? = null,
 
-    @SerializedName("private")
+    @SerialName("private")
     val isPrivate: Boolean,
 
-    @SerializedName("media_count")
+    @SerialName("media_count")
     val mediaCount: Int,
 
-    @SerializedName("photos_count")
+    @SerialName("photos_count")
     val photos_count: Int?,
 
-    @SerializedName("videos_count")
+    @SerialName("videos_count")
     val videosCount: Int,
 
     // 集合封面图片

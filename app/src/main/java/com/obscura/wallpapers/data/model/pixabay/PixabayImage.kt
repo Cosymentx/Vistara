@@ -1,10 +1,12 @@
 package com.obscura.wallpapers.data.model.pixabay
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Pixabay图片模型
  */
+@Serializable
 data class PixabayImage(
     val id: Int,
     val pageURL: String,
@@ -17,9 +19,9 @@ data class PixabayImage(
     val webformatWidth: Int,
     val webformatHeight: Int,
     val largeImageURL: String,
-    @SerializedName("imageWidth")
+    @SerialName("imageWidth")
     val width: Int,
-    @SerializedName("imageHeight")
+    @SerialName("imageHeight")
     val height: Int,
     val imageSize: Int,
     val views: Int,
@@ -27,7 +29,7 @@ data class PixabayImage(
     val collections: Int,
     val likes: Int,
     val comments: Int,
-    @SerializedName("user_id")
+    @SerialName("user_id")
     val userId: Int,
     val user: String,
     val userImageURL: String

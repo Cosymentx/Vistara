@@ -1,10 +1,12 @@
 package com.obscura.wallpapers.data.model.pexels
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Pexels 照片数据模型
  */
+@Serializable
 data class PexelsPhoto(
     val id: Int,
     val width: Int,
@@ -12,13 +14,13 @@ data class PexelsPhoto(
     val url: String,
     val photographer: String,
 
-    @SerializedName("photographer_url")
+    @SerialName("photographer_url")
     val photographerUrl: String,
 
-    @SerializedName("photographer_id")
+    @SerialName("photographer_id")
     val photographerId: Long,
 
-    @SerializedName("avg_color")
+    @SerialName("avg_color")
     val avgColor: String?,
 
     val src: PexelsPhotoSources,
@@ -32,6 +34,7 @@ data class PexelsPhoto(
 /**
  * Pexels 照片不同尺寸URL
  */
+@Serializable
 data class PexelsPhotoSources(
     val original: String,
     val large2x: String,

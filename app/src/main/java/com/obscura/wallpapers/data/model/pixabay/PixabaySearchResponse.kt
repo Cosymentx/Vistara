@@ -1,16 +1,18 @@
 package com.obscura.wallpapers.data.model.pixabay
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Pixabay 搜索响应数据模型
  */
+@Serializable
 data class PixabaySearchResponse(
     val total: Int,
     
-    @SerializedName("totalHits")
+    @SerialName("totalHits")
     val totalHits: Int,
     
-    @SerializedName("hits")
+    @SerialName("hits")
     val images: List<PixabayImage>
 ) 

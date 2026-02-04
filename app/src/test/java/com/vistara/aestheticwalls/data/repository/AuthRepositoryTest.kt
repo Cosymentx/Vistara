@@ -6,15 +6,14 @@ import androidx.datastore.preferences.core.Preferences
 import com.obscura.wallpapers.data.remote.api.ApiService
 import com.obscura.wallpapers.data.remote.api.LoginRequest
 import com.obscura.wallpapers.data.remote.api.LoginResponse
+import com.obscura.wallpapers.data.remote.api.ApiResponse
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.*
-import retrofit2.Response
 
 @Suppress("DEPRECATION", "UNCHECKED_CAST")
 class AuthRepositoryTest {
@@ -54,14 +53,14 @@ class AuthRepositoryTest {
             on { getResult(Exception::class.java) } doReturn account
         }
 
-        val loginResponse = LoginResponse("server_token", true, "Success")
-        whenever(apiService.login(any())).thenReturn(Response.success(loginResponse))
+        val loginResponse = LoginResponse("server_token", true)
+        whenever(apiService.login(any())).thenReturn(ApiResponse(code = 200, msg = "Success", data = loginResponse))
 
         // 执行测试
         val result = authRepository.handleSignInResult(task)
 
         // 验证结果
-        assert(result)
+        assert(result.isSuccess)
         verify(userRepository).updateLoginStatus(true)
         verify(userRepository).updatePremiumStatus(true)
         
@@ -89,14 +88,13 @@ class AuthRepositoryTest {
             on { getResult(Exception::class.java) } doReturn account
         }
 
-        val responseBody: ResponseBody = mock()
-        whenever(apiService.login(any())).thenReturn(Response.error(400, responseBody))
+        whenever(apiService.login(any())).thenReturn(ApiResponse(code = 400, msg = "Bad Request", data = null))
 
         // 执行测试
         val result = authRepository.handleSignInResult(task)
 
         // 验证结果
-        assert(!result)
+        assert(!result.isSuccess)
         
         // 验证请求参数
         verify(apiService).login(eq(LoginRequest(

@@ -1,10 +1,12 @@
 package com.obscura.wallpapers.data.model.wallhaven
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Wallhaven 搜索响应数据模型
  */
+@Serializable
 data class WallhavenSearchResponse(
     val data: List<WallhavenWallpaper>,
     val meta: WallhavenMetaData
@@ -13,14 +15,15 @@ data class WallhavenSearchResponse(
 /**
  * Wallhaven 搜索元数据
  */
+@Serializable
 data class WallhavenMetaData(
-    @SerializedName("current_page")
+    @SerialName("current_page")
     val currentPage: Int,
     
-    @SerializedName("last_page")
+    @SerialName("last_page")
     val lastPage: Int,
     
-    @SerializedName("per_page")
+    @SerialName("per_page")
     val perPage: Int,
     
     val total: Int,
