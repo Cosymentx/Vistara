@@ -37,8 +37,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.Wallpaper
-import com.obscura.wallpapers.data.model.WallpaperCategory
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.WallpaperCategory
 import com.obscura.wallpapers.ui.components.CategoryChip
 import com.obscura.wallpapers.ui.components.SearchBar
 import com.obscura.wallpapers.ui.components.WallpaperItem

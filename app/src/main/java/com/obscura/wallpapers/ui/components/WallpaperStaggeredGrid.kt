@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.theme.stringResource
 import kotlinx.coroutines.flow.collectLatest
 

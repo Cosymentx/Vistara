@@ -30,7 +30,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.BannerActionType
+import com.obscura.wallpapers.core.data.model.BannerActionType
 import com.obscura.wallpapers.features.about.AboutScreen
 import com.obscura.wallpapers.features.auth.AuthScreen
 import com.obscura.wallpapers.features.autochange.AutoChangeScreen

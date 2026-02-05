@@ -19,8 +19,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.Wallpaper
-import com.obscura.wallpapers.data.model.WallpaperTarget
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.service.LiveWallpaperService
 import com.obscura.wallpapers.di.ActivityScopeHolder
 import com.obscura.wallpapers.core.common.NotificationUtil

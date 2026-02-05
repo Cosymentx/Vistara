@@ -41,8 +41,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.Collection
-import com.obscura.wallpapers.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.Collection
+import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.theme.stringResource
 
 /**

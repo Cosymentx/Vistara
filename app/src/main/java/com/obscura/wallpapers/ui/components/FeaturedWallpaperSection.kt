@@ -28,7 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.obscura.wallpapers.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.theme.stringResource
 import com.obscura.wallpapers.R
 

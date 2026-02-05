@@ -26,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.AppLanguage
+import com.obscura.wallpapers.core.data.model.AppLanguage
 import com.obscura.wallpapers.ui.theme.LocalAppResources
 import androidx.compose.runtime.key
 /**

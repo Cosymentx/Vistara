@@ -39,8 +39,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.UiState
-import com.obscura.wallpapers.data.model.WallpaperTarget
+import com.obscura.wallpapers.core.data.model.UiState
+import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.components.WallpaperDetail
 import com.obscura.wallpapers.ui.components.WallpaperSetOptions

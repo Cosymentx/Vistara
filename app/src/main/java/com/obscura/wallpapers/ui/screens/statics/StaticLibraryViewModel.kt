@@ -5,13 +5,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.UiState
-import com.obscura.wallpapers.data.model.Wallpaper
-import com.obscura.wallpapers.data.model.WallpaperCategory
-import com.obscura.wallpapers.data.remote.ApiResult
-import com.obscura.wallpapers.data.remote.ApiUsageTracker
-import com.obscura.wallpapers.data.repository.WallpaperRepository
+import com.obscura.wallpapers.core.data.model.UiState
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.WallpaperCategory
+import com.obscura.wallpapers.core.data.remote.ApiResult
+import com.obscura.wallpapers.core.data.remote.ApiUsageTracker
+import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import com.obscura.wallpapers.core.common.RefreshUtil
+import com.obscura.wallpapers.core.data.remote.ApiResult.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +20,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.emptyList
+import kotlin.collections.isNotEmpty
 
 /**
  * 静态壁纸库ViewModel
@@ -117,7 +120,7 @@ class StaticLibraryViewModel @Inject constructor(
                             )
 
                             // 如果分类请求成功且返回了数据，直接使用
-                            if (categoryResult is ApiResult.Success && categoryResult.data.isNotEmpty()) {
+                            if (categoryResult is Success && categoryResult.data.isNotEmpty()) {
                                 Log.d("StaticLibraryViewModel", "使用 $apiSource 获取分类成功，返回 ${categoryResult.data.size} 个壁纸")
                                 categoryResult
                             }
@@ -145,7 +148,7 @@ class StaticLibraryViewModel @Inject constructor(
                         } catch (e: Exception) {
                             Log.e("StaticLibraryViewModel", "加载更多分类壁纸异常: ${e.message}")
                             // 如果发生异常，返回空结果
-                            ApiResult.Success(emptyList())
+                            Success(emptyList())
                         }
                     }
                 }
@@ -158,7 +161,7 @@ class StaticLibraryViewModel @Inject constructor(
                 }
 
                 when (result) {
-                    is ApiResult.Success -> {
+                    is Success -> {
                         // 如果返回的数据少于页面大小，说明没有更多数据了
                         _canLoadMore.value = result.data.size >= PAGE_SIZE
 

@@ -40,8 +40,8 @@ import com.obscura.wallpapers.ui.theme.stringResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.Banner
-import com.obscura.wallpapers.data.model.BannerActionType
+import com.obscura.wallpapers.core.data.model.Banner
+import com.obscura.wallpapers.core.data.model.BannerActionType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

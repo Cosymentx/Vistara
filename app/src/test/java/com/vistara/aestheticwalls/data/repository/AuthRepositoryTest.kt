@@ -1,14 +1,15 @@
-package com.obscura.wallpapers.data.repository
+package com.obscura.wallpapers.core.data.repository
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.obscura.wallpapers.core.data.remote.api.ApiService
-import com.obscura.wallpapers.core.data.remote.api.LoginRequest
-import com.obscura.wallpapers.core.data.remote.api.LoginResponse
-import com.obscura.wallpapers.core.data.remote.api.ApiResponse
+import com.obscura.wallpapers.core.data.remote.service.ApiService
+import com.obscura.wallpapers.core.data.remote.service.LoginRequest
+import com.obscura.wallpapers.core.data.remote.service.LoginResponse
+import com.obscura.wallpapers.core.data.remote.service.ApiResponse
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
+import com.obscura.wallpapers.core.data.repository.AuthRepositoryImpl
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before

@@ -7,8 +7,8 @@ import android.os.Build
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
-import com.obscura.wallpapers.data.model.AppLanguage
-import com.obscura.wallpapers.data.repository.UserPrefsRepository
+import com.obscura.wallpapers.core.data.model.AppLanguage
+import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking

@@ -5,12 +5,11 @@ import android.content.res.Resources
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import com.obscura.wallpapers.data.model.AppLanguage
+import com.obscura.wallpapers.core.data.model.AppLanguage
 import java.util.Locale
 
 /**

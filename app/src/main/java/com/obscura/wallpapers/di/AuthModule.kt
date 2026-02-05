@@ -1,7 +1,7 @@
 package com.obscura.wallpapers.di
 
-import com.obscura.wallpapers.data.repository.AuthRepository
-import com.obscura.wallpapers.data.repository.AuthRepositoryImpl
+import com.obscura.wallpapers.core.data.repository.AuthRepository
+import com.obscura.wallpapers.core.data.repository.AuthRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

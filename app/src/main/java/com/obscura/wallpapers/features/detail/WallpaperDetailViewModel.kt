@@ -1,53 +1,36 @@
 package com.obscura.wallpapers.features.detail
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.os.Build
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
-import androidx.core.content.FileProvider
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.obscura.wallpapers.R
-import com.obscura.wallpapers.billing.BillingConnectionState
 import com.obscura.wallpapers.billing.BillingManager
-import com.obscura.wallpapers.billing.PurchaseState
-import com.obscura.wallpapers.data.EditedImageCache
-import com.obscura.wallpapers.data.model.UiState
-import com.obscura.wallpapers.data.model.Wallpaper
-import com.obscura.wallpapers.data.model.WallpaperTarget
-import com.obscura.wallpapers.data.repository.DiamondRepository
-import com.obscura.wallpapers.data.repository.UserPrefsRepository
-import com.obscura.wallpapers.data.repository.UserRepository
-import com.obscura.wallpapers.data.repository.WallpaperRepository
-import com.obscura.wallpapers.manager.AppWallpaperManager
-import com.obscura.wallpapers.features.recharge.RechargePurchaseResult
 import com.obscura.wallpapers.core.common.ImageProcessor
 import com.obscura.wallpapers.core.common.NotificationUtil
+import com.obscura.wallpapers.core.data.model.UiState
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.WallpaperTarget
+import com.obscura.wallpapers.core.data.repository.DiamondRepository
+import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
+import com.obscura.wallpapers.core.data.repository.UserRepository
+import com.obscura.wallpapers.core.data.repository.WallpaperRepository
+import com.obscura.wallpapers.cache.EditedImageCache
+import com.obscura.wallpapers.features.recharge.RechargePurchaseResult
+import com.obscura.wallpapers.manager.AppWallpaperManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileOutputStream
-import java.net.URL
 import javax.inject.Inject
 
 /**
@@ -114,7 +97,8 @@ class WallpaperDetailViewModel @Inject constructor(
 
     // 钻石购买结果
     private val _diamondPurchaseResult = MutableStateFlow<RechargePurchaseResult?>(null)
-    val diamondPurchaseResult: StateFlow<RechargePurchaseResult?> = _diamondPurchaseResult.asStateFlow()
+    val diamondPurchaseResult: StateFlow<RechargePurchaseResult?> =
+        _diamondPurchaseResult.asStateFlow()
 
     // 是否需要请求存储权限
     private val _needStoragePermission = mutableStateOf(false)

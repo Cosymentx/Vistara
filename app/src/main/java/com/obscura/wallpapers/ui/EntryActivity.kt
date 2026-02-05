@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.obscura.wallpapers.ObscuraApp
-import com.obscura.wallpapers.data.model.AppLanguage
+import com.obscura.wallpapers.core.data.model.AppLanguage
 import com.obscura.wallpapers.di.ActivityScopeHolder
 import com.obscura.wallpapers.manager.LocaleManager
 import com.obscura.wallpapers.manager.ThemeManager

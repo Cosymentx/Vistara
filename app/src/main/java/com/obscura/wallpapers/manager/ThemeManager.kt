@@ -3,7 +3,7 @@ package com.obscura.wallpapers.manager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import com.obscura.wallpapers.data.repository.UserPrefsRepository
+import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

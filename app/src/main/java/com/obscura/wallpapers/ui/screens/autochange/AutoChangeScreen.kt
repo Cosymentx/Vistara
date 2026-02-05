@@ -51,9 +51,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.BuildConfig
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.AutoChangeFrequency
-import com.obscura.wallpapers.data.model.AutoChangeSource
-import com.obscura.wallpapers.data.model.WallpaperTarget
+import com.obscura.wallpapers.core.data.model.AutoChangeFrequency
+import com.obscura.wallpapers.core.data.model.AutoChangeSource
+import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.icons.AppIcons
 import com.obscura.wallpapers.ui.theme.VistaraTheme

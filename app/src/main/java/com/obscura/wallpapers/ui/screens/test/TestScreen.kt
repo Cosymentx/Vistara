@@ -44,7 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.remote.api.PaymentMethod
+import com.obscura.wallpapers.core.data.remote.service.PaymentMethod
 import com.obscura.wallpapers.ui.components.PaymentMethodDialog
 import com.obscura.wallpapers.ui.components.TextInputDialog
 import com.obscura.wallpapers.ui.theme.VistaraTheme

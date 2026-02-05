@@ -58,9 +58,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.Banner
-import com.obscura.wallpapers.data.model.Wallpaper
-import com.obscura.wallpapers.data.model.WallpaperCategory
+import com.obscura.wallpapers.core.data.model.Banner
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.WallpaperCategory
 import com.obscura.wallpapers.ui.components.Carousel
 import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.FeaturedWallpaperSection

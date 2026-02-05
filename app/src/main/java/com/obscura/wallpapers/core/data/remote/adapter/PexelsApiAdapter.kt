@@ -1,0 +1,157 @@
+package com.obscura.wallpapers.core.data.remote.adapter
+
+import com.obscura.wallpapers.core.data.mapper.PexelsMapper
+import com.obscura.wallpapers.core.data.model.Collection
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.pexels.PexelsCollection
+import com.obscura.wallpapers.core.data.remote.ApiResult
+import com.obscura.wallpapers.core.data.remote.ApiSource
+import com.obscura.wallpapers.core.data.remote.safeApiCall
+import com.obscura.wallpapers.core.data.remote.service.PexelsApiService
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class PexelsApiAdapter @Inject constructor(
+    private val pexelsApiService: PexelsApiService,
+    private val pexelsMapper: PexelsMapper
+) : WallpaperApiAdapter {
+    override fun getApiSource(): ApiSource = ApiSource.PEXELS
+    override suspend fun getFeaturedWallpapers(
+        page: Int,
+        pageSize: Int
+    ): ApiResult<List<Wallpaper>> {
+        return safeApiCall(ApiSource.PEXELS) {
+            val response = pexelsApiService.getCuratedPhotos(page = page, perPage = pageSize)
+            pexelsMapper.toWallpapersFromPhotos(response.photos)
+        }
+    }
+
+    override suspend fun searchWallpapers(
+        query: String,
+        page: Int,
+        pageSize: Int,
+        filters: Map<String, String>
+    ): ApiResult<List<Wallpaper>> {
+        return safeApiCall(ApiSource.PEXELS) {
+            val orientation = filters["orientation"]
+            val size = filters["size"]
+            val color = filters["color"]
+            val response = pexelsApiService.searchPhotos(
+                query = query,
+                page = page,
+                perPage = pageSize,
+                orientation = orientation,
+                size = size,
+                color = color
+            )
+            pexelsMapper.toWallpapersFromPhotos(response.photos)
+        }
+    }
+
+    override suspend fun getWallpaperById(id: String): ApiResult<Wallpaper?> {
+        return safeApiCall(ApiSource.PEXELS) {
+            val photo = pexelsApiService.getPhoto(id)
+            pexelsMapper.toWallpaper(photo)
+        }
+    }
+
+    override suspend fun getRandomWallpapers(
+        count: Int,
+        category: String?
+    ): ApiResult<List<Wallpaper>> {
+        return safeApiCall(ApiSource.PEXELS) {
+            val randomPage = (1..50).random()
+            val response = pexelsApiService.getCuratedPhotos(page = randomPage, perPage = count)
+            pexelsMapper.toWallpapersFromPhotos(response.photos)
+        }
+    }
+
+    override suspend fun getCollections(page: Int, pageSize: Int): ApiResult<List<Collection>> {
+        return safeApiCall(ApiSource.PEXELS) {
+            val response = pexelsApiService.getFeaturedCollections(page = page, perPage = pageSize)
+            response.collections.map { pexelsCollection ->
+                mapPexelsCollection(pexelsCollection)
+            }
+        }
+    }
+
+    override suspend fun getWallpapersByCollection(
+        collectionId: String,
+        page: Int,
+        pageSize: Int
+    ): ApiResult<List<Wallpaper>> {
+        return safeApiCall(ApiSource.PEXELS) {
+            val response = pexelsApiService.getCollectionPhotos(
+                id = collectionId,
+                page = page,
+                perPage = pageSize
+            )
+            if (response.media == null) {
+                return@safeApiCall emptyList<Wallpaper>()
+            }
+            val photos = response.media.filter { it.type == null || it.type == "Photo" }
+            if (photos.isEmpty()) {
+                return@safeApiCall emptyList<Wallpaper>()
+            }
+            pexelsMapper.toWallpapersFromPhotos(photos)
+        }
+    }
+
+    override suspend fun trackDownload(id: String): ApiResult<Unit> {
+        return ApiResult.Success(Unit)
+    }
+
+    suspend fun getPopularVideos(page: Int, pageSize: Int): ApiResult<List<Wallpaper>> {
+        return safeApiCall(ApiSource.PEXELS) {
+            val response = pexelsApiService.getPopularVideos(page = page, perPage = pageSize)
+            pexelsMapper.toWallpapersFromVideos(response.videos)
+        }
+    }
+
+    suspend fun searchVideos(
+        query: String,
+        page: Int,
+        pageSize: Int,
+        filters: Map<String, String>
+    ): ApiResult<List<Wallpaper>> {
+        return safeApiCall(ApiSource.PEXELS) {
+            val orientation = filters["orientation"]
+            val size = filters["size"]
+            val response = pexelsApiService.searchVideos(
+                query = query,
+                page = page,
+                perPage = pageSize,
+                orientation = orientation,
+                size = size
+            )
+            pexelsMapper.toWallpapersFromVideos(response.videos)
+        }
+    }
+
+    suspend fun getVideoById(id: String): ApiResult<Wallpaper?> {
+        return safeApiCall(ApiSource.PEXELS) {
+            val video = pexelsApiService.getVideo(id)
+            pexelsMapper.toWallpaper(video)
+        }
+    }
+
+    private fun mapPexelsCollection(pexelsCollection: PexelsCollection): Collection {
+        val coverUrl = pexelsCollection.media?.firstOrNull()?.let { photo ->
+            photo.src.medium
+        }
+        return Collection(
+            id = "pexels_${pexelsCollection.id}",
+            title = pexelsCollection.title,
+            description = pexelsCollection.description,
+            coverUrl = coverUrl,
+            wallpaperCount = pexelsCollection.photos_count ?: 0,
+            isPremium = false,
+            wallpapers = emptyList(),
+            tags = emptyList(),
+            source = "Pexels",
+            sourceUrl = "https://www.pexels.com/collections/${pexelsCollection.id}",
+            isFeatured = true
+        )
+    }
+}

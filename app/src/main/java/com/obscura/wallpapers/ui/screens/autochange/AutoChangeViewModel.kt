@@ -10,7 +10,7 @@ import androidx.work.WorkManager
 import com.obscura.wallpapers.core.data.model.AutoChangeFrequency
 import com.obscura.wallpapers.core.data.model.AutoChangeHistory
 import com.obscura.wallpapers.core.data.model.AutoChangeSource
-import com.obscura.wallpapers.data.model.Category
+import com.obscura.wallpapers.core.data.model.Category
 import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository

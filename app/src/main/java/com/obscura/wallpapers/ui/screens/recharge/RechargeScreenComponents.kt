@@ -40,9 +40,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.DiamondProduct
-import com.obscura.wallpapers.data.model.DiamondTransaction
-import com.obscura.wallpapers.data.model.DiamondTransactionType
+import com.obscura.wallpapers.core.data.model.DiamondProduct
+import com.obscura.wallpapers.core.data.model.DiamondTransaction
+import com.obscura.wallpapers.core.data.model.DiamondTransactionType
 import com.obscura.wallpapers.ui.icons.AppIcons
 import com.obscura.wallpapers.ui.theme.VistaraTheme
 import com.obscura.wallpapers.ui.theme.stringResource

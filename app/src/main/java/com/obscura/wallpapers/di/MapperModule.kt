@@ -1,9 +1,9 @@
 package com.obscura.wallpapers.di
 
-import com.obscura.wallpapers.data.mapper.PexelsMapper
-import com.obscura.wallpapers.data.mapper.PixabayMapper
-import com.obscura.wallpapers.data.mapper.UnsplashMapper
-import com.obscura.wallpapers.data.mapper.WallhavenMapper
+import com.obscura.wallpapers.core.data.mapper.PexelsMapper
+import com.obscura.wallpapers.core.data.mapper.PixabayMapper
+import com.obscura.wallpapers.core.data.mapper.UnsplashMapper
+import com.obscura.wallpapers.core.data.mapper.WallhavenMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

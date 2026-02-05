@@ -57,8 +57,8 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.UiState
-import com.obscura.wallpapers.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.LiveVideoGrid
 import com.obscura.wallpapers.ui.components.LoadingState

@@ -9,7 +9,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.repository.AuthRepository
+import com.obscura.wallpapers.core.data.repository.AuthRepository
 import com.obscura.wallpapers.core.common.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

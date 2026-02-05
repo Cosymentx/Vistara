@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.AppLanguage
-import com.obscura.wallpapers.data.repository.AuthRepository
+import com.obscura.wallpapers.core.data.repository.AuthRepository
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.manager.LocaleManager

@@ -11,8 +11,8 @@ import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.Wallpaper
-import com.obscura.wallpapers.data.repository.UserPrefsRepository
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.ui.EntryActivity
 import kotlinx.coroutines.runBlocking
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -78,7 +78,7 @@ class NotificationUtil @Inject constructor(
     }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun showWallpaperChangedNotification(wallpaper: Wallpaper) {
+    fun showWallpaperChangedNotification(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper) {
         val intent = Intent(context, EntryActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -104,7 +104,7 @@ class NotificationUtil @Inject constructor(
     }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun showDownloadProgressNotification(wallpaper: Wallpaper, progress: Int) {
+    fun showDownloadProgressNotification(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper, progress: Int) {
         val showNotification = runBlocking { userPrefsRepository.getUserSettings().showDownloadNotification }
         if (!showNotification) {
             return
@@ -123,7 +123,7 @@ class NotificationUtil @Inject constructor(
     }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun showDownloadCompleteNotification(wallpaper: Wallpaper, filePath: String) {
+    fun showDownloadCompleteNotification(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper, filePath: String) {
         val showNotification = runBlocking { userPrefsRepository.getUserSettings().showDownloadNotification }
         if (!showNotification) {
             return
@@ -156,7 +156,7 @@ class NotificationUtil @Inject constructor(
     }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun showLiveWallpaperPendingNotification(wallpaper: Wallpaper, pendingIntent: PendingIntent) {
+    fun showLiveWallpaperPendingNotification(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper, pendingIntent: PendingIntent) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_LIVE_WALLPAPER)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(context.getString(R.string.notification_live_wallpaper_pending_title))

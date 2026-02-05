@@ -5,11 +5,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.UiState
-import com.obscura.wallpapers.data.model.Wallpaper
-import com.obscura.wallpapers.data.model.WallpaperCategory
-import com.obscura.wallpapers.data.remote.ApiResult
-import com.obscura.wallpapers.data.repository.WallpaperRepository
+import com.obscura.wallpapers.core.data.model.UiState
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.WallpaperCategory
+import com.obscura.wallpapers.core.data.remote.ApiResult
+import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import com.obscura.wallpapers.core.common.RefreshUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

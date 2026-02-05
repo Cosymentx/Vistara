@@ -52,7 +52,7 @@ import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.remote.api.PaymentMethod
+import com.obscura.wallpapers.core.data.remote.service.PaymentMethod
 import com.obscura.wallpapers.ui.theme.VistaraTheme
 
 /**

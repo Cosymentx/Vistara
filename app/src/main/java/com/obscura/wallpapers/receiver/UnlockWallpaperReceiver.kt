@@ -4,11 +4,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.obscura.wallpapers.data.model.AutoChangeFrequency
-import com.obscura.wallpapers.data.model.AutoChangeHistory
-import com.obscura.wallpapers.data.model.AutoChangeSource
-import com.obscura.wallpapers.data.repository.UserPrefsRepository
-import com.obscura.wallpapers.data.repository.WallpaperRepository
+import com.obscura.wallpapers.core.data.model.AutoChangeFrequency
+import com.obscura.wallpapers.core.data.model.AutoChangeHistory
+import com.obscura.wallpapers.core.data.model.AutoChangeSource
+import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
+import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import com.obscura.wallpapers.manager.AppWallpaperManager
 import com.obscura.wallpapers.core.common.ConnectivityHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -86,7 +86,7 @@ class UnlockWallpaperReceiver : BroadcastReceiver() {
                             wallpaperRepository.getRandomFavoriteWallpaper()
                         }
 
-                        com.obscura.wallpapers.data.model.AutoChangeSource.CATEGORY -> {
+                        AutoChangeSource.CATEGORY -> {
                             // 从指定分类中随机获取
                             val categoryId = userSettings.autoChangeCategory
                             Log.d(TAG, "从分类中随机获取壁纸，分类ID: $categoryId")

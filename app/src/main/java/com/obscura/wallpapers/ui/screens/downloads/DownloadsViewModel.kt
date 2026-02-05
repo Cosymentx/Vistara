@@ -3,10 +3,10 @@ package com.obscura.wallpapers.features.downloads
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.obscura.wallpapers.data.model.UiState
-import com.obscura.wallpapers.data.model.Wallpaper
-import com.obscura.wallpapers.data.repository.UserRepository
-import com.obscura.wallpapers.data.repository.WallpaperRepository
+import com.obscura.wallpapers.core.data.model.UiState
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.repository.UserRepository
+import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

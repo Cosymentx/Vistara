@@ -2,10 +2,10 @@ package com.obscura.wallpapers.di
 
 import android.content.Context
 import androidx.room.Room
-import com.obscura.wallpapers.data.local.AppDatabase
-import com.obscura.wallpapers.data.local.DatabaseMigrations
-import com.obscura.wallpapers.data.local.DiamondDao
-import com.obscura.wallpapers.data.local.WallpaperDao
+import com.obscura.wallpapers.core.data.local.AppDatabase
+import com.obscura.wallpapers.core.data.local.DatabaseMigrations
+import com.obscura.wallpapers.core.data.local.DiamondDao
+import com.obscura.wallpapers.core.data.local.WallpaperDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

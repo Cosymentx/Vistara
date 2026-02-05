@@ -11,10 +11,10 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.obscura.wallpapers.data.model.AutoChangeFrequency
-import com.obscura.wallpapers.data.model.AutoChangeHistory
-import com.obscura.wallpapers.data.model.AutoChangeSource
-import com.obscura.wallpapers.data.model.WallpaperTarget
+import com.obscura.wallpapers.core.data.model.AutoChangeFrequency
+import com.obscura.wallpapers.core.data.model.AutoChangeHistory
+import com.obscura.wallpapers.core.data.model.AutoChangeSource
+import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import com.obscura.wallpapers.manager.AppWallpaperManager

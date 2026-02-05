@@ -41,7 +41,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
-import com.obscura.wallpapers.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.model.Wallpaper
 
 // REMOVE: import com.obscura.wallpapers.utils.SharedExoPlayer
 

@@ -45,8 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.DiamondProduct
-import com.obscura.wallpapers.data.remote.api.PaymentMethod
+import com.obscura.wallpapers.core.data.model.DiamondProduct
 import com.obscura.wallpapers.ui.components.PaymentMethodDialog
 import com.obscura.wallpapers.ui.icons.AppIcons
 import com.obscura.wallpapers.ui.theme.VistaraTheme

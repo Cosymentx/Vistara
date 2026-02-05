@@ -6,16 +6,16 @@ import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.obscura.wallpapers.BuildConfig
 import com.obscura.wallpapers.core.data.remote.ApiCallHelper
-import com.obscura.wallpapers.data.remote.ApiKeyManager
+import com.obscura.wallpapers.core.data.remote.ApiKeyManager
 import com.obscura.wallpapers.core.data.remote.ApiSource
 import com.obscura.wallpapers.core.data.remote.ApiUsageTracker
-import com.obscura.wallpapers.data.remote.AuthInterceptor
-import com.obscura.wallpapers.data.remote.api.ApiService
-import com.obscura.wallpapers.core.data.remote.api.PexelsApiService
-import com.obscura.wallpapers.core.data.remote.api.PixabayApiService
-import com.obscura.wallpapers.core.data.remote.api.UnsplashApiService
-import com.obscura.wallpapers.core.data.remote.api.WallhavenApiService
-import com.obscura.wallpapers.data.repository.AuthRepository
+import com.obscura.wallpapers.core.data.remote.AuthInterceptor
+import com.obscura.wallpapers.core.data.remote.service.ApiService
+import com.obscura.wallpapers.core.data.remote.service.PexelsApiService
+import com.obscura.wallpapers.core.data.remote.service.PixabayApiService
+import com.obscura.wallpapers.core.data.remote.service.UnsplashApiService
+import com.obscura.wallpapers.core.data.remote.service.WallhavenApiService
+import com.obscura.wallpapers.core.data.repository.AuthRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -51,7 +51,7 @@ object NetworkModule {
     fun provideGson(): Gson {
         return GsonBuilder()
             .setLenient()
-            .registerTypeAdapterFactory(com.obscura.wallpapers.data.remote.ApiResultAdapterFactory())
+            .registerTypeAdapterFactory(com.obscura.wallpapers.core.data.remote.ApiResultAdapterFactory())
             .create()
     }
 
@@ -249,18 +249,10 @@ object NetworkModule {
                         "UnsplashInterceptor",
                         "API rate limit exceeded: ${response.code}"
                     )
-                    apiUsageTracker.trackApiError(
-                        ApiSource.UNSPLASH,
-                        "Rate Limit Exceeded",
-                        response.code
-                    )
-                    apiUsageTracker.setApiRateLimited(ApiSource.UNSPLASH)
+                    apiUsageTracker.trackApiError(ApiSource.UNSPLASH)
+                    apiUsageTracker.setApiRateLimited(ApiSource.UNSPLASH, 600000L)
                 } else {
-                    apiUsageTracker.trackApiError(
-                        ApiSource.UNSPLASH,
-                        "HTTP ${response.code}",
-                        response.code
-                    )
+                    apiUsageTracker.trackApiError(ApiSource.UNSPLASH)
                 }
             }
 
@@ -368,18 +360,10 @@ object NetworkModule {
                         "PexelsInterceptor",
                         "API rate limit exceeded: ${response.code}"
                     )
-                    apiUsageTracker.trackApiError(
-                        ApiSource.PEXELS,
-                        "Rate Limit Exceeded",
-                        response.code
-                    )
+                    apiUsageTracker.trackApiError(ApiSource.PEXELS)
                     apiUsageTracker.setApiRateLimited(ApiSource.PEXELS, 600000L) // 10分钟
                 } else {
-                    apiUsageTracker.trackApiError(
-                        ApiSource.PEXELS,
-                        "HTTP ${response.code}",
-                        response.code
-                    )
+                    apiUsageTracker.trackApiError(ApiSource.PEXELS)
                 }
             }
 
@@ -517,7 +501,7 @@ object NetworkModule {
             if (response.isSuccessful) {
                 apiUsageTracker.trackApiSuccess(ApiSource.PIXABAY)
             } else {
-                apiUsageTracker.trackApiError(ApiSource.PIXABAY, "HTTP ${response.code}")
+                apiUsageTracker.trackApiError(ApiSource.PIXABAY)
             }
 
             response
@@ -594,7 +578,7 @@ object NetworkModule {
             if (response.isSuccessful) {
                 apiUsageTracker.trackApiSuccess(ApiSource.WALLHAVEN)
             } else {
-                apiUsageTracker.trackApiError(ApiSource.WALLHAVEN, "HTTP ${response.code}")
+                apiUsageTracker.trackApiError(ApiSource.WALLHAVEN)
             }
 
             response
@@ -661,9 +645,7 @@ object NetworkModule {
      */
     @Provides
     @Singleton
-    fun provideApiUsageTracker(): ApiUsageTracker {
-        return ApiUsageTracker()
-    }
+    fun provideApiUsageTracker(): ApiUsageTracker = ApiUsageTracker.getInstance()
 
     /**
      * 提供API调用帮助器

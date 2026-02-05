@@ -2,27 +2,17 @@ package com.obscura.wallpapers.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import com.obscura.wallpapers.data.model.Wallpaper
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * 视频播放管理器
@@ -43,7 +33,7 @@ class VideoPlaybackManager {
     fun addVisibleVideo(id: String) {
         if (System.currentTimeMillis() - lastUpdateTime < UPDATE_INTERVAL) return
         lastUpdateTime = System.currentTimeMillis()
-        
+
         if (visibleVideoIds.add(id)) {
             updatePlayingVideos()
         }
@@ -52,7 +42,7 @@ class VideoPlaybackManager {
     fun removeVisibleVideo(id: String) {
         if (System.currentTimeMillis() - lastUpdateTime < UPDATE_INTERVAL) return
         lastUpdateTime = System.currentTimeMillis()
-        
+
         visibleVideoIds.remove(id)
         playingVideoIds.remove(id)
         if (id == currentPlayingId) {
@@ -107,7 +97,7 @@ class VideoPlaybackManager {
 
     fun notifyVideoComplete(videoId: String) {
         if (videoId != currentPlayingId) return
-        
+
         scope.launch {
             currentPlayingId = null
             playingVideoIds.clear()
@@ -116,8 +106,9 @@ class VideoPlaybackManager {
             if (useSequentialPlayback && visibleVideoIds.isNotEmpty()) {
                 val currentIndex = visibleVideoIds.indexOf(videoId)
                 currentPlayingId = when {
-                    currentIndex != -1 && currentIndex < visibleVideoIds.size - 1 -> 
+                    currentIndex != -1 && currentIndex < visibleVideoIds.size - 1 ->
                         visibleVideoIds.elementAt(currentIndex + 1)
+
                     else -> visibleVideoIds.firstOrNull()
                 }
                 currentPlayingId?.let { playingVideoIds.add(it) }
@@ -129,7 +120,7 @@ class VideoPlaybackManager {
 
     fun setScrolling(scrolling: Boolean) {
         if (isScrolling == scrolling) return
-        
+
         scope.launch {
             isScrolling = scrolling
             scrollStopTimer?.cancel()

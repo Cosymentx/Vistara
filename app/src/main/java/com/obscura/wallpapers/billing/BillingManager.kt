@@ -16,9 +16,9 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.DiamondTransactionType
-import com.obscura.wallpapers.data.repository.DiamondRepository
-import com.obscura.wallpapers.data.repository.UserRepository
+import com.obscura.wallpapers.core.data.model.DiamondTransactionType
+import com.obscura.wallpapers.core.data.repository.DiamondRepository
+import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -334,7 +334,7 @@ class BillingManager @Inject constructor(
             CoroutineScope(Dispatchers.IO).launch {
                 val success = diamondRepository.updateDiamondBalance(
                     amount = diamondAmount,
-                    type = DiamondTransactionType.RECHARGE,
+                    type = _root_ide_package_.com.obscura.wallpapers.core.data.model.DiamondTransactionType.RECHARGE,
                     description = context.getString(R.string.diamond_purchase_description, diamondAmount)
                 )
 

@@ -3,7 +3,7 @@ package com.obscura.wallpapers.features.webview
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.obscura.wallpapers.data.remote.ApiResult
+import com.obscura.wallpapers.core.data.remote.ApiResult
 import com.obscura.wallpapers.core.data.repository.DiamondRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

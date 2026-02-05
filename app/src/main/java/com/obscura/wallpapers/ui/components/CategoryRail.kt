@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.model.Category
+import com.obscura.wallpapers.core.data.model.Category
 import com.obscura.wallpapers.ui.theme.stringResource
 
 /**

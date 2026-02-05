@@ -13,11 +13,11 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.billing.BillingConnectionState
 import com.obscura.wallpapers.billing.BillingManager
 import com.obscura.wallpapers.billing.PurchaseState
-import com.obscura.wallpapers.data.model.DiamondProduct
-import com.obscura.wallpapers.data.remote.ApiResult
-import com.obscura.wallpapers.data.remote.api.PaymentMethod
-import com.obscura.wallpapers.data.repository.DiamondRepository
-import com.obscura.wallpapers.data.repository.UserRepository
+import com.obscura.wallpapers.core.data.model.DiamondProduct
+import com.obscura.wallpapers.core.data.remote.ApiResult
+import com.obscura.wallpapers.core.data.remote.service.PaymentMethod
+import com.obscura.wallpapers.core.data.repository.DiamondRepository
+import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.manager.ThemeManager
 import com.obscura.wallpapers.features.recharge.OrderCreationState
 import com.obscura.wallpapers.di.ActivityScopeHolder

@@ -5,15 +5,16 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.data.mapper.PexelsMapper
-import com.obscura.wallpapers.data.mapper.UnsplashMapper
-import com.obscura.wallpapers.data.remote.ApiResult
-import com.obscura.wallpapers.data.model.Collection
-import com.obscura.wallpapers.data.model.Wallpaper
-import com.obscura.wallpapers.core.data.remote.api.PexelsApiAdapter
-import com.obscura.wallpapers.core.data.remote.api.PexelsApiService
-import com.obscura.wallpapers.core.data.remote.api.UnsplashApiAdapter
-import com.obscura.wallpapers.core.data.remote.api.UnsplashApiService
+import com.obscura.wallpapers.core.data.mapper.PexelsMapper
+import com.obscura.wallpapers.core.data.mapper.UnsplashMapper
+import com.obscura.wallpapers.core.data.model.Collection
+import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.remote.ApiResult
+import com.obscura.wallpapers.core.data.remote.ApiResult.Success
+import com.obscura.wallpapers.core.data.remote.adapter.PexelsApiAdapter
+import com.obscura.wallpapers.core.data.remote.adapter.UnsplashApiAdapter
+import com.obscura.wallpapers.core.data.remote.service.PexelsApiService
+import com.obscura.wallpapers.core.data.remote.service.UnsplashApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -82,7 +83,7 @@ class ApiTestViewModel @Inject constructor(
 
                 // 如果有集合，测试获取集合中的壁纸
                 run {
-                    val successCollections = collectionsResult as? ApiResult.Success<List<Collection>>
+                    val successCollections = collectionsResult as? Success<List<Collection>>
                     if (successCollections != null && successCollections.data.isNotEmpty()) {
                         try {
                             val collectionId = successCollections.data.first().id.split("_")[1]
@@ -135,7 +136,7 @@ class ApiTestViewModel @Inject constructor(
 
                 // 如果有集合，测试获取集合中的壁纸
                 run {
-                    val successCollections = collectionsResult as? ApiResult.Success<List<Collection>>
+                    val successCollections = collectionsResult as? Success<List<Collection>>
                     if (successCollections != null && successCollections.data.isNotEmpty()) {
                         try {
                             val collectionId = successCollections.data.first().id.split("_")[1]
@@ -152,7 +153,7 @@ class ApiTestViewModel @Inject constructor(
 
                 // 测试跟踪下载
                 run {
-                    val successFeatured = featuredResult as? ApiResult.Success<List<Wallpaper>>
+                    val successFeatured = featuredResult as? Success<List<Wallpaper>>
                     if (successFeatured != null && successFeatured.data.isNotEmpty()) {
                         val wallpaperId = successFeatured.data.first().id.split("_")[1]
                         val trackResult = unsplashApiAdapter.trackDownload(wallpaperId)
@@ -175,7 +176,7 @@ class ApiTestViewModel @Inject constructor(
      */
     private fun <T> logApiResult(methodName: String, result: ApiResult<T>) {
         when (result) {
-            is ApiResult.Success -> {
+            is Success -> {
                 val message = "✅ $methodName 成功"
                 Log.d(TAG, message)
                 when (val data = result.data) {
@@ -184,6 +185,7 @@ class ApiTestViewModel @Inject constructor(
                         Log.d(TAG, dataMessage)
                         addTestResult("$message\n$dataMessage")
                     }
+
                     else -> {
                         val dataMessage = "   返回数据: $data"
                         Log.d(TAG, dataMessage)

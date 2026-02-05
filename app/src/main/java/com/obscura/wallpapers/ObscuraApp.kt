@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
-import com.obscura.wallpapers.data.repository.UserRepository
+import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.manager.LocaleManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
