@@ -8,5 +8,6 @@ import kotlinx.serialization.Serializable
 data class PixabayResponse(
     val total: Int,
     val totalHits: Int,
-    val hits: List<PixabayImage>
+    @kotlinx.serialization.SerialName("hits")
+    val images: List<PixabayImage>
 ) 

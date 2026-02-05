@@ -37,7 +37,8 @@ data class PexelsPhoto(
 @Serializable
 data class PexelsPhotoSources(
     val original: String,
-    val large2x: String,
+    @SerialName("large2x")
+    val large2X: String,
     val large: String,
     val medium: String,
     val small: String,

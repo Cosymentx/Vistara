@@ -12,13 +12,13 @@
     -   No breaking changes are allowed.
 2.  **Minimal Impact**
     -   Each refactor must target **one single feature/module only**.
-    -   No "side optimizations" outside the declared scope.
+    -   No side optimizations outside the declared scope.
 3.  **Rollback Friendly**
     -   Every change must be a **self-contained, reversible commit**.
     -   Never mix multiple refactor goals in a single change.
 4.  **Buildable & Verifiable**
     -   After every refactor:
-        -   `./gradlew assembleDebug` must pass.
+        -   ./gradlew assembleDebug must pass.
         -   Core flows must launch and work (Home → Preview → Settings).
         -   No crashes, no compilation errors.
 
@@ -94,22 +94,20 @@ Do you accept this refactor? (Y/N)
 -   Prefer stateless composables.
 -   All state must be hoisted.
 -   UI must only render, no business logic.
--   `Modifier` must always be the last parameter.
+-   Modifier must always be the last parameter.
 
 ### 2.3 Hilt Rules
 
 -   Never create objects directly inside Composables.
--   All repositories must follow `Interface + Impl`.
--   DI modules must be named `XxxModule`.
+-   All repositories must follow Interface + Impl.
+-   DI modules must be named XxxModule.
 
 ------------------------------------------------------------------------
 
 ## 3. Refactor Scope Limits
 
   Item                 Limit
-
 -------------------- --------------------------------
-
   Files modified       ≤ 10
   New classes          ≤ 5
   Deleted classes      ≤ 3
@@ -147,17 +145,17 @@ Waiting for Approval
 
 ### 6.1 Test Coverage
 
--   Each refactored module should include **at least one unit test**
-    (when feasible).
+Each refactored module should include at least one unit test (when
+feasible).
 
 ### 6.2 Complexity Limits
 
--   Single function ≤ 50 lines\
+-   Single function ≤ 50 lines
 -   Cyclomatic complexity ≤ 10
 
 ### 6.3 Duplication Goal
 
--   Similar logic duplication \< 20% after refactor.
+Similar logic duplication \< 20% after refactor.
 
 ------------------------------------------------------------------------
 
@@ -173,8 +171,44 @@ Waiting for Approval
 
 ### 7.2 Change Log
 
--   Generate `refactor_log.md` for every refactor.
+Generate refactor_log.md for every refactor.
 
 ### 7.3 Feature Flags
 
--   Guard risky logic using `BuildConfig` or remote flags.
+Guard risky logic using BuildConfig or remote flags.
+
+------------------------------------------------------------------------
+
+## 8. Structural Diversification & Fingerprint Obfuscation Rules
+
+### 8.1 Identifier Freedom
+
+File names, packages, classes, methods, parameters may change freely.
+
+### 8.2 Structural Recomposition
+
+Split, merge, proxy, reorder logic freely if behavior is preserved.
+
+### 8.3 Line & Layout Randomization
+
+Change line counts, reorder blocks, inline/de-inline logic.
+
+### 8.4 Logic Morphing
+
+Replace if/when, loops, state tables, delegates.
+
+### 8.5 Dead & Noise Code Injection
+
+Dummy code allowed if unreachable and safe.
+
+### 8.6 Control-Flow Graph Diversification
+
+Change call graphs while keeping results same.
+
+### 8.7 Binary Fingerprint Drift
+
+Each cycle must alter structure metrics.
+
+### 8.8 Functional Invariance
+
+User-visible behavior must remain identical.

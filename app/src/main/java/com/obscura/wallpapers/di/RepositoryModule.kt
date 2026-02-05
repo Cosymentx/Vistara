@@ -42,13 +42,13 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule {
+object RepositoryDiModule {
 
     private const val PEXELS_ADAPTER = "pexelsApiAdapter"
 
     @Provides
     @Singleton
-    fun provideWallpaperRepository(
+    fun apiWallpaperRepository(
         @ApplicationContext context: Context,
         unsplashApiService: UnsplashApiService,
         pexelsApiService: PexelsApiService,
@@ -66,6 +66,7 @@ object RepositoryModule {
         @Named(PEXELS_ADAPTER) pexelsApiAdapter: WallpaperApiAdapter,
         stringProvider: StringProvider
     ): WallpaperRepository {
+        println("apiWallpaperRepository")
         return WallpaperRepositoryImpl(
             unsplashApiService = unsplashApiService,
             pexelsApiService = pexelsApiService,
@@ -88,47 +89,52 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideUserPrefsRepository(
+    fun apiUserPrefsRepository(
         dataStore: DataStore<Preferences>
     ): UserPrefsRepository {
+        println("apiUserPrefsRepository")
         return UserPrefsRepositoryImpl(dataStore)
     }
 
     @Provides
     @Singleton
-    fun provideUserRepository(
+    fun apiUserRepository(
         dataStore: DataStore<Preferences>,
         apiService: ApiService,
         diamondRepository: dagger.Lazy<DiamondRepository>
     ): UserRepository {
+        println("apiUserRepository")
         return UserRepositoryImpl(dataStore, apiService, diamondRepository)
     }
 
     @Provides
     @Singleton
-    fun provideBannerRepository(
+    fun apiBannerRepository(
         networkMonitor: NetworkMonitor, stringProvider: StringProvider
     ): BannerRepository {
+        println("apiBannerRepository")
         return BannerRepositoryImpl(networkMonitor, stringProvider)
     }
 
     @Provides
     @Singleton
-    fun provideThemeManager(
+    fun apiThemeManager(
         userPrefsRepository: UserPrefsRepository
     ): ThemeManager {
+        println("apiThemeManager")
         return ThemeManager(userPrefsRepository)
     }
 
     @Provides
     @Singleton
-    fun provideDiamondRepository(
+    fun apiDiamondRepository(
         diamondDao: DiamondDao,
         authRepository: AuthRepository,
         billingManagerProvider: javax.inject.Provider<BillingManager>,
         stringProvider: StringProvider,
         apiService: ApiService
     ): DiamondRepository {
+        println("apiDiamondRepository")
         return DiamondRepositoryImpl(
             diamondDao, authRepository, billingManagerProvider, stringProvider, apiService
         )

@@ -31,7 +31,8 @@ data class PexelsVideo(
 data class PexelsVideoFile(
     val id: Int,
     val quality: String, // 视频质量，如"hd", "sd"
-    val file_type: String, // 文件类型，如"video/mp4"
+    @SerialName("file_type")
+    val fileType: String, // 文件类型，如"video/mp4"
     val width: Int,
     val height: Int,
     val link: String // 视频文件URL

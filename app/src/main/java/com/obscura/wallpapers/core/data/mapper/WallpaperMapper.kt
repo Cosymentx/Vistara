@@ -92,11 +92,11 @@ class PexelsMapper @Inject constructor() {
         // 获取适合移动设备的中等质量视频文件
         // 选择分辨率适中的MP4文件，避免选择过高分辨率导致性能问题
         val videoFile = source.videoFiles
-            .filter { it.file_type == "video/mp4" } // 只使用MP4格式
+            .filter { it.fileType == "video/mp4" } // 只使用MP4格式
             .filter { it.width <= 1280 && it.height <= 720 } // 限制分辨率不超过720p
             .maxByOrNull { it.width * it.height } // 选择满足条件的最高分辨率
             ?: source.videoFiles
-                .filter { it.file_type == "video/mp4" }
+                .filter { it.fileType == "video/mp4" }
                 .minByOrNull { it.width * it.height } // 如果没有满足条件的，选择最低分辨率
 
         // 获取最高质量的预览图
@@ -191,15 +191,15 @@ class PixabayMapper @Inject constructor() : WallpaperMapper<PixabayImage> {
         return Wallpaper(
             id = "pixabay_${source.id}",
             title = null,
-            url = source.largeImageURL,
-            thumbnailUrl = source.webformatURL,
-            previewUrl = source.webformatURL,
+            url = source.largeImageUrl,
+            thumbnailUrl = source.webformatUrl,
+            previewUrl = source.webformatUrl,
             width = source.width,
             height = source.height,
             author = source.user,
-            authorUrl = source.userImageURL,
+            authorUrl = source.userImageUrl,
             source = "Pixabay",
-            sourceUrl = source.pageURL,
+            sourceUrl = source.pageUrl,
             attributionRequired = true,
             isPremium = false,
             isLive = false,

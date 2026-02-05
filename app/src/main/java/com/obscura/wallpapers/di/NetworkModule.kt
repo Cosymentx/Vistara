@@ -23,6 +23,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -33,6 +35,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.Request
+import okhttp3.HttpUrl
 
 /**
  * 网络模块
@@ -40,7 +44,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
  */
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+object NetworkDiModule {
 
     private const val BASE_URL = "https://api.vistaraai.xyz/"
     private const val TIMEOUT_SECONDS = 30L
@@ -86,6 +90,79 @@ object NetworkModule {
             .client(client)
             .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE))
             .build()
+    }
+
+    private fun createHeaderAuthInterceptor(
+        source: ApiSource,
+        apiUsageTracker: ApiUsageTracker,
+        addAuthHeaders: (Request.Builder) -> Unit,
+        rateLimitHeaders: Pair<String, String>? = null
+    ): Interceptor {
+        return Interceptor { chain ->
+            if (apiUsageTracker.isApiRateLimited(source)) {
+                return@Interceptor okhttp3.Response.Builder()
+                    .request(chain.request())
+                    .protocol(okhttp3.Protocol.HTTP_1_1)
+                    .code(403)
+                    .message("Rate Limit Exceeded")
+                    .body("".toResponseBody(null))
+                    .build()
+            }
+
+            apiUsageTracker.trackApiCall(source)
+
+            val requestBuilder = chain.request().newBuilder()
+            addAuthHeaders(requestBuilder)
+            val response = chain.proceed(requestBuilder.build())
+
+            if (response.isSuccessful) {
+                rateLimitHeaders?.let { (limitHeader, remainingHeader) ->
+                    val rateLimit = response.header(limitHeader)?.toIntOrNull() ?: 0
+                    val remaining = response.header(remainingHeader)?.toIntOrNull() ?: 0
+                    if (remaining <= 5) {
+                        if (remaining <= 0) {
+                            apiUsageTracker.setApiRateLimited(source, 600000L)
+                        } else {
+                            apiUsageTracker.setApiRateLimited(source, 60000L)
+                        }
+                    }
+                }
+                apiUsageTracker.trackApiSuccess(source)
+            } else {
+                if (response.code == 403 || response.code == 429) {
+                    apiUsageTracker.trackApiError(source)
+                    apiUsageTracker.setApiRateLimited(source, 600000L)
+                } else {
+                    apiUsageTracker.trackApiError(source)
+                }
+            }
+            response
+        }
+    }
+
+    private fun createQueryParamAuthInterceptor(
+        source: ApiSource,
+        apiUsageTracker: ApiUsageTracker,
+        applyAuthToUrl: (HttpUrl.Builder) -> Unit
+    ): Interceptor {
+        return Interceptor { chain ->
+            apiUsageTracker.trackApiCall(source)
+
+            val originalRequest = chain.request()
+            val urlBuilder = originalRequest.url.newBuilder()
+            applyAuthToUrl(urlBuilder)
+
+            val response = chain.proceed(
+                originalRequest.newBuilder().url(urlBuilder.build()).build()
+            )
+
+            if (response.isSuccessful) {
+                apiUsageTracker.trackApiSuccess(source)
+            } else {
+                apiUsageTracker.trackApiError(source)
+            }
+            response
+        }
     }
 
     /**
@@ -173,14 +250,20 @@ object NetworkModule {
     @Singleton
     @Named(OFFLINE_INTERCEPTOR)
     fun provideOfflineInterceptor(@ApplicationContext context: Context): Interceptor {
+        fun isNetworkAvailable(ctx: Context): Boolean {
+            val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val network = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+            return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN))
+        }
         return Interceptor { chain ->
             var request = chain.request()
 
-            // 检查网络连接
-            val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
-            val networkInfo = connectivityManager.activeNetworkInfo
-            val isConnected = networkInfo != null && networkInfo.isConnected
+            val isConnected = isNetworkAvailable(context)
 
             if (!isConnected) {
                 // 如果无网络连接，使用缓存
@@ -242,67 +325,14 @@ object NetworkModule {
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
     ): Interceptor {
-        return Interceptor { chain ->
-            // 检查是否处于速率限制状态
-            if (apiUsageTracker.isApiRateLimited(ApiSource.UNSPLASH)) {
-                // 如果处于速率限制状态，返回403错误
-                return@Interceptor okhttp3.Response.Builder()
-                    .request(chain.request())
-                    .protocol(okhttp3.Protocol.HTTP_1_1)
-                    .code(403)
-                    .message("Rate Limit Exceeded")
-                    .body("".toResponseBody(null))
-                    .build()
-            }
-
-            // 跟踪API调用
-            apiUsageTracker.trackApiCall(ApiSource.UNSPLASH)
-
-            val request = chain.request().newBuilder()
-                .addHeader("Authorization", "Client-ID ${apiKeyManager.getUnsplashApiKey()}")
-                .build()
-
-            val response = chain.proceed(request)
-
-            // 跟踪API响应
-            if (response.isSuccessful) {
-                // 检查响应头中的速率限制信息
-                val rateLimit = response.header("x-ratelimit-limit")?.toIntOrNull() ?: 0
-                val rateRemaining = response.header("x-ratelimit-remaining")?.toIntOrNull() ?: 0
-
-                if (rateRemaining <= 5) { // 当剩余5个请求时就开始警告
-                    // 如果剩余请求数很少，设置速率限制状态
-                    android.util.Log.w(
-                        "UnsplashInterceptor",
-                        "API rate limit almost reached: $rateRemaining/$rateLimit remaining"
-                    )
-
-                    if (rateRemaining <= 0) {
-                        // 如果剩余请求数为0，设置速率限制状态，时间较长
-                        apiUsageTracker.setApiRateLimited(ApiSource.UNSPLASH, 600000L) // 10分钟
-                    } else {
-                        // 如果剩余请求数很少但不为0，设置短时间的速率限制
-                        apiUsageTracker.setApiRateLimited(ApiSource.UNSPLASH, 60000L) // 1分钟
-                    }
-                }
-
-                apiUsageTracker.trackApiSuccess(ApiSource.UNSPLASH)
-            } else {
-                // 检查是否是速率限制错误
-                if (response.code == 403 || response.code == 429) {
-                    android.util.Log.e(
-                        "UnsplashInterceptor",
-                        "API rate limit exceeded: ${response.code}"
-                    )
-                    apiUsageTracker.trackApiError(ApiSource.UNSPLASH)
-                    apiUsageTracker.setApiRateLimited(ApiSource.UNSPLASH, 600000L)
-                } else {
-                    apiUsageTracker.trackApiError(ApiSource.UNSPLASH)
-                }
-            }
-
-            response
-        }
+        return createHeaderAuthInterceptor(
+            source = ApiSource.UNSPLASH,
+            apiUsageTracker = apiUsageTracker,
+            addAuthHeaders = { builder ->
+                builder.addHeader("Authorization", "Client-ID ${apiKeyManager.getUnsplashApiKey()}")
+            },
+            rateLimitHeaders = "x-ratelimit-limit" to "x-ratelimit-remaining"
+        )
     }
 
     @Provides
@@ -342,67 +372,14 @@ object NetworkModule {
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
     ): Interceptor {
-        return Interceptor { chain ->
-            // 检查是否处于速率限制状态
-            if (apiUsageTracker.isApiRateLimited(ApiSource.PEXELS)) {
-                // 如果处于速率限制状态，返回403错误
-                return@Interceptor okhttp3.Response.Builder()
-                    .request(chain.request())
-                    .protocol(okhttp3.Protocol.HTTP_1_1)
-                    .code(403)
-                    .message("Rate Limit Exceeded")
-                    .body("".toResponseBody(null))
-                    .build()
-            }
-
-            // 跟踪API调用
-            apiUsageTracker.trackApiCall(ApiSource.PEXELS)
-
-            val request = chain.request().newBuilder()
-                .addHeader("Authorization", apiKeyManager.getPexelsApiKey())
-                .build()
-
-            val response = chain.proceed(request)
-
-            // 跟踪API响应
-            if (response.isSuccessful) {
-                // 检查响应头中的速率限制信息
-                val rateLimit = response.header("X-Ratelimit-Limit")?.toIntOrNull() ?: 0
-                val rateRemaining = response.header("X-Ratelimit-Remaining")?.toIntOrNull() ?: 0
-
-                if (rateRemaining <= 5) { // 当剩余5个请求时就开始警告
-                    // 如果剩余请求数很少，设置速率限制状态
-                    android.util.Log.w(
-                        "PexelsInterceptor",
-                        "API rate limit almost reached: $rateRemaining/$rateLimit remaining"
-                    )
-
-                    if (rateRemaining <= 0) {
-                        // 如果剩余请求数为0，设置速率限制状态，时间较长
-                        apiUsageTracker.setApiRateLimited(ApiSource.PEXELS, 600000L) // 10分钟
-                    } else {
-                        // 如果剩余请求数很少但不为0，设置短时间的速率限制
-                        apiUsageTracker.setApiRateLimited(ApiSource.PEXELS, 60000L) // 1分钟
-                    }
-                }
-
-                apiUsageTracker.trackApiSuccess(ApiSource.PEXELS)
-            } else {
-                // 检查是否是速率限制错误
-                if (response.code == 403 || response.code == 429) {
-                    android.util.Log.e(
-                        "PexelsInterceptor",
-                        "API rate limit exceeded: ${response.code}"
-                    )
-                    apiUsageTracker.trackApiError(ApiSource.PEXELS)
-                    apiUsageTracker.setApiRateLimited(ApiSource.PEXELS, 600000L) // 10分钟
-                } else {
-                    apiUsageTracker.trackApiError(ApiSource.PEXELS)
-                }
-            }
-
-            response
-        }
+        return createHeaderAuthInterceptor(
+            source = ApiSource.PEXELS,
+            apiUsageTracker = apiUsageTracker,
+            addAuthHeaders = { builder ->
+                builder.addHeader("Authorization", apiKeyManager.getPexelsApiKey())
+            },
+            rateLimitHeaders = "X-Ratelimit-Limit" to "X-Ratelimit-Remaining"
+        )
     }
 
     @Provides
@@ -498,32 +475,11 @@ object NetworkModule {
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
     ): Interceptor {
-        return Interceptor { chain ->
-            // 跟踪API调用
-            apiUsageTracker.trackApiCall(ApiSource.PIXABAY)
-
-            val originalRequest = chain.request()
-            val originalUrl = originalRequest.url
-
-            // 添加API密钥作为查询参数
-            val url = originalUrl.newBuilder()
-                .addQueryParameter("key", apiKeyManager.getPixabayApiKey())
-                .build()
-
-            val request = originalRequest.newBuilder()
-                .url(url)
-                .build()
-
-            val response = chain.proceed(request)
-
-            // 跟踪API响应
-            if (response.isSuccessful) {
-                apiUsageTracker.trackApiSuccess(ApiSource.PIXABAY)
-            } else {
-                apiUsageTracker.trackApiError(ApiSource.PIXABAY)
-            }
-
-            response
+        return createQueryParamAuthInterceptor(
+            source = ApiSource.PIXABAY,
+            apiUsageTracker = apiUsageTracker
+        ) { urlBuilder ->
+            urlBuilder.addQueryParameter("key", apiKeyManager.getPixabayApiKey())
         }
     }
 
@@ -564,32 +520,11 @@ object NetworkModule {
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
     ): Interceptor {
-        return Interceptor { chain ->
-            // 跟踪API调用
-            apiUsageTracker.trackApiCall(ApiSource.WALLHAVEN)
-
-            val originalRequest = chain.request()
-            val originalUrl = originalRequest.url
-
-            // 添加API密钥作为查询参数
-            val url = originalUrl.newBuilder()
-                .addQueryParameter("apikey", apiKeyManager.getWallhavenApiKey())
-                .build()
-
-            val request = originalRequest.newBuilder()
-                .url(url)
-                .build()
-
-            val response = chain.proceed(request)
-
-            // 跟踪API响应
-            if (response.isSuccessful) {
-                apiUsageTracker.trackApiSuccess(ApiSource.WALLHAVEN)
-            } else {
-                apiUsageTracker.trackApiError(ApiSource.WALLHAVEN)
-            }
-
-            response
+        return createQueryParamAuthInterceptor(
+            source = ApiSource.WALLHAVEN,
+            apiUsageTracker = apiUsageTracker
+        ) { urlBuilder ->
+            urlBuilder.addQueryParameter("apikey", apiKeyManager.getWallhavenApiKey())
         }
     }
 
@@ -624,16 +559,18 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAuthInterceptor(
+    fun apiAuthInterceptor(
         userRepository: dagger.Lazy<UserRepository>,
         authRepository: dagger.Lazy<AuthRepository>
     ): AuthInterceptor {
+        println("apiAuthInterceptor")
         return AuthInterceptor(userRepository, authRepository)
     }
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService {
+    fun apiCoreApiService(retrofit: Retrofit): ApiService {
+        println("apiCoreApiService")
         return retrofit.create(ApiService::class.java)
     }
 

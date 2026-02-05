@@ -343,7 +343,7 @@ class WallpaperRepositoryImpl @Inject constructor(
                         }
 
                         when (response) {
-                            is ApiResult.Success -> pixabayMapper.toWallpapers(response.data.hits)
+                            is ApiResult.Success -> pixabayMapper.toWallpapers(response.data.images)
                             else -> {
                                 // 如果Pixabay失败，尝试使用Unsplash
                                 Log.w(TAG, "Pixabay搜索失败，尝试使用Unsplash")
@@ -616,8 +616,8 @@ class WallpaperRepositoryImpl @Inject constructor(
 
                     when (response) {
                         is ApiResult.Success -> {
-                            if (response.data.hits.isNotEmpty()) {
-                                pixabayMapper.toWallpaper(response.data.hits[0])
+                            if (response.data.images.isNotEmpty()) {
+                                pixabayMapper.toWallpaper(response.data.images[0])
                             } else {
                                 // 如果没有结果，尝试从缓存中获取
                                 val cachedWallpaper = wallpaperDao.getWallpaperById(id)

@@ -9,16 +9,20 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PixabayImage(
     val id: Int,
-    val pageURL: String,
+    @SerialName("pageURL")
+    val pageUrl: String,
     val type: String,
     val tags: String,
-    val previewURL: String,
+    @SerialName("previewURL")
+    val previewUrl: String,
     val previewWidth: Int,
     val previewHeight: Int,
-    val webformatURL: String,
+    @SerialName("webformatURL")
+    val webformatUrl: String,
     val webformatWidth: Int,
     val webformatHeight: Int,
-    val largeImageURL: String,
+    @SerialName("largeImageURL")
+    val largeImageUrl: String,
     @SerialName("imageWidth")
     val width: Int,
     @SerialName("imageHeight")
@@ -32,5 +36,6 @@ data class PixabayImage(
     @SerialName("user_id")
     val userId: Int,
     val user: String,
-    val userImageURL: String
+    @SerialName("userImageURL")
+    val userImageUrl: String
 ) 
