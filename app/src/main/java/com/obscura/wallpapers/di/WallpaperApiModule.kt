@@ -22,12 +22,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object WallpaperApiModule {
 
+    private const val PEXELS_ADAPTER = "pexelsApiAdapter"
+    private const val UNSPLASH_ADAPTER = "unsplashApiAdapter"
+
     /**
      * 提供Pexels API适配器
      */
     @Provides
     @Singleton
-    @Named("pexelsApiAdapter")
+    @Named(PEXELS_ADAPTER)
     fun providePexelsApiAdapter(
         pexelsApiService: PexelsApiService,
         pexelsMapper: PexelsMapper
@@ -40,7 +43,7 @@ object WallpaperApiModule {
      */
     @Provides
     @Singleton
-    @Named("unsplashApiAdapter")
+    @Named(UNSPLASH_ADAPTER)
     fun provideUnsplashApiAdapter(
         unsplashApiService: UnsplashApiService,
         unsplashMapper: UnsplashMapper
@@ -55,7 +58,7 @@ object WallpaperApiModule {
     @Provides
     @Singleton
     fun provideDefaultWallpaperApiAdapter(
-        @Named("pexelsApiAdapter") pexelsApiAdapter: WallpaperApiAdapter
+        @Named(PEXELS_ADAPTER) pexelsApiAdapter: WallpaperApiAdapter
     ): WallpaperApiAdapter {
         return pexelsApiAdapter
     }

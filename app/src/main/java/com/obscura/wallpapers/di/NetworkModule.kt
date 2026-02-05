@@ -32,6 +32,7 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
+import okhttp3.ResponseBody.Companion.toResponseBody
 
 /**
  * 网络模块
@@ -42,6 +43,50 @@ import javax.inject.Singleton
 object NetworkModule {
 
     private const val BASE_URL = "https://api.vistaraai.xyz/"
+    private const val TIMEOUT_SECONDS = 30L
+    private val JSON_MEDIA_TYPE = "application/json".toMediaType()
+    private const val UNSPLASH_AUTH_INTERCEPTOR = "unsplashAuthInterceptor"
+    private const val UNSPLASH_HTTP_CLIENT = "unsplashHttpClient"
+    private const val UNSPLASH_RETROFIT = "unsplashRetrofit"
+    private const val PEXELS_AUTH_INTERCEPTOR = "pexelsAuthInterceptor"
+    private const val PEXELS_HTTP_CLIENT = "pexelsHttpClient"
+    private const val PEXELS_RETROFIT = "pexelsRetrofit"
+    private const val PEXELS_VIDEO_RETROFIT = "pexelsVideoRetrofit"
+    private const val PIXABAY_AUTH_INTERCEPTOR = "pixabayAuthInterceptor"
+    private const val PIXABAY_HTTP_CLIENT = "pixabayHttpClient"
+    private const val PIXABAY_RETROFIT = "pixabayRetrofit"
+    private const val WALLHAVEN_AUTH_INTERCEPTOR = "wallhavenAuthInterceptor"
+    private const val WALLHAVEN_HTTP_CLIENT = "wallhavenHttpClient"
+    private const val WALLHAVEN_RETROFIT = "wallhavenRetrofit"
+    private const val CACHE_INTERCEPTOR = "cacheInterceptor"
+    private const val OFFLINE_INTERCEPTOR = "offlineInterceptor"
+
+    private fun createApiClient(
+        cache: Cache,
+        loggingInterceptor: HttpLoggingInterceptor,
+        authInterceptor: Interceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .cache(cache)
+            .addInterceptor(authInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .build()
+    }
+
+    private fun createRetrofit(
+        baseUrl: String,
+        json: kotlinx.serialization.json.Json,
+        client: OkHttpClient
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(client)
+            .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE))
+            .build()
+    }
 
     /**
      * 提供Gson实例，用于非网络场景（Room转换等）
@@ -98,7 +143,7 @@ object NetworkModule {
      */
     @Provides
     @Singleton
-    @Named("cacheInterceptor")
+    @Named(CACHE_INTERCEPTOR)
     fun provideCacheInterceptor(): Interceptor {
         return Interceptor { chain ->
             val request = chain.request()
@@ -126,7 +171,7 @@ object NetworkModule {
      */
     @Provides
     @Singleton
-    @Named("offlineInterceptor")
+    @Named(OFFLINE_INTERCEPTOR)
     fun provideOfflineInterceptor(@ApplicationContext context: Context): Interceptor {
         return Interceptor { chain ->
             var request = chain.request()
@@ -156,8 +201,8 @@ object NetworkModule {
     fun provideOkHttpClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
-        @Named("cacheInterceptor") cacheInterceptor: Interceptor,
-        @Named("offlineInterceptor") offlineInterceptor: Interceptor,
+        @Named(CACHE_INTERCEPTOR) cacheInterceptor: Interceptor,
+        @Named(OFFLINE_INTERCEPTOR) offlineInterceptor: Interceptor,
         authInterceptor: AuthInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
@@ -180,7 +225,7 @@ object NetworkModule {
     fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE))
             .client(okHttpClient)
             .build()
     }
@@ -192,7 +237,7 @@ object NetworkModule {
     // Unsplash API
     @Provides
     @Singleton
-    @Named("unsplashAuthInterceptor")
+    @Named(UNSPLASH_AUTH_INTERCEPTOR)
     fun provideUnsplashAuthInterceptor(
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
@@ -206,7 +251,7 @@ object NetworkModule {
                     .protocol(okhttp3.Protocol.HTTP_1_1)
                     .code(403)
                     .message("Rate Limit Exceeded")
-                    .body(okhttp3.ResponseBody.create(null, ""))
+                    .body("".toResponseBody(null))
                     .build()
             }
 
@@ -262,40 +307,29 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @Named("unsplashHttpClient")
+    @Named(UNSPLASH_HTTP_CLIENT)
     fun provideUnsplashHttpClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
-        @Named("unsplashAuthInterceptor") authInterceptor: Interceptor
+        @Named(UNSPLASH_AUTH_INTERCEPTOR) authInterceptor: Interceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .cache(cache)
-            .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
+        return createApiClient(cache, loggingInterceptor, authInterceptor)
     }
 
     @Provides
     @Singleton
-    @Named("unsplashRetrofit")
+    @Named(UNSPLASH_RETROFIT)
     fun provideUnsplashRetrofit(
         json: Json,
-        @Named("unsplashHttpClient") client: OkHttpClient
+        @Named(UNSPLASH_HTTP_CLIENT) client: OkHttpClient
     ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(UnsplashApiService.BASE_URL)
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
+        return createRetrofit(UnsplashApiService.BASE_URL, json, client)
     }
 
     @Provides
     @Singleton
     fun provideUnsplashApiService(
-        @Named("unsplashRetrofit") retrofit: Retrofit
+        @Named(UNSPLASH_RETROFIT) retrofit: Retrofit
     ): UnsplashApiService {
         return retrofit.create(UnsplashApiService::class.java)
     }
@@ -303,7 +337,7 @@ object NetworkModule {
     // Pexels API
     @Provides
     @Singleton
-    @Named("pexelsAuthInterceptor")
+    @Named(PEXELS_AUTH_INTERCEPTOR)
     fun providePexelsAuthInterceptor(
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
@@ -317,7 +351,7 @@ object NetworkModule {
                     .protocol(okhttp3.Protocol.HTTP_1_1)
                     .code(403)
                     .message("Rate Limit Exceeded")
-                    .body(okhttp3.ResponseBody.create(null, ""))
+                    .body("".toResponseBody(null))
                     .build()
             }
 
@@ -373,56 +407,41 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @Named("pexelsHttpClient")
+    @Named(PEXELS_HTTP_CLIENT)
     fun providePexelsHttpClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
-        @Named("pexelsAuthInterceptor") authInterceptor: Interceptor
+        @Named(PEXELS_AUTH_INTERCEPTOR) authInterceptor: Interceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .cache(cache)
-            .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
+        return createApiClient(cache, loggingInterceptor, authInterceptor)
     }
 
     @Provides
     @Singleton
-    @Named("pexelsRetrofit")
+    @Named(PEXELS_RETROFIT)
     fun providePexelsRetrofit(
         json: Json,
-        @Named("pexelsHttpClient") client: OkHttpClient
+        @Named(PEXELS_HTTP_CLIENT) client: OkHttpClient
     ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(PexelsApiService.BASE_URL)
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
+        return createRetrofit(PexelsApiService.BASE_URL, json, client)
     }
 
     // 为Pexels视频API提供单独的Retrofit实例
     @Provides
     @Singleton
-    @Named("pexelsVideoRetrofit")
+    @Named(PEXELS_VIDEO_RETROFIT)
     fun providePexelsVideoRetrofit(
         json: Json,
-        @Named("pexelsHttpClient") client: OkHttpClient
+        @Named(PEXELS_HTTP_CLIENT) client: OkHttpClient
     ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(PexelsApiService.VIDEO_BASE_URL)
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
+        return createRetrofit(PexelsApiService.VIDEO_BASE_URL, json, client)
     }
 
     @Provides
     @Singleton
     fun providePexelsApiService(
-        @Named("pexelsRetrofit") photoRetrofit: Retrofit,
-        @Named("pexelsVideoRetrofit") videoRetrofit: Retrofit
+        @Named(PEXELS_RETROFIT) photoRetrofit: Retrofit,
+        @Named(PEXELS_VIDEO_RETROFIT) videoRetrofit: Retrofit
     ): PexelsApiService {
         // 使用动态代理创建PexelsApiService实例
         // 根据方法名判断使用哪个Retrofit实例
@@ -474,7 +493,7 @@ object NetworkModule {
     // Pixabay API
     @Provides
     @Singleton
-    @Named("pixabayAuthInterceptor")
+    @Named(PIXABAY_AUTH_INTERCEPTOR)
     fun providePixabayAuthInterceptor(
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
@@ -510,40 +529,29 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @Named("pixabayHttpClient")
+    @Named(PIXABAY_HTTP_CLIENT)
     fun providePixabayHttpClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
-        @Named("pixabayAuthInterceptor") authInterceptor: Interceptor
+        @Named(PIXABAY_AUTH_INTERCEPTOR) authInterceptor: Interceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .cache(cache)
-            .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
+        return createApiClient(cache, loggingInterceptor, authInterceptor)
     }
 
     @Provides
     @Singleton
-    @Named("pixabayRetrofit")
+    @Named(PIXABAY_RETROFIT)
     fun providePixabayRetrofit(
         json: Json,
-        @Named("pixabayHttpClient") client: OkHttpClient
+        @Named(PIXABAY_HTTP_CLIENT) client: OkHttpClient
     ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(PixabayApiService.BASE_URL)
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
+        return createRetrofit(PixabayApiService.BASE_URL, json, client)
     }
 
     @Provides
     @Singleton
     fun providePixabayApiService(
-        @Named("pixabayRetrofit") retrofit: Retrofit
+        @Named(PIXABAY_RETROFIT) retrofit: Retrofit
     ): PixabayApiService {
         return retrofit.create(PixabayApiService::class.java)
     }
@@ -551,7 +559,7 @@ object NetworkModule {
     // Wallhaven API
     @Provides
     @Singleton
-    @Named("wallhavenAuthInterceptor")
+    @Named(WALLHAVEN_AUTH_INTERCEPTOR)
     fun provideWallhavenAuthInterceptor(
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
@@ -587,40 +595,29 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @Named("wallhavenHttpClient")
+    @Named(WALLHAVEN_HTTP_CLIENT)
     fun provideWallhavenHttpClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
-        @Named("wallhavenAuthInterceptor") authInterceptor: Interceptor
+        @Named(WALLHAVEN_AUTH_INTERCEPTOR) authInterceptor: Interceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .cache(cache)
-            .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
+        return createApiClient(cache, loggingInterceptor, authInterceptor)
     }
 
     @Provides
     @Singleton
-    @Named("wallhavenRetrofit")
+    @Named(WALLHAVEN_RETROFIT)
     fun provideWallhavenRetrofit(
         json: Json,
-        @Named("wallhavenHttpClient") client: OkHttpClient
+        @Named(WALLHAVEN_HTTP_CLIENT) client: OkHttpClient
     ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(WallhavenApiService.BASE_URL)
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
+        return createRetrofit(WallhavenApiService.BASE_URL, json, client)
     }
 
     @Provides
     @Singleton
     fun provideWallhavenApiService(
-        @Named("wallhavenRetrofit") retrofit: Retrofit
+        @Named(WALLHAVEN_RETROFIT) retrofit: Retrofit
     ): WallhavenApiService {
         return retrofit.create(WallhavenApiService::class.java)
     }

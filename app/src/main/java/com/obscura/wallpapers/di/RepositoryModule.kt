@@ -44,6 +44,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
 
+    private const val PEXELS_ADAPTER = "pexelsApiAdapter"
+
     @Provides
     @Singleton
     fun provideWallpaperRepository(
@@ -61,7 +63,7 @@ object RepositoryModule {
         apiUsageTracker: ApiUsageTracker,
         networkMonitor: NetworkMonitor,
         wallpaperApiAdapter: WallpaperApiAdapter,
-        @Named("pexelsApiAdapter") pexelsApiAdapter: WallpaperApiAdapter,
+        @Named(PEXELS_ADAPTER) pexelsApiAdapter: WallpaperApiAdapter,
         stringProvider: StringProvider
     ): WallpaperRepository {
         return WallpaperRepositoryImpl(
