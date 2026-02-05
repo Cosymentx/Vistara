@@ -27,7 +27,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -143,7 +143,7 @@ fun WallpaperDetail(
                         .size(40.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack, contentDescription = "", tint = Color.White
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "", tint = Color.White
                     )
                 }
 

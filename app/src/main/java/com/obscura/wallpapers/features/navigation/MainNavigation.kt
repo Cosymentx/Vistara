@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.navigation
+package com.obscura.wallpapers.features.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -52,27 +52,16 @@ import com.obscura.wallpapers.features.test.TestScreen
 import com.obscura.wallpapers.features.webview.WebViewScreen
 import com.obscura.wallpapers.ui.theme.LocalAppResources
 
-/**
- * 主导航组件
- * 包含底部导航栏和导航宿主
- */
 @Composable
 fun MainNavigation(navController: NavHostController = rememberNavController()) {
-
-    // 获取当前导航状态
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
-    // 判断当前是否在主页面
     val isMainScreen = currentRoute in NavDestination.values().map { it.route }
-
     Box {
         NavHost(
             navController = navController, startDestination = NavDestination.Home.route,
-            // 只有在主页面才为底部导航栏留出空间
             modifier = if (isMainScreen) Modifier.padding(bottom = 80.dp) else Modifier
         ) {
-            // 登录页面
             composable("auth") {
                 AuthScreen(onLoginSuccess = {
                     navController.popBackStack()
@@ -88,23 +77,14 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 }, onBannerClick = { banner ->
                     when (banner.actionType) {
                         BannerActionType.WALLPAPER, BannerActionType.COLLECTION -> {
-                            // 跳转到壁纸详情页
                             banner.actionTarget?.let { wallpaperId ->
                                 navController.navigate("wallpaper/$wallpaperId")
                             }
                         }
-
-//                        BannerActionType.COLLECTION -> {
-//                            // 暂时不处理专题跳转，可以在后续实现
-//                        }
-
                         BannerActionType.PREMIUM -> {
-                            // 跳转到会员页面
                             navController.navigate("premium")
                         }
-
                         BannerActionType.URL -> {
-                            // 暂时不处理外部URL跳转，可以在后续实现
                         }
                     }
                 })
@@ -135,13 +115,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     onUpgradeClick = { navController.navigate("premium") },
                     onLoginClick = { navController.navigate("auth") },
                     onDiamondClick = { navController.navigate("diamond") },
-                    onTestToolsClick = {
-                        // 导航到测试工具页面
-                        navController.navigate("test")
-                    })
+                    onTestToolsClick = { navController.navigate("test") })
             }
-
-            // 升级页面
             composable("premium") {
                 PremiumScreen(
                     onBackPressed = { navController.navigateUp() },
@@ -149,15 +124,11 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     navController = navController
                 )
             }
-
-            // 钻石充值页面
             composable("diamond") {
                 RechargeScreen(
                     onBackPressed = { navController.navigateUp() },
                     navController = navController)
             }
-
-            // 搜索页面
             composable(
                 route = "search?query={query}", arguments = listOf(navArgument("query") {
                     type = NavType.StringType
@@ -169,23 +140,15 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     navController.navigate("wallpaper/${wallpaper.id}")
                 }, onBackClick = { navController.navigateUp() })
             }
-
-            // 壁纸编辑页面
             composable(
                 route = "edit/{wallpaperId}",
                 arguments = listOf(navArgument("wallpaperId") { type = NavType.StringType })
             ) {
                 val wallpaperId = it.arguments?.getString("wallpaperId") ?: ""
-
                 WallpaperEditScreen(
                     onBackPressed = { navController.navigateUp() },
-                    onSaveComplete = {
-                        // 返回详情页面
-                        navController.navigateUp()
-                    })
+                    onSaveComplete = { navController.navigateUp() })
             }
-
-            // 壁纸详情页面
             composable(
                 route = "wallpaper/{wallpaperId}",
                 arguments = listOf(navArgument("wallpaperId") { type = NavType.StringType })
@@ -195,18 +158,10 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     onNavigateToEdit = { wallpaperId ->
                         navController.navigate("edit/$wallpaperId")
                     },
-                    onNavigateToUpgrade = {
-                        navController.navigate("premium")
-                    },
-                    onNavigateToLogin = {
-                        navController.navigate("auth")
-                    },
-                    onNavigateToDiamondRecharge = {
-                        navController.navigate("diamond")
-                    })
+                    onNavigateToUpgrade = { navController.navigate("premium") },
+                    onNavigateToLogin = { navController.navigate("auth") },
+                    onNavigateToDiamondRecharge = { navController.navigate("diamond") })
             }
-
-            // 收藏页面
             composable("favorites") {
                 FavoritesScreen(
                     onBackPressed = { navController.navigateUp() },
@@ -215,8 +170,6 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     },
                     onNavigateToLogin = { navController.navigate("auth") })
             }
-
-            // 下载页面
             composable("downloads") {
                 DownloadsScreen(
                     onBackPressed = { navController.navigateUp() },
@@ -225,34 +178,20 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     },
                     onNavigateToLogin = { navController.navigate("auth") })
             }
-
-            // 设置页面
             composable("settings") {
-                SettingsScreen(
-                    onBackPressed = { navController.navigateUp() })
+                SettingsScreen(onBackPressed = { navController.navigateUp() })
             }
-
-            // 自动更换壁纸页面
             composable("autochange") {
                 AutoChangeScreen(
                     onBackPressed = { navController.navigateUp() },
                     onNavigateToLogin = { navController.navigate("auth") })
             }
-
-            // 评分与反馈页面
             composable("feedback") {
-                FeedbackScreen(
-                    onBackPressed = { navController.navigateUp() })
+                FeedbackScreen(onBackPressed = { navController.navigateUp() })
             }
-
-            // 关于页面
             composable("about") {
-                AboutScreen(
-                    onBackPressed = { navController.navigateUp() }, navController = navController
-                )
+                AboutScreen(onBackPressed = { navController.navigateUp() }, navController = navController)
             }
-
-            // WebView页面
             composable(
                 route = "webview?url={url}", arguments = listOf(navArgument("url") {
                     type = NavType.StringType
@@ -264,77 +203,47 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
             ) { backStackEntry ->
                 val encodedUrl = backStackEntry.arguments?.getString("url") ?: ""
                 val encodedTitle = backStackEntry.arguments?.getString("title") ?: ""
-
-                // 解码URL和标题
                 val url = java.net.URLDecoder.decode(encodedUrl, "UTF-8")
                 val title = java.net.URLDecoder.decode(encodedTitle, "UTF-8")
-
-                WebViewScreen(
-                    url = url, title = title, onBackPressed = { navController.navigateUp() })
+                WebViewScreen(url = url, title = title, onBackPressed = { navController.navigateUp() })
             }
-
-            // 测试工具页面
             composable("test") {
                 TestScreen(
                     onBackPressed = { navController.navigateUp() },
                     onNavigateToApiTest = { navController.navigate("test/api") })
             }
-
-            // API测试页面
             composable("test/api") {
-                ApiTestScreen(
-                    onBackPressed = { navController.navigateUp() })
+                ApiTestScreen(onBackPressed = { navController.navigateUp() })
             }
         }
-
-        // 底部导航栏，只在主页面显示
         if (isMainScreen) {
-            BottomNavBar(
-                navController = navController, modifier = Modifier.align(Alignment.BottomCenter)
-            )
+            BottomNavBar(navController = navController, modifier = Modifier.align(Alignment.BottomCenter))
         }
     }
 }
 
-/**
- * 底部导航栏
- */
 @Composable
 fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
     NavigationBar(modifier = modifier) {
         NavDestination.values().forEach { destination ->
-            val selected =
-                currentDestination?.hierarchy?.any { it.route == destination.route } == true
-
+            val selected = currentDestination?.hierarchy?.any { it.route == destination.route } == true
             NavigationBarItem(icon = {
                 when (destination) {
                     NavDestination.Home -> {
                         if (selected) {
                             Icon(Icons.Filled.Home, contentDescription = destination.getTitle())
                         } else {
-                            Icon(
-                                Icons.Outlined.Home, contentDescription = destination.getTitle()
-                            )
+                            Icon(Icons.Outlined.Home, contentDescription = destination.getTitle())
                         }
                     }
-
                     NavDestination.StaticWallpapers -> {
-                        Icon(
-                            ImageVector.vectorResource(id = R.drawable.ic_image),
-                            contentDescription = destination.getTitle()
-                        )
+                        Icon(ImageVector.vectorResource(id = R.drawable.ic_image), contentDescription = destination.getTitle())
                     }
-
                     NavDestination.LiveWallpapers -> {
-                        Icon(
-                            ImageVector.vectorResource(id = R.drawable.ic_movie),
-                            contentDescription = destination.getTitle()
-                        )
+                        Icon(ImageVector.vectorResource(id = R.drawable.ic_movie), contentDescription = destination.getTitle())
                     }
-
                     NavDestination.Mine -> {
                         if (selected) {
                             Icon(Icons.Filled.Person, contentDescription = destination.getTitle())
@@ -345,13 +254,8 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
                 }
             }, label = { Text(destination.getTitle()) }, selected = selected, onClick = {
                 navController.navigate(destination.route) {
-                    // 避免创建多个实例
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
-                    // 避免重复点击
+                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                     launchSingleTop = true
-                    // 恢复状态
                     restoreState = true
                 }
             })
@@ -359,14 +263,10 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
     }
 }
 
-/**
- * 导航目的地枚举
- */
 enum class NavDestination(val route: String, val titleResId: Int) {
     Home("home", R.string.nav_home) {
         @Composable
         override fun getTitle(): String {
-            // 使用 LocalAppResources 确保语言变化时能正确更新
             val resources = LocalAppResources.current
             return resources.getString(R.string.home)
         }
@@ -392,7 +292,6 @@ enum class NavDestination(val route: String, val titleResId: Int) {
             return resources.getString(R.string.mine)
         }
     };
-
     @Composable
     abstract fun getTitle(): String
 }

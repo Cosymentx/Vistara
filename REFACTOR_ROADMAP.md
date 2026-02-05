@@ -23,7 +23,7 @@ This document outlines the detailed plan to rewrite the Vistara application. The
 
 | ID | Task | Method / Strategy | Changes | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **1.1** | **Package Restructure** | **Feature-Based Packaging**<br>Move from `com.obscura.wallpapers.*` to `com.obscura.wallpapers.features.*`. | `ui` -> `features` (Split by screen)<br>`data` -> `core.data`<br>`utils` -> `core.common` | ⬜ 待办 |
+| **1.1** | **Package Restructure** | **Feature-Based Packaging**<br>Move from `com.obscura.wallpapers.*` to `com.obscura.wallpapers.features.*`. | `ui` -> `features` (Split by screen)<br>`data` -> `core.data`<br>`utils` -> `core.common` | ✅ 已完成 |
 | **1.2** | **Build System** | **Dependency Swap & Update**<br>Replace libraries to change bytecode signatures. | Remove `Glide` -> Add `Coil`<br>Add `Kotlinx Serialization`<br>Update `Hilt` & `Compose` to latest. | ✅ 已完成 |
 | **1.3** | **Application Entry** | **Total Rewrite**<br>Create new `ObscuraApp` inheriting `HiltAndroidApp`. | Rename `App` -> `ObscuraApp`<br>Change init order of SDKs.<br>Move `ActivityProvider` -> DI Graph. | ✅ 已完成 |
 | **1.4** | **Main Activity** | **Navigation Host Rewrite**<br>Simplify `MainActivity` to a pure container. | Rename `MainActivity` -> `EntryActivity`<br>Remove `UnlockReceiver` logic from here (move to WorkManager/Service). | ✅ 已完成 |
@@ -33,8 +33,10 @@ This document outlines the detailed plan to rewrite the Vistara application. The
 - **1.4**：已新增 `EntryActivity`，移除 `MainActivity`；入口 Activity 仅负责导航与 `CurrentActivityHolder` 注册；解锁屏逻辑仅保留 Manifest 静态注册的 `UnlockWallpaperReceiver`，已从 Activity 中移除动态注册。
 - 编译已通过：`./gradlew clean assembleDebug` 成功。
 
-**Phase 1 进度说明（2026-02-04）**
-- **1.2**：已移除 `Glide` 及注解处理器，统一使用 `Coil`；`kotlinx-serialization` 尚未引入；`Hilt/Compose` 版本更新待办。
+**Phase 1 进度说明（2026-02-05）**
+- **1.1**：完成所有屏从 `ui.screens.*` 迁移至 `features.*`；将 `ui.navigation` 迁移为 `features.navigation` 并修复引用；保留 `ui/components|icons|theme` 作为共享 UI 基础层；同时修复过时图标用法（AutoMirrored ArrowBack）；编译验证通过。
+- **1.2**：已移除 `Glide` 及注解处理器，统一使用 `Coil`；已引入并使用 `kotlinx-serialization`；`Hilt/Compose` 版本更新待办。
+ - **Polish**：针对生命周期 API 的 deprecation，已将 `LocalLifecycleOwner` 引用迁移至 `androidx.lifecycle.compose.LocalLifecycleOwner`（LiveVideoPlayer、VideoPlaybackManager），构建验证通过。
 
 **激进重构进度（文件名 / 方法名 / 逻辑顺序，不影响功能）**
 - **模块 1 - Application + DI**
@@ -49,6 +51,11 @@ This document outlines the detailed plan to rewrite the Vistara application. The
   - 方法名：`applyGaussianBlur` → `blurGaussian`，`getDrawableByName` → `drawableIdForName`；`isConnected`/`isWifiConnected`/`isMobileConnected` → `hasConnection`/`hasWifi`/`hasCellular`，`registerNetworkCallback`/`updateNetworkState` → `bindCallback`/`refreshState`；`NetworkState` → `LinkState`。
   - `UtilsModule`：`provideNetworkUtil` 移除（改用 `ConnectivityHelper` 构造注入），`provideNetworkMonitor` → `bindNetworkMonitor`。
 - 编译已通过：`./gradlew assembleDebug` 成功。
+
+**下一步计划（Phase 1 延续）**
+- 完成 `utils` -> `core.common` 剩余文件归档与命名统一（不引入行为变更）
+- 评估 `ui/navigation` 是否需要重命名或迁移到 `features.navigation`（保持路由不变，确保 Minimal Impact）
+- 制定 Phase 3 主题系统改造的依赖与分支策略（不影响现有 UI 行为）
 
 ---
 
