@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.data.repository
+package com.obscura.wallpapers.core.data.repository
 
 import com.obscura.wallpapers.data.model.Banner
 import com.obscura.wallpapers.data.remote.ApiResult

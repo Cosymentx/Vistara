@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.home
+package com.obscura.wallpapers.features.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize

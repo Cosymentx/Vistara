@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.lives
+package com.obscura.wallpapers.features.lives
 
 // Make sure this points to the definition that includes cachedData
 // Import VideoItem if it's in components, otherwise define it below or import from correct path

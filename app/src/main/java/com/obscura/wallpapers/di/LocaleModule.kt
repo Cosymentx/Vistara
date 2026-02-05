@@ -1,6 +1,6 @@
 package com.obscura.wallpapers.di
 
-import com.obscura.wallpapers.data.repository.UserPrefsRepository
+import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.manager.LocaleManager
 import dagger.Module
 import dagger.Provides

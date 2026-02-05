@@ -2,8 +2,8 @@ package com.obscura.wallpapers.di
 
 import android.content.Context
 import com.obscura.wallpapers.billing.BillingManager
-import com.obscura.wallpapers.data.repository.DiamondRepository
-import com.obscura.wallpapers.data.repository.UserRepository
+import com.obscura.wallpapers.core.data.repository.DiamondRepository
+import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.data.model
+package com.obscura.wallpapers.core.data.model
 
 /**
  * 应用语言设置

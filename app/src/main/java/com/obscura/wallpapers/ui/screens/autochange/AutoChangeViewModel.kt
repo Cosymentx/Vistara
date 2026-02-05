@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.autochange
+package com.obscura.wallpapers.features.autochange
 
 import android.app.Activity
 import android.content.Context
@@ -7,16 +7,16 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
-import com.obscura.wallpapers.data.model.AutoChangeFrequency
-import com.obscura.wallpapers.data.model.AutoChangeHistory
-import com.obscura.wallpapers.data.model.AutoChangeSource
+import com.obscura.wallpapers.core.data.model.AutoChangeFrequency
+import com.obscura.wallpapers.core.data.model.AutoChangeHistory
+import com.obscura.wallpapers.core.data.model.AutoChangeSource
 import com.obscura.wallpapers.data.model.Category
-import com.obscura.wallpapers.data.model.WallpaperTarget
-import com.obscura.wallpapers.data.repository.UserPrefsRepository
-import com.obscura.wallpapers.data.repository.UserRepository
-import com.obscura.wallpapers.data.repository.WallpaperRepository
+import com.obscura.wallpapers.core.data.model.WallpaperTarget
+import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
+import com.obscura.wallpapers.core.data.repository.UserRepository
+import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import com.obscura.wallpapers.manager.AppWallpaperManager
-import com.obscura.wallpapers.utils.NotificationUtil
+import com.obscura.wallpapers.core.common.NotificationUtil
 import com.obscura.wallpapers.worker.AutoWallpaperWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

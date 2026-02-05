@@ -1,9 +1,9 @@
-package com.obscura.wallpapers.data.remote.api
+package com.obscura.wallpapers.core.data.remote.api
 
 import com.obscura.wallpapers.data.model.Collection
 import com.obscura.wallpapers.data.model.Wallpaper
-import com.obscura.wallpapers.data.remote.ApiResult
-import com.obscura.wallpapers.data.remote.ApiSource
+import com.obscura.wallpapers.core.data.remote.ApiResult
+import com.obscura.wallpapers.core.data.remote.ApiSource
 
 /**
  * 壁纸API适配器接口

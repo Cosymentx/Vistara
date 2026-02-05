@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.test
+package com.obscura.wallpapers.features.test
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.screens.test.ApiTestViewModel
 
 /**
  * API测试屏幕

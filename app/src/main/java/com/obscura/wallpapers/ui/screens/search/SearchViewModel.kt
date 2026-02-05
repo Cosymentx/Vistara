@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.search
+package com.obscura.wallpapers.features.search
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

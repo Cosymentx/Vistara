@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.test
+package com.obscura.wallpapers.features.test
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

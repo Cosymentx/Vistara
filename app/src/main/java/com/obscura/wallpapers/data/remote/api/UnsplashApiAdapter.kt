@@ -1,12 +1,12 @@
-package com.obscura.wallpapers.data.remote.api
+package com.obscura.wallpapers.core.data.remote.api
 
 import com.obscura.wallpapers.data.mapper.UnsplashMapper
 import com.obscura.wallpapers.data.model.Collection
 import com.obscura.wallpapers.data.model.Wallpaper
 import com.obscura.wallpapers.data.model.unsplash.UnsplashCollection
-import com.obscura.wallpapers.data.remote.ApiResult
-import com.obscura.wallpapers.data.remote.ApiSource
-import com.obscura.wallpapers.data.remote.safeApiCall
+import com.obscura.wallpapers.core.data.remote.ApiResult
+import com.obscura.wallpapers.core.data.remote.ApiSource
+import com.obscura.wallpapers.core.data.remote.safeApiCall
 import javax.inject.Inject
 import javax.inject.Singleton
 

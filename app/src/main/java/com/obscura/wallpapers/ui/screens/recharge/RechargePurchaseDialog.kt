@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.recharge
+package com.obscura.wallpapers.features.recharge
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.feedback
+package com.obscura.wallpapers.features.feedback
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

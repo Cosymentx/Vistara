@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.obscura.wallpapers.utils.StringProvider
+import com.obscura.wallpapers.core.common.StringProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

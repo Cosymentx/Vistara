@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.settings
+package com.obscura.wallpapers.features.settings
 
 import android.Manifest
 import android.os.Build
@@ -52,7 +52,7 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.components.ConfirmDialog
 import com.obscura.wallpapers.ui.components.LanguageSelector
 import com.obscura.wallpapers.ui.icons.AppIcons
-import com.obscura.wallpapers.ui.screens.settings.SettingsViewModel.NotificationType
+import com.obscura.wallpapers.features.settings.SettingsViewModel.NotificationType
 import com.obscura.wallpapers.ui.theme.VistaraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 

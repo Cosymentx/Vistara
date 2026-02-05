@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.statics
+package com.obscura.wallpapers.features.statics
 
 import android.content.Context
 import android.util.Log
@@ -11,7 +11,7 @@ import com.obscura.wallpapers.data.model.WallpaperCategory
 import com.obscura.wallpapers.data.remote.ApiResult
 import com.obscura.wallpapers.data.remote.ApiUsageTracker
 import com.obscura.wallpapers.data.repository.WallpaperRepository
-import com.obscura.wallpapers.utils.RefreshUtil
+import com.obscura.wallpapers.core.common.RefreshUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

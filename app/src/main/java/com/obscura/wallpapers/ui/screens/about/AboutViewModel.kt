@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.about
+package com.obscura.wallpapers.features.about
 
 import android.content.Context
 import android.content.Intent
@@ -7,9 +7,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.utils.AppConstants.PRIVACY_POLICY_URL
-import com.obscura.wallpapers.utils.AppConstants.TERMS_OF_SERVICE_URL
-import com.obscura.wallpapers.utils.AppConstants.USER_AGREEMENT_URL
+import com.obscura.wallpapers.core.common.AppConstants.PRIVACY_POLICY_URL
+import com.obscura.wallpapers.core.common.AppConstants.TERMS_OF_SERVICE_URL
+import com.obscura.wallpapers.core.common.AppConstants.USER_AGREEMENT_URL
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

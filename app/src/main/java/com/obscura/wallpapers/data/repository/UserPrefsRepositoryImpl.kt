@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.data.repository
+package com.obscura.wallpapers.core.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -7,10 +7,10 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
-import com.obscura.wallpapers.data.model.AppLanguage
-import com.obscura.wallpapers.data.model.AutoChangeFrequency
-import com.obscura.wallpapers.data.model.AutoChangeSource
-import com.obscura.wallpapers.data.model.UserSettings
+import com.obscura.wallpapers.core.data.model.AppLanguage
+import com.obscura.wallpapers.core.data.model.AutoChangeFrequency
+import com.obscura.wallpapers.core.data.model.AutoChangeSource
+import com.obscura.wallpapers.core.data.model.UserSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

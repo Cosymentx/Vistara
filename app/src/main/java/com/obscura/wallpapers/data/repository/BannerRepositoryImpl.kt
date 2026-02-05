@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.data.repository
+package com.obscura.wallpapers.core.data.repository
 
 import android.content.Context
 import com.obscura.wallpapers.R
@@ -6,13 +6,13 @@ import com.obscura.wallpapers.data.model.Banner
 import com.obscura.wallpapers.data.model.BannerActionType
 import com.obscura.wallpapers.data.remote.ApiResult
 import com.obscura.wallpapers.data.remote.ApiSource
-import com.obscura.wallpapers.utils.NetworkMonitor
+import com.obscura.wallpapers.core.common.NetworkMonitor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.obscura.wallpapers.utils.StringProvider
+import com.obscura.wallpapers.core.common.StringProvider
 
 /**
  * Banner 仓库实现类

@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.recharge
+package com.obscura.wallpapers.features.recharge
 
 /**
  * 钻石购买结果

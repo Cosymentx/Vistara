@@ -186,7 +186,7 @@ object DatabaseMigrations {
                     val columnsCursor = db.query("PRAGMA table_info(diamond_transactions)")
                     val columns = mutableListOf<String>()
                     while (columnsCursor.moveToNext()) {
-                        val columnName = columnsCursor.getString(columnsCursor.getColumnIndex("name"))
+                        val columnName = columnsCursor.getString(columnsCursor.getColumnIndexOrThrow("name"))
                         columns.add(columnName)
                     }
                     columnsCursor.close()

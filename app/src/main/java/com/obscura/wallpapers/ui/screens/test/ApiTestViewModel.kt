@@ -8,10 +8,12 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.data.mapper.PexelsMapper
 import com.obscura.wallpapers.data.mapper.UnsplashMapper
 import com.obscura.wallpapers.data.remote.ApiResult
-import com.obscura.wallpapers.data.remote.api.PexelsApiAdapter
-import com.obscura.wallpapers.data.remote.api.PexelsApiService
-import com.obscura.wallpapers.data.remote.api.UnsplashApiAdapter
-import com.obscura.wallpapers.data.remote.api.UnsplashApiService
+import com.obscura.wallpapers.data.model.Collection
+import com.obscura.wallpapers.data.model.Wallpaper
+import com.obscura.wallpapers.core.data.remote.api.PexelsApiAdapter
+import com.obscura.wallpapers.core.data.remote.api.PexelsApiService
+import com.obscura.wallpapers.core.data.remote.api.UnsplashApiAdapter
+import com.obscura.wallpapers.core.data.remote.api.UnsplashApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -79,16 +81,19 @@ class ApiTestViewModel @Inject constructor(
                 logApiResult("getCollections", collectionsResult)
 
                 // 如果有集合，测试获取集合中的壁纸
-                if (collectionsResult is ApiResult.Success && collectionsResult.data.isNotEmpty()) {
-                    try {
-                        val collectionId = collectionsResult.data.first().id.split("_")[1]
-                        Log.d(TAG, "测试集合ID: $collectionId")
-                        val collectionWallpapersResult =
-                            pexelsApiAdapter.getWallpapersByCollection(collectionId, 1, 10)
-                        logApiResult("getWallpapersByCollection", collectionWallpapersResult)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "获取集合壁纸失败", e)
-                        addTestResult("❌ 获取集合壁纸失败: ${e.message}")
+                run {
+                    val successCollections = collectionsResult as? ApiResult.Success<List<Collection>>
+                    if (successCollections != null && successCollections.data.isNotEmpty()) {
+                        try {
+                            val collectionId = successCollections.data.first().id.split("_")[1]
+                            Log.d(TAG, "测试集合ID: $collectionId")
+                            val collectionWallpapersResult =
+                                pexelsApiAdapter.getWallpapersByCollection(collectionId, 1, 10)
+                            logApiResult("getWallpapersByCollection", collectionWallpapersResult)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "获取集合壁纸失败", e)
+                            addTestResult("❌ 获取集合壁纸失败: ${e.message}")
+                        }
                     }
                 }
 
@@ -129,24 +134,30 @@ class ApiTestViewModel @Inject constructor(
                 logApiResult("getCollections", collectionsResult)
 
                 // 如果有集合，测试获取集合中的壁纸
-                if (collectionsResult is ApiResult.Success && collectionsResult.data.isNotEmpty()) {
-                    try {
-                        val collectionId = collectionsResult.data.first().id.split("_")[1]
-                        Log.d(TAG, "测试集合ID: $collectionId")
-                        val collectionWallpapersResult =
-                            unsplashApiAdapter.getWallpapersByCollection(collectionId, 1, 10)
-                        logApiResult("getWallpapersByCollection", collectionWallpapersResult)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "获取集合壁纸失败", e)
-                        addTestResult("❌ 获取集合壁纸失败: ${e.message}")
+                run {
+                    val successCollections = collectionsResult as? ApiResult.Success<List<Collection>>
+                    if (successCollections != null && successCollections.data.isNotEmpty()) {
+                        try {
+                            val collectionId = successCollections.data.first().id.split("_")[1]
+                            Log.d(TAG, "测试集合ID: $collectionId")
+                            val collectionWallpapersResult =
+                                unsplashApiAdapter.getWallpapersByCollection(collectionId, 1, 10)
+                            logApiResult("getWallpapersByCollection", collectionWallpapersResult)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "获取集合壁纸失败", e)
+                            addTestResult("❌ 获取集合壁纸失败: ${e.message}")
+                        }
                     }
                 }
 
                 // 测试跟踪下载
-                if (featuredResult is ApiResult.Success && featuredResult.data.isNotEmpty()) {
-                    val wallpaperId = featuredResult.data.first().id.split("_")[1]
-                    val trackResult = unsplashApiAdapter.trackDownload(wallpaperId)
-                    logApiResult("trackDownload", trackResult)
+                run {
+                    val successFeatured = featuredResult as? ApiResult.Success<List<Wallpaper>>
+                    if (successFeatured != null && successFeatured.data.isNotEmpty()) {
+                        val wallpaperId = successFeatured.data.first().id.split("_")[1]
+                        val trackResult = unsplashApiAdapter.trackDownload(wallpaperId)
+                        logApiResult("trackDownload", trackResult)
+                    }
                 }
 
                 _resultMessage.value = context.getString(R.string.unsplash_api_test_complete)

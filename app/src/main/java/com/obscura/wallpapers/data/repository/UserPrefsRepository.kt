@@ -1,8 +1,8 @@
-package com.obscura.wallpapers.data.repository
+package com.obscura.wallpapers.core.data.repository
 
-import com.obscura.wallpapers.data.model.AutoChangeFrequency
-import com.obscura.wallpapers.data.model.AutoChangeSource
-import com.obscura.wallpapers.data.model.UserSettings
+import com.obscura.wallpapers.core.data.model.AutoChangeFrequency
+import com.obscura.wallpapers.core.data.model.AutoChangeSource
+import com.obscura.wallpapers.core.data.model.UserSettings
 import kotlinx.coroutines.flow.Flow
 
 /**

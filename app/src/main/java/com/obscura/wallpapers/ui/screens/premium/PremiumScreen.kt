@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.premium
+package com.obscura.wallpapers.features.premium
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
@@ -60,7 +60,7 @@ import androidx.navigation.compose.rememberNavController
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.components.PaymentMethodDialog
 import com.obscura.wallpapers.ui.icons.AppIcons
-import com.obscura.wallpapers.ui.screens.recharge.OrderCreationState
+import com.obscura.wallpapers.features.recharge.OrderCreationState
 import com.obscura.wallpapers.ui.theme.AppColors.DarkPremiumFeaturesBackground
 import com.obscura.wallpapers.ui.theme.AppColors.LightPremiumFeaturesBackground
 import com.obscura.wallpapers.ui.theme.VistaraTheme

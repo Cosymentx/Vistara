@@ -2,11 +2,11 @@ package com.obscura.wallpapers.di
 
 import com.obscura.wallpapers.data.mapper.PexelsMapper
 import com.obscura.wallpapers.data.mapper.UnsplashMapper
-import com.obscura.wallpapers.data.remote.api.PexelsApiAdapter
-import com.obscura.wallpapers.data.remote.api.PexelsApiService
-import com.obscura.wallpapers.data.remote.api.UnsplashApiAdapter
-import com.obscura.wallpapers.data.remote.api.UnsplashApiService
-import com.obscura.wallpapers.data.remote.api.WallpaperApiAdapter
+import com.obscura.wallpapers.core.data.remote.api.PexelsApiAdapter
+import com.obscura.wallpapers.core.data.remote.api.PexelsApiService
+import com.obscura.wallpapers.core.data.remote.api.UnsplashApiAdapter
+import com.obscura.wallpapers.core.data.remote.api.UnsplashApiService
+import com.obscura.wallpapers.core.data.remote.api.WallpaperApiAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

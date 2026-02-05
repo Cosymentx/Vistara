@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.favorites
+package com.obscura.wallpapers.features.favorites
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

@@ -23,8 +23,8 @@ import com.obscura.wallpapers.data.model.Wallpaper
 import com.obscura.wallpapers.data.model.WallpaperTarget
 import com.obscura.wallpapers.service.LiveWallpaperService
 import com.obscura.wallpapers.di.ActivityScopeHolder
-import com.obscura.wallpapers.utils.NotificationUtil
-import com.obscura.wallpapers.utils.StringProvider
+import com.obscura.wallpapers.core.common.NotificationUtil
+import com.obscura.wallpapers.core.common.StringProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -196,7 +196,7 @@ class AppWallpaperManager @Inject constructor(
             saveBitmapToFile(bitmap, wallpaper.id)
 
             // 使用壁纸预览工具类调用系统壁纸预览
-            val success = com.obscura.wallpapers.utils.WallpaperPreviewUtil.previewWallpaper(context, bitmap)
+            val success = com.obscura.wallpapers.core.common.WallpaperPreviewUtil.previewWallpaper(context, bitmap)
             if (!success) {
             }
         } catch (e: Exception) {

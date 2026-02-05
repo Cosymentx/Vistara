@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.mine
+package com.obscura.wallpapers.features.mine
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing

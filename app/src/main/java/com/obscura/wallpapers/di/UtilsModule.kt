@@ -1,7 +1,7 @@
 package com.obscura.wallpapers.di
 
 import android.content.Context
-import com.obscura.wallpapers.utils.NetworkMonitor
+import com.obscura.wallpapers.core.common.NetworkMonitor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

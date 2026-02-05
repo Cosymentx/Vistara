@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.premium
+package com.obscura.wallpapers.features.premium
 
 import android.app.Activity
 import android.content.Context
@@ -19,11 +19,11 @@ import com.obscura.wallpapers.data.remote.api.PaymentMethod
 import com.obscura.wallpapers.data.repository.DiamondRepository
 import com.obscura.wallpapers.data.repository.UserRepository
 import com.obscura.wallpapers.manager.ThemeManager
-import com.obscura.wallpapers.ui.screens.recharge.OrderCreationState
+import com.obscura.wallpapers.features.recharge.OrderCreationState
 import com.obscura.wallpapers.di.ActivityScopeHolder
-import com.obscura.wallpapers.utils.AppConstants.PRIVACY_POLICY_URL
-import com.obscura.wallpapers.utils.AppConstants.TERMS_OF_SERVICE_URL
-import com.obscura.wallpapers.utils.StringProvider
+import com.obscura.wallpapers.core.common.AppConstants.PRIVACY_POLICY_URL
+import com.obscura.wallpapers.core.common.AppConstants.TERMS_OF_SERVICE_URL
+import com.obscura.wallpapers.core.common.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

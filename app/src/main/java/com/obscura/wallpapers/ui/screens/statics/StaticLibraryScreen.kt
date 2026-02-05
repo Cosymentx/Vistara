@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.statics
+package com.obscura.wallpapers.features.statics
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

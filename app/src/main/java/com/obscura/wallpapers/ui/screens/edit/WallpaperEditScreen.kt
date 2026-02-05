@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.edit
+package com.obscura.wallpapers.features.edit
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

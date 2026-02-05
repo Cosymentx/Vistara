@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.data.model
+package com.obscura.wallpapers.core.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

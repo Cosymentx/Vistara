@@ -15,10 +15,10 @@ import com.obscura.wallpapers.data.model.AutoChangeFrequency
 import com.obscura.wallpapers.data.model.AutoChangeHistory
 import com.obscura.wallpapers.data.model.AutoChangeSource
 import com.obscura.wallpapers.data.model.WallpaperTarget
-import com.obscura.wallpapers.data.repository.UserPrefsRepository
-import com.obscura.wallpapers.data.repository.WallpaperRepository
+import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
+import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import com.obscura.wallpapers.manager.AppWallpaperManager
-import com.obscura.wallpapers.utils.ConnectivityHelper
+import com.obscura.wallpapers.core.common.ConnectivityHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

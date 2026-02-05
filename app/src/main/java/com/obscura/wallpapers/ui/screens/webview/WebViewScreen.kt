@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.webview
+package com.obscura.wallpapers.features.webview
 
 import android.graphics.Bitmap
 import android.util.Log

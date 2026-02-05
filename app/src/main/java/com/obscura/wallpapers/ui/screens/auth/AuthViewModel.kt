@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.auth
+package com.obscura.wallpapers.features.auth
 
 import android.content.Intent
 import android.util.Log
@@ -10,7 +10,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.data.repository.AuthRepository
-import com.obscura.wallpapers.utils.StringProvider
+import com.obscura.wallpapers.core.common.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

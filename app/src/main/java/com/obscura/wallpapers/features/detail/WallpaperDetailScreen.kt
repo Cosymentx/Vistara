@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.detail
+package com.obscura.wallpapers.features.detail
 
 import android.Manifest
 import android.widget.Toast
@@ -44,8 +44,8 @@ import com.obscura.wallpapers.data.model.WallpaperTarget
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.components.WallpaperDetail
 import com.obscura.wallpapers.ui.components.WallpaperSetOptions
-import com.obscura.wallpapers.ui.screens.recharge.DiamondPurchaseDialog
-import com.obscura.wallpapers.ui.screens.recharge.RechargePurchaseResult
+import com.obscura.wallpapers.features.recharge.DiamondPurchaseDialog
+import com.obscura.wallpapers.features.recharge.RechargePurchaseResult
 import com.obscura.wallpapers.ui.theme.AppColors
 import com.obscura.wallpapers.ui.theme.stringResource
 import kotlinx.coroutines.launch

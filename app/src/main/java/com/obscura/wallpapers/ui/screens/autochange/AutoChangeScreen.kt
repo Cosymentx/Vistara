@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.autochange
+package com.obscura.wallpapers.features.autochange
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box

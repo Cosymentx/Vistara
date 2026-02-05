@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.edit
+package com.obscura.wallpapers.features.edit
 
 import android.content.ContentValues
 import android.content.Context
@@ -19,7 +19,7 @@ import com.obscura.wallpapers.data.EditedImageCache
 import com.obscura.wallpapers.data.model.UiState
 import com.obscura.wallpapers.data.model.Wallpaper
 import com.obscura.wallpapers.data.repository.WallpaperRepository
-import com.obscura.wallpapers.utils.StringProvider
+import com.obscura.wallpapers.core.common.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

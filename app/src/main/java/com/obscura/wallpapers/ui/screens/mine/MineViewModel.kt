@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.mine
+package com.obscura.wallpapers.features.mine
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.about
+package com.obscura.wallpapers.features.about
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.data.model
+package com.obscura.wallpapers.core.data.model
 
 /**
  * 自动更换壁纸的频率

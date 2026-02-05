@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.favorites
+package com.obscura.wallpapers.features.favorites
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

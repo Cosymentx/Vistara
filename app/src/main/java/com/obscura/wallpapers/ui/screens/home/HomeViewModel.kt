@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.home
+package com.obscura.wallpapers.features.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.obscura.wallpapers.utils.StringProvider
+import com.obscura.wallpapers.core.common.StringProvider
 
 /**
  * 首页ViewModel

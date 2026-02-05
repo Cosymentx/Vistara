@@ -1,9 +1,10 @@
-package com.obscura.wallpapers.data.repository
+package com.obscura.wallpapers.core.data.repository
 
 import android.util.Log
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.billing.BillingManager
 import com.obscura.wallpapers.data.local.DiamondDao
+import com.obscura.wallpapers.data.repository.AuthRepository
 import com.obscura.wallpapers.data.model.DiamondAccount
 import com.obscura.wallpapers.data.model.DiamondProduct
 import com.obscura.wallpapers.data.model.DiamondTransaction
@@ -14,7 +15,7 @@ import com.obscura.wallpapers.data.remote.api.ApiService
 import com.obscura.wallpapers.data.remote.api.CreateOrderRequest
 import com.obscura.wallpapers.data.remote.api.CreateOrderResponse
 import com.obscura.wallpapers.data.remote.api.PaymentMethod
-import com.obscura.wallpapers.utils.StringProvider
+import com.obscura.wallpapers.core.common.StringProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map

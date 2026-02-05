@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.utils
+package com.obscura.wallpapers.core.common
 
 import android.content.Context
 import android.net.ConnectivityManager

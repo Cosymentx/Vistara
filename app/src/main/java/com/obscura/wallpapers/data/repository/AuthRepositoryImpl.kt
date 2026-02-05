@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
+import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.data.remote.ApiResult
 import com.obscura.wallpapers.data.remote.ApiSource
 import com.obscura.wallpapers.data.remote.api.ApiService

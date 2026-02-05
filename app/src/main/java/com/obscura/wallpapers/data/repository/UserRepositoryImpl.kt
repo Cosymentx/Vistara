@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.data.repository
+package com.obscura.wallpapers.core.data.repository
 
 import android.util.Log
 import androidx.datastore.core.DataStore

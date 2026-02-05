@@ -24,7 +24,7 @@ This document outlines the detailed plan to rewrite the Vistara application. The
 | ID | Task | Method / Strategy | Changes | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **1.1** | **Package Restructure** | **Feature-Based Packaging**<br>Move from `com.obscura.wallpapers.*` to `com.obscura.wallpapers.features.*`. | `ui` -> `features` (Split by screen)<br>`data` -> `core.data`<br>`utils` -> `core.common` | ⬜ 待办 |
-| **1.2** | **Build System** | **Dependency Swap & Update**<br>Replace libraries to change bytecode signatures. | Remove `Glide` -> Add `Coil`<br>Add `Kotlinx Serialization`<br>Update `Hilt` & `Compose` to latest. | ⏳ 进行中 |
+| **1.2** | **Build System** | **Dependency Swap & Update**<br>Replace libraries to change bytecode signatures. | Remove `Glide` -> Add `Coil`<br>Add `Kotlinx Serialization`<br>Update `Hilt` & `Compose` to latest. | ✅ 已完成 |
 | **1.3** | **Application Entry** | **Total Rewrite**<br>Create new `ObscuraApp` inheriting `HiltAndroidApp`. | Rename `App` -> `ObscuraApp`<br>Change init order of SDKs.<br>Move `ActivityProvider` -> DI Graph. | ✅ 已完成 |
 | **1.4** | **Main Activity** | **Navigation Host Rewrite**<br>Simplify `MainActivity` to a pure container. | Rename `MainActivity` -> `EntryActivity`<br>Remove `UnlockReceiver` logic from here (move to WorkManager/Service). | ✅ 已完成 |
 

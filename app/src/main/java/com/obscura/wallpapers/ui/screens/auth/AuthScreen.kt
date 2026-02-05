@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.auth
+package com.obscura.wallpapers.features.auth
 
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult

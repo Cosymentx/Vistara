@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.recharge
+package com.obscura.wallpapers.features.recharge
 
 import android.app.Activity
 import android.content.res.Configuration

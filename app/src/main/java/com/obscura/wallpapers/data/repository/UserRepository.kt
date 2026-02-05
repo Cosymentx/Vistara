@@ -1,6 +1,6 @@
-package com.obscura.wallpapers.data.repository
+package com.obscura.wallpapers.core.data.repository
 
-import com.obscura.wallpapers.data.remote.ApiResult
+import com.obscura.wallpapers.core.data.remote.ApiResult
 import com.obscura.wallpapers.data.remote.api.ProfileResponse
 import kotlinx.coroutines.flow.Flow
 

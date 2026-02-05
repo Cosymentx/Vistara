@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.recharge
+package com.obscura.wallpapers.features.recharge
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,7 +46,7 @@ import com.obscura.wallpapers.data.model.DiamondTransactionType
 import com.obscura.wallpapers.ui.icons.AppIcons
 import com.obscura.wallpapers.ui.theme.VistaraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
-import com.obscura.wallpapers.utils.ImageProcessor
+import com.obscura.wallpapers.core.common.ImageProcessor
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

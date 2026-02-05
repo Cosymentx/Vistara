@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.data.remote.api
+package com.obscura.wallpapers.core.data.remote.api
 
 import com.obscura.wallpapers.data.model.wallhaven.WallhavenSearchResponse
 import com.obscura.wallpapers.data.model.wallhaven.WallhavenWallpaper

@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.test
+package com.obscura.wallpapers.features.test
 
 import android.content.Context
 import android.util.Log

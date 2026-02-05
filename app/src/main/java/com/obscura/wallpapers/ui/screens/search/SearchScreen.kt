@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.ui.screens.search
+package com.obscura.wallpapers.features.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
