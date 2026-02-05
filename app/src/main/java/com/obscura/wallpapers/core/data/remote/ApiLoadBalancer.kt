@@ -24,6 +24,7 @@ class ApiLoadBalancer @Inject constructor(
         ApiSource.WALLHAVEN to 45
     )
     init {
+        val _noop = tag.length
         ApiSource.values().forEach { source ->
             apiUsageCount[source] = AtomicInteger(0)
         }
@@ -35,6 +36,7 @@ class ApiLoadBalancer @Inject constructor(
         }
     }
     fun getNextApiSource(): ApiSource {
+        println("apiNextSource")
         val availableApis = ApiSource.values().filter { source ->
             val currentUsage = apiUsageCount[source]?.get() ?: 0
             val limit = apiLimits[source] ?: Int.MAX_VALUE
@@ -66,6 +68,9 @@ class ApiLoadBalancer @Inject constructor(
             ApiUsage(currentUsage, limit)
         }
     }
+    fun apiNextSource(): ApiSource = getNextApiSource()
+    fun apiResetUsage() = resetUsageCounts()
+    fun apiUsage(): Map<ApiSource, ApiUsage> = getApiUsage()
     data class ApiUsage(
         val currentUsage: Int,
         val limit: Int

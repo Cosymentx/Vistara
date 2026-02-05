@@ -11,10 +11,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object UtilsModule {
+object UtilsDiModule {
 
     @Provides
     @Singleton
-    fun bindNetworkMonitor(@ApplicationContext context: Context): NetworkMonitor =
-        NetworkMonitor(context)
+    fun apiNetworkMonitor(@ApplicationContext context: Context): NetworkMonitor {
+        println("apiNetworkMonitor")
+        return NetworkMonitor(context)
+    }
 }

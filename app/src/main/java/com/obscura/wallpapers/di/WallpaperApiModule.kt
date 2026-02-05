@@ -35,6 +35,7 @@ object WallpaperApiDiModule {
         pexelsApiService: PexelsApiService,
         pexelsMapper: PexelsMapper
     ): WallpaperApiAdapter {
+        println("apiPexelsAdapter")
         return PexelsApiAdapter(pexelsApiService, pexelsMapper)
     }
 
@@ -48,6 +49,7 @@ object WallpaperApiDiModule {
         unsplashApiService: UnsplashApiService,
         unsplashMapper: UnsplashMapper
     ): WallpaperApiAdapter {
+        println("apiUnsplashAdapter")
         return UnsplashApiAdapter(unsplashApiService, unsplashMapper)
     }
 
@@ -60,6 +62,7 @@ object WallpaperApiDiModule {
     fun apiDefaultWallpaperAdapter(
         @Named(PEXELS_ADAPTER) pexelsApiAdapter: WallpaperApiAdapter
     ): WallpaperApiAdapter {
+        println("apiDefaultWallpaperAdapter")
         return pexelsApiAdapter
     }
 }

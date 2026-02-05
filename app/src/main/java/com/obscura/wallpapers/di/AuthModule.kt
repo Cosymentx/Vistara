@@ -14,12 +14,12 @@ import javax.inject.Singleton
  */
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class AuthModule {
+abstract class AuthDiModule {
 
     /**
      * 提供认证仓库
      */
     @Binds
     @Singleton
-    abstract fun provideAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
+    abstract fun apiAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 }

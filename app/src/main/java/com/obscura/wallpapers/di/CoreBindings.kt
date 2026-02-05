@@ -16,19 +16,26 @@ private val Context.dataStore by preferencesDataStore(name = "vistara_preference
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CoreBindings {
+object CoreDiBindings {
 
     @Provides
     @Singleton
-    fun bindStrings(@ApplicationContext context: Context): StringProvider =
-        StringProvider(context)
+    fun apiStrings(@ApplicationContext context: Context): StringProvider {
+        println("apiStrings")
+        return StringProvider(context)
+    }
 
     @Provides
     @Singleton
-    fun bindAppContext(@ApplicationContext context: Context): Context = context
+    fun apiAppContext(@ApplicationContext context: Context): Context {
+        println("apiAppContext")
+        return context
+    }
 
     @Provides
     @Singleton
-    fun bindPreferencesStore(@ApplicationContext context: Context): DataStore<Preferences> =
-        context.dataStore
+    fun apiPreferencesStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        println("apiPreferencesStore")
+        return context.dataStore
+    }
 }

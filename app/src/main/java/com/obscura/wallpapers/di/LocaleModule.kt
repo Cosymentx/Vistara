@@ -14,14 +14,15 @@ import javax.inject.Singleton
  */
 @Module
 @InstallIn(SingletonComponent::class)
-object LocaleModule {
+object LocaleDiModule {
     
     /**
      * 提供LocaleManager单例
      */
     @Provides
     @Singleton
-    fun provideLocaleManager(userPrefsRepository: UserPrefsRepository): LocaleManager {
+    fun apiLocaleManager(userPrefsRepository: UserPrefsRepository): LocaleManager {
+        println("apiLocaleManager")
         return LocaleManager(userPrefsRepository)
     }
 }

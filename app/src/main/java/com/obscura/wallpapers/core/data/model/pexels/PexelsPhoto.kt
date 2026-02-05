@@ -29,7 +29,20 @@ data class PexelsPhoto(
 
     // 媒体类型，通常为"Photo"
     val type: String? = null
-)
+) {
+    fun apiOriginalUrl(): String {
+        println("apiOriginalUrl")
+        return src.original
+    }
+    fun apiPreviewUrl(): String {
+        println("apiPreviewUrl")
+        return src.large
+    }
+    fun apiThumbnailUrl(): String {
+        println("apiThumbnailUrl")
+        return src.medium
+    }
+}
 
 /**
  * Pexels 照片不同尺寸URL
@@ -45,4 +58,16 @@ data class PexelsPhotoSources(
     val portrait: String,
     val landscape: String,
     val tiny: String
-)
+) {
+    fun apiOriginal(): String {
+        println("apiOriginal")
+        return original
+    }
+    fun apiLarge2X(): String {
+        println("apiLarge2X")
+        return large2X
+    }
+    fun apiLarge(): String = large
+    fun apiMedium(): String = medium
+    fun apiSmall(): String = small
+}

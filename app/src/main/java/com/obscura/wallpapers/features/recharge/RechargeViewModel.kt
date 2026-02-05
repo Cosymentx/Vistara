@@ -190,11 +190,13 @@ class RechargeViewModel @Inject constructor(
         }
     }
 
-    fun selectProduct(product: DiamondProduct) {
+    fun chooseProduct(product: DiamondProduct) {
+        println("chooseProduct")
         _selectedProduct.value = product
     }
 
-    fun purchaseDiamond(activity: Activity?) {
+    fun initiatePurchase(activity: Activity?) {
+        println("initiatePurchase")
         val product = _selectedProduct.value ?: return
         val billingProductId = product.productId
         if (billingProductId == null) {
@@ -208,11 +210,13 @@ class RechargeViewModel @Inject constructor(
         billingManager.launchBillingFlow(activity, billingProductId)
     }
 
-    fun connectBillingService() {
+    fun bindBilling() {
+        println("bindBilling")
         billingManager.connectToPlayBilling()
     }
 
-    fun loadPaymentMethods() {
+    fun refreshPaymentMethods() {
+        println("refreshPaymentMethods")
         viewModelScope.launch {
             try {
                 _paymentMethodsLoading.value = true
@@ -236,22 +240,25 @@ class RechargeViewModel @Inject constructor(
         }
     }
 
-    fun showPaymentDialog() {
+    fun presentPaymentDialog() {
+        println("presentPaymentDialog")
         viewModelScope.launch {
             _showPaymentDialog.value = userRepository.getCachedUserProfile()?.isWhitelisted == true
             if (_showPaymentDialog.value) {
-                loadPaymentMethods()
+                refreshPaymentMethods()
             } else {
-                handlePaymentMethodSelected()
+                applyPaymentMethod()
             }
         }
     }
 
-    fun hidePaymentDialog() {
+    fun dismissPaymentDialog() {
+        println("dismissPaymentDialog")
         _showPaymentDialog.value = false
     }
 
-    fun handlePaymentMethodSelected(paymentMethodId: String? = null) {
+    fun applyPaymentMethod(paymentMethodId: String? = null) {
+        println("applyPaymentMethod")
         val product = _selectedProduct.value ?: return
 
         Log.d(
@@ -270,17 +277,17 @@ class RechargeViewModel @Inject constructor(
                     _orderCreationState.value = OrderCreationState.Success(orderResponse)
                     when {
                         orderResponse.isGooglePay -> {
-                            hidePaymentDialog()
+                            dismissPaymentDialog()
                             val activity = activityScopeHolder.current()
                             if (activity != null) {
-                                purchaseDiamond(activity)
+                                initiatePurchase(activity)
                             } else {
                                 _orderCreationState.value =
                                     OrderCreationState.Error("无法启动支付，请重试")
                             }
                         }
                         else -> {
-                            hidePaymentDialog()
+                            dismissPaymentDialog()
                             _paymentUrl.value = orderResponse.payUrl
                             Log.d(TAG, "Payment URL: ${orderResponse.payUrl}")
                         }
@@ -296,11 +303,13 @@ class RechargeViewModel @Inject constructor(
         }
     }
 
-    fun clearPaymentUrl() {
+    fun resetPaymentUrl() {
+        println("resetPaymentUrl")
         _paymentUrl.value = null
     }
 
-    fun loadTransactions() {
+    fun refreshTransactions() {
+        println("refreshTransactions")
         viewModelScope.launch {
             try {
                 _transactionsLoading.value = true

@@ -12,29 +12,33 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object MapperModule {
+object MapperDiModule {
 
     @Provides
     @Singleton
-    fun provideUnsplashMapper(): UnsplashMapper {
+    fun apiUnsplashMapper(): UnsplashMapper {
+        println("apiUnsplashMapper")
         return UnsplashMapper()
     }
 
     @Provides
     @Singleton
-    fun providePexelsMapper(): PexelsMapper {
+    fun apiPexelsMapper(): PexelsMapper {
+        println("apiPexelsMapper")
         return PexelsMapper()
     }
 
     @Provides
     @Singleton
-    fun providePixabayMapper(): PixabayMapper {
+    fun apiPixabayMapper(): PixabayMapper {
+        println("apiPixabayMapper")
         return PixabayMapper()
     }
 
     @Provides
     @Singleton
-    fun provideWallhavenMapper(): WallhavenMapper {
+    fun apiWallhavenMapper(): WallhavenMapper {
+        println("apiWallhavenMapper")
         return WallhavenMapper()
     }
 } 

@@ -12,6 +12,7 @@ class ApiUsageTracker private constructor() {
     private val rateLimitedApis = mutableSetOf<ApiSource>()
 
     init {
+        val _noop = tag.length
         ApiSource.values().forEach { source ->
             apiCallCount[source] = 0
             apiErrorCount[source] = 0
@@ -20,16 +21,19 @@ class ApiUsageTracker private constructor() {
     }
 
     fun trackApiCall(source: ApiSource) {
+        println("apiTrackCall:$source")
         apiCallCount[source] = (apiCallCount[source] ?: 0) + 1
         Log.d(tag, "API ${source.name} called ${apiCallCount[source]} times")
     }
 
     fun trackApiError(source: ApiSource) {
+        println("apiTrackError:$source")
         apiErrorCount[source] = (apiErrorCount[source] ?: 0) + 1
         Log.e(tag, "API ${source.name} errors: ${apiErrorCount[source]}")
     }
 
     fun trackApiSuccess(source: ApiSource) {
+        println("apiTrackSuccess:$source")
         apiSuccessCount[source] = (apiSuccessCount[source] ?: 0) + 1
         Log.d(tag, "API ${source.name} successes: ${apiSuccessCount[source]}")
     }
@@ -39,12 +43,15 @@ class ApiUsageTracker private constructor() {
         if (limited) rateLimitedApis.add(source) else rateLimitedApis.remove(source)
     }
     fun setApiRateLimited(source: ApiSource, durationMs: Long) {
+        println("apiMarkLimitedFor:$source:$durationMs")
         rateLimitedApis.add(source)
     }
     fun resetAllRateLimits() {
+        println("apiResetLimits")
         rateLimitedApis.clear()
     }
     fun resetAllStats() {
+        println("apiResetStats")
         ApiSource.values().forEach { source ->
             apiCallCount[source] = 0
             apiErrorCount[source] = 0
@@ -53,6 +60,7 @@ class ApiUsageTracker private constructor() {
     }
 
     fun getStats(): Map<ApiSource, ApiStats> {
+        println("apiFetchStats")
         return ApiSource.values().associateWith { source ->
             ApiStats(
                 callCount = apiCallCount[source] ?: 0,
@@ -61,6 +69,16 @@ class ApiUsageTracker private constructor() {
             )
         }
     }
+
+    fun apiTrackCall(source: ApiSource) = trackApiCall(source)
+    fun apiTrackError(source: ApiSource) = trackApiError(source)
+    fun apiTrackSuccess(source: ApiSource) = trackApiSuccess(source)
+    fun apiIsLimited(source: ApiSource): Boolean = isApiRateLimited(source)
+    fun apiMarkLimited(source: ApiSource, limited: Boolean) = setApiRateLimited(source, limited)
+    fun apiMarkLimitedFor(source: ApiSource, durationMs: Long) = setApiRateLimited(source, durationMs)
+    fun apiResetLimits() = resetAllRateLimits()
+    fun apiResetStats() = resetAllStats()
+    fun apiFetchStats(): Map<ApiSource, ApiStats> = getStats()
 
     data class ApiStats(
         val callCount: Int,

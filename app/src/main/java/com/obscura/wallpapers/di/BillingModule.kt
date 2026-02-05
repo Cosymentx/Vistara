@@ -17,18 +17,19 @@ import javax.inject.Singleton
  */
 @Module
 @InstallIn(SingletonComponent::class)
-object BillingModule {
+object BillingDiModule {
 
     /**
      * 提供BillingManager单例
      */
     @Provides
     @Singleton
-    fun provideBillingManager(
+    fun apiBillingManager(
         @ApplicationContext context: Context,
         userRepository: UserRepository,
         diamondRepository: DiamondRepository
     ): BillingManager {
+        println("apiBillingManager")
         return BillingManager(context, userRepository, diamondRepository)
     }
 }

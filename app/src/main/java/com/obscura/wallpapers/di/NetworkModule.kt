@@ -170,7 +170,8 @@ object NetworkDiModule {
      */
     @Provides
     @Singleton
-    fun provideGson(): Gson {
+    fun apiGson(): Gson {
+        println("apiGson")
         return GsonBuilder()
             .setLenient()
             .registerTypeAdapterFactory(com.obscura.wallpapers.core.data.remote.ApiResultAdapterFactory())
@@ -182,7 +183,8 @@ object NetworkDiModule {
      */
     @Provides
     @Singleton
-    fun provideJson(): Json {
+    fun apiJson(): Json {
+        println("apiJson")
         return Json {
             ignoreUnknownKeys = true
             coerceInputValues = true
@@ -195,7 +197,8 @@ object NetworkDiModule {
      */
     @Provides
     @Singleton
-    fun provideOkHttpCache(@ApplicationContext context: Context): Cache {
+    fun apiOkHttpCache(@ApplicationContext context: Context): Cache {
+        println("apiOkHttpCache")
         val cacheSize = 50L * 1024L * 1024L // 50 MB
         return Cache(context.cacheDir, cacheSize)
     }
@@ -205,7 +208,8 @@ object NetworkDiModule {
      */
     @Provides
     @Singleton
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+    fun apiLoggingInterceptor(): HttpLoggingInterceptor {
+        println("apiLoggingInterceptor")
         return HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor.Level.BODY
@@ -221,7 +225,8 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(CACHE_INTERCEPTOR)
-    fun provideCacheInterceptor(): Interceptor {
+    fun apiCacheInterceptor(): Interceptor {
+        println("apiCacheInterceptor")
         return Interceptor { chain ->
             val request = chain.request()
             val url = request.url.toString()
@@ -249,7 +254,8 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(OFFLINE_INTERCEPTOR)
-    fun provideOfflineInterceptor(@ApplicationContext context: Context): Interceptor {
+    fun apiOfflineInterceptor(@ApplicationContext context: Context): Interceptor {
+        println("apiOfflineInterceptor")
         fun isNetworkAvailable(ctx: Context): Boolean {
             val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val network = connectivityManager.activeNetwork ?: return false
@@ -281,13 +287,14 @@ object NetworkDiModule {
      */
     @Provides
     @Singleton
-    fun provideOkHttpClient(
+    fun apiOkHttpClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
         @Named(CACHE_INTERCEPTOR) cacheInterceptor: Interceptor,
         @Named(OFFLINE_INTERCEPTOR) offlineInterceptor: Interceptor,
         authInterceptor: AuthInterceptor
     ): OkHttpClient {
+        println("apiOkHttpClient")
         return OkHttpClient.Builder()
             .cache(cache)
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -305,7 +312,8 @@ object NetworkDiModule {
      */
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
+    fun apiRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
+        println("apiRetrofit")
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE))
@@ -321,10 +329,11 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(UNSPLASH_AUTH_INTERCEPTOR)
-    fun provideUnsplashAuthInterceptor(
+    fun apiUnsplashAuthInterceptor(
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
     ): Interceptor {
+        println("apiUnsplashAuthInterceptor")
         return createHeaderAuthInterceptor(
             source = ApiSource.UNSPLASH,
             apiUsageTracker = apiUsageTracker,
@@ -338,29 +347,32 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(UNSPLASH_HTTP_CLIENT)
-    fun provideUnsplashHttpClient(
+    fun apiUnsplashHttpClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
         @Named(UNSPLASH_AUTH_INTERCEPTOR) authInterceptor: Interceptor
     ): OkHttpClient {
+        println("apiUnsplashHttpClient")
         return createApiClient(cache, loggingInterceptor, authInterceptor)
     }
 
     @Provides
     @Singleton
     @Named(UNSPLASH_RETROFIT)
-    fun provideUnsplashRetrofit(
+    fun apiUnsplashRetrofit(
         json: Json,
         @Named(UNSPLASH_HTTP_CLIENT) client: OkHttpClient
     ): Retrofit {
+        println("apiUnsplashRetrofit")
         return createRetrofit(UnsplashApiService.BASE_URL, json, client)
     }
 
     @Provides
     @Singleton
-    fun provideUnsplashApiService(
+    fun apiUnsplashApiService(
         @Named(UNSPLASH_RETROFIT) retrofit: Retrofit
     ): UnsplashApiService {
+        println("apiUnsplashApiService")
         return retrofit.create(UnsplashApiService::class.java)
     }
 
@@ -368,10 +380,11 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(PEXELS_AUTH_INTERCEPTOR)
-    fun providePexelsAuthInterceptor(
+    fun apiPexelsAuthInterceptor(
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
     ): Interceptor {
+        println("apiPexelsAuthInterceptor")
         return createHeaderAuthInterceptor(
             source = ApiSource.PEXELS,
             apiUsageTracker = apiUsageTracker,
@@ -385,21 +398,23 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(PEXELS_HTTP_CLIENT)
-    fun providePexelsHttpClient(
+    fun apiPexelsHttpClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
         @Named(PEXELS_AUTH_INTERCEPTOR) authInterceptor: Interceptor
     ): OkHttpClient {
+        println("apiPexelsHttpClient")
         return createApiClient(cache, loggingInterceptor, authInterceptor)
     }
 
     @Provides
     @Singleton
     @Named(PEXELS_RETROFIT)
-    fun providePexelsRetrofit(
+    fun apiPexelsRetrofit(
         json: Json,
         @Named(PEXELS_HTTP_CLIENT) client: OkHttpClient
     ): Retrofit {
+        println("apiPexelsRetrofit")
         return createRetrofit(PexelsApiService.BASE_URL, json, client)
     }
 
@@ -407,19 +422,21 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(PEXELS_VIDEO_RETROFIT)
-    fun providePexelsVideoRetrofit(
+    fun apiPexelsVideoRetrofit(
         json: Json,
         @Named(PEXELS_HTTP_CLIENT) client: OkHttpClient
     ): Retrofit {
+        println("apiPexelsVideoRetrofit")
         return createRetrofit(PexelsApiService.VIDEO_BASE_URL, json, client)
     }
 
     @Provides
     @Singleton
-    fun providePexelsApiService(
+    fun apiPexelsApiService(
         @Named(PEXELS_RETROFIT) photoRetrofit: Retrofit,
         @Named(PEXELS_VIDEO_RETROFIT) videoRetrofit: Retrofit
     ): PexelsApiService {
+        println("apiPexelsApiService")
         // 使用动态代理创建PexelsApiService实例
         // 根据方法名判断使用哪个Retrofit实例
         return object : PexelsApiService {
@@ -471,10 +488,11 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(PIXABAY_AUTH_INTERCEPTOR)
-    fun providePixabayAuthInterceptor(
+    fun apiPixabayAuthInterceptor(
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
     ): Interceptor {
+        println("apiPixabayAuthInterceptor")
         return createQueryParamAuthInterceptor(
             source = ApiSource.PIXABAY,
             apiUsageTracker = apiUsageTracker
@@ -486,29 +504,32 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(PIXABAY_HTTP_CLIENT)
-    fun providePixabayHttpClient(
+    fun apiPixabayHttpClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
         @Named(PIXABAY_AUTH_INTERCEPTOR) authInterceptor: Interceptor
     ): OkHttpClient {
+        println("apiPixabayHttpClient")
         return createApiClient(cache, loggingInterceptor, authInterceptor)
     }
 
     @Provides
     @Singleton
     @Named(PIXABAY_RETROFIT)
-    fun providePixabayRetrofit(
+    fun apiPixabayRetrofit(
         json: Json,
         @Named(PIXABAY_HTTP_CLIENT) client: OkHttpClient
     ): Retrofit {
+        println("apiPixabayRetrofit")
         return createRetrofit(PixabayApiService.BASE_URL, json, client)
     }
 
     @Provides
     @Singleton
-    fun providePixabayApiService(
+    fun apiPixabayApiService(
         @Named(PIXABAY_RETROFIT) retrofit: Retrofit
     ): PixabayApiService {
+        println("apiPixabayApiService")
         return retrofit.create(PixabayApiService::class.java)
     }
 
@@ -516,10 +537,11 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(WALLHAVEN_AUTH_INTERCEPTOR)
-    fun provideWallhavenAuthInterceptor(
+    fun apiWallhavenAuthInterceptor(
         apiKeyManager: ApiKeyManager,
         apiUsageTracker: ApiUsageTracker
     ): Interceptor {
+        println("apiWallhavenAuthInterceptor")
         return createQueryParamAuthInterceptor(
             source = ApiSource.WALLHAVEN,
             apiUsageTracker = apiUsageTracker
@@ -531,29 +553,32 @@ object NetworkDiModule {
     @Provides
     @Singleton
     @Named(WALLHAVEN_HTTP_CLIENT)
-    fun provideWallhavenHttpClient(
+    fun apiWallhavenHttpClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
         @Named(WALLHAVEN_AUTH_INTERCEPTOR) authInterceptor: Interceptor
     ): OkHttpClient {
+        println("apiWallhavenHttpClient")
         return createApiClient(cache, loggingInterceptor, authInterceptor)
     }
 
     @Provides
     @Singleton
     @Named(WALLHAVEN_RETROFIT)
-    fun provideWallhavenRetrofit(
+    fun apiWallhavenRetrofit(
         json: Json,
         @Named(WALLHAVEN_HTTP_CLIENT) client: OkHttpClient
     ): Retrofit {
+        println("apiWallhavenRetrofit")
         return createRetrofit(WallhavenApiService.BASE_URL, json, client)
     }
 
     @Provides
     @Singleton
-    fun provideWallhavenApiService(
+    fun apiWallhavenApiService(
         @Named(WALLHAVEN_RETROFIT) retrofit: Retrofit
     ): WallhavenApiService {
+        println("apiWallhavenApiService")
         return retrofit.create(WallhavenApiService::class.java)
     }
 
@@ -579,14 +604,18 @@ object NetworkDiModule {
      */
     @Provides
     @Singleton
-    fun provideApiUsageTracker(): ApiUsageTracker = ApiUsageTracker.getInstance()
+    fun apiApiUsageTracker(): ApiUsageTracker {
+        println("apiApiUsageTracker")
+        return ApiUsageTracker.getInstance()
+    }
 
     /**
      * 提供API调用帮助器
      */
     @Provides
     @Singleton
-    fun provideApiCallHelper(apiUsageTracker: ApiUsageTracker): ApiCallHelper {
+    fun apiApiCallHelper(apiUsageTracker: ApiUsageTracker): ApiCallHelper {
+        println("apiApiCallHelper")
         return ApiCallHelper(apiUsageTracker)
     }
 }

@@ -15,13 +15,14 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DatabaseModule {
+object DatabaseDiModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(
+    fun apiAppDatabase(
         @ApplicationContext context: Context
     ): AppDatabase {
+        println("apiAppDatabase")
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
@@ -42,17 +43,19 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideWallpaperDao(
+    fun apiWallpaperDao(
         database: AppDatabase
     ): WallpaperDao {
+        println("apiWallpaperDao")
         return database.wallpaperDao()
     }
 
     @Provides
     @Singleton
-    fun provideDiamondDao(
+    fun apiDiamondDao(
         database: AppDatabase
     ): DiamondDao {
+        println("apiDiamondDao")
         return database.diamondDao()
     }
 }

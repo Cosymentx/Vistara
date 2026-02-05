@@ -79,7 +79,7 @@ fun RechargeScreen(
     var showTransactions by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        viewModel.connectBillingService()
+        viewModel.bindBilling()
     }
 
     LaunchedEffect(paymentUrl) {
@@ -97,7 +97,7 @@ fun RechargeScreen(
             } catch (e: Exception) {
                 Log.e("RechargeScreen", "Error navigating to WebView: ${e.message}", e)
             }
-            viewModel.clearPaymentUrl()
+            viewModel.resetPaymentUrl()
         }
     }
 
@@ -106,8 +106,8 @@ fun RechargeScreen(
             amount =  "${selectedProduct?.diamondAmount}",
             paymentMethods = paymentMethods,
             isLoading = viewModel.paymentMethodsLoading.collectAsState().value,
-            onDismiss = viewModel::hidePaymentDialog,
-            onPaymentSelected = viewModel::handlePaymentMethodSelected
+            onDismiss = viewModel::dismissPaymentDialog,
+            onPaymentSelected = viewModel::applyPaymentMethod
         )
     }
 
@@ -127,7 +127,7 @@ fun RechargeScreen(
                     IconButton(onClick = {
                         showTransactions = !showTransactions
                         if (showTransactions) {
-                            viewModel.loadTransactions()
+                            viewModel.refreshTransactions()
                         }
                     }) {
                         Icon(
@@ -154,8 +154,8 @@ fun RechargeScreen(
                     productPrices = productPrices,
                     isLoading = apiProductsLoading,
                     errorMessage = apiProductsError,
-                    onProductSelected = viewModel::selectProduct,
-                    onPurchase = { viewModel.showPaymentDialog() })
+                    onProductSelected = viewModel::chooseProduct,
+                    onPurchase = { viewModel.presentPaymentDialog() })
             }
 
             AnimatedVisibility(
