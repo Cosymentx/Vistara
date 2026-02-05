@@ -1,0 +1,295 @@
+package com.obscura.wallpapers.features.test
+
+import android.content.Context
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.obscura.wallpapers.R
+import com.obscura.wallpapers.core.data.model.DiamondTransactionType
+import com.obscura.wallpapers.core.data.remote.service.ApiService
+import com.obscura.wallpapers.core.data.remote.service.LoginRequest
+import com.obscura.wallpapers.core.data.repository.AuthRepository
+import com.obscura.wallpapers.core.data.repository.DiamondRepository
+import com.obscura.wallpapers.core.data.repository.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class TestViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val diamondRepository: DiamondRepository,
+    private val authRepository: AuthRepository,
+    private val apiService: ApiService,
+    @ApplicationContext private val context: Context
+) : ViewModel() {
+
+    companion object {
+        private const val TAG = "TestViewModel"
+    }
+
+    private val _isPremiumUser = MutableStateFlow(false)
+    val isPremiumUser: StateFlow<Boolean> = _isPremiumUser.asStateFlow()
+
+    private val _isLoggedIn = MutableStateFlow(false)
+    val isLoggedIn: StateFlow<Boolean> = _isLoggedIn.asStateFlow()
+
+    private val _isDiamondTestEnabled = MutableStateFlow(false)
+    val isDiamondTestEnabled: StateFlow<Boolean> = _isDiamondTestEnabled.asStateFlow()
+
+    private val _currentDiamondBalance = MutableStateFlow(0)
+    val currentDiamondBalance: StateFlow<Int> = _currentDiamondBalance.asStateFlow()
+
+    private val _operationResult = MutableStateFlow<String?>(null)
+    val operationResult: StateFlow<String?> = _operationResult.asStateFlow()
+
+    private val _isLoginLoading = MutableStateFlow(false)
+    val isLoginLoading: StateFlow<Boolean> = _isLoginLoading.asStateFlow()
+
+    private val _showLoginDialog = MutableStateFlow(false)
+    val showLoginDialog: StateFlow<Boolean> = _showLoginDialog.asStateFlow()
+
+    init {
+        checkPremiumStatus()
+        checkLoginStatus()
+        checkDiamondBalance()
+    }
+
+    private fun checkLoginStatus() {
+        viewModelScope.launch {
+            try {
+                val isLoggedIn = userRepository.checkUserLoggedIn()
+                _isLoggedIn.value = isLoggedIn
+                Log.d(TAG, "Login status: $isLoggedIn")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error checking login status: ${e.message}")
+                _operationResult.value =
+                    context.getString(R.string.check_login_status_failed, e.message)
+            }
+        }
+    }
+
+    private fun checkPremiumStatus() {
+        viewModelScope.launch {
+            try {
+                val isPremium = userRepository.isPremiumUser.first()
+                _isPremiumUser.value = isPremium
+                Log.d(TAG, "Premium status: $isPremium")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error checking premium status: ${e.message}")
+                _operationResult.value =
+                    context.getString(R.string.check_premium_status_failed, e.message)
+            }
+        }
+    }
+
+    fun enablePremiumUser() {
+        viewModelScope.launch {
+            try {
+                userRepository.updatePremiumStatus(true)
+                _isPremiumUser.value = true
+                _operationResult.value = context.getString(R.string.set_premium_success)
+                Log.d(TAG, "User set to premium")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error setting premium status: ${e.message}")
+                _operationResult.value = context.getString(R.string.set_premium_failed, e.message)
+            }
+        }
+    }
+
+    fun disablePremiumUser() {
+        viewModelScope.launch {
+            try {
+                userRepository.updatePremiumStatus(false)
+                _isPremiumUser.value = false
+                _operationResult.value = context.getString(R.string.disable_premium_success)
+                Log.d(TAG, "Premium status disabled")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error disabling premium status: ${e.message}")
+                _operationResult.value =
+                    context.getString(R.string.disable_premium_failed, e.message)
+            }
+        }
+    }
+
+    fun simulateLogin() {
+        viewModelScope.launch {
+            try {
+                userRepository.updateLoginStatus(true)
+                _isLoggedIn.value = true
+                _operationResult.value = context.getString(R.string.simulate_login_success)
+                Log.d(TAG, "Simulated login successful")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error simulating login: ${e.message}")
+                _operationResult.value =
+                    context.getString(R.string.simulate_login_failed, e.message)
+            }
+        }
+    }
+
+    fun simulateLogout() {
+        viewModelScope.launch {
+            try {
+                userRepository.updateLoginStatus(false)
+                _isLoggedIn.value = false
+                _operationResult.value = context.getString(R.string.simulate_logout_success)
+                Log.d(TAG, "Simulated logout successful")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error simulating logout: ${e.message}")
+                _operationResult.value =
+                    context.getString(R.string.simulate_logout_failed, e.message)
+            }
+        }
+    }
+
+    private fun checkDiamondBalance() {
+        viewModelScope.launch {
+            try {
+                val balance = diamondRepository.getDiamondBalanceValue()
+                _currentDiamondBalance.value = balance
+                Log.d(TAG, "Diamond balance: $balance")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error checking diamond balance: ${e.message}")
+                _operationResult.value = "检查钻石余额失败: ${e.message}"
+            }
+        }
+    }
+
+    fun toggleDiamondTest() {
+        val newState = !_isDiamondTestEnabled.value
+        _isDiamondTestEnabled.value = newState
+
+        viewModelScope.launch {
+            try {
+                if (newState) {
+                    val success = diamondRepository.updateDiamondBalance(
+                        amount = 200,
+                        type = DiamondTransactionType.REWARD,
+                        description = "测试模式奖励"
+                    )
+                    if (success) {
+                        _operationResult.value = "测试模式已开启，已增加200钻石"
+                        checkDiamondBalance()
+                    } else {
+                        _operationResult.value = "增加钻石失败"
+                    }
+                } else {
+                    val currentBalance = diamondRepository.getDiamondBalanceValue()
+                    if (currentBalance > 0) {
+                        val success = diamondRepository.updateDiamondBalance(
+                            amount = -currentBalance,
+                            type = DiamondTransactionType.PURCHASE,
+                            description = "测试模式关闭，清空钻石"
+                        )
+                        if (success) {
+                            _operationResult.value = "测试模式已关闭，钻石已清空"
+                            checkDiamondBalance()
+                        } else {
+                            _operationResult.value = "清空钻石失败"
+                        }
+                    } else {
+                        _operationResult.value = "测试模式已关闭"
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error toggling diamond test: ${e.message}")
+                _operationResult.value = "切换钻石测试模式失败: ${e.message}"
+            }
+        }
+    }
+
+    fun clearOperationResult() {
+        _operationResult.value = null
+    }
+
+    fun showLoginDialog() {
+        _showLoginDialog.value = true
+    }
+
+    fun hideLoginDialog() {
+        _showLoginDialog.value = false
+    }
+
+    fun loginWithEmail(email: String) {
+        viewModelScope.launch {
+            try {
+                _isLoginLoading.value = true
+
+                val randomNickname = generateRandomNickname()
+                val randomToken = generateRandomToken()
+
+                Log.d(TAG, "随机生成nickname: $randomNickname, token: $randomToken")
+
+                val loginRequest = LoginRequest(
+                    nickname = randomNickname,
+                    email = email,
+                    avatar = "https://api.dicebear.com/7.x/micah/png?seed=${email}",
+                    token = randomToken
+                )
+
+                val result = apiService.login(loginRequest)
+                Log.d(TAG, "登录请求结果: $result")
+
+                if (result.isSuccess) {
+                    val loginResponse = result.data
+                    userRepository.saveServerToken(loginResponse?.token ?: "")
+                    userRepository.updateLoginStatus(true)
+                    _isLoggedIn.value = true
+                    saveUserInfo(
+                        userId = "test_${System.currentTimeMillis()}",
+                        userName = randomNickname,
+                        userEmail = email,
+                        userPhotoUrl = "https://api.dicebear.com/7.x/micah/png?seed=${email}"
+                    )
+                    loginResponse?.isPremium?.let { isPremium ->
+                        userRepository.updatePremiumStatus(isPremium)
+                        _isPremiumUser.value = isPremium
+                    }
+                    _operationResult.value = context.getString(R.string.login_success)
+                    hideLoginDialog()
+                    Log.d(TAG, "Login successful")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error during login: ${e.message}")
+                _operationResult.value = context.getString(R.string.login_failed)
+            } finally {
+                _isLoginLoading.value = false
+            }
+        }
+    }
+
+    private fun generateRandomNickname(): String {
+        val adjectives = listOf(
+            "快乐的", "聪明的", "勇敢的", "可爱的", "友善的",
+            "活泼的", "机智的", "温柔的", "善良的", "幽默的"
+        )
+        val nouns = listOf("熊猫", "老虎", "狮子", "猫咪", "狗狗", "兔子", "松鼠", "大象", "长颈鹿", "猴子")
+
+        val randomAdjective = adjectives.random()
+        val randomNoun = nouns.random()
+        val randomNumber = (1000..9999).random()
+
+        return "$randomAdjective$randomNoun$randomNumber"
+    }
+
+    private fun generateRandomToken(): String {
+        val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        return (1..32).map { charPool.random() }.joinToString("")
+    }
+
+    private suspend fun saveUserInfo(
+        userId: String, userName: String, userEmail: String, userPhotoUrl: String
+    ) {
+        try {
+            authRepository.saveUserInfo(userId, userName, userEmail, userPhotoUrl)
+            Log.d(TAG, "用户信息保存成功: $userName, $userEmail")
+        } catch (e: Exception) {
+            Log.e(TAG, "保存用户信息失败: ${e.message}")
+        }
+    }
+}
