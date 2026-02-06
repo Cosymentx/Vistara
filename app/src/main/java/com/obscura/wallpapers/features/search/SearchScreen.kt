@@ -40,6 +40,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.core.data.model.WallpaperCategory
+import com.obscura.wallpapers.ui.components.ErrorState
+import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.CategoryChip
 import com.obscura.wallpapers.ui.components.SearchBar
 import com.obscura.wallpapers.ui.components.WallpaperItem
@@ -147,7 +149,12 @@ fun SearchScreen(
                         .padding(16.dp)
                 )
             } else if (isLoading) {
-                LoadingBox()
+                LoadingState()
+            } else if (error != null) {
+                ErrorState(
+                    message = error ?: stringResource(R.string.unknown_error),
+                    onRetry = { viewModel.search(query) }
+                )
             } else if (searchResults.isEmpty() && query.isNotEmpty()) {
                 EmptyResultBox()
             } else {
@@ -157,13 +164,6 @@ fun SearchScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun LoadingBox() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
     }
 }
 

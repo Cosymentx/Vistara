@@ -109,7 +109,7 @@ class WallpaperRepositoryImpl @Inject constructor(
             Log.d(TAG, "getWallpapers: actualType=$actualType, categoryFilter=$categoryFilter")
 
             val wallpapers = when (actualType.lowercase()) {
-                "static" -> {
+                "static", "photo" -> {
                     // 获取静态壁纸，使用 Unsplash 和 Pexels 的组合
                     val unsplashResponse = safeApiCall(ApiSource.UNSPLASH) {
                         unsplashApiService.getPhotos(page = page, perPage = pageSize / 2)
@@ -132,7 +132,7 @@ class WallpaperRepositoryImpl @Inject constructor(
                     unsplashWallpapers + pexelsWallpapers
                 }
 
-                "live" -> {
+                "live", "video" -> {
                     // 使用 Pexels 的视频 API 获取动态壁纸
                     val pexelsAdapter = pexelsApiAdapter as PexelsApiAdapter
 

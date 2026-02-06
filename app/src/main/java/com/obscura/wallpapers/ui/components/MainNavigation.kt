@@ -32,25 +32,25 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.BannerActionType
-import com.obscura.wallpapers.features.about.AboutScreen
-import com.obscura.wallpapers.features.auth.AuthScreen
-import com.obscura.wallpapers.features.autochange.AutoChangeScreen
-import com.obscura.wallpapers.features.detail.WallpaperDetailScreen
-import com.obscura.wallpapers.features.downloads.DownloadsScreen
-import com.obscura.wallpapers.features.edit.WallpaperEditScreen
-import com.obscura.wallpapers.features.favorites.FavoritesScreen
-import com.obscura.wallpapers.features.feedback.FeedbackScreen
-import com.obscura.wallpapers.features.home.HomeScreen
-import com.obscura.wallpapers.features.lives.LiveLibraryScreen
-import com.obscura.wallpapers.features.mine.MineScreen
-import com.obscura.wallpapers.features.premium.PremiumScreen
-import com.obscura.wallpapers.features.recharge.RechargeScreen
+import com.obscura.wallpapers.features.browser.BrowserScreen
+import com.obscura.wallpapers.features.cycler.WallpaperCyclerScreen
+import com.obscura.wallpapers.features.diamond.DiamondScreen
+import com.obscura.wallpapers.features.discover.DiscoverScreen
+import com.obscura.wallpapers.features.editor.WallpaperEditScreen
+import com.obscura.wallpapers.features.info.InfoScreen
+import com.obscura.wallpapers.features.library.LibraryScreen
+import com.obscura.wallpapers.features.likes.LikesScreen
+import com.obscura.wallpapers.features.membership.MembershipScreen
+import com.obscura.wallpapers.features.photo.PhotoLibraryScreen
+import com.obscura.wallpapers.features.preferences.PreferencesScreen
+import com.obscura.wallpapers.features.preview.WallpaperPreviewScreen
+import com.obscura.wallpapers.features.profile.ProfileScreen
 import com.obscura.wallpapers.features.search.SearchScreen
-import com.obscura.wallpapers.features.settings.SettingsScreen
-import com.obscura.wallpapers.features.statics.StaticLibraryScreen
+import com.obscura.wallpapers.features.signin.SignInScreen
+import com.obscura.wallpapers.features.support.SupportScreen
 import com.obscura.wallpapers.features.test.ApiTestScreen
 import com.obscura.wallpapers.features.test.TestScreen
-import com.obscura.wallpapers.features.webview.WebViewScreen
+import com.obscura.wallpapers.features.video.VideoLibraryScreen
 import com.obscura.wallpapers.ui.theme.LocalAppResources
 import dev.chrisbanes.haze.HazeDefaults
 import dev.chrisbanes.haze.hazeEffect
@@ -66,26 +66,27 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
     val hazeState = rememberHazeState()
     Box(modifier = Modifier.hazeSource(state = hazeState)) {
         NavHost(
-            navController = navController, startDestination = NavDestination.Home.route,
+            navController = navController,
+            startDestination = NavDestination.Home.route,
             modifier = Modifier
         ) {
             composable("auth") {
-                AuthScreen(onLoginSuccess = {
+                SignInScreen(onLoginSuccess = {
                     navController.popBackStack()
                 }, onSkipLogin = {
                     navController.popBackStack()
                 })
             }
             composable(NavDestination.Home.route) {
-                HomeScreen(onWallpaperClick = { wallpaper ->
-                    navController.navigate("wallpaper/${wallpaper.id}")
+                DiscoverScreen(onWallpaperClick = { wallpaper ->
+                    navController.navigate("preview/${wallpaper.id}")
                 }, onSearch = { query ->
                     navController.navigate("search?query=$query")
                 }, onBannerClick = { banner ->
                     when (banner.actionType) {
                         BannerActionType.WALLPAPER, BannerActionType.COLLECTION -> {
                             banner.actionTarget?.let { wallpaperId ->
-                                navController.navigate("wallpaper/$wallpaperId")
+                                navController.navigate("preview/$wallpaperId")
                             }
                         }
 
@@ -98,26 +99,26 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     }
                 })
             }
-            composable(NavDestination.StaticWallpapers.route) {
-                StaticLibraryScreen(onWallpaperClick = { wallpaper ->
-                    navController.navigate("wallpaper/${wallpaper.id}")
+            composable(NavDestination.PhotoWallpapers.route) {
+                PhotoLibraryScreen(onWallpaperClick = { wallpaper ->
+                    navController.navigate("preview/${wallpaper.id}")
                 }, onSearchClick = {
                     navController.navigate("search")
                 })
             }
-            composable(NavDestination.LiveWallpapers.route) {
-                LiveLibraryScreen(onWallpaperClick = { wallpaper ->
-                    navController.navigate("wallpaper/${wallpaper.id}")
+            composable(NavDestination.VideoWallpapers.route) {
+                VideoLibraryScreen(onWallpaperClick = { wallpaper ->
+                    navController.navigate("preview/${wallpaper.id}")
                 }, onSearchClick = {
                     navController.navigate("search")
                 })
             }
             composable(NavDestination.Mine.route) {
                 val context = LocalContext.current
-                MineScreen(
+                ProfileScreen(
                     onFavoritesClick = { navController.navigate("favorites") },
                     onDownloadsClick = { navController.navigate("downloads") },
-                    onAutoChangeClick = { navController.navigate("autochange") },
+                    onAutoChangeClick = { navController.navigate("cycler") },
                     onSettingsClick = { navController.navigate("settings") },
                     onFeedbackClick = { navController.navigate("feedback") },
                     onAboutClick = { navController.navigate("about") },
@@ -127,16 +128,15 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     onTestToolsClick = { navController.navigate("test") })
             }
             composable("premium") {
-                PremiumScreen(
+                MembershipScreen(
                     onBackPressed = { navController.navigateUp() },
                     onUpgradeSuccess = { navController.navigateUp() },
                     navController = navController
                 )
             }
             composable("diamond") {
-                RechargeScreen(
-                    onBackPressed = { navController.navigateUp() },
-                    navController = navController
+                DiamondScreen(
+                    onBackPressed = { navController.navigateUp() }, navController = navController
                 )
             }
             composable(
@@ -160,10 +160,10 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     onSaveComplete = { navController.navigateUp() })
             }
             composable(
-                route = "wallpaper/{wallpaperId}",
+                route = "preview/{wallpaperId}",
                 arguments = listOf(navArgument("wallpaperId") { type = NavType.StringType })
             ) {
-                WallpaperDetailScreen(
+                WallpaperPreviewScreen(
                     onBackPressed = { navController.navigateUp() },
                     onNavigateToEdit = { wallpaperId ->
                         navController.navigate("edit/$wallpaperId")
@@ -173,40 +173,39 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     onNavigateToDiamondRecharge = { navController.navigate("diamond") })
             }
             composable("favorites") {
-                FavoritesScreen(
+                LikesScreen(
                     onBackPressed = { navController.navigateUp() },
                     onWallpaperClick = { wallpaper ->
-                        navController.navigate("wallpaper/${wallpaper.id}")
+                        navController.navigate("preview/${wallpaper.id}")
                     },
                     onNavigateToLogin = { navController.navigate("auth") })
             }
             composable("downloads") {
-                DownloadsScreen(
+                LibraryScreen(
                     onBackPressed = { navController.navigateUp() },
                     onWallpaperClick = { wallpaper ->
-                        navController.navigate("wallpaper/${wallpaper.id}")
+                        navController.navigate("preview/${wallpaper.id}")
                     },
                     onNavigateToLogin = { navController.navigate("auth") })
             }
             composable("settings") {
-                SettingsScreen(onBackPressed = { navController.navigateUp() })
+                PreferencesScreen(onBackPressed = { navController.navigateUp() })
             }
-            composable("autochange") {
-                AutoChangeScreen(
+            composable("cycler") {
+                WallpaperCyclerScreen(
                     onBackPressed = { navController.navigateUp() },
                     onNavigateToLogin = { navController.navigate("auth") })
             }
             composable("feedback") {
-                FeedbackScreen(onBackPressed = { navController.navigateUp() })
+                SupportScreen(onBackPressed = { navController.navigateUp() })
             }
             composable("about") {
-                AboutScreen(
-                    onBackPressed = { navController.navigateUp() },
-                    navController = navController
+                InfoScreen(
+                    onBackPressed = { navController.navigateUp() }, navController = navController
                 )
             }
             composable(
-                route = "webview?url={url}", arguments = listOf(navArgument("url") {
+                route = "browser?url={url}", arguments = listOf(navArgument("url") {
                     type = NavType.StringType
                     nullable = false
                 }, navArgument("title") {
@@ -218,10 +217,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 val encodedTitle = backStackEntry.arguments?.getString("title") ?: ""
                 val url = URLDecoder.decode(encodedUrl, "UTF-8")
                 val title = URLDecoder.decode(encodedTitle, "UTF-8")
-                WebViewScreen(
-                    url = url,
-                    title = title,
-                    onBackPressed = { navController.navigateUp() })
+                BrowserScreen(
+                    url = url, title = title, onBackPressed = { navController.navigateUp() })
             }
             composable("test") {
                 TestScreen(
@@ -238,10 +235,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .hazeEffect(
-                        state = hazeState,
-                        style = HazeDefaults.style(
-                            backgroundColor = MaterialTheme.colorScheme.surface,
-                            blurRadius = 10.dp
+                        state = hazeState, style = HazeDefaults.style(
+                            backgroundColor = MaterialTheme.colorScheme.surface, blurRadius = 10.dp
                         )
                     )
             )
@@ -267,14 +262,14 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
                         }
                     }
 
-                    NavDestination.StaticWallpapers -> {
+                    NavDestination.PhotoWallpapers -> {
                         Icon(
                             ImageVector.vectorResource(id = R.drawable.ic_image),
                             contentDescription = destination.getTitle()
                         )
                     }
 
-                    NavDestination.LiveWallpapers -> {
+                    NavDestination.VideoWallpapers -> {
                         Icon(
                             ImageVector.vectorResource(id = R.drawable.ic_movie),
                             contentDescription = destination.getTitle()
@@ -308,14 +303,14 @@ enum class NavDestination(val route: String, val titleResId: Int) {
             return resources.getString(R.string.home)
         }
     },
-    StaticWallpapers("static", R.string.nav_static) {
+    PhotoWallpapers("photo", R.string.nav_static) {
         @Composable
         override fun getTitle(): String {
             val resources = LocalAppResources.current
             return resources.getString(R.string.category_static)
         }
     },
-    LiveWallpapers("live", R.string.nav_live) {
+    VideoWallpapers("video", R.string.nav_live) {
         @Composable
         override fun getTitle(): String {
             val resources = LocalAppResources.current

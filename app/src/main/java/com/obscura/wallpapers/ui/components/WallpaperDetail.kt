@@ -34,7 +34,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Share
-import com.obscura.wallpapers.ui.icons.AppIcons
+import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -171,7 +171,7 @@ fun WallpaperDetail(
                             .size(40.dp)
                     ) {
                         Icon(
-                            imageVector = AppIcons.WallpaperPreview,
+                            imageVector = ObscuraIcons.WallpaperPreview,
                             contentDescription = stringResource(R.string.preview_wallpaper),
                             tint = Color.White
                         )
