@@ -23,4 +23,12 @@ data class PexelsSearchResponse(
     
     @SerialName("prev_page")
     val prevPage: String? = null
-) 
+) {
+    fun apiHasNext(): Boolean {
+        println("apiHasNext")
+        return nextPage != null
+    }
+    fun apiHasPrev(): Boolean = prevPage != null
+    fun apiTotal(): Int = totalResults
+    fun apiPageSize(): Int = perPage
+}

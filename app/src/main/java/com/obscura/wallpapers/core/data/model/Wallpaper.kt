@@ -10,6 +10,7 @@ data class Resolution(
     val width: Int, val height: Int
 ) {
     override fun toString(): String = "${width}x${height}"
+    fun apiPair(): Pair<Int, Int> = width to height
 }
 
 /**
@@ -46,4 +47,8 @@ data class Wallpaper(
     val attributionRequired: Boolean? = true,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
-)
+) {
+    fun apiResolution(): Pair<Int, Int>? = resolution?.apiPair()
+    fun apiHasPreview(): Boolean = !previewUrl.isNullOrEmpty()
+    fun apiIsDownloaded(): Boolean = isDownloaded
+} 

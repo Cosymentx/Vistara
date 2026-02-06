@@ -17,7 +17,14 @@ data class UnsplashPhoto(
     val user: UnsplashUser,
     val likes: Int,
     val tags: List<UnsplashTag>? = null
-)
+) {
+    fun apiPreviewUrl(): String {
+        println("apiPreviewUrl")
+        return urls.regular
+    }
+    fun apiThumbnailUrl(): String = urls.small
+    fun apiDownloadLink(): String = links.download
+}
 
 /**
  * Unsplash 图片URL
@@ -29,7 +36,10 @@ data class UnsplashUrls(
     val regular: String,
     val small: String,
     val thumb: String
-)
+) {
+    fun apiFull(): String = full
+    fun apiRaw(): String = raw
+}
 
 /**
  * Unsplash 链接
@@ -40,7 +50,9 @@ data class UnsplashLinks(
     val html: String,
     val download: String,
     val download_location: String
-)
+) {
+    fun apiPage(): String = html
+}
 
 /**
  * Unsplash 用户信息
@@ -52,7 +64,9 @@ data class UnsplashUser(
     val name: String,
     val portfolio_url: String?,
     val links: UnsplashUserLinks
-)
+) {
+    fun apiProfile(): String? = portfolio_url
+}
 
 /**
  * Unsplash 用户头像
@@ -62,7 +76,9 @@ data class UnsplashUserProfileImage(
     val small: String,
     val medium: String,
     val large: String
-)
+) {
+    fun apiSmall(): String = small
+}
 
 /**
  * Unsplash 用户链接
@@ -73,7 +89,9 @@ data class UnsplashUserLinks(
     val html: String,
     val photos: String,
     val likes: String
-)
+) {
+    fun apiPage(): String = html
+}
 
 /**
  * Unsplash 标签
@@ -81,4 +99,6 @@ data class UnsplashUserLinks(
 @Serializable
 data class UnsplashTag(
     val title: String
-) 
+) {
+    fun apiTitle(): String = title
+} 

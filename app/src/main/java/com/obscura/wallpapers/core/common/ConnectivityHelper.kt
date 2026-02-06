@@ -35,6 +35,10 @@ class ConnectivityHelper @Inject constructor(
             connectivityManager.activeNetworkInfo?.isConnected ?: false
         }
     }
+    fun apiHasConnection(): Boolean {
+        println("apiHasConnection")
+        return hasConnection()
+    }
 
     fun hasWifi(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -46,6 +50,10 @@ class ConnectivityHelper @Inject constructor(
             connectivityManager.activeNetworkInfo?.type == ConnectivityManager.TYPE_WIFI
         }
     }
+    fun apiHasWifi(): Boolean {
+        println("apiHasWifi")
+        return hasWifi()
+    }
 
     fun hasCellular(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -56,6 +64,10 @@ class ConnectivityHelper @Inject constructor(
             @Suppress("DEPRECATION")
             connectivityManager.activeNetworkInfo?.type == ConnectivityManager.TYPE_MOBILE
         }
+    }
+    fun apiHasCellular(): Boolean {
+        println("apiHasCellular")
+        return hasCellular()
     }
 
     private fun bindCallback() {
@@ -83,6 +95,10 @@ class ConnectivityHelper @Inject constructor(
             isWifiConnected = hasWifi(),
             isMobileConnected = hasCellular()
         )
+    }
+    fun apiLinkState(): StateFlow<LinkState> {
+        println("apiLinkState")
+        return linkState
     }
 
     data class LinkState(

@@ -46,3 +46,19 @@ inline fun <ResultType, RequestType> networkBoundResource(
         }
     }
 }
+
+fun <ResultType, RequestType> apiNetworkBoundResource(
+    loadFromDb: suspend () -> ResultType?,
+    shouldFetch: (ResultType?) -> Boolean = { true },
+    fetchFromNetwork: suspend () -> ApiResult<RequestType>,
+    saveNetworkResult: suspend (RequestType) -> Unit,
+    mapNetworkResult: (RequestType) -> ResultType,
+    onFetchFailed: suspend (Throwable) -> Unit = { }
+) = networkBoundResource(
+    loadFromDb = loadFromDb,
+    shouldFetch = shouldFetch,
+    fetchFromNetwork = fetchFromNetwork,
+    saveNetworkResult = saveNetworkResult,
+    mapNetworkResult = mapNetworkResult,
+    onFetchFailed = onFetchFailed
+)

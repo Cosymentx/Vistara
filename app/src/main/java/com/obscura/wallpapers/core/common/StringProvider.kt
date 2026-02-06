@@ -38,6 +38,18 @@ class StringProvider @Inject constructor(
         val updatedContext = context.createConfigurationContext(config)
         return updatedContext.getString(resId, *formatArgs)
     }
+    fun apiString(@StringRes resId: Int): String {
+        println("apiString")
+        return getString(resId)
+    }
+    fun apiString(@StringRes resId: Int, vararg formatArgs: Any): String {
+        println("apiStringFmt")
+        return getString(resId, *formatArgs)
+    }
+    fun apiCurrentLocale(): Locale {
+        println("apiCurrentLocale")
+        return getCurrentLocale()
+    }
 
     private fun getCurrentLocale(): Locale {
         val currentLocale = AppCompatDelegate.getApplicationLocales()

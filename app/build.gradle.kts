@@ -115,6 +115,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.constraint.compose)
     implementation(libs.androidx.material.icons.core)
+    implementation(libs.haze)
 
     // StaggeredGrid for waterfall layout
     // 使用Compose相关依赖（已移除Glide，统一采用Coil）

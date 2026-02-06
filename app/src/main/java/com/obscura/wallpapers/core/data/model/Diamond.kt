@@ -14,7 +14,9 @@ data class DiamondAccount(
     @PrimaryKey val userId: String,
     val balance: Int,
     val lastUpdated: Long = System.currentTimeMillis()
-)
+) {
+    fun apiBalance(): Int = balance
+}
 
 /**
  * 钻石交易类型
@@ -23,7 +25,7 @@ enum class DiamondTransactionType {
     RECHARGE,  // 充值
     PURCHASE,  // 购买壁纸等
     REWARD,    // 奖励
-    REFUND     // 退款
+    REFUND;     // 退款
 }
 
 /**
@@ -42,7 +44,9 @@ data class DiamondTransaction(
     val createTime: String? = null,
     val timestamp: Long = System.currentTimeMillis(),
     val relatedItemId: String? = null  // 关联的壁纸ID或其他项目ID
-)
+) {
+    fun apiIsRecharge(): Boolean = type == DiamondTransactionType.RECHARGE
+}
 
 /**
  * 钻石商品数据模型
@@ -61,7 +65,12 @@ data class DiamondProduct(
     val productId: String? = null,
     val discount: Int = 0,  // 折扣百分比
     var googlePlayProductId: String? = null // Google Play商品ID
-)
+) {
+    fun apiFinalPrice(): Double {
+        println("apiFinalPrice")
+        return if (discount > 0) price * (100 - discount) / 100.0 else price
+    }
+}
 
 /**
  * 钻石价格数据模型
@@ -70,4 +79,6 @@ data class DiamondProduct(
 data class DiamondPrice(
     val itemId: String, val price: Int, val originalPrice: Int? = null, // 原价，用于显示折扣
     val isDiscounted: Boolean = false
-)
+) {
+    fun apiEffectivePrice(): Int = price
+}

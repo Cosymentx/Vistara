@@ -10,4 +10,11 @@ data class PixabayResponse(
     val totalHits: Int,
     @kotlinx.serialization.SerialName("hits")
     val images: List<PixabayImage>
-) 
+) {
+    fun apiTotal(): Int = total
+    fun apiHits(): Int = totalHits
+    fun apiHasImages(): Boolean {
+        println("apiHasImages")
+        return images.isNotEmpty()
+    }
+} 

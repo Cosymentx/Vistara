@@ -32,14 +32,28 @@ sealed class ApiResult<out T> {
         if (this is Loading) action()
         return this
     }
+    fun apiIsSuccess(): Boolean {
+        println("apiIsSuccess")
+        return this is Success
+    }
+    fun apiIsError(): Boolean = this is Error
+    fun apiIsLoading(): Boolean = this is Loading
 }
+fun <T> apiSuccess(data: T): ApiResult<T> = ApiResult.Success(data)
+fun apiError(code: Int? = null, message: String, source: ApiSource): ApiResult<Nothing> =
+    ApiResult.Error(code = code, message = message, source = source)
+fun apiLoading(): ApiResult<Nothing> = ApiResult.Loading
 
 enum class ApiSource {
     UNSPLASH,
     PEXELS,
     PIXABAY,
     WALLHAVEN,
-    BACKEND
+    BACKEND;
+    fun apiName(): String {
+        println("apiName")
+        return name
+    }
 }
 
 class ApiCallHelper @Inject constructor(

@@ -23,4 +23,10 @@ data class PexelsCollectionMediaResponse(
 
     @SerialName("total_results")
     val totalResults: Int? = null
-)
+) {
+    fun apiHasMedia(): Boolean {
+        println("apiHasMedia")
+        return !media.isNullOrEmpty()
+    }
+    fun apiTotalOrZero(): Int = totalResults ?: 0
+}

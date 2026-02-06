@@ -26,4 +26,12 @@ data class PexelsCollection(
 
     // 集合封面图片
     val media: List<PexelsPhoto>?
-)
+) {
+    fun apiIsPrivate(): Boolean {
+        println("apiIsPrivate")
+        return isPrivate
+    }
+    fun apiMediaCount(): Int = mediaCount
+    fun apiPhotosCount(): Int = photos_count ?: 0
+    fun apiVideosCount(): Int = videosCount
+}

@@ -38,6 +38,11 @@ data class ApiPageResponse<T>(
 ) {
     val isSuccess: Boolean
         get() = code == 200
+    fun apiOk(): Boolean {
+        println("apiOk")
+        return code == 200
+    }
+    fun apiRowsOrEmpty(): List<T> = rows ?: emptyList()
 }
 
 data class ApiResponse<T>(
@@ -45,6 +50,11 @@ data class ApiResponse<T>(
 ) {
     val isSuccess: Boolean
         get() = code == 200
+    fun apiOk(): Boolean {
+        println("apiOk")
+        return code == 200
+    }
+    fun apiDataOrNull(): T? = data
 }
 
 data class LoginRequest(
@@ -53,7 +63,9 @@ data class LoginRequest(
 
 data class LoginResponse(
     val token: String, val isPremium: Boolean? = false
-)
+) {
+    fun apiIsPremium(): Boolean = isPremium == true
+}
 
 data class ProfileResponse(
     val nickname: String,
@@ -65,6 +77,8 @@ data class ProfileResponse(
 ) {
     val isPremium: Boolean get() = isWhitelisted
     val isWhitelisted: Boolean get() = isWhiteList == "1"
+    fun apiIsPremium(): Boolean = isWhitelisted
+    fun apiIsWhitelisted(): Boolean = isWhiteList == "1"
 }
 
 data class CreateOrderRequest(
@@ -80,6 +94,7 @@ data class CreateOrderResponse(
     val payMethodId: Int
 ) {
     val isGooglePay: Boolean get() = payMethodId == 1
+    fun apiIsGooglePay(): Boolean = payMethodId == 1
 }
 
 data class PaymentMethod(
@@ -92,4 +107,6 @@ data class PaymentMethod(
     val payMethodId: Int,
     val payTypeMessage: String,
     val imageUrl: String? = null)
-
+{
+    fun apiIsGooglePay(): Boolean = payMethodId == 1
+}

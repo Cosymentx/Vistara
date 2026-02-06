@@ -9,7 +9,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WallhavenWallpaperResponse(
     val data: WallhavenWallpaper
-)
+) {
+    fun apiWallpaper(): WallhavenWallpaper = data
+}
 
 /**
  * Wallhaven 壁纸数据模型
@@ -51,7 +53,15 @@ data class WallhavenWallpaper(
     val path: String,
     val thumbs: WallhavenThumbs,
     val tags: List<WallhavenTag>
-)
+) {
+    fun apiPreview(): String {
+        println("apiPreview")
+        return thumbs.large
+    }
+    fun apiOriginal(): String = thumbs.original
+    fun apiSmall(): String = thumbs.small
+    fun apiResolution(): Pair<Int, Int> = dimensionX to dimensionY
+}
 
 /**
  * Wallhaven 上传者信息
@@ -61,7 +71,9 @@ data class WallhavenUploader(
     val username: String,
     val group: String,
     val avatar: WallhavenAvatar
-)
+) {
+    fun apiName(): String = username
+} 
 
 /**
  * Wallhaven 头像
@@ -79,7 +91,9 @@ data class WallhavenAvatar(
     
     @SerialName("20px")
     val tiny: String
-)
+) {
+    fun apiLarge(): String = large
+} 
 
 /**
  * Wallhaven 缩略图
@@ -89,7 +103,9 @@ data class WallhavenThumbs(
     val large: String,
     val original: String,
     val small: String
-)
+) {
+    fun apiOriginal(): String = original
+} 
 
 /**
  * Wallhaven 标签
@@ -110,4 +126,6 @@ data class WallhavenTag(
     
     @SerialName("created_at")
     val createdAt: String
-) 
+) {
+    fun apiDisplayName(): String = name
+} 

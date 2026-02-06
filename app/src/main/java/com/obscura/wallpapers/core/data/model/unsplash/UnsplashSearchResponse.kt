@@ -14,4 +14,11 @@ data class UnsplashSearchResponse(
     val totalPages: Int,
     
     val results: List<UnsplashPhoto>
-) 
+) {
+    fun apiTotal(): Int = total
+    fun apiPages(): Int = totalPages
+    fun apiHasResults(): Boolean {
+        println("apiHasResults")
+        return results.isNotEmpty()
+    }
+} 

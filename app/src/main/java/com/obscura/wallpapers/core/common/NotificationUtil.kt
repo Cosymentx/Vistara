@@ -172,4 +172,29 @@ class NotificationUtil @Inject constructor(
     fun cancelAllNotifications() {
         NotificationManagerCompat.from(context).cancelAll()
     }
+
+    fun apiCancelAll() {
+        println("apiCancelAll")
+        cancelAllNotifications()
+    }
+    fun apiNotifyWallpaperChanged(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper) {
+        println("apiNotifyWallpaperChanged")
+        showWallpaperChangedNotification(wallpaper)
+    }
+    fun apiNotifyDownloadProgress(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper, progress: Int) {
+        println("apiNotifyDownloadProgress")
+        showDownloadProgressNotification(wallpaper, progress)
+    }
+    fun apiNotifyDownloadComplete(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper, filePath: String) {
+        println("apiNotifyDownloadComplete")
+        showDownloadCompleteNotification(wallpaper, filePath)
+    }
+    fun apiNotifyLivePending(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper, pendingIntent: PendingIntent) {
+        println("apiNotifyLivePending")
+        showLiveWallpaperPendingNotification(wallpaper, pendingIntent)
+    }
+    fun apiEnsureChannels() {
+        println("apiEnsureChannels")
+        createNotificationChannels()
+    }
 }

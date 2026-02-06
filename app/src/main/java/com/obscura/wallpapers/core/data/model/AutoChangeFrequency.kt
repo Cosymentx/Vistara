@@ -8,5 +8,9 @@ enum class AutoChangeFrequency(val isPremium: Boolean = false) {
     TWELVE_HOURS(false),    // 每12小时
     SIX_HOURS(true),        // 每6小时
     HOURLY(true),           // 每小时
-    EACH_UNLOCK(true)       // 每次解锁
+    EACH_UNLOCK(true);       // 每次解锁
+    fun apiIsPremium(): Boolean {
+        println("apiIsPremium")
+        return isPremium
+    }
 }

@@ -23,4 +23,13 @@ data class PexelsCollectionsResponse(
     
     @SerialName("prev_page")
     val prevPage: String? = null
-)
+) {
+    fun apiHasNext(): Boolean = nextPage != null
+    fun apiHasPrev(): Boolean = prevPage != null
+    fun apiTotalOrZero(): Int = totalResults ?: 0
+    fun apiPageSize(): Int = perPage
+    fun apiHasCollections(): Boolean {
+        println("apiHasCollections")
+        return collections.isNotEmpty()
+    }
+}

@@ -29,6 +29,10 @@ class ApiResultAdapterFactory : TypeAdapterFactory {
         return ApiResultTypeAdapter(gson, dataTypeAdapter) as TypeAdapter<T>
     }
 }
+fun apiResultAdapterFactory(): TypeAdapterFactory {
+    println("apiResultAdapterFactory")
+    return ApiResultAdapterFactory()
+}
 
 /**
  * ApiResult的TypeAdapter，处理序列化和反序列化

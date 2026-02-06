@@ -25,6 +25,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.obscura.wallpapers.core.data.remote.ApiResultAdapterFactory
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -39,311 +40,259 @@ import okhttp3.Request
 import okhttp3.HttpUrl
 
 /**
- * 网络模块
- * 提供Retrofit和API服务的依赖注入
+ * 网络依赖注入模块（Network DI Module）
+ *
+ * 该模块统一管理 App 中所有网络相关的依赖，包括：
+ * - Retrofit 实例
+ * - OkHttpClient 配置
+ * - 各类 API 鉴权拦截器
+ * - 网络缓存与离线策略
+ * - 接口调用频率与限流状态追踪
+ *
+ * 当前支持的第三方图片/视频数据源：
+ * - Unsplash
+ * - Pexels（图片 / 视频）
+ * - Pixabay
+ * - Wallhaven
+ *
+ * 每个数据源使用**独立的 OkHttpClient 与 Retrofit 实例**，
+ * 防止鉴权、限流状态、请求头相互污染。
  */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkDiModule {
 
+    /** 默认自有后端 API 基础地址 */
     private const val BASE_URL = "https://api.vistaraai.xyz/"
+
+    /** 网络超时时间（秒） */
     private const val TIMEOUT_SECONDS = 30L
+
+    /** JSON 请求/响应的 MediaType */
     private val JSON_MEDIA_TYPE = "application/json".toMediaType()
+
+    // Qualifier 常量（用于区分不同数据源）
     private const val UNSPLASH_AUTH_INTERCEPTOR = "unsplashAuthInterceptor"
     private const val UNSPLASH_HTTP_CLIENT = "unsplashHttpClient"
     private const val UNSPLASH_RETROFIT = "unsplashRetrofit"
+
     private const val PEXELS_AUTH_INTERCEPTOR = "pexelsAuthInterceptor"
     private const val PEXELS_HTTP_CLIENT = "pexelsHttpClient"
     private const val PEXELS_RETROFIT = "pexelsRetrofit"
     private const val PEXELS_VIDEO_RETROFIT = "pexelsVideoRetrofit"
+
     private const val PIXABAY_AUTH_INTERCEPTOR = "pixabayAuthInterceptor"
     private const val PIXABAY_HTTP_CLIENT = "pixabayHttpClient"
     private const val PIXABAY_RETROFIT = "pixabayRetrofit"
+
     private const val WALLHAVEN_AUTH_INTERCEPTOR = "wallhavenAuthInterceptor"
     private const val WALLHAVEN_HTTP_CLIENT = "wallhavenHttpClient"
     private const val WALLHAVEN_RETROFIT = "wallhavenRetrofit"
+
     private const val CACHE_INTERCEPTOR = "cacheInterceptor"
     private const val OFFLINE_INTERCEPTOR = "offlineInterceptor"
 
+    /**
+     * 创建标准的第三方 API OkHttpClient。
+     *
+     * @param cache 统一磁盘缓存
+     * @param loggingInterceptor 日志拦截器（仅调试环境开启）
+     * @param authInterceptor 对应数据源的鉴权拦截器
+     */
     private fun createApiClient(
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
         authInterceptor: Interceptor
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .cache(cache)
-            .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .build()
-    }
+    ): OkHttpClient = OkHttpClient.Builder()
+        .cache(cache)
+        .addInterceptor(authInterceptor)
+        .addInterceptor(loggingInterceptor)
+        .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .build()
 
+    /**
+     * 创建通用 Retrofit 实例（使用 kotlinx-serialization 解析）。
+     *
+     * @param baseUrl API 根地址
+     * @param json Json 序列化配置
+     * @param client OkHttpClient
+     */
     private fun createRetrofit(
         baseUrl: String,
-        json: kotlinx.serialization.json.Json,
+        json: Json,
         client: OkHttpClient
-    ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .client(client)
-            .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE))
-            .build()
-    }
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .client(client)
+        .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE))
+        .build()
 
+    /**
+     * 创建基于 Header 的鉴权拦截器。
+     *
+     * 功能：
+     * - 自动附加 API Key / Token
+     * - 统计接口调用次数
+     * - 解析限流响应头
+     * - 自动进入限流冷却状态
+     */
     private fun createHeaderAuthInterceptor(
         source: ApiSource,
         apiUsageTracker: ApiUsageTracker,
         addAuthHeaders: (Request.Builder) -> Unit,
         rateLimitHeaders: Pair<String, String>? = null
-    ): Interceptor {
-        return Interceptor { chain ->
-            if (apiUsageTracker.isApiRateLimited(source)) {
-                return@Interceptor okhttp3.Response.Builder()
-                    .request(chain.request())
-                    .protocol(okhttp3.Protocol.HTTP_1_1)
-                    .code(403)
-                    .message("Rate Limit Exceeded")
-                    .body("".toResponseBody(null))
-                    .build()
-            }
-
-            apiUsageTracker.trackApiCall(source)
-
-            val requestBuilder = chain.request().newBuilder()
-            addAuthHeaders(requestBuilder)
-            val response = chain.proceed(requestBuilder.build())
-
-            if (response.isSuccessful) {
-                rateLimitHeaders?.let { (limitHeader, remainingHeader) ->
-                    val rateLimit = response.header(limitHeader)?.toIntOrNull() ?: 0
-                    val remaining = response.header(remainingHeader)?.toIntOrNull() ?: 0
-                    if (remaining <= 5) {
-                        if (remaining <= 0) {
-                            apiUsageTracker.setApiRateLimited(source, 600000L)
-                        } else {
-                            apiUsageTracker.setApiRateLimited(source, 60000L)
-                        }
-                    }
-                }
-                apiUsageTracker.trackApiSuccess(source)
-            } else {
-                if (response.code == 403 || response.code == 429) {
-                    apiUsageTracker.trackApiError(source)
-                    apiUsageTracker.setApiRateLimited(source, 600000L)
-                } else {
-                    apiUsageTracker.trackApiError(source)
-                }
-            }
-            response
+    ): Interceptor = Interceptor { chain ->
+        if (apiUsageTracker.isApiRateLimited(source)) {
+            return@Interceptor okhttp3.Response.Builder()
+                .request(chain.request())
+                .protocol(okhttp3.Protocol.HTTP_1_1)
+                .code(403)
+                .message("Rate Limit Exceeded")
+                .body("".toResponseBody(null))
+                .build()
         }
+
+        apiUsageTracker.trackApiCall(source)
+
+        val requestBuilder = chain.request().newBuilder()
+        addAuthHeaders(requestBuilder)
+
+        val response = chain.proceed(requestBuilder.build())
+
+        if (response.isSuccessful) {
+            rateLimitHeaders?.let { (limitHeader, remainingHeader) ->
+                val remaining = response.header(remainingHeader)?.toIntOrNull() ?: 0
+                if (remaining <= 5) {
+                    apiUsageTracker.setApiRateLimited(
+                        source,
+                        if (remaining <= 0) 600_000L else 60_000L
+                    )
+                }
+            }
+            apiUsageTracker.trackApiSuccess(source)
+        } else {
+            apiUsageTracker.trackApiError(source)
+            if (response.code == 403 || response.code == 429) {
+                apiUsageTracker.setApiRateLimited(source, 600_000L)
+            }
+        }
+        response
     }
 
+    /**
+     * 创建基于 Query 参数的鉴权拦截器（如 Pixabay）。
+     */
     private fun createQueryParamAuthInterceptor(
         source: ApiSource,
         apiUsageTracker: ApiUsageTracker,
         applyAuthToUrl: (HttpUrl.Builder) -> Unit
-    ): Interceptor {
-        return Interceptor { chain ->
-            apiUsageTracker.trackApiCall(source)
+    ): Interceptor = Interceptor { chain ->
+        apiUsageTracker.trackApiCall(source)
 
-            val originalRequest = chain.request()
-            val urlBuilder = originalRequest.url.newBuilder()
-            applyAuthToUrl(urlBuilder)
+        val original = chain.request()
+        val newUrl = original.url.newBuilder().apply(applyAuthToUrl).build()
 
-            val response = chain.proceed(
-                originalRequest.newBuilder().url(urlBuilder.build()).build()
-            )
+        val response = chain.proceed(original.newBuilder().url(newUrl).build())
 
-            if (response.isSuccessful) {
-                apiUsageTracker.trackApiSuccess(source)
-            } else {
-                apiUsageTracker.trackApiError(source)
-            }
-            response
-        }
+        if (response.isSuccessful) apiUsageTracker.trackApiSuccess(source)
+        else apiUsageTracker.trackApiError(source)
+
+        response
     }
 
-    /**
-     * 提供Gson实例，用于非网络场景（Room转换等）
-     */
+    /** 提供 Gson（用于本地 JSON / Room / 非网络场景） */
     @Provides
     @Singleton
-    fun apiGson(): Gson {
-        println("apiGson")
-        return GsonBuilder()
-            .setLenient()
-            .registerTypeAdapterFactory(com.obscura.wallpapers.core.data.remote.ApiResultAdapterFactory())
-            .create()
-    }
+    fun apiGson(): Gson = GsonBuilder()
+        .setLenient()
+        .registerTypeAdapterFactory(ApiResultAdapterFactory())
+        .create()
 
-    /**
-     * 提供Kotlinx Serialization的Json实例
-     */
+    /** 提供 kotlinx.serialization Json 实例 */
     @Provides
     @Singleton
-    fun apiJson(): Json {
-        println("apiJson")
-        return Json {
-            ignoreUnknownKeys = true
-            coerceInputValues = true
-            isLenient = true
-        }
+    fun apiJson(): Json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        isLenient = true
     }
 
-    /**
-     * 提供OkHttp缓存
-     */
+    /** 提供 OkHttp 磁盘缓存 */
     @Provides
     @Singleton
-    fun apiOkHttpCache(@ApplicationContext context: Context): Cache {
-        println("apiOkHttpCache")
-        val cacheSize = 50L * 1024L * 1024L // 50 MB
-        return Cache(context.cacheDir, cacheSize)
-    }
+    fun apiOkHttpCache(@ApplicationContext context: Context): Cache =
+        Cache(context.cacheDir, 50L * 1024 * 1024)
 
-    /**
-     * 提供日志拦截器
-     */
+    /** 提供 HttpLoggingInterceptor */
     @Provides
     @Singleton
-    fun apiLoggingInterceptor(): HttpLoggingInterceptor {
-        println("apiLoggingInterceptor")
-        return HttpLoggingInterceptor().apply {
-            level = if (BuildConfig.DEBUG) {
-                HttpLoggingInterceptor.Level.BODY
-            } else {
-                HttpLoggingInterceptor.Level.NONE
-            }
-        }
+    fun apiHttpLoggingInterceptor(): HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+        else HttpLoggingInterceptor.Level.NONE
+        return interceptor
     }
 
-    /**
-     * 提供缓存拦截器
-     */
-    @Provides
-    @Singleton
-    @Named(CACHE_INTERCEPTOR)
-    fun apiCacheInterceptor(): Interceptor {
-        println("apiCacheInterceptor")
-        return Interceptor { chain ->
-            val request = chain.request()
-            val url = request.url.toString()
-
-            // 根据请求类型设置不同的缓存策略
-            val cacheControl = when {
-                // 搜索结果缓存较短时间
-                url.contains("search") -> "public, max-age=300"
-                // 详情页可以缓存更长时间
-                url.contains("photos/") || url.contains("w/") -> "public, max-age=3600"
-                // 默认缓存策略
-                else -> "public, max-age=600"
-            }
-
-            val response = chain.proceed(request)
-            response.newBuilder()
-                .header("Cache-Control", cacheControl)
-                .build()
-        }
-    }
-
-    /**
-     * 提供离线模式拦截器
-     */
-    @Provides
-    @Singleton
-    @Named(OFFLINE_INTERCEPTOR)
-    fun apiOfflineInterceptor(@ApplicationContext context: Context): Interceptor {
-        println("apiOfflineInterceptor")
-        fun isNetworkAvailable(ctx: Context): Boolean {
-            val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val network = connectivityManager.activeNetwork ?: return false
-            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-            return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN))
-        }
-        return Interceptor { chain ->
-            var request = chain.request()
-
-            val isConnected = isNetworkAvailable(context)
-
-            if (!isConnected) {
-                // 如果无网络连接，使用缓存
-                request = request.newBuilder()
-                    .header("Cache-Control", "public, only-if-cached, max-stale=2419200") // 4周
-                    .build()
-            }
-
-            chain.proceed(request)
-        }
-    }
-
-    /**
-     * 提供基础OkHttpClient实例
-     */
-    @Provides
-    @Singleton
-    fun apiOkHttpClient(
-        cache: Cache,
-        loggingInterceptor: HttpLoggingInterceptor,
-        @Named(CACHE_INTERCEPTOR) cacheInterceptor: Interceptor,
-        @Named(OFFLINE_INTERCEPTOR) offlineInterceptor: Interceptor,
-        authInterceptor: AuthInterceptor
-    ): OkHttpClient {
-        println("apiOkHttpClient")
-        return OkHttpClient.Builder()
-            .cache(cache)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .addInterceptor(loggingInterceptor)
-            .addInterceptor(offlineInterceptor) // 离线拦截器先执行
-            .addInterceptor(authInterceptor) // 认证拦截器
-            .addNetworkInterceptor(cacheInterceptor) // 网络拦截器后执行
-            .build()
-    }
-
-    /**
-     * 提供基础Retrofit实例，后续会为各个API服务创建特定的Service实例
-     */
-    @Provides
-    @Singleton
-    fun apiRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
-        println("apiRetrofit")
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE))
-            .client(okHttpClient)
-            .build()
-    }
-
-    /**
-     * 以下是各API服务特定的配置
-     */
-
-    // Unsplash API
+    /** 提供各数据源的鉴权拦截器 */
     @Provides
     @Singleton
     @Named(UNSPLASH_AUTH_INTERCEPTOR)
     fun apiUnsplashAuthInterceptor(
-        apiKeyManager: ApiKeyManager,
-        apiUsageTracker: ApiUsageTracker
-    ): Interceptor {
-        println("apiUnsplashAuthInterceptor")
-        return createHeaderAuthInterceptor(
-            source = ApiSource.UNSPLASH,
-            apiUsageTracker = apiUsageTracker,
-            addAuthHeaders = { builder ->
-                builder.addHeader("Authorization", "Client-ID ${apiKeyManager.getUnsplashApiKey()}")
-            },
-            rateLimitHeaders = "x-ratelimit-limit" to "x-ratelimit-remaining"
-        )
+        apiUsageTracker: ApiUsageTracker,
+        apiKeyManager: ApiKeyManager
+    ): Interceptor = createHeaderAuthInterceptor(
+        source = ApiSource.UNSPLASH,
+        apiUsageTracker = apiUsageTracker,
+        addAuthHeaders = { builder ->
+            builder.addHeader("Authorization", "Client-ID ${apiKeyManager.getUnsplashApiKey()}")
+        },
+        rateLimitHeaders = "X-Ratelimit-Limit" to "X-Ratelimit-Remaining"
+    )
+
+    @Provides
+    @Singleton
+    @Named(PEXELS_AUTH_INTERCEPTOR)
+    fun apiPexelsAuthInterceptor(
+        apiUsageTracker: ApiUsageTracker,
+        apiKeyManager: ApiKeyManager
+    ): Interceptor = createHeaderAuthInterceptor(
+        source = ApiSource.PEXELS,
+        apiUsageTracker = apiUsageTracker,
+        addAuthHeaders = { builder ->
+            builder.addHeader("Authorization", apiKeyManager.getPexelsApiKey())
+        }
+    )
+
+    @Provides
+    @Singleton
+    @Named(PIXABAY_AUTH_INTERCEPTOR)
+    fun apiPixabayAuthInterceptor(
+        apiUsageTracker: ApiUsageTracker,
+        apiKeyManager: ApiKeyManager
+    ): Interceptor = createQueryParamAuthInterceptor(
+        source = ApiSource.PIXABAY,
+        apiUsageTracker = apiUsageTracker
+    ) { urlBuilder ->
+        urlBuilder.addQueryParameter("key", apiKeyManager.getPixabayApiKey())
     }
 
+    @Provides
+    @Singleton
+    @Named(WALLHAVEN_AUTH_INTERCEPTOR)
+    fun apiWallhavenAuthInterceptor(
+        apiUsageTracker: ApiUsageTracker,
+        apiKeyManager: ApiKeyManager
+    ): Interceptor = createHeaderAuthInterceptor(
+        source = ApiSource.WALLHAVEN,
+        apiUsageTracker = apiUsageTracker,
+        addAuthHeaders = { builder ->
+            builder.addHeader("X-API-Key", apiKeyManager.getWallhavenApiKey())
+        }
+    )
+
+    /** 提供各数据源的 OkHttpClient */
     @Provides
     @Singleton
     @Named(UNSPLASH_HTTP_CLIENT)
@@ -351,49 +300,7 @@ object NetworkDiModule {
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
         @Named(UNSPLASH_AUTH_INTERCEPTOR) authInterceptor: Interceptor
-    ): OkHttpClient {
-        println("apiUnsplashHttpClient")
-        return createApiClient(cache, loggingInterceptor, authInterceptor)
-    }
-
-    @Provides
-    @Singleton
-    @Named(UNSPLASH_RETROFIT)
-    fun apiUnsplashRetrofit(
-        json: Json,
-        @Named(UNSPLASH_HTTP_CLIENT) client: OkHttpClient
-    ): Retrofit {
-        println("apiUnsplashRetrofit")
-        return createRetrofit(UnsplashApiService.BASE_URL, json, client)
-    }
-
-    @Provides
-    @Singleton
-    fun apiUnsplashApiService(
-        @Named(UNSPLASH_RETROFIT) retrofit: Retrofit
-    ): UnsplashApiService {
-        println("apiUnsplashApiService")
-        return retrofit.create(UnsplashApiService::class.java)
-    }
-
-    // Pexels API
-    @Provides
-    @Singleton
-    @Named(PEXELS_AUTH_INTERCEPTOR)
-    fun apiPexelsAuthInterceptor(
-        apiKeyManager: ApiKeyManager,
-        apiUsageTracker: ApiUsageTracker
-    ): Interceptor {
-        println("apiPexelsAuthInterceptor")
-        return createHeaderAuthInterceptor(
-            source = ApiSource.PEXELS,
-            apiUsageTracker = apiUsageTracker,
-            addAuthHeaders = { builder ->
-                builder.addHeader("Authorization", apiKeyManager.getPexelsApiKey())
-            },
-            rateLimitHeaders = "X-Ratelimit-Limit" to "X-Ratelimit-Remaining"
-        )
-    }
+    ): OkHttpClient = createApiClient(cache, loggingInterceptor, authInterceptor)
 
     @Provides
     @Singleton
@@ -402,104 +309,7 @@ object NetworkDiModule {
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
         @Named(PEXELS_AUTH_INTERCEPTOR) authInterceptor: Interceptor
-    ): OkHttpClient {
-        println("apiPexelsHttpClient")
-        return createApiClient(cache, loggingInterceptor, authInterceptor)
-    }
-
-    @Provides
-    @Singleton
-    @Named(PEXELS_RETROFIT)
-    fun apiPexelsRetrofit(
-        json: Json,
-        @Named(PEXELS_HTTP_CLIENT) client: OkHttpClient
-    ): Retrofit {
-        println("apiPexelsRetrofit")
-        return createRetrofit(PexelsApiService.BASE_URL, json, client)
-    }
-
-    // 为Pexels视频API提供单独的Retrofit实例
-    @Provides
-    @Singleton
-    @Named(PEXELS_VIDEO_RETROFIT)
-    fun apiPexelsVideoRetrofit(
-        json: Json,
-        @Named(PEXELS_HTTP_CLIENT) client: OkHttpClient
-    ): Retrofit {
-        println("apiPexelsVideoRetrofit")
-        return createRetrofit(PexelsApiService.VIDEO_BASE_URL, json, client)
-    }
-
-    @Provides
-    @Singleton
-    fun apiPexelsApiService(
-        @Named(PEXELS_RETROFIT) photoRetrofit: Retrofit,
-        @Named(PEXELS_VIDEO_RETROFIT) videoRetrofit: Retrofit
-    ): PexelsApiService {
-        println("apiPexelsApiService")
-        // 使用动态代理创建PexelsApiService实例
-        // 根据方法名判断使用哪个Retrofit实例
-        return object : PexelsApiService {
-            private val photoService = photoRetrofit.create(PexelsApiService::class.java)
-            private val videoService = videoRetrofit.create(PexelsApiService::class.java)
-
-            // 照片相关API使用photoService
-            override suspend fun getCuratedPhotos(page: Int, perPage: Int) =
-                photoService.getCuratedPhotos(page, perPage)
-
-            override suspend fun searchPhotos(
-                query: String,
-                page: Int,
-                perPage: Int,
-                orientation: String?,
-                size: String?,
-                color: String?
-            ) =
-                photoService.searchPhotos(query, page, perPage, orientation, size, color)
-
-            override suspend fun getPhoto(id: String) =
-                photoService.getPhoto(id)
-
-            override suspend fun getFeaturedCollections(page: Int, perPage: Int) =
-                photoService.getFeaturedCollections(page, perPage)
-
-            override suspend fun getCollectionPhotos(id: String, page: Int, perPage: Int) =
-                photoService.getCollectionPhotos(id, page, perPage)
-
-            // 视频相关API使用videoService
-            override suspend fun getPopularVideos(page: Int, perPage: Int) =
-                videoService.getPopularVideos(page, perPage)
-
-            override suspend fun searchVideos(
-                query: String,
-                page: Int,
-                perPage: Int,
-                orientation: String?,
-                size: String?
-            ) =
-                videoService.searchVideos(query, page, perPage, orientation, size)
-
-            override suspend fun getVideo(id: String) =
-                videoService.getVideo(id)
-        }
-    }
-
-    // Pixabay API
-    @Provides
-    @Singleton
-    @Named(PIXABAY_AUTH_INTERCEPTOR)
-    fun apiPixabayAuthInterceptor(
-        apiKeyManager: ApiKeyManager,
-        apiUsageTracker: ApiUsageTracker
-    ): Interceptor {
-        println("apiPixabayAuthInterceptor")
-        return createQueryParamAuthInterceptor(
-            source = ApiSource.PIXABAY,
-            apiUsageTracker = apiUsageTracker
-        ) { urlBuilder ->
-            urlBuilder.addQueryParameter("key", apiKeyManager.getPixabayApiKey())
-        }
-    }
+    ): OkHttpClient = createApiClient(cache, loggingInterceptor, authInterceptor)
 
     @Provides
     @Singleton
@@ -508,47 +318,7 @@ object NetworkDiModule {
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
         @Named(PIXABAY_AUTH_INTERCEPTOR) authInterceptor: Interceptor
-    ): OkHttpClient {
-        println("apiPixabayHttpClient")
-        return createApiClient(cache, loggingInterceptor, authInterceptor)
-    }
-
-    @Provides
-    @Singleton
-    @Named(PIXABAY_RETROFIT)
-    fun apiPixabayRetrofit(
-        json: Json,
-        @Named(PIXABAY_HTTP_CLIENT) client: OkHttpClient
-    ): Retrofit {
-        println("apiPixabayRetrofit")
-        return createRetrofit(PixabayApiService.BASE_URL, json, client)
-    }
-
-    @Provides
-    @Singleton
-    fun apiPixabayApiService(
-        @Named(PIXABAY_RETROFIT) retrofit: Retrofit
-    ): PixabayApiService {
-        println("apiPixabayApiService")
-        return retrofit.create(PixabayApiService::class.java)
-    }
-
-    // Wallhaven API
-    @Provides
-    @Singleton
-    @Named(WALLHAVEN_AUTH_INTERCEPTOR)
-    fun apiWallhavenAuthInterceptor(
-        apiKeyManager: ApiKeyManager,
-        apiUsageTracker: ApiUsageTracker
-    ): Interceptor {
-        println("apiWallhavenAuthInterceptor")
-        return createQueryParamAuthInterceptor(
-            source = ApiSource.WALLHAVEN,
-            apiUsageTracker = apiUsageTracker
-        ) { urlBuilder ->
-            urlBuilder.addQueryParameter("apikey", apiKeyManager.getWallhavenApiKey())
-        }
-    }
+    ): OkHttpClient = createApiClient(cache, loggingInterceptor, authInterceptor)
 
     @Provides
     @Singleton
@@ -557,10 +327,40 @@ object NetworkDiModule {
         cache: Cache,
         loggingInterceptor: HttpLoggingInterceptor,
         @Named(WALLHAVEN_AUTH_INTERCEPTOR) authInterceptor: Interceptor
-    ): OkHttpClient {
-        println("apiWallhavenHttpClient")
-        return createApiClient(cache, loggingInterceptor, authInterceptor)
-    }
+    ): OkHttpClient = createApiClient(cache, loggingInterceptor, authInterceptor)
+
+    /** 提供各数据源的 Retrofit */
+    @Provides
+    @Singleton
+    @Named(UNSPLASH_RETROFIT)
+    fun apiUnsplashRetrofit(
+        json: Json,
+        @Named(UNSPLASH_HTTP_CLIENT) client: OkHttpClient
+    ): Retrofit = createRetrofit(UnsplashApiService.BASE_URL, json, client)
+
+    @Provides
+    @Singleton
+    @Named(PEXELS_RETROFIT)
+    fun apiPexelsRetrofit(
+        json: Json,
+        @Named(PEXELS_HTTP_CLIENT) client: OkHttpClient
+    ): Retrofit = createRetrofit(PexelsApiService.BASE_URL, json, client)
+
+    @Provides
+    @Singleton
+    @Named(PEXELS_VIDEO_RETROFIT)
+    fun apiPexelsVideoRetrofit(
+        json: Json,
+        @Named(PEXELS_HTTP_CLIENT) client: OkHttpClient
+    ): Retrofit = createRetrofit(PexelsApiService.VIDEO_BASE_URL, json, client)
+
+    @Provides
+    @Singleton
+    @Named(PIXABAY_RETROFIT)
+    fun apiPixabayRetrofit(
+        json: Json,
+        @Named(PIXABAY_HTTP_CLIENT) client: OkHttpClient
+    ): Retrofit = createRetrofit(PixabayApiService.BASE_URL, json, client)
 
     @Provides
     @Singleton
@@ -568,54 +368,93 @@ object NetworkDiModule {
     fun apiWallhavenRetrofit(
         json: Json,
         @Named(WALLHAVEN_HTTP_CLIENT) client: OkHttpClient
-    ): Retrofit {
-        println("apiWallhavenRetrofit")
-        return createRetrofit(WallhavenApiService.BASE_URL, json, client)
-    }
+    ): Retrofit = createRetrofit(WallhavenApiService.BASE_URL, json, client)
+
+    /** 提供各数据源的 ApiService */
+    @Provides
+    @Singleton
+    fun apiUnsplashService(@Named(UNSPLASH_RETROFIT) retrofit: Retrofit): UnsplashApiService =
+        retrofit.create(UnsplashApiService::class.java)
 
     @Provides
     @Singleton
-    fun apiWallhavenApiService(
-        @Named(WALLHAVEN_RETROFIT) retrofit: Retrofit
-    ): WallhavenApiService {
-        println("apiWallhavenApiService")
-        return retrofit.create(WallhavenApiService::class.java)
-    }
+    fun apiPixabayService(@Named(PIXABAY_RETROFIT) retrofit: Retrofit): PixabayApiService =
+        retrofit.create(PixabayApiService::class.java)
 
     @Provides
     @Singleton
-    fun apiAuthInterceptor(
-        userRepository: dagger.Lazy<UserRepository>,
-        authRepository: dagger.Lazy<AuthRepository>
-    ): AuthInterceptor {
-        println("apiAuthInterceptor")
-        return AuthInterceptor(userRepository, authRepository)
-    }
+    fun apiWallhavenService(@Named(WALLHAVEN_RETROFIT) retrofit: Retrofit): WallhavenApiService =
+        retrofit.create(WallhavenApiService::class.java)
 
     @Provides
     @Singleton
-    fun apiCoreApiService(retrofit: Retrofit): ApiService {
-        println("apiCoreApiService")
-        return retrofit.create(ApiService::class.java)
+    fun apiPexelsService(
+        @Named(PEXELS_RETROFIT) photosRetrofit: Retrofit,
+        @Named(PEXELS_VIDEO_RETROFIT) videosRetrofit: Retrofit
+    ): PexelsApiService {
+        val photosService = photosRetrofit.create(PexelsApiService::class.java)
+        val videosService = videosRetrofit.create(PexelsApiService::class.java)
+        return object : PexelsApiService {
+            override suspend fun getCuratedPhotos(page: Int, perPage: Int) =
+                photosService.getCuratedPhotos(page, perPage)
+            override suspend fun searchPhotos(
+                query: String,
+                page: Int,
+                perPage: Int,
+                orientation: String?,
+                size: String?,
+                color: String?
+            ) = photosService.searchPhotos(query, page, perPage, orientation, size, color)
+            override suspend fun getPhoto(id: String) = photosService.getPhoto(id)
+            override suspend fun getFeaturedCollections(page: Int, perPage: Int) =
+                photosService.getFeaturedCollections(page, perPage)
+            override suspend fun getCollectionPhotos(id: String, page: Int, perPage: Int) =
+                photosService.getCollectionPhotos(id, page, perPage)
+            override suspend fun getPopularVideos(page: Int, perPage: Int) =
+                videosService.getPopularVideos(page, perPage)
+            override suspend fun searchVideos(
+                query: String,
+                page: Int,
+                perPage: Int,
+                orientation: String?,
+                size: String?
+            ) = videosService.searchVideos(query, page, perPage, orientation, size)
+            override suspend fun getVideo(id: String) = videosService.getVideo(id)
+        }
     }
 
-    /**
-     * 提供API使用跟踪器
-     */
+    /** 提供自有后端 API 的 OkHttpClient（带认证） */
     @Provides
     @Singleton
-    fun apiApiUsageTracker(): ApiUsageTracker {
-        println("apiApiUsageTracker")
-        return ApiUsageTracker.getInstance()
-    }
+    fun apiBaseHttpClient(
+        cache: Cache,
+        loggingInterceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient = OkHttpClient.Builder()
+        .cache(cache)
+        .addInterceptor(authInterceptor)
+        .addInterceptor(loggingInterceptor)
+        .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .build()
 
-    /**
-     * 提供API调用帮助器
-     */
+    /** 提供自有后端 API 的 Retrofit */
     @Provides
     @Singleton
-    fun apiApiCallHelper(apiUsageTracker: ApiUsageTracker): ApiCallHelper {
-        println("apiApiCallHelper")
-        return ApiCallHelper(apiUsageTracker)
-    }
+    fun apiBaseRetrofit(
+        json: Json,
+        client: OkHttpClient
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(client)
+        .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE))
+        .build()
+
+    /** 提供 ApiService */
+    @Provides
+    @Singleton
+    fun apiService(retrofit: Retrofit): ApiService =
+        retrofit.create(ApiService::class.java)
 }
+

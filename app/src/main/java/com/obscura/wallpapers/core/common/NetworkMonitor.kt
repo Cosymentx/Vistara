@@ -32,6 +32,10 @@ class NetworkMonitor @Inject constructor(
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
+    fun apiIsAvailable(): Boolean {
+        println("apiIsAvailable")
+        return isNetworkAvailable()
+    }
 
     fun getNetworkType(): NetworkType {
         val network = connectivityManager.activeNetwork ?: return NetworkType.NONE
@@ -46,6 +50,12 @@ class NetworkMonitor @Inject constructor(
             else -> NetworkType.NONE
         }
     }
+    fun apiNetworkType(): NetworkType {
+        println("apiNetworkType")
+        return getNetworkType()
+    }
+    fun apiIsWifi(): Boolean = getNetworkType() == NetworkType.WIFI
+    fun apiIsCellular(): Boolean = getNetworkType() == NetworkType.CELLULAR
 
     fun networkStatus(): Flow<NetworkType> = callbackFlow {
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
@@ -79,4 +89,8 @@ class NetworkMonitor @Inject constructor(
             connectivityManager.unregisterNetworkCallback(networkCallback)
         }
     }.distinctUntilChanged()
+    fun apiStatus(): Flow<NetworkType> {
+        println("apiStatus")
+        return networkStatus()
+    }
 }

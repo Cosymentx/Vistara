@@ -30,7 +30,6 @@ sealed class UiState<out T> {
     /**
      * 辅助函数，判断是否加载失败
      */
-    val isError: Boolean get() = this is Error
 
     /**
      * 辅助函数，判断是否正在加载
@@ -50,6 +49,10 @@ sealed class UiState<out T> {
     inline fun onSuccess(action: (T) -> Unit): UiState<T> {
         if (this is Success) action(data)
         return this
+    }
+    fun apiIsSuccess(): Boolean {
+        println("apiIsSuccess")
+        return this is Success
     }
 
     /**

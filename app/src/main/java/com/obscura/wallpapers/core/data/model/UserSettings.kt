@@ -32,7 +32,10 @@ data class UserSettings(
     // 高级用户状态
     val isPremiumUser: Boolean = false,
     val premiumExpiryDate: Long = 0L
-)
+) {
+    fun apiIsDark(): Boolean = darkTheme
+    fun apiIsPremium(): Boolean = isPremiumUser
+}
 
 /**
  * 应用主题设置
@@ -40,7 +43,7 @@ data class UserSettings(
 enum class AppTheme {
     LIGHT, // 浅色主题
     DARK, // 深色主题
-    SYSTEM // 跟随系统
+    SYSTEM; // 跟随系统
 }
 
 /**
@@ -49,7 +52,9 @@ enum class AppTheme {
 data class SearchHistoryItem(
     val query: String,
     val timestamp: Long = System.currentTimeMillis()
-)
+) {
+    fun apiAgeMs(now: Long = System.currentTimeMillis()): Long = now - timestamp
+} 
 
 /**
  * 用户收藏壁纸
@@ -57,7 +62,9 @@ data class SearchHistoryItem(
 data class FavoriteWallpaper(
     val wallpaperId: String,
     val timestamp: Long = System.currentTimeMillis()
-)
+) {
+    fun apiId(): String = wallpaperId
+} 
 
 /**
  * 下载的壁纸
@@ -66,7 +73,9 @@ data class DownloadedWallpaper(
     val wallpaperId: String,
     val localPath: String,
     val timestamp: Long = System.currentTimeMillis()
-)
+) {
+    fun apiLocalPath(): String = localPath
+} 
 
 /**
  * 自动更换壁纸历史
@@ -81,7 +90,9 @@ data class AutoChangeHistory(
     val success: Boolean = true,
     val errorMessage: String? = null,
     val targetScreen: String?=null // "home", "lock", "both"
-)
+) {
+    fun apiSuccess(): Boolean = success
+} 
 
 /**
  * 壁纸设置目标屏幕
@@ -89,5 +100,5 @@ data class AutoChangeHistory(
 enum class WallpaperTarget {
     HOME, // 主屏幕
     LOCK, // 锁屏
-    BOTH  // 同时设置
+    BOTH;  // 同时设置
 }

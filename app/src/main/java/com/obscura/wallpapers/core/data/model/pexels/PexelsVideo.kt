@@ -21,7 +21,19 @@ data class PexelsVideo(
     
     @SerialName("video_pictures")
     val videoPictures: List<PexelsVideoPicture> // 视频预览图
-)
+) {
+    fun apiThumbnail(): String {
+        println("apiThumbnail")
+        return image
+    }
+    fun apiBestVideoUrl(): String? {
+        println("apiBestVideoUrl")
+        return videoFiles
+            .sortedByDescending { it.quality }
+            .firstOrNull()
+            ?.link
+    }
+}
 
 /**
  * Pexels 视频文件数据模型
@@ -36,7 +48,9 @@ data class PexelsVideoFile(
     val width: Int,
     val height: Int,
     val link: String // 视频文件URL
-)
+) {
+    fun apiIsHd(): Boolean = quality.equals("hd", ignoreCase = true)
+}
 
 /**
  * Pexels 视频预览图数据模型
@@ -46,7 +60,9 @@ data class PexelsVideoPicture(
     val id: Int,
     val picture: String, // 预览图URL
     val nr: Int // 预览图序号
-)
+) {
+    fun apiUrl(): String = picture
+}
 
 /**
  * Pexels 视频作者数据模型
@@ -56,7 +72,9 @@ data class PexelsVideoUser(
     val id: Int,
     val name: String, // 作者名称
     val url: String // 作者主页URL
-)
+) {
+    fun apiProfile(): String = url
+}
 
 /**
  * Pexels 视频搜索响应数据模型
@@ -78,4 +96,7 @@ data class PexelsVideoSearchResponse(
     
     @SerialName("prev_page")
     val prevPage: String? = null
-)
+) {
+    fun apiHasNext(): Boolean = nextPage != null
+    fun apiHasPrev(): Boolean = prevPage != null
+}

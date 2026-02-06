@@ -7,6 +7,11 @@ import com.obscura.wallpapers.core.data.remote.ApiSource
 
 interface WallpaperApiAdapter {
     fun getApiSource(): ApiSource
+    fun apiSource(): ApiSource {
+        println("apiSource")
+        return getApiSource()
+    }
+    fun apiSourceName(): String = getApiSource().name
     suspend fun getFeaturedWallpapers(page: Int, pageSize: Int): ApiResult<List<Wallpaper>>
     suspend fun searchWallpapers(
         query: String,

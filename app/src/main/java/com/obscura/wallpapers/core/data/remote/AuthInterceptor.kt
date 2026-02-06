@@ -71,4 +71,11 @@ class AuthInterceptor @Inject constructor(
             }
         }
     }
+
+    fun apiHeaderAuth(): String = HEADER_AUTH
+    fun apiHeaderEmail(): String = HEADER_EMAIL
+    fun apiIntercept(chain: Interceptor.Chain): Response {
+        println("apiIntercept")
+        return intercept(chain)
+    }
 }

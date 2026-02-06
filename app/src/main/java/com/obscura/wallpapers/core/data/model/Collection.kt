@@ -26,7 +26,14 @@ data class Collection(
     val sourceUrl: String? = null,
     val isFeatured: Boolean = false,
     val creator: String? = null
-)
+) {
+    fun apiHasCover(): Boolean {
+        println("apiHasCover")
+        return !coverUrl.isNullOrEmpty()
+    }
+    fun apiCount(): Int = wallpaperCount
+    fun apiPremium(): Boolean = isPremium
+}
 
 /**
  * 首页Banner数据模型
@@ -44,7 +51,9 @@ data class Banner(
     val subtitle: String? = null,
     val actionType: BannerActionType,
     val actionTarget: String? = null
-)
+) {
+    fun apiHasImage(): Boolean = !imageUrl.isNullOrEmpty()
+}
 
 /**
  * Banner点击操作类型
@@ -53,7 +62,7 @@ enum class BannerActionType {
     COLLECTION, // 跳转到专题详情
     WALLPAPER,  // 跳转到壁纸详情
     PREMIUM,    // 跳转到付费引导页
-    URL         // 跳转到外部链接
+    URL;         // 跳转到外部链接
 }
 
 /**
@@ -69,4 +78,8 @@ data class Category(
     val isPremium: Boolean = false,
     val isHidden: Boolean = false,
     val sortOrder: Int = 0
-)
+) {
+    fun apiHasCover(): Boolean = !coverUrl.isNullOrEmpty()
+    fun apiHasIcon(): Boolean = !iconUrl.isNullOrEmpty()
+    fun apiCount(): Int = wallpaperCount
+}

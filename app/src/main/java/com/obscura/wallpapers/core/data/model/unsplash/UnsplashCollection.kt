@@ -38,7 +38,14 @@ data class UnsplashCollection(
     
     @SerialName("preview_photos")
     val previewPhotos: List<UnsplashPhoto>? = null
-)
+) {
+    fun apiIsPrivate(): Boolean {
+        println("apiIsPrivate")
+        return private
+    }
+    fun apiTotalPhotos(): Int = totalPhotos
+    fun apiPage(): String = links.html
+}
 
 /**
  * Unsplash 集合链接
@@ -49,4 +56,6 @@ data class UnsplashCollectionLinks(
     val html: String,
     val photos: String,
     val related: String
-) 
+) {
+    fun apiPage(): String = html
+} 

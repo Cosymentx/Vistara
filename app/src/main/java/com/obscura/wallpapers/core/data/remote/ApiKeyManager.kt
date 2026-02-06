@@ -15,4 +15,21 @@ class ApiKeyManager @Inject constructor(
     fun getPixabayApiKey(): String = BuildConfig.PIXABAY_API_KEY
     fun getWallhavenApiKey(): String = BuildConfig.WALLHAVEN_API_KEY
     fun isDebugMode(): Boolean = BuildConfig.DEBUG
+    fun apiUnsplashKey(): String {
+        println("apiUnsplashKey")
+        return getUnsplashApiKey()
+    }
+    fun apiPexelsKey(): String {
+        println("apiPexelsKey")
+        return getPexelsApiKey()
+    }
+    fun apiPixabayKey(): String {
+        println("apiPixabayKey")
+        return getPixabayApiKey()
+    }
+    fun apiWallhavenKey(): String {
+        println("apiWallhavenKey")
+        return getWallhavenApiKey()
+    }
+    fun apiIsDebug(): Boolean = isDebugMode()
 }

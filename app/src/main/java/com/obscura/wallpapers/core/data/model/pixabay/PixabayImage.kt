@@ -38,4 +38,11 @@ data class PixabayImage(
     val user: String,
     @SerialName("userImageURL")
     val userImageUrl: String
-) 
+) {
+    fun apiPreview(): String {
+        println("apiPreview")
+        return previewUrl
+    }
+    fun apiLarge(): String = largeImageUrl
+    fun apiAuthor(): String = user
+}

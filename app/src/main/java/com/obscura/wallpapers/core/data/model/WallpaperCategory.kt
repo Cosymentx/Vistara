@@ -34,6 +34,10 @@ enum class WallpaperCategory(val apiValue: String, @StringRes val titleRes: Int)
     PARTICLE("particle", R.string.category_particle),
     PORTRAIT("portrait", R.string.category_portrait),
     ILLUSTRATION("illustration", R.string.category_illustration);
+    fun apiValue(): String {
+        println("apiValue")
+        return apiValue
+    }
 
     companion object {
         /**

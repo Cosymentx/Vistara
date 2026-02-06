@@ -10,7 +10,13 @@ import kotlinx.serialization.Serializable
 data class WallhavenSearchResponse(
     val data: List<WallhavenWallpaper>,
     val meta: WallhavenMetaData
-)
+) {
+    fun apiHasData(): Boolean {
+        println("apiHasData")
+        return data.isNotEmpty()
+    }
+    fun apiPageSize(): Int = meta.perPage
+}
 
 /**
  * Wallhaven 搜索元数据
@@ -30,4 +36,7 @@ data class WallhavenMetaData(
     
     val query: String? = null,
     val seed: String? = null
-) 
+) {
+    fun apiHasNext(): Boolean = currentPage < lastPage
+    fun apiHasPrev(): Boolean = currentPage > 1
+} 
