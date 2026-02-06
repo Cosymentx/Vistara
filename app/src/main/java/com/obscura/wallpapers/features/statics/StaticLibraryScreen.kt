@@ -17,15 +17,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,6 +31,7 @@ import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.ErrorState
+import com.obscura.wallpapers.ui.components.GlassTopAppBar
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.WallpaperStaggeredGrid
 import com.obscura.wallpapers.ui.theme.VistaraTheme
@@ -56,38 +54,25 @@ fun StaticLibraryScreen(
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing, onRefresh = { viewModel.refresh() })
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                Text(
-                    stringResource(R.string.category_static),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.SemiBold
-                    )
+    val (contentModifier, topBar) = GlassTopAppBar(
+        title = stringResource(R.string.category_static), actions = {
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(R.string.search_hint)
                 )
-            }, actions = {
-                IconButton(onClick = onSearchClick) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(R.string.search_hint)
-                    )
-                }
-            }, colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.95f),
-                titleContentColor = MaterialTheme.colorScheme.onBackground
-            )
-            )
-        }) { paddingValues ->
+            }
+        })
+    Scaffold(topBar = { topBar() }) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = contentModifier
+                .padding(paddingValues)
                 .pullRefresh(pullRefreshState)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(bottom = 80.dp)
             ) {
                 CategorySelector(
                     categories = categories,

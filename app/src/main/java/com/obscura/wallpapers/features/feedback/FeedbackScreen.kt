@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.components.GlassTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,21 +82,15 @@ fun FeedbackScreen(
         }
     }
 
-    Scaffold(topBar = {
-        TopAppBar(title = { Text(stringResource(R.string.rate_feedback)) }, navigationIcon = {
-            IconButton(onClick = onBackPressed) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back)
-                )
-            }
-        })
-    }, snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
+    val (contentModifier, topBar) = GlassTopAppBar(
+        title = stringResource(R.string.rate_feedback),
+        onBackPressed = onBackPressed
+    )
+    Scaffold(topBar = { topBar() }, snackbarHost = { SnackbarHost(snackbarHostState) }) { _ ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = contentModifier
                 .verticalScroll(rememberScrollState())
-                .padding(paddingValues)
+                .padding(top = 64.dp, bottom = 80.dp)
                 .padding(16.dp)
         ) {
             RatingCard(

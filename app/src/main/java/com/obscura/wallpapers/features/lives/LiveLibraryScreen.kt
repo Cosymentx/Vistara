@@ -30,7 +30,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -45,7 +44,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,9 +55,10 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.core.data.model.UiState
+import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.components.CategorySelector
+import com.obscura.wallpapers.ui.components.GlassTopAppBar
 import com.obscura.wallpapers.ui.components.LiveVideoGrid
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.theme.VistaraTheme
@@ -126,6 +125,7 @@ fun LiveLibraryScreen(
                     }
                     wasPausedForLifecycle = false
                 }
+
                 else -> {}
             }
         }
@@ -160,8 +160,7 @@ fun LiveLibraryScreen(
                         val nextVisibleListIndex =
                             (currentVisibleListIndex + 1) % visibleItemsInfo.size
                         val nextVisibleItemInfo = visibleItemsInfo[nextVisibleListIndex]
-                        val nextPlayingIndex =
-                            nextVisibleItemInfo.index
+                        val nextPlayingIndex = nextVisibleItemInfo.index
 
                         Log.d(TAG, "Next visible item to play is at index: $nextPlayingIndex")
 
@@ -172,8 +171,7 @@ fun LiveLibraryScreen(
                                     TAG,
                                     "Playing next video at index $nextPlayingIndex: ${nextVideo.url}"
                                 )
-                                playingIndex =
-                                    nextPlayingIndex
+                                playingIndex = nextPlayingIndex
                                 exoPlayer.setMediaItem(
                                     MediaItem.Builder().setUri(Uri.parse(nextVideo.url))
                                         .setMediaId(nextVideo.url).build()
@@ -258,8 +256,7 @@ fun LiveLibraryScreen(
                                         TAG,
                                         "Scroll stopped. Playing item at target index $bestVisibleIndex: ${videoToPlay.url}"
                                     )
-                                    playingIndex =
-                                        bestVisibleIndex
+                                    playingIndex = bestVisibleIndex
                                     exoPlayer.setMediaItem(
                                         MediaItem.Builder().setUri(Uri.parse(videoToPlay.url))
                                             .setMediaId(videoToPlay.url).build()
@@ -311,15 +308,12 @@ fun LiveLibraryScreen(
 
     LaunchedEffect(currentWallpapers, gridState) {
         if (currentWallpapers.isNotEmpty()) {
-            snapshotFlow { gridState.layoutInfo.visibleItemsInfo }
-                .filter { it.isNotEmpty() && !gridState.isScrollInProgress && playingIndex == -1 && !wasPausedForLifecycle }
+            snapshotFlow { gridState.layoutInfo.visibleItemsInfo }.filter { it.isNotEmpty() && !gridState.isScrollInProgress && playingIndex == -1 && !wasPausedForLifecycle }
                 .map {
                     findBestVisibleItemToPlay(
                         it, gridState.layoutInfo
                     )
-                }
-                .distinctUntilChanged()
-                .collect { bestVisibleIndex ->
+                }.distinctUntilChanged().collect { bestVisibleIndex ->
                     if (bestVisibleIndex != -1 && bestVisibleIndex < currentWallpapers.size) {
                         val videoToPlay = currentWallpapers[bestVisibleIndex]
                         if (videoToPlay.url != null) {
@@ -350,26 +344,17 @@ fun LiveLibraryScreen(
         }
     }
 
-    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, topBar = {
-        TopAppBar(
-            title = {
-                Text(
-                    stringResource(R.string.category_live),
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
+    val (contentModifier, topBar) = GlassTopAppBar(
+        title = stringResource(R.string.category_live), actions = {
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    Icons.Default.Search, contentDescription = stringResource(R.string.search_hint)
                 )
-            }, actions = {
-                IconButton(onClick = onSearchClick) {
-                    Icon(
-                        Icons.Default.Search,
-                        contentDescription = stringResource(R.string.search_hint)
-                    )
-                }
-            }, colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.95f),
-                titleContentColor = MaterialTheme.colorScheme.onBackground
-            )
-        )
-    }) { paddingValues ->
+            }
+        })
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = { topBar() }) { _ ->
         val pullRefreshState = rememberPullRefreshState(
             refreshing = isRefreshing, onRefresh = {
                 Log.d(TAG, "Pull to refresh initiated.")
@@ -380,14 +365,12 @@ fun LiveLibraryScreen(
             })
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(pullRefreshState)
+            modifier = contentModifier.pullRefresh(pullRefreshState)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(bottom = 80.dp)
             ) {
                 CategorySelector(
                     categories = categories,

@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.components.GlassTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,25 +62,13 @@ fun ApiTestScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.api_test_tool)) },
-                navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                }
-            )
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { paddingValues ->
+    val (contentModifier, topBar) = GlassTopAppBar(
+        title = stringResource(R.string.api_test_tool),
+        onBackPressed = onBackPressed
+    )
+    Scaffold(topBar = { topBar() }, snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = contentModifier
                 .padding(16.dp)
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally

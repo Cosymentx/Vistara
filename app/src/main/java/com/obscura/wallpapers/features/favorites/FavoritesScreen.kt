@@ -33,6 +33,7 @@ import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.components.WallpaperGrid
+import com.obscura.wallpapers.ui.components.GlassScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,20 +45,9 @@ fun FavoritesScreen(
 ) {
     val favoritesState by viewModel.favoritesState.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.my_favorites)) },
-                navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                }
-            )
-        }
+    GlassScaffold(
+        title = stringResource(R.string.my_favorites),
+        onBackPressed = onBackPressed
     ) { paddingValues ->
         Box(
             modifier = Modifier

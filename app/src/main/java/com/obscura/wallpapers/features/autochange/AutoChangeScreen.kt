@@ -57,6 +57,7 @@ import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.icons.AppIcons
 import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.components.GlassScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,19 +97,10 @@ fun AutoChangeScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.auto_change_wallpaper)) },
-                navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                })
-        }) { paddingValues ->
+    GlassScaffold(
+        title = stringResource(R.string.auto_change_wallpaper),
+        onBackPressed = onBackPressed
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

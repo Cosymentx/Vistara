@@ -50,6 +50,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.components.GlassScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,21 +64,15 @@ fun AboutScreen(
 
     viewModel.setNavController(navController)
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.about_credits)) }, navigationIcon = {
-                IconButton(onClick = onBackPressed) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back)
-                    )
-                }
-            })
-        }) { paddingValues ->
+    GlassScaffold(
+        title = stringResource(R.string.about_credits),
+        onBackPressed = onBackPressed
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(paddingValues)
+                .padding(top = 64.dp, bottom = 80.dp)
                 .padding(16.dp)
         ) {
             AppInfoSection(

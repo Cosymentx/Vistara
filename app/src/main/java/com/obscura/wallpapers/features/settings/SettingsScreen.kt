@@ -55,6 +55,7 @@ import com.obscura.wallpapers.ui.icons.AppIcons
 import com.obscura.wallpapers.features.settings.SettingsViewModel.NotificationType
 import com.obscura.wallpapers.ui.theme.VistaraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
+import com.obscura.wallpapers.ui.components.GlassTopAppBar
 
 /**
  * 设置页面
@@ -122,25 +123,16 @@ fun SettingsScreen(
         }
     }
 
-    // 使用 refreshTrigger 强制重组整个页面
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = {
-        TopAppBar(title = {
-            Text(stringResource(R.string.settings))
-        }, navigationIcon = {
-            IconButton(onClick = onBackPressed) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back)
-                )
-            }
-        })
-    }) { paddingValues ->
+    val (contentModifier, topBar) = GlassTopAppBar(
+        title = stringResource(R.string.settings),
+        onBackPressed = onBackPressed
+    )
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = { topBar() }) { _ ->
         // 使用 refreshTrigger 强制重组整个页面内容
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = contentModifier
                 .verticalScroll(rememberScrollState())
-                .padding(paddingValues)
+                .padding(top = 64.dp, bottom = 80.dp)
         ) {
             // 主题设置
             SettingsCategory(title = stringResource(R.string.theme_settings))

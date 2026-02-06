@@ -21,7 +21,7 @@ import com.obscura.wallpapers.core.data.model.AppLanguage
 import com.obscura.wallpapers.di.ActivityScopeHolder
 import com.obscura.wallpapers.manager.LocaleManager
 import com.obscura.wallpapers.manager.ThemeManager
-import com.obscura.wallpapers.features.navigation.MainNavigation
+import com.obscura.wallpapers.ui.components.MainNavigation
 import com.obscura.wallpapers.ui.theme.VistaraTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first

@@ -1,7 +1,6 @@
 package com.obscura.wallpapers.features.home
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -18,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,11 +32,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,7 +47,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import com.obscura.wallpapers.ui.theme.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,9 +60,11 @@ import com.obscura.wallpapers.core.data.model.WallpaperCategory
 import com.obscura.wallpapers.ui.components.Carousel
 import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.FeaturedWallpaperSection
+import com.obscura.wallpapers.ui.components.GlassScaffold
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.WallpaperItem
 import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.stringResource
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,40 +82,19 @@ fun HomeScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        stringResource(R.string.home),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    )
-                }, colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.95f),
-                    titleContentColor = MaterialTheme.colorScheme.onBackground
-                ), modifier = Modifier.background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.background,
-                            MaterialTheme.colorScheme.background.copy(alpha = 0.95f)
-                        )
-                    )
-                )
-            )
-        }) { paddingValues ->
-
+    GlassScaffold(
+        title = stringResource(R.string.home)
+    ) { paddingValues ->
         if (isLoading) {
             LoadingState()
-            return@Scaffold
+            return@GlassScaffold
         }
 
         if (error != null && featuredWallpapers.isEmpty() && staticWallpapers.isEmpty() && liveWallpapers.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(bottom = 80.dp)
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -150,16 +127,14 @@ fun HomeScreen(
                     }
                 }
             }
-            return@Scaffold
+            return@GlassScaffold
         }
 
         LazyColumn(
             state = rememberLazyListState(),
-            contentPadding = PaddingValues(bottom = 16.dp),
+            contentPadding = PaddingValues(top = 64.dp, bottom = 80.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier = Modifier.fillMaxSize()
         ) {
             if (error != null) {
                 item {
@@ -201,6 +176,7 @@ fun HomeScreen(
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .statusBarsPadding()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .height(56.dp)
                         .clip(RoundedCornerShape(28.dp))
@@ -436,9 +412,7 @@ private fun CategorySection(
 
 @Composable
 private fun CategoryWallpaperItem(
-    wallpaper: Wallpaper,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    wallpaper: Wallpaper, onClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.clickable { onClick() },
@@ -461,8 +435,7 @@ private fun CategoryWallpaperItem(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.Transparent,
-                                Color.Black.copy(alpha = 0.7f)
+                                Color.Transparent, Color.Black.copy(alpha = 0.7f)
                             )
                         )
                     )

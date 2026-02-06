@@ -1,13 +1,13 @@
-package com.obscura.wallpapers.features.navigation
+package com.obscura.wallpapers.ui.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
@@ -51,16 +52,22 @@ import com.obscura.wallpapers.features.test.ApiTestScreen
 import com.obscura.wallpapers.features.test.TestScreen
 import com.obscura.wallpapers.features.webview.WebViewScreen
 import com.obscura.wallpapers.ui.theme.LocalAppResources
+import dev.chrisbanes.haze.HazeDefaults
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
+import java.net.URLDecoder
 
 @Composable
 fun MainNavigation(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val isMainScreen = currentRoute in NavDestination.values().map { it.route }
-    Box {
+    val isMainScreen = currentRoute in NavDestination.entries.map { it.route }
+    val hazeState = rememberHazeState()
+    Box(modifier = Modifier.hazeSource(state = hazeState)) {
         NavHost(
             navController = navController, startDestination = NavDestination.Home.route,
-            modifier = if (isMainScreen) Modifier.padding(bottom = 80.dp) else Modifier
+            modifier = Modifier
         ) {
             composable("auth") {
                 AuthScreen(onLoginSuccess = {
@@ -81,9 +88,11 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                                 navController.navigate("wallpaper/$wallpaperId")
                             }
                         }
+
                         BannerActionType.PREMIUM -> {
                             navController.navigate("premium")
                         }
+
                         BannerActionType.URL -> {
                         }
                     }
@@ -127,7 +136,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
             composable("diamond") {
                 RechargeScreen(
                     onBackPressed = { navController.navigateUp() },
-                    navController = navController)
+                    navController = navController
+                )
             }
             composable(
                 route = "search?query={query}", arguments = listOf(navArgument("query") {
@@ -190,7 +200,10 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 FeedbackScreen(onBackPressed = { navController.navigateUp() })
             }
             composable("about") {
-                AboutScreen(onBackPressed = { navController.navigateUp() }, navController = navController)
+                AboutScreen(
+                    onBackPressed = { navController.navigateUp() },
+                    navController = navController
+                )
             }
             composable(
                 route = "webview?url={url}", arguments = listOf(navArgument("url") {
@@ -203,9 +216,12 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
             ) { backStackEntry ->
                 val encodedUrl = backStackEntry.arguments?.getString("url") ?: ""
                 val encodedTitle = backStackEntry.arguments?.getString("title") ?: ""
-                val url = java.net.URLDecoder.decode(encodedUrl, "UTF-8")
-                val title = java.net.URLDecoder.decode(encodedTitle, "UTF-8")
-                WebViewScreen(url = url, title = title, onBackPressed = { navController.navigateUp() })
+                val url = URLDecoder.decode(encodedUrl, "UTF-8")
+                val title = URLDecoder.decode(encodedTitle, "UTF-8")
+                WebViewScreen(
+                    url = url,
+                    title = title,
+                    onBackPressed = { navController.navigateUp() })
             }
             composable("test") {
                 TestScreen(
@@ -217,7 +233,18 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
             }
         }
         if (isMainScreen) {
-            BottomNavBar(navController = navController, modifier = Modifier.align(Alignment.BottomCenter))
+            BottomNavBar(
+                navController = navController,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .hazeEffect(
+                        state = hazeState,
+                        style = HazeDefaults.style(
+                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            blurRadius = 10.dp
+                        )
+                    )
+            )
         }
     }
 }
@@ -226,9 +253,10 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
 fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    NavigationBar(modifier = modifier) {
-        NavDestination.values().forEach { destination ->
-            val selected = currentDestination?.hierarchy?.any { it.route == destination.route } == true
+    NavigationBar(modifier = modifier, containerColor = Color.Transparent, tonalElevation = 0.dp) {
+        NavDestination.entries.forEach { destination ->
+            val selected =
+                currentDestination?.hierarchy?.any { it.route == destination.route } == true
             NavigationBarItem(icon = {
                 when (destination) {
                     NavDestination.Home -> {
@@ -238,12 +266,21 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
                             Icon(Icons.Outlined.Home, contentDescription = destination.getTitle())
                         }
                     }
+
                     NavDestination.StaticWallpapers -> {
-                        Icon(ImageVector.vectorResource(id = R.drawable.ic_image), contentDescription = destination.getTitle())
+                        Icon(
+                            ImageVector.vectorResource(id = R.drawable.ic_image),
+                            contentDescription = destination.getTitle()
+                        )
                     }
+
                     NavDestination.LiveWallpapers -> {
-                        Icon(ImageVector.vectorResource(id = R.drawable.ic_movie), contentDescription = destination.getTitle())
+                        Icon(
+                            ImageVector.vectorResource(id = R.drawable.ic_movie),
+                            contentDescription = destination.getTitle()
+                        )
                     }
+
                     NavDestination.Mine -> {
                         if (selected) {
                             Icon(Icons.Filled.Person, contentDescription = destination.getTitle())
@@ -292,6 +329,7 @@ enum class NavDestination(val route: String, val titleResId: Int) {
             return resources.getString(R.string.mine)
         }
     };
+
     @Composable
     abstract fun getTitle(): String
 }

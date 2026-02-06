@@ -48,6 +48,7 @@ import com.obscura.wallpapers.core.data.remote.service.PaymentMethod
 import com.obscura.wallpapers.ui.components.PaymentMethodDialog
 import com.obscura.wallpapers.ui.components.TextInputDialog
 import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.components.GlassTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,25 +73,13 @@ fun TestScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.test_tools)) },
-                navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                }
-            )
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { paddingValues ->
+    val (contentModifier, topBar) = GlassTopAppBar(
+        title = stringResource(R.string.test_tools),
+        onBackPressed = onBackPressed
+    )
+    Scaffold(topBar = { topBar() }, snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = contentModifier
                 .padding(16.dp)
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState()),

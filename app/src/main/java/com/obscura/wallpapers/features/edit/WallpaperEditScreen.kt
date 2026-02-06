@@ -73,6 +73,7 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.features.edit.EditIcons
 import com.obscura.wallpapers.ui.theme.stringResource
+import com.obscura.wallpapers.ui.components.GlassTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,46 +96,31 @@ fun WallpaperEditScreen(
 
     var selectedTool by remember { mutableStateOf(EditTool.BRIGHTNESS) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.edit_wallpaper)) },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (!isSaving) onBackPressed()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
+    val (contentModifier, topBar) = GlassTopAppBar(
+        title = stringResource(R.string.edit_wallpaper),
+        onBackPressed = {
+            if (!isSaving) onBackPressed()
+        },
+        actions = {
+            IconButton(
+                onClick = {
+                    viewModel.saveEditedWallpaper(onComplete = {
+                        onSaveComplete()
+                    })
                 },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            viewModel.saveEditedWallpaper(onComplete = {
-                                onSaveComplete()
-                            })
-                        },
-                        enabled = !isSaving
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Done,
-                            contentDescription = stringResource(R.string.save)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                enabled = !isSaving
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Done,
+                    contentDescription = stringResource(R.string.save)
                 )
-            )
+            }
         }
-    ) { paddingValues ->
+    )
+    Scaffold(topBar = { topBar() }) { _ ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier = contentModifier
+                .padding(top = 64.dp, bottom = 80.dp)
         ) {
             when (wallpaperState) {
                 is UiState.Loading -> {

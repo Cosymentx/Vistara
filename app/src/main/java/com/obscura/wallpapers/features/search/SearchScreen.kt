@@ -44,6 +44,9 @@ import com.obscura.wallpapers.ui.components.SearchBar
 import com.obscura.wallpapers.ui.components.WallpaperItem
 import com.obscura.wallpapers.ui.theme.VistaraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
+import dev.chrisbanes.haze.rememberHazeState
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 
 @Composable
 fun SearchScreen(
@@ -57,9 +60,10 @@ fun SearchScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
+    val hazeState = rememberHazeState()
     Scaffold(
         topBar = {
-            Column(modifier = Modifier.statusBarsPadding()) {
+            Column(modifier = Modifier.statusBarsPadding().hazeEffect(state = hazeState)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                         .fillMaxWidth()
@@ -131,6 +135,7 @@ fun SearchScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .hazeSource(state = hazeState)
         ) {
 
             if (query.isEmpty() && searchResults.isEmpty()) {

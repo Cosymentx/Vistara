@@ -65,6 +65,7 @@ import com.obscura.wallpapers.ui.theme.AppColors.DarkPremiumFeaturesBackground
 import com.obscura.wallpapers.ui.theme.AppColors.LightPremiumFeaturesBackground
 import com.obscura.wallpapers.ui.theme.VistaraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
+import com.obscura.wallpapers.ui.components.GlassTopAppBar
 
 /**
  * 升级页面
@@ -161,18 +162,13 @@ fun PremiumScreen(
         )
     }
 
-    Scaffold(topBar = {
-        TopAppBar(title = { Text(stringResource(R.string.premium)) }, navigationIcon = {
-            IconButton(onClick = onBackPressed) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back),
-                )
-            }
-        })
-    }, snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
+    val (contentModifier, topBar) = GlassTopAppBar(
+        title = stringResource(R.string.premium),
+        onBackPressed = onBackPressed
+    )
+    Scaffold(topBar = { topBar() }, snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = contentModifier
         ) {
             Column(
                 modifier = Modifier
