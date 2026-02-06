@@ -33,6 +33,7 @@ import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.components.WallpaperGrid
+import com.obscura.wallpapers.ui.components.LoadingState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,14 +67,7 @@ fun DownloadsScreen(
         ) {
             when (val state = downloadsState) {
                 is UiState.Loading -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(32.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                    LoadingState()
                 }
                 is UiState.Success -> {
                     val wallpapers = state.data

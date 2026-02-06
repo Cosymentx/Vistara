@@ -62,10 +62,11 @@ import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.FeaturedWallpaperSection
 import com.obscura.wallpapers.ui.components.GlassScaffold
 import com.obscura.wallpapers.ui.components.LoadingState
-import com.obscura.wallpapers.ui.components.WallpaperItem
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.theme.stringResource
 import kotlinx.coroutines.delay
+import androidx.compose.runtime.Immutable
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,42 +92,10 @@ fun HomeScreen(
         }
 
         if (error != null && featuredWallpapers.isEmpty() && staticWallpapers.isEmpty() && liveWallpapers.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 80.dp)
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.loading_failed),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = error ?: stringResource(R.string.unknown_error),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Surface(
-                        onClick = { viewModel.refresh() },
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.retry),
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                        )
-                    }
-                }
-            }
+            ErrorState(
+                message = error ?: stringResource(R.string.unknown_error),
+                onRetry = { viewModel.refresh() }
+            )
             return@GlassScaffold
         }
 
@@ -241,64 +210,26 @@ fun HomeScreen(
                 )
             }
 
-            if (staticWallpapers.isNotEmpty()) {
-                item {
-                    WallpaperSectionTitle(
-                        title = stringResource(R.string.hot_static),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                }
-
-                for (i in 0 until staticWallpapers.size step 2) {
-                    item {
-                        WallpaperItem2Columns(
-                            wallpaper1 = staticWallpapers[i],
-                            wallpaper2 = if (i + 1 < staticWallpapers.size) staticWallpapers[i + 1] else null,
-                            onWallpaperClick = onWallpaperClick,
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
+            val sections = buildSections(
+                staticItems = staticWallpapers,
+                liveItems = liveWallpapers,
+                latestItems = featuredWallpapers
+            )
+            items(sections.size) { index ->
+                val s = sections[index]
+                TwoColumnSection(
+                    title = when (s.type) {
+                        SectionType.Static -> if (s.items.isNotEmpty()) stringResource(R.string.hot_static) else null
+                        SectionType.Live -> if (s.items.isNotEmpty()) stringResource(R.string.cool_dynamic) else null
+                        SectionType.Latest -> if (s.items.isNotEmpty()) stringResource(R.string.latest_uploads) else null
+                    },
+                    wallpapers = s.items,
+                    onWallpaperClick = onWallpaperClick,
+                    titlePadding = when (s.type) {
+                        SectionType.Live -> PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                        else -> PaddingValues(horizontal = 16.dp)
                     }
-                }
-            }
-
-            if (liveWallpapers.isNotEmpty()) {
-                item {
-                    WallpaperSectionTitle(
-                        title = stringResource(R.string.cool_dynamic),
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                    )
-                }
-
-                for (i in 0 until liveWallpapers.size step 2) {
-                    item {
-                        WallpaperItem2Columns(
-                            wallpaper1 = liveWallpapers[i],
-                            wallpaper2 = if (i + 1 < liveWallpapers.size) liveWallpapers[i + 1] else null,
-                            onWallpaperClick = onWallpaperClick,
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-                    }
-                }
-            }
-
-            if (featuredWallpapers.isNotEmpty()) {
-                item {
-                    WallpaperSectionTitle(
-                        title = stringResource(R.string.latest_uploads),
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 0.dp)
-                    )
-                }
-
-                for (i in 0 until featuredWallpapers.size step 2) {
-                    item {
-                        WallpaperItem2Columns(
-                            wallpaper1 = featuredWallpapers[i],
-                            wallpaper2 = if (i + 1 < featuredWallpapers.size) featuredWallpapers[i + 1] else null,
-                            onWallpaperClick = onWallpaperClick,
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-                    }
-                }
+                )
             }
         }
     }
@@ -307,7 +238,7 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         Surface {
             HomeScreen(
                 onWallpaperClick = {})
@@ -476,7 +407,7 @@ private fun WallpaperItem2Columns(
     Row(
         modifier = modifier, horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        WallpaperItem(
+        com.obscura.wallpapers.ui.components.WallpaperItem(
             wallpaper = wallpaper1,
             onClick = { onWallpaperClick(wallpaper1) },
             modifier = Modifier
@@ -485,7 +416,7 @@ private fun WallpaperItem2Columns(
         )
 
         if (wallpaper2 != null) {
-            WallpaperItem(
+            com.obscura.wallpapers.ui.components.WallpaperItem(
                 wallpaper = wallpaper2,
                 onClick = { onWallpaperClick(wallpaper2) },
                 modifier = Modifier
@@ -496,4 +427,47 @@ private fun WallpaperItem2Columns(
             Spacer(modifier = Modifier.weight(1f))
         }
     }
+}
+
+@Composable
+private fun TwoColumnSection(
+    title: String?,
+    wallpapers: List<Wallpaper>,
+    onWallpaperClick: (Wallpaper) -> Unit,
+    titlePadding: PaddingValues = PaddingValues(horizontal = 16.dp)
+) {
+    if (title != null) {
+        WallpaperSectionTitle(
+            title = title,
+            modifier = Modifier.padding(titlePadding)
+        )
+    }
+    for (i in 0 until wallpapers.size step 2) {
+        WallpaperItem2Columns(
+            wallpaper1 = wallpapers[i],
+            wallpaper2 = if (i + 1 < wallpapers.size) wallpapers[i + 1] else null,
+            onWallpaperClick = onWallpaperClick,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+    }
+}
+
+@Immutable
+private data class WallpaperSectionConfig(
+    val type: SectionType,
+    val items: List<Wallpaper>
+)
+
+private enum class SectionType { Static, Live, Latest }
+
+private fun buildSections(
+    staticItems: List<Wallpaper>,
+    liveItems: List<Wallpaper>,
+    latestItems: List<Wallpaper>
+): List<WallpaperSectionConfig> {
+    val list = mutableListOf<WallpaperSectionConfig>()
+    list.add(WallpaperSectionConfig(SectionType.Static, staticItems))
+    list.add(WallpaperSectionConfig(SectionType.Live, liveItems))
+    list.add(WallpaperSectionConfig(SectionType.Latest, latestItems))
+    return list
 }

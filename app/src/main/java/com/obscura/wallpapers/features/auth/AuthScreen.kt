@@ -68,7 +68,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -335,7 +335,7 @@ fun AuthScreen(
 @Preview(showBackground = true)
 @Composable
 fun AuthScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         AuthScreen(onLoginSuccess = {}, onSkipLogin = {})
     }
 }

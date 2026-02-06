@@ -2,12 +2,12 @@ package com.obscura.wallpapers.features.settings
 
 import android.Manifest
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,14 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -31,7 +28,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -53,7 +49,7 @@ import com.obscura.wallpapers.ui.components.ConfirmDialog
 import com.obscura.wallpapers.ui.components.LanguageSelector
 import com.obscura.wallpapers.ui.icons.AppIcons
 import com.obscura.wallpapers.features.settings.SettingsViewModel.NotificationType
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
 
@@ -134,105 +130,89 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(top = 64.dp, bottom = 80.dp)
         ) {
-            // 主题设置
-            SettingsCategory(title = stringResource(R.string.theme_settings))
-
-            SettingsToggleItem(
-                icon = AppIcons.DarkMode,
-                title = stringResource(R.string.dark_theme),
-                subtitle = stringResource(R.string.dark_theme_desc),
-                checked = darkTheme,
-                onCheckedChange = { viewModel.updateDarkTheme(it) })
-
-            SettingsToggleItem(
-                icon = AppIcons.Palette,
-                title = stringResource(R.string.dynamic_colors),
-                subtitle = stringResource(R.string.dynamic_colors_desc),
-                checked = dynamicColors,
-                onCheckedChange = { viewModel.updateDynamicColors(it) })
-
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                thickness = DividerDefaults.Thickness,
-                color = DividerDefaults.color
-            )
-
-            // 语言设置
-            SettingsCategory(title = stringResource(R.string.language_settings))
-
-            LanguageSelector(
-                currentLanguage = appLanguage,
-                onLanguageSelected = { viewModel.updateAppLanguage(it) })
-
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                thickness = DividerDefaults.Thickness,
-                color = DividerDefaults.color
-            )
-
-            // 通知设置
-            SettingsCategory(title = stringResource(R.string.notification_settings))
-
-            SettingsToggleItem(
-                icon = AppIcons.Notifications,
-                title = stringResource(R.string.download_notification),
-                subtitle = stringResource(R.string.download_notification_desc),
-                checked = showDownloadNotification,
-                onCheckedChange = {
-                    currentNotificationType = NotificationType.DOWNLOAD
-                    viewModel.updateShowDownloadNotification(it)
-                })
-
-            SettingsToggleItem(
-                icon = AppIcons.Notifications,
-                title = stringResource(R.string.wallpaper_change_notification),
-                subtitle = stringResource(R.string.wallpaper_change_notification_desc),
-                checked = showWallpaperChangeNotification,
-                onCheckedChange = {
-                    currentNotificationType = NotificationType.WALLPAPER_CHANGE
-                    viewModel.updateShowWallpaperChangeNotification(it)
-                })
-
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                thickness = DividerDefaults.Thickness,
-                color = DividerDefaults.color
-            )
-
-            // 下载设置
-            SettingsCategory(title = stringResource(R.string.download_settings))
-
-            SettingsToggleItem(
-                icon = AppIcons.HighQuality,
-                title = stringResource(R.string.original_quality),
-                subtitle = stringResource(R.string.original_quality_desc),
-                checked = downloadOriginalQuality,
-                onCheckedChange = {
-                    viewModel.updateDownloadOriginalQuality(it)
-                })
-
-            SettingsActionItem(
-                icon = AppIcons.Delete,
-                title = stringResource(R.string.clear_cache),
-                subtitle = stringResource(R.string.current_cache_size, cacheSize),
-                onClick = {
-                    showClearCacheDialog = true
-                },
-                trailingContent = if (isClearingCache) {
-                    {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .width(24.dp)
-                                .height(24.dp)
+            SettingsGroup(title = stringResource(R.string.theme_settings)) {
+                SettingsToggleList(
+                    items = listOf(
+                        SettingsToggleEntry(
+                            icon = AppIcons.DarkMode,
+                            title = stringResource(R.string.dark_theme),
+                            subtitle = stringResource(R.string.dark_theme_desc),
+                            checked = darkTheme,
+                            onCheckedChange = { viewModel.updateDarkTheme(it) }
+                        ),
+                        SettingsToggleEntry(
+                            icon = AppIcons.Palette,
+                            title = stringResource(R.string.dynamic_colors),
+                            subtitle = stringResource(R.string.dynamic_colors_desc),
+                            checked = dynamicColors,
+                            onCheckedChange = { viewModel.updateDynamicColors(it) }
                         )
-                    }
-                } else null)
+                    )
+                )
+            }
 
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                thickness = DividerDefaults.Thickness,
-                color = DividerDefaults.color
-            )
+            SettingsGroup(title = stringResource(R.string.language_settings)) {
+                LanguageSelector(
+                    currentLanguage = appLanguage,
+                    onLanguageSelected = { viewModel.updateAppLanguage(it) }
+                )
+            }
+
+            SettingsGroup(title = stringResource(R.string.notification_settings)) {
+                SettingsToggleList(
+                    items = listOf(
+                        SettingsToggleEntry(
+                            icon = AppIcons.Notifications,
+                            title = stringResource(R.string.download_notification),
+                            subtitle = stringResource(R.string.download_notification_desc),
+                            checked = showDownloadNotification,
+                            onCheckedChange = {
+                                currentNotificationType = NotificationType.DOWNLOAD
+                                viewModel.updateShowDownloadNotification(it)
+                            }
+                        ),
+                        SettingsToggleEntry(
+                            icon = AppIcons.Notifications,
+                            title = stringResource(R.string.wallpaper_change_notification),
+                            subtitle = stringResource(R.string.wallpaper_change_notification_desc),
+                            checked = showWallpaperChangeNotification,
+                            onCheckedChange = {
+                                currentNotificationType = NotificationType.WALLPAPER_CHANGE
+                                viewModel.updateShowWallpaperChangeNotification(it)
+                            }
+                        )
+                    )
+                )
+            }
+
+            SettingsGroup(title = stringResource(R.string.download_settings)) {
+                SettingsToggleItem(
+                    icon = AppIcons.HighQuality,
+                    title = stringResource(R.string.original_quality),
+                    subtitle = stringResource(R.string.original_quality_desc),
+                    checked = downloadOriginalQuality,
+                    onCheckedChange = {
+                        viewModel.updateDownloadOriginalQuality(it)
+                    }
+                )
+                SettingsActionItem(
+                    icon = AppIcons.Delete,
+                    title = stringResource(R.string.clear_cache),
+                    subtitle = stringResource(R.string.current_cache_size, cacheSize),
+                    onClick = {
+                        showClearCacheDialog = true
+                    },
+                    trailingContent = if (isClearingCache) {
+                        {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .width(24.dp)
+                                    .height(24.dp)
+                            )
+                        }
+                    } else null
+                )
+            }
 
             // 关于应用
             SettingsCategory(title = stringResource(R.string.about_app))
@@ -307,6 +287,31 @@ fun SettingsScreen(
     }
 }
 
+data class SettingsToggleEntry(
+    val icon: ImageVector,
+    val title: String,
+    val subtitle: String?,
+    val checked: Boolean,
+    val onCheckedChange: (Boolean) -> Unit
+)
+
+@Composable
+private fun SettingsToggleList(
+    items: List<SettingsToggleEntry>
+) {
+    Column {
+        items.forEach { entry ->
+            SettingsToggleItem(
+                icon = entry.icon,
+                title = entry.title,
+                subtitle = entry.subtitle,
+                checked = entry.checked,
+                onCheckedChange = entry.onCheckedChange
+            )
+        }
+    }
+}
+
 /**
  * 设置类别标题
  */
@@ -320,6 +325,20 @@ private fun SettingsCategory(
         color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.SemiBold,
         modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    )
+}
+
+@Composable
+private fun SettingsGroup(
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    SettingsCategory(title = title)
+    Column(content = content)
+    HorizontalDivider(
+        modifier = Modifier.padding(vertical = 8.dp),
+        thickness = DividerDefaults.Thickness,
+        color = DividerDefaults.color
     )
 }
 
@@ -428,7 +447,7 @@ private fun SettingsActionItem(
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             // 注意：预览中不会显示真实数据，因为没有提供真实的ViewModel
             // 这里只是UI预览

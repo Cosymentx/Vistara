@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.obscura.wallpapers.core.data.model.Resolution
 import com.obscura.wallpapers.core.data.model.Wallpaper
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 
 /**
  * 壁纸列表项组件
@@ -134,7 +134,7 @@ fun WallpaperItem(
 @Preview
 @Composable
 fun WallpaperItemPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         WallpaperItem(
             wallpaper = Wallpaper(
                 id = "1",

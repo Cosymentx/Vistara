@@ -34,6 +34,7 @@ import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.components.WallpaperGrid
 import com.obscura.wallpapers.ui.components.GlassScaffold
+import com.obscura.wallpapers.ui.components.LoadingState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,46 +50,60 @@ fun FavoritesScreen(
         title = stringResource(R.string.my_favorites),
         onBackPressed = onBackPressed
     ) { paddingValues ->
-        Box(
+        FavoritesBody(
+            state = favoritesState,
+            onWallpaperClick = onWallpaperClick,
+            onRetry = { viewModel.refresh() },
+            onNavigateToLogin = onNavigateToLogin,
+            onBackPressed = onBackPressed,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when (favoritesState) {
-                is UiState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
+                .padding(top = 64.dp, bottom = 80.dp)
+        )
+    }
+}
+
+@Composable
+private fun FavoritesBody(
+    state: UiState<*>,
+    onWallpaperClick: (Wallpaper) -> Unit,
+    onRetry: () -> Unit,
+    onNavigateToLogin: () -> Unit,
+    onBackPressed: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        when (state) {
+            is UiState.Loading -> {
+                LoadingState()
+            }
+
+            is UiState.Error -> {
+                val errorMessage = state.message
+                if (errorMessage == stringResource(R.string.login_required_to_view_favorites)) {
+                    LoginPromptDialog(
+                        onDismiss = { onBackPressed() },
+                        onConfirm = { onNavigateToLogin() },
+                        message = stringResource(R.string.favorites_login_required)
+                    )
+                } else {
+                    ErrorState(
+                        message = errorMessage,
+                        onRetry = onRetry
                     )
                 }
+            }
 
-                is UiState.Error -> {
-                    val errorMessage = (favoritesState as UiState.Error).message
-                    if (errorMessage == stringResource(R.string.login_required_to_view_favorites)) {
-                        LoginPromptDialog(
-                            onDismiss = { onBackPressed() },
-                            onConfirm = { onNavigateToLogin() },
-                            message = stringResource(R.string.favorites_login_required)
-                        )
-                    } else {
-                        ErrorState(
-                            message = errorMessage,
-                            onRetry = { viewModel.refresh() }
-                        )
-                    }
-                }
-
-                is UiState.Success -> {
-                    val wallpapers = (favoritesState as UiState.Success<List<Wallpaper>>).data
-
-                    if (wallpapers.isEmpty()) {
-                        EmptyFavoritesContent()
-                    } else {
-                        WallpaperGrid(
-                            wallpapers = wallpapers,
-                            onWallpaperClick = onWallpaperClick,
-                            contentPadding = PaddingValues(16.dp)
-                        )
-                    }
+            is UiState.Success<*> -> {
+                val wallpapers = state.data as? List<Wallpaper> ?: emptyList()
+                if (wallpapers.isEmpty()) {
+                    EmptyFavoritesContent()
+                } else {
+                    WallpaperGrid(
+                        wallpapers = wallpapers,
+                        onWallpaperClick = onWallpaperClick,
+                        contentPadding = PaddingValues(16.dp)
+                    )
                 }
             }
         }

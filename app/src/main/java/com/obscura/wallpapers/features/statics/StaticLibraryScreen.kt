@@ -34,7 +34,7 @@ import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.WallpaperStaggeredGrid
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -72,6 +72,7 @@ fun StaticLibraryScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(top = 64.dp)
                     .padding(bottom = 80.dp)
             ) {
                 CategorySelector(
@@ -82,51 +83,17 @@ fun StaticLibraryScreen(
                     })
 
                 when (wallpapersState) {
-                    is UiState.Loading -> {
-                        LoadingState()
-                    }
-
-                    is UiState.Success -> {
-                        val wallpapers = (wallpapersState as UiState.Success<List<Wallpaper>>).data
-                        if (wallpapers.isEmpty()) {
-                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text(
-                                    stringResource(R.string.no_wallpapers_found),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                                )
-                            }
-                        } else {
-                            Column(modifier = Modifier.fillMaxSize()) {
-                                Box(modifier = Modifier.weight(1f)) {
-                                    val gridState = rememberLazyStaggeredGridState()
-
-                                    val rememberedWallpapers = remember(wallpapers) { wallpapers }
-                                    val rememberedIsLoadingMore =
-                                        remember(isLoadingMore) { isLoadingMore }
-                                    val rememberedCanLoadMore =
-                                        remember(canLoadMore) { canLoadMore }
-
-                                    WallpaperStaggeredGrid(
-                                        wallpapers = rememberedWallpapers,
-                                        onWallpaperClick = onWallpaperClick,
-                                        onLoadMore = { viewModel.loadMore() },
-                                        isLoadingMore = rememberedIsLoadingMore,
-                                        canLoadMore = rememberedCanLoadMore,
-                                        showEndMessage = !rememberedCanLoadMore,
-                                        gridState = gridState,
-                                        modifier = Modifier.fillMaxSize()
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    is UiState.Error -> {
-                        ErrorState(
-                            message = (wallpapersState as UiState.Error).message,
-                            onRetry = { viewModel.refresh() })
-                    }
+                    is UiState.Loading -> LoadingState()
+                    is UiState.Success -> StaticGridContent(
+                        wallpapers = (wallpapersState as UiState.Success<List<Wallpaper>>).data,
+                        isLoadingMore = isLoadingMore,
+                        canLoadMore = canLoadMore,
+                        onLoadMore = { viewModel.loadMore() },
+                        onWallpaperClick = onWallpaperClick
+                    )
+                    is UiState.Error -> ErrorState(
+                        message = (wallpapersState as UiState.Error).message,
+                        onRetry = { viewModel.refresh() })
                 }
             }
             PullRefreshIndicator(
@@ -142,10 +109,48 @@ fun StaticLibraryScreen(
     }
 }
 
+@Composable
+private fun StaticGridContent(
+    wallpapers: List<Wallpaper>,
+    isLoadingMore: Boolean,
+    canLoadMore: Boolean,
+    onLoadMore: () -> Unit,
+    onWallpaperClick: (Wallpaper) -> Unit
+) {
+    if (wallpapers.isEmpty()) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(
+                stringResource(R.string.no_wallpapers_found),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+        }
+    } else {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.weight(1f)) {
+                val gridState = rememberLazyStaggeredGridState()
+                val rememberedWallpapers = remember(wallpapers) { wallpapers }
+                val rememberedIsLoadingMore = remember(isLoadingMore) { isLoadingMore }
+                val rememberedCanLoadMore = remember(canLoadMore) { canLoadMore }
+                WallpaperStaggeredGrid(
+                    wallpapers = rememberedWallpapers,
+                    onWallpaperClick = onWallpaperClick,
+                    onLoadMore = onLoadMore,
+                    isLoadingMore = rememberedIsLoadingMore,
+                    canLoadMore = rememberedCanLoadMore,
+                    showEndMessage = !rememberedCanLoadMore,
+                    gridState = gridState,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun StaticLibraryScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         StaticLibraryScreen(onWallpaperClick = {}, onSearchClick = {})
     }
 }

@@ -22,7 +22,7 @@ import com.obscura.wallpapers.di.ActivityScopeHolder
 import com.obscura.wallpapers.manager.LocaleManager
 import com.obscura.wallpapers.manager.ThemeManager
 import com.obscura.wallpapers.ui.components.MainNavigation
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -69,7 +69,7 @@ class EntryActivity : ComponentActivity() {
             val dynamicColors by themeManager.dynamicColors()
 
             com.obscura.wallpapers.ui.theme.LocaleProvider(language = language) {
-                VistaraTheme(darkTheme = darkTheme, dynamicColor = dynamicColors) {
+                ObscuraTheme(darkTheme = darkTheme, dynamicColor = dynamicColors) {
                     val navController = rememberNavController()
                     var startDestination by rememberSaveable { mutableStateOf(pendingRoute) }
 
@@ -118,7 +118,7 @@ class EntryActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 private fun EntryActivityPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         MainNavigation()
     }
 }

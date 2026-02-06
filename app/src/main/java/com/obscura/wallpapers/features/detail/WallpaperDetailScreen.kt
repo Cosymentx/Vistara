@@ -48,6 +48,8 @@ import com.obscura.wallpapers.features.recharge.DiamondPurchaseDialog
 import com.obscura.wallpapers.features.recharge.RechargePurchaseResult
 import com.obscura.wallpapers.ui.theme.AppColors
 import com.obscura.wallpapers.ui.theme.stringResource
+import com.obscura.wallpapers.ui.components.LoadingState
+import com.obscura.wallpapers.ui.components.ErrorState
 import kotlinx.coroutines.launch
 
 /**
@@ -245,11 +247,7 @@ fun WallpaperDetailScreen(
         ) {
             when (wallpaperState) {
                 is UiState.Loading -> {
-                    // 显示加载中
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    LoadingState()
                 }
 
                 is UiState.Success -> {
@@ -384,11 +382,9 @@ fun WallpaperDetailScreen(
                 }
 
                 is UiState.Error -> {
-                    // 显示错误信息
-                    Text(
-                        text = (wallpaperState as UiState.Error).message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
+                    ErrorState(
+                        message = (wallpaperState as UiState.Error).message,
+                        onRetry = { onBackPressed() }
                     )
                 }
             }
@@ -452,3 +448,23 @@ fun WallpaperDetailScreen(
 //    // 设置系统栏可见性
 //    systemUiController.systemBarsDarkContentEnabled = false
 //}
+@Composable
+private fun DetailLoading() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center),
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+private fun DetailError(message: String) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text = message,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}

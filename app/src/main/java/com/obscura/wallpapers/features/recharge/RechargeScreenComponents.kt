@@ -44,7 +44,7 @@ import com.obscura.wallpapers.core.data.model.DiamondProduct
 import com.obscura.wallpapers.core.data.model.DiamondTransaction
 import com.obscura.wallpapers.core.data.model.DiamondTransactionType
 import com.obscura.wallpapers.ui.icons.AppIcons
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 import com.obscura.wallpapers.core.common.ImageProcessor
 import java.text.SimpleDateFormat
@@ -395,7 +395,7 @@ fun TransactionItem(transaction: DiamondTransaction) {
 @Preview(showBackground = true)
 @Composable
 fun DiamondScreenComponentsPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             TransactionHistoryContent(
                 transactions = listOf(
@@ -423,7 +423,7 @@ fun DiamondScreenComponentsPreview() {
 @Preview(showBackground = true)
 @Composable
 fun DiamondBalanceCardPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         DiamondBalanceCard(100)
     }
 }

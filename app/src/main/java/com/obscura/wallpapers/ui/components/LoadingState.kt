@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 
 /**
@@ -55,7 +55,7 @@ fun LoadingState(
 @Preview(showBackground = true)
 @Composable
 fun LoadingStatePreview() {
-    VistaraTheme {
+    ObscuraTheme {
         Surface {
             LoadingState(message = stringResource(R.string.loading))
         }

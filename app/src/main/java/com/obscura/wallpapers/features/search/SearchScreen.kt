@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +43,7 @@ import com.obscura.wallpapers.core.data.model.WallpaperCategory
 import com.obscura.wallpapers.ui.components.CategoryChip
 import com.obscura.wallpapers.ui.components.SearchBar
 import com.obscura.wallpapers.ui.components.WallpaperItem
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 import dev.chrisbanes.haze.rememberHazeState
 import dev.chrisbanes.haze.hazeEffect
@@ -135,6 +136,7 @@ fun SearchScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(bottom = 80.dp)
                 .hazeSource(state = hazeState)
         ) {
 
@@ -145,72 +147,92 @@ fun SearchScreen(
                         .padding(16.dp)
                 )
             } else if (isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+                LoadingBox()
             } else if (searchResults.isEmpty() && query.isNotEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp), contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.no_wallpapers_found),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = stringResource(R.string.try_different_keywords),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                        )
-                    }
-                }
+                EmptyResultBox()
             } else {
-                LazyColumn(
-                    state = rememberLazyListState(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    item {
-                        Text(
-                            text = stringResource(R.string.found_results, searchResults.size),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
+                SearchResultList(
+                    results = searchResults,
+                    onWallpaperClick = onWallpaperClick
+                )
+            }
+        }
+    }
+}
 
-                    items(searchResults.chunked(2)) { rowItems ->
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.fillMaxWidth()
-                        ) {
-                            rowItems.forEachIndexed { index, wallpaper ->
-                                WallpaperItem(
-                                    wallpaper = wallpaper, onClick = { onWallpaperClick(wallpaper) }, modifier = Modifier
-                                        .weight(1f)
-                                        .height(240.dp)
-                                )
+@Composable
+private fun LoadingBox() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
+    }
+}
 
-                                if (index == 0 && rowItems.size == 1) {
-                                    Spacer(modifier = Modifier.weight(1f))
-                                }
-                            }
-                        }
+@Composable
+private fun EmptyResultBox() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp), contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(R.string.no_wallpapers_found),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.try_different_keywords),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SearchResultList(
+    results: List<Wallpaper>,
+    onWallpaperClick: (Wallpaper) -> Unit
+) {
+    val listState = rememberLazyListState()
+    val rememberedResults = remember(results) { results }
+    LazyColumn(
+        state = listState,
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 80.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        item {
+            Text(
+                text = stringResource(R.string.found_results, rememberedResults.size),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        items(rememberedResults.chunked(2)) { rowItems ->
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.fillMaxWidth()
+            ) {
+                rowItems.forEachIndexed { index, wallpaper ->
+                    WallpaperItem(
+                        wallpaper = wallpaper, onClick = { onWallpaperClick(wallpaper) }, modifier = Modifier
+                            .weight(1f)
+                            .height(240.dp)
+                    )
+
+                    if (index == 0 && rowItems.size == 1) {
+                        Spacer(modifier = Modifier.weight(1f))
                     }
                 }
             }
         }
     }
 }
-
 @Composable
 private fun InitialSearchState(
     hotSearches: List<WallpaperCategory>, onCategorySelected: (WallpaperCategory) -> Unit, modifier: Modifier = Modifier
@@ -279,7 +301,7 @@ private fun SearchTip(
 @Preview(showBackground = true)
 @Composable
 fun SearchScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         SearchScreen(onWallpaperClick = {}, onBackClick = {})
     }
 }

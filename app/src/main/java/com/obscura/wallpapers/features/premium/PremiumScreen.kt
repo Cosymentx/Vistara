@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,13 +30,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -63,9 +60,11 @@ import com.obscura.wallpapers.ui.icons.AppIcons
 import com.obscura.wallpapers.features.recharge.OrderCreationState
 import com.obscura.wallpapers.ui.theme.AppColors.DarkPremiumFeaturesBackground
 import com.obscura.wallpapers.ui.theme.AppColors.LightPremiumFeaturesBackground
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
+import com.obscura.wallpapers.ui.components.LoadingState
+import com.obscura.wallpapers.ui.components.ErrorState
 
 /**
  * 升级页面
@@ -182,41 +181,12 @@ fun PremiumScreen(
 
                 // 订阅卡片行
                 if (apiProductsLoading) {
-                    // 显示加载状态
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(140.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(40.dp)
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = stringResource(R.string.loading_subscription_products),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
+                    LoadingState()
                 } else if (apiProductsError != null) {
-                    // 显示错误状态
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.error_loading_subscription_products, apiProductsError ?: ""),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
+                    ErrorState(
+                        message = stringResource(R.string.error_loading_subscription_products, apiProductsError ?: ""),
+                        onRetry = { }
+                    )
                 } else if (subscriptionProducts.isEmpty()) {
                     // 显示空状态
                     Box(
@@ -852,7 +822,7 @@ private fun PremiumFeatureItem(
 @Preview(showBackground = true)
 @Composable
 fun PremiumScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             // 注意：预览中不会显示真实数据，因为没有提供真实的ViewModel
             // 这里只是UI预览

@@ -64,12 +64,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.annotation.StringRes
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.icons.AppIcons
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 
 /**
@@ -175,60 +176,67 @@ fun MineScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             // 功能列表
-            FeatureItem(
-                icon = AppIcons.Favorite,
-                title = stringResource(R.string.my_favorites),
-                subtitle = stringResource(R.string.my_favorites_desc),
-                onClick = {
-                    viewModel.checkLoginAndExecute(MineViewModel.LoginAction.FAVORITES) {
-                        onFavoritesClick()
-                    }
-                })
-
-            FeatureItem(
-                icon = AppIcons.Download,
-                title = stringResource(R.string.my_downloads),
-                subtitle = stringResource(R.string.my_downloads_desc),
-                onClick = {
-                    viewModel.checkLoginAndExecute(MineViewModel.LoginAction.DOWNLOADS) {
-                        onDownloadsClick()
-                    }
-                })
-
-            FeatureItem(
-                icon = AppIcons.Refresh,
-                title = stringResource(R.string.auto_change_wallpaper),
-                subtitle = stringResource(R.string.auto_change_wallpaper_desc),
-                onClick = {
-                    viewModel.checkLoginAndExecute(MineViewModel.LoginAction.AUTO_WALLPAPER) {
-                        onAutoChangeClick()
-                    }
-                })
+            FeatureList(
+                items = listOf(
+                    FeatureEntry(
+                        icon = AppIcons.Favorite,
+                        titleRes = R.string.my_favorites,
+                        subtitleRes = R.string.my_favorites_desc,
+                        onClick = {
+                            viewModel.checkLoginAndExecute(MineViewModel.LoginAction.FAVORITES) {
+                                onFavoritesClick()
+                            }
+                        }
+                    ),
+                    FeatureEntry(
+                        icon = AppIcons.Download,
+                        titleRes = R.string.my_downloads,
+                        subtitleRes = R.string.my_downloads_desc,
+                        onClick = {
+                            viewModel.checkLoginAndExecute(MineViewModel.LoginAction.DOWNLOADS) {
+                                onDownloadsClick()
+                            }
+                        }
+                    ),
+                    FeatureEntry(
+                        icon = AppIcons.Refresh,
+                        titleRes = R.string.auto_change_wallpaper,
+                        subtitleRes = R.string.auto_change_wallpaper_desc,
+                        onClick = {
+                            viewModel.checkLoginAndExecute(MineViewModel.LoginAction.AUTO_WALLPAPER) {
+                                onAutoChangeClick()
+                            }
+                        }
+                    )
+                )
+            )
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
             )
 
-            FeatureItem(
-                icon = AppIcons.Settings,
-                title = stringResource(R.string.settings),
-                subtitle = stringResource(R.string.settings_desc),
-                onClick = onSettingsClick
-            )
-
-            FeatureItem(
-                icon = AppIcons.Star,
-                title = stringResource(R.string.rate_feedback),
-                subtitle = stringResource(R.string.rate_feedback_desc),
-                onClick = onFeedbackClick
-            )
-
-            FeatureItem(
-                icon = AppIcons.Info,
-                title = stringResource(R.string.about_credits),
-                subtitle = stringResource(R.string.about_credits_desc),
-                onClick = onAboutClick
+            FeatureList(
+                items = listOf(
+                    FeatureEntry(
+                        icon = AppIcons.Settings,
+                        titleRes = R.string.settings,
+                        subtitleRes = R.string.settings_desc,
+                        onClick = onSettingsClick
+                    ),
+                    FeatureEntry(
+                        icon = AppIcons.Star,
+                        titleRes = R.string.rate_feedback,
+                        subtitleRes = R.string.rate_feedback_desc,
+                        onClick = onFeedbackClick
+                    ),
+                    FeatureEntry(
+                        icon = AppIcons.Info,
+                        titleRes = R.string.about_credits,
+                        subtitleRes = R.string.about_credits_desc,
+                        onClick = onAboutClick
+                    )
+                )
             )
 
             // 开发者模式下显示测试工具入口
@@ -238,11 +246,15 @@ fun MineScreen(
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                 )
 
-                FeatureItem(
-                    icon = Icons.Default.Build,
-                    title = stringResource(R.string.test_tools),
-                    subtitle = stringResource(R.string.test_tools_desc),
-                    onClick = onTestToolsClick
+                FeatureList(
+                    items = listOf(
+                        FeatureEntry(
+                            icon = Icons.Default.Build,
+                            titleRes = R.string.test_tools,
+                            subtitleRes = R.string.test_tools_desc,
+                            onClick = onTestToolsClick
+                        )
+                    )
                 )
             }
         }
@@ -650,10 +662,28 @@ private fun FeatureItem(
     }
 }
 
+private data class FeatureEntry(
+    val icon: ImageVector,
+    @StringRes val titleRes: Int,
+    @StringRes val subtitleRes: Int? = null,
+    val onClick: () -> Unit
+)
+
+@Composable
+private fun FeatureList(items: List<FeatureEntry>) {
+    items.forEach { entry ->
+        FeatureItem(
+            icon = entry.icon,
+            title = stringResource(entry.titleRes),
+            subtitle = entry.subtitleRes?.let { stringResource(it) },
+            onClick = entry.onClick
+        )
+    }
+}
 @Preview(showBackground = true)
 @Composable
 fun MineScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         // 注意：预览中不会显示真实数据，因为没有提供真实的ViewModel
         // 这里只是UI预览
         MineScreen()
@@ -663,7 +693,7 @@ fun MineScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MineScreenPremiumPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         // 注意：预览中不会显示真实数据，因为没有提供真实的ViewModel
         // 这里只是UI预览，手动传入isPremiumUser参数
         MineScreen()

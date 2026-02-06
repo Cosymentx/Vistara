@@ -1,7 +1,6 @@
 package com.obscura.wallpapers.features.about
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,9 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Info
 import com.obscura.wallpapers.ui.icons.AppIcons
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,12 +24,9 @@ import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,7 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.components.GlassScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -129,16 +123,12 @@ private fun AppInfoSection(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LinkItem(
-            title = stringResource(R.string.user_agreement), onClick = onUserAgreementClick
-        )
-
-        LinkItem(
-            title = stringResource(R.string.privacy_policy), onClick = onPrivacyPolicyClick
-        )
-
-        LinkItem(
-            title = stringResource(R.string.terms_of_service), onClick = onTermsOfServiceClick
+        LinkList(
+            items = listOf(
+                LinkEntry(title = stringResource(R.string.user_agreement), onClick = onUserAgreementClick),
+                LinkEntry(title = stringResource(R.string.privacy_policy), onClick = onPrivacyPolicyClick),
+                LinkEntry(title = stringResource(R.string.terms_of_service), onClick = onTermsOfServiceClick)
+            )
         )
     }
 }
@@ -206,6 +196,22 @@ private fun LinkItem(
     }
 }
 
+data class LinkEntry(
+    val title: String,
+    val onClick: () -> Unit
+)
+
+@Composable
+private fun LinkList(
+    items: List<LinkEntry>
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        items.forEach { entry ->
+            LinkItem(title = entry.title, onClick = entry.onClick)
+        }
+    }
+}
+
 @Composable
 private fun LibraryItem(
     library: Library, onClick: () -> Unit
@@ -233,7 +239,7 @@ private fun LibraryItem(
 @Preview(showBackground = true)
 @Composable
 fun AboutScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             AboutScreen(
                 onBackPressed = {},

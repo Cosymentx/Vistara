@@ -48,8 +48,10 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.DiamondProduct
 import com.obscura.wallpapers.ui.components.PaymentMethodDialog
 import com.obscura.wallpapers.ui.icons.AppIcons
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
+import com.obscura.wallpapers.ui.components.LoadingState
+import com.obscura.wallpapers.ui.components.ErrorState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -205,41 +207,14 @@ fun RechargeContent(
 
         if (isLoading) {
             item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(40.dp)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = stringResource(R.string.loading_products),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
+                LoadingState()
             }
         } else if (errorMessage != null) {
             item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.error_loading_products, errorMessage),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
+                ErrorState(
+                    message = stringResource(R.string.error_loading_products, errorMessage),
+                    onRetry = { }
+                )
             }
         }
 
@@ -274,7 +249,7 @@ fun RechargeContent(
 )
 @Composable
 fun RechargeScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             DiamondBalanceCard(100)
         }

@@ -55,7 +55,7 @@ private val LightColorScheme = lightColorScheme(
  * @param content 主题内容
  */
 @Composable
-fun VistaraTheme(
+fun ObscuraTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit

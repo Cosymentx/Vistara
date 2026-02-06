@@ -25,7 +25,7 @@ class FeedbackViewModel @Inject constructor(
     companion object {
         private const val TAG = "FeedbackViewModel"
         private const val APP_PACKAGE_NAME = "com.obscura.wallpapers"
-        private const val FEEDBACK_EMAIL = "support@vistara.com"
+        private const val FEEDBACK_EMAIL = "support@obscura.com"
         private const val FIRESTORE_COLLECTION = "feedback"
     }
 

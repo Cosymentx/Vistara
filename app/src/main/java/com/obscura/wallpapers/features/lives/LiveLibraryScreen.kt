@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.LazyGridItemInfo
 import androidx.compose.foundation.lazy.grid.LazyGridLayoutInfo
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -61,7 +62,7 @@ import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
 import com.obscura.wallpapers.ui.components.LiveVideoGrid
 import com.obscura.wallpapers.ui.components.LoadingState
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -370,6 +371,7 @@ fun LiveLibraryScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(top = 64.dp)
                     .padding(bottom = 80.dp)
             ) {
                 CategorySelector(
@@ -389,32 +391,20 @@ fun LiveLibraryScreen(
                 Spacer(Modifier.height(8.dp))
 
                 when (val state = wallpapersUiState) {
-                    is UiState.Loading -> {
-                        LoadingState()
-                    }
+                    is UiState.Loading -> LoadingState()
 
                     is UiState.Success -> {
-                        if (currentWallpapers.isEmpty()) {
-                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text(
-                                    stringResource(R.string.no_wallpapers_found),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                                )
-                            }
-                        } else {
-                            LiveVideoGrid(
-                                wallpapers = currentWallpapers,
-                                onWallpaperClick = onWallpaperClick,
-                                gridState = gridState,
-                                exoPlayer = exoPlayer,
-                                playingIndex = playingIndex,
-                                isLoadingMore = isLoadingMore,
-                                canLoadMore = canLoadMore,
-                                onLoadMore = { viewModel.loadMore() },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
+                        LiveGridContent(
+                            wallpapers = currentWallpapers,
+                            onWallpaperClick = onWallpaperClick,
+                            gridState = gridState,
+                            exoPlayer = exoPlayer,
+                            playingIndex = playingIndex,
+                            isLoadingMore = isLoadingMore,
+                            canLoadMore = canLoadMore,
+                            onLoadMore = { viewModel.loadMore() },
+                            modifier = Modifier.weight(1f)
+                        )
                     }
 
                     is UiState.Error -> {
@@ -435,7 +425,7 @@ fun LiveLibraryScreen(
                                         message = state.message, duration = SnackbarDuration.Short
                                     )
                                 }
-                                LiveVideoGrid(
+                                LiveGridContent(
                                     wallpapers = currentWallpapers,
                                     onWallpaperClick = onWallpaperClick,
                                     gridState = gridState,
@@ -464,6 +454,40 @@ fun LiveLibraryScreen(
     }
 }
 
+@Composable
+private fun LiveGridContent(
+    wallpapers: List<Wallpaper>,
+    onWallpaperClick: (Wallpaper) -> Unit,
+    gridState: LazyGridState,
+    exoPlayer: ExoPlayer,
+    playingIndex: Int,
+    isLoadingMore: Boolean,
+    canLoadMore: Boolean,
+    onLoadMore: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (wallpapers.isEmpty()) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(
+                stringResource(R.string.no_wallpapers_found),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+        }
+    } else {
+        LiveVideoGrid(
+            wallpapers = wallpapers,
+            onWallpaperClick = onWallpaperClick,
+            gridState = gridState,
+            exoPlayer = exoPlayer,
+            playingIndex = playingIndex,
+            isLoadingMore = isLoadingMore,
+            canLoadMore = canLoadMore,
+            onLoadMore = onLoadMore,
+            modifier = modifier
+        )
+    }
+}
 @Composable
 fun rememberExoPlayerInstance(context: Context): ExoPlayer {
     val exoPlayer = remember {
@@ -520,7 +544,7 @@ fun findBestVisibleItemToPlay(
 @Preview(showBackground = true, device = "id:pixel_5")
 @Composable
 fun LiveLibraryScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         Scaffold(
             topBar = { TopAppBar(title = { Text("Live Wallpapers Preview") }) }) { padding ->
             Box(

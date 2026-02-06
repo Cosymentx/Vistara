@@ -12,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
@@ -21,14 +20,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,6 +33,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.annotation.StringRes
 import com.obscura.wallpapers.ui.theme.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,7 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,13 +93,26 @@ fun FeedbackScreen(
                 .padding(top = 64.dp, bottom = 80.dp)
                 .padding(16.dp)
         ) {
-            RatingCard(
-                onClick = { viewModel.openAppRating() })
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            EmailFeedbackCard(
-                onClick = { viewModel.sendEmailFeedback() })
+            FeedbackActionList(
+                items = listOf(
+                    FeedbackActionEntry(
+                        icon = Icons.Default.Star,
+                        iconTint = MaterialTheme.colorScheme.primary,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleRes = R.string.rate_in_app_store,
+                        subtitleRes = R.string.like_our_app_rate_us,
+                        onClick = { viewModel.openAppRating() }
+                    ),
+                    FeedbackActionEntry(
+                        icon = Icons.Default.Email,
+                        iconTint = MaterialTheme.colorScheme.secondary,
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        titleRes = R.string.send_email_feedback,
+                        subtitleRes = R.string.have_questions_email_us,
+                        onClick = { viewModel.sendEmailFeedback() }
+                    )
+                )
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -132,35 +145,59 @@ fun FeedbackScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
+            SubmitButton(
+                label = stringResource(R.string.submit_feedback),
+                isSubmitting = isSubmitting,
+                enabled = !isSubmitting && feedbackText.isNotBlank(),
                 onClick = { viewModel.submitFeedback() },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !isSubmitting && feedbackText.isNotBlank()
-            ) {
-                if (isSubmitting) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text(stringResource(R.string.submit_feedback))
-                }
-            }
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+private data class FeedbackActionEntry(
+    val icon: ImageVector,
+    val iconTint: Color,
+    val containerColor: Color,
+    @StringRes val titleRes: Int,
+    @StringRes val subtitleRes: Int,
+    val onClick: () -> Unit
+)
+
+@Composable
+private fun FeedbackActionList(items: List<FeedbackActionEntry>) {
+    items.forEachIndexed { index, item ->
+        FeedbackActionCard(
+            icon = item.icon,
+            iconTint = item.iconTint,
+            containerColor = item.containerColor,
+            title = stringResource(item.titleRes),
+            subtitle = stringResource(item.subtitleRes),
+            onClick = item.onClick
+        )
+        if (index != items.lastIndex) {
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
 @Composable
-private fun RatingCard(
-    onClick: () -> Unit, modifier: Modifier = Modifier
+private fun FeedbackActionCard(
+    icon: ImageVector,
+    iconTint: Color,
+    containerColor: Color,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = containerColor
         )
     ) {
         Column(
@@ -170,16 +207,16 @@ private fun RatingCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                imageVector = Icons.Default.Star,
+                imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = iconTint,
                 modifier = Modifier.size(48.dp)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = stringResource(R.string.rate_in_app_store),
+                text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -187,64 +224,43 @@ private fun RatingCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = stringResource(R.string.like_our_app_rate_us),
+                text = subtitle,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
         }
     }
 }
 
 @Composable
-private fun EmailFeedbackCard(
-    onClick: () -> Unit, modifier: Modifier = Modifier
+private fun SubmitButton(
+    label: String,
+    isSubmitting: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Card(
+    Button(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        )
+        modifier = modifier,
+        enabled = enabled
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                imageVector = Icons.Default.Email,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.size(48.dp)
+        if (isSubmitting) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
+                strokeWidth = 2.dp
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(R.string.send_email_feedback),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = stringResource(R.string.have_questions_email_us),
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
-            )
+        } else {
+            Text(label)
         }
     }
 }
-
 @Preview(showBackground = true)
 @Composable
 fun FeedbackScreenPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             FeedbackScreen(onBackPressed = {})
         }

@@ -61,7 +61,7 @@ import androidx.compose.ui.unit.dp
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.Resolution
 import com.obscura.wallpapers.core.data.model.Wallpaper
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 
 @Composable
@@ -533,7 +533,7 @@ fun WallpaperSetOptions(
 @Preview
 @Composable
 fun WallpaperDetailPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         WallpaperDetail(
             wallpaper = Wallpaper(
                 id = "1",

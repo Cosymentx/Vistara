@@ -53,7 +53,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.remote.service.PaymentMethod
-import com.obscura.wallpapers.ui.theme.VistaraTheme
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
 
 /**
  * 支付方式选择弹框
@@ -487,7 +487,7 @@ private fun PaymentMethodItem(
 @Preview(showBackground = true)
 @Composable
 fun PaymentMethodDialogPreview() {
-    VistaraTheme {
+    ObscuraTheme {
         PaymentMethodDialog(
             amount = "1 \n VIP Week",
             paymentMethods = listOf(

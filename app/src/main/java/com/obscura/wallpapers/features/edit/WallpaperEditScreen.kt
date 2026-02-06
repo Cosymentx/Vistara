@@ -74,6 +74,8 @@ import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.features.edit.EditIcons
 import com.obscura.wallpapers.ui.theme.stringResource
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
+import com.obscura.wallpapers.ui.components.LoadingState
+import com.obscura.wallpapers.ui.components.ErrorState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -124,35 +126,14 @@ fun WallpaperEditScreen(
         ) {
             when (wallpaperState) {
                 is UiState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    LoadingState()
                 }
 
                 is UiState.Error -> {
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = stringResource(R.string.loading_failed),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = (wallpaperState as UiState.Error).message,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(onClick = onBackPressed) {
-                            Text(stringResource(R.string.back))
-                        }
-                    }
+                    ErrorState(
+                        message = (wallpaperState as UiState.Error).message,
+                        onRetry = onBackPressed
+                    )
                 }
 
                 is UiState.Success -> {

@@ -25,7 +25,7 @@ class LocaleManager @Inject constructor(
     private val userPrefsRepository: UserPrefsRepository
 ) {
     companion object {
-        private const val TAG = "VistaraLocaleManager"
+        private const val TAG = "LocaleManager"
     }
 
     /**

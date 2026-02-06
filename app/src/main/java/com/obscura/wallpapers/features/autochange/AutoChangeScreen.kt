@@ -1,7 +1,6 @@
 package com.obscura.wallpapers.features.autochange
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +13,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,13 +24,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -46,7 +41,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import com.obscura.wallpapers.ui.theme.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.BuildConfig
@@ -56,7 +50,6 @@ import com.obscura.wallpapers.core.data.model.AutoChangeSource
 import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.icons.AppIcons
-import com.obscura.wallpapers.ui.theme.VistaraTheme
 import com.obscura.wallpapers.ui.components.GlassScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -142,12 +135,7 @@ fun AutoChangeScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             if (autoChangeEnabled) {
-                Text(
-                    text = stringResource(R.string.change_settings),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                SectionTitle(text = stringResource(R.string.change_settings))
 
                 FrequencySelector(
                     currentFrequency = autoChangeFrequency,
@@ -170,12 +158,7 @@ fun AutoChangeScreen(
                     color = DividerDefaults.color
                 )
 
-                Text(
-                    text = stringResource(R.string.wallpaper_source),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                SectionTitle(text = stringResource(R.string.wallpaper_source))
 
                 SourceSelector(
                     currentSource = autoChangeSource,
@@ -185,12 +168,7 @@ fun AutoChangeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = stringResource(R.string.wallpaper_target),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                SectionTitle(text = stringResource(R.string.wallpaper_target))
 
                 TargetSelector(
                     currentTarget = autoChangeTarget,
@@ -303,6 +281,16 @@ private fun FrequencySelector(
             }
         }
     }
+}
+
+@Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
 }
 
 @Composable
