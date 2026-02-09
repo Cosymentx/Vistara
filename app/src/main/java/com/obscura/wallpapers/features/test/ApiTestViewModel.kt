@@ -82,7 +82,7 @@ class ApiTestViewModel @Inject constructor(
                     }
                 }
 
-                _resultMessage.value = context.getString(R.string.pexels_api_test_complete)
+                _resultMessage.value = context.getString(R.string.test_pexels_api_complete)
             } catch (e: Exception) {
                 Log.e(TAG, "测试过程中发生错误", e)
                 _resultMessage.value = context.getString(R.string.test_failed, e.message)
@@ -135,7 +135,7 @@ class ApiTestViewModel @Inject constructor(
                     }
                 }
 
-                _resultMessage.value = context.getString(R.string.unsplash_api_test_complete)
+                _resultMessage.value = context.getString(R.string.test_unsplash_api_complete)
             } catch (e: Exception) {
                 Log.e(TAG, "测试过程中发生错误", e)
                 _resultMessage.value = context.getString(R.string.test_failed, e.message)

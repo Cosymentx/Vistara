@@ -105,7 +105,7 @@ fun RechargeContent(
             modifier = Modifier.fillMaxWidth(),
             enabled = selectedProduct != null
         ) {
-            Text(text = stringResource(R.string.diamond_recharge))
+            Text(text = stringResource(R.string.diamond_recharge_title))
         }
     }
 }
@@ -287,7 +287,7 @@ fun DiamondProductCard(
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
-                                text = stringResource(R.string.discount_percent, product.discount),
+                                text = stringResource(R.string.diamond_discount_percent, product.discount),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = Color.White
                             )
@@ -369,7 +369,7 @@ fun TransactionHistoryContent(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.no_transaction_history),
+                    text = stringResource(R.string.diamond_no_transaction_history),
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -411,7 +411,7 @@ fun TransactionItem(transaction: DiamondTransaction) {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = stringResource(R.string.recharge),
+                text = stringResource(R.string.diamond_recharge_type_recharge),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )

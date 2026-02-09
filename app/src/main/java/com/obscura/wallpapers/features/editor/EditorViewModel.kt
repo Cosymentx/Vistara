@@ -121,15 +121,15 @@ class WallpaperEditViewModel @Inject constructor(
                 } else {
                     if (isRateLimitError) {
                         _wallpaperState.value =
-                            UiState.Error(stringProvider.getString(R.string.api_rate_limit_exceeded))
+                            UiState.Error(stringProvider.getString(R.string.network_api_rate_limit_exceeded))
                     } else {
                         _wallpaperState.value =
-                            UiState.Error(stringProvider.getString(R.string.load_wallpaper_failed))
+                            UiState.Error(stringProvider.getString(R.string.wallpaper_load_failed))
                     }
                 }
             } catch (e: Exception) {
                 _wallpaperState.value = UiState.Error(
-                    e.message ?: stringProvider.getString(R.string.load_wallpaper_failed)
+                    e.message ?: stringProvider.getString(R.string.wallpaper_load_failed)
                 )
             }
         }
@@ -186,7 +186,7 @@ class WallpaperEditViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     android.widget.Toast.makeText(
                         context,
-                        "${stringProvider.getString(R.string.load_wallpaper_failed)}: ${e.message}",
+                        "${stringProvider.getString(R.string.wallpaper_load_failed)}: ${e.message}",
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                 }

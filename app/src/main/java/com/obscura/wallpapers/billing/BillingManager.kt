@@ -558,21 +558,21 @@ class BillingManager @Inject constructor(
      */
     fun getProductPrice(productId: String): String {
         val productDetails =
-            _productDetails.value[productId] ?: return context.getString(R.string.price_unknown)
+            _productDetails.value[productId] ?: return context.getString(R.string.membership_price_unknown)
 
         return when (productId) {
             SUBSCRIPTION_WEEKLY, SUBSCRIPTION_MONTHLY, SUBSCRIPTION_QUARTERLY -> {
                 val offerDetails = productDetails.subscriptionOfferDetails?.firstOrNull()
                 val pricingPhase = offerDetails?.pricingPhases?.pricingPhaseList?.firstOrNull()
-                pricingPhase?.formattedPrice ?: context.getString(R.string.price_unknown)
+                pricingPhase?.formattedPrice ?: context.getString(R.string.membership_price_unknown)
             }
 
             in DIAMOND_SKUS -> {
                 productDetails.oneTimePurchaseOfferDetails?.formattedPrice
-                    ?: context.getString(R.string.price_unknown)
+                    ?: context.getString(R.string.membership_price_unknown)
             }
 
-            else -> context.getString(R.string.price_unknown)
+            else -> context.getString(R.string.membership_price_unknown)
         }
     }
 
@@ -588,11 +588,11 @@ class BillingManager @Inject constructor(
      */
     fun getProductPeriod(productId: String): String {
         return when (productId) {
-            SUBSCRIPTION_WEEKLY -> context.getString(R.string.subscription_weekly)
-            SUBSCRIPTION_MONTHLY -> context.getString(R.string.subscription_monthly)
-            SUBSCRIPTION_QUARTERLY -> context.getString(R.string.subscription_quarterly)
-//            SUBSCRIPTION_YEARLY -> context.getString(R.string.subscription_yearly)
-//            PREMIUM_LIFETIME -> context.getString(R.string.premium_lifetime)
+            SUBSCRIPTION_WEEKLY -> context.getString(R.string.membership_plan_name_weekly)
+            SUBSCRIPTION_MONTHLY -> context.getString(R.string.membership_plan_name_monthly)
+            SUBSCRIPTION_QUARTERLY -> context.getString(R.string.membership_plan_name_quarterly)
+//            SUBSCRIPTION_YEARLY -> context.getString(R.string.membership_plan_name_yearly)
+//            PREMIUM_LIFETIME -> context.getString(R.string.membership_plan_name_lifetime)
             else -> ""
         }
     }

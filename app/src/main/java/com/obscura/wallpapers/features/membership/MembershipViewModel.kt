@@ -175,15 +175,15 @@ class MembershipViewModel @Inject constructor(
                     is PurchaseState.Completed -> {
                         _isUpgrading.value = false
                         _isPremiumUser.value = true
-                        _upgradeResult.value = UpgradeResult.Success(stringProvider.getString(R.string.upgrade_success))
+                        _upgradeResult.value = UpgradeResult.Success(stringProvider.getString(R.string.membership_upgrade_success))
                     }
                     is PurchaseState.Failed -> {
                         _isUpgrading.value = false
-                        _upgradeResult.value = UpgradeResult.Error(stringProvider.getString(R.string.upgrade_failed, state.message))
+                        _upgradeResult.value = UpgradeResult.Error(stringProvider.getString(R.string.membership_upgrade_failed, state.message))
                     }
                     is PurchaseState.Cancelled -> {
                         _isUpgrading.value = false
-                        _upgradeResult.value = UpgradeResult.Error(stringProvider.getString(R.string.upgrade_cancelled))
+                        _upgradeResult.value = UpgradeResult.Error(stringProvider.getString(R.string.membership_upgrade_cancelled))
                     }
                     is PurchaseState.Restoring -> _isUpgrading.value = true
                     else -> _isUpgrading.value = false

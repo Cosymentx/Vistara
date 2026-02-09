@@ -93,10 +93,10 @@ class PreferencesViewModel @Inject constructor(
                 _isLoggingOut.value = true
                 authRepository.signOut()
                 _isLoggedIn.value = false
-                _operationResult.value = context.getString(R.string.sign_out_success)
+                _operationResult.value = context.getString(R.string.settings_sign_out_success)
             } catch (e: Exception) {
                 Log.e(TAG, "Error signing out: ${e.message}")
-                _operationResult.value = context.getString(R.string.sign_out_failed)
+                _operationResult.value = context.getString(R.string.settings_sign_out_failed)
             } finally {
                 _isLoggingOut.value = false
             }

@@ -118,11 +118,11 @@ private fun getLanguageText(language: AppLanguage): String {
     val resources = LocalAppResources.current
 
     return when (language) {
-        AppLanguage.SYSTEM -> resources.getString(R.string.system_language)
-        AppLanguage.ENGLISH -> resources.getString(R.string.english_language)
-        AppLanguage.CHINESE -> resources.getString(R.string.chinese_language)
-        AppLanguage.JAPANESE -> resources.getString(R.string.japanese_language)
-        AppLanguage.KOREAN -> resources.getString(R.string.korean_language)
-        AppLanguage.INDONESIAN -> resources.getString(R.string.indonesian_language)
+        AppLanguage.SYSTEM -> resources.getString(R.string.settings_language_system)
+        AppLanguage.ENGLISH -> resources.getString(R.string.settings_language_english)
+        AppLanguage.CHINESE -> resources.getString(R.string.settings_language_chinese)
+        AppLanguage.JAPANESE -> resources.getString(R.string.settings_language_japanese)
+        AppLanguage.KOREAN -> resources.getString(R.string.settings_language_korean)
+        AppLanguage.INDONESIAN -> resources.getString(R.string.settings_language_indonesian)
     }
 }

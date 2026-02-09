@@ -81,16 +81,16 @@ class SignInViewModel @Inject constructor(
                 if (success.isSuccess) {
                     _isLoggedIn.value = true
                     loadUserInfo()
-                    _loginResult.value = LoginResult.Success(context.getString(R.string.login_success))
+                    _loginResult.value = LoginResult.Success(context.getString(R.string.auth_login_success))
                 } else {
-                    _loginResult.value = LoginResult.Error(context.getString(R.string.login_failed))
+                    _loginResult.value = LoginResult.Error(context.getString(R.string.auth_login_failed))
                 }
             } catch (e: ApiException) {
                 Log.e(TAG, "Google sign in failed", e)
-                _loginResult.value = LoginResult.Error(context.getString(R.string.login_failed_with_status, e.statusCode))
+                _loginResult.value = LoginResult.Error(context.getString(R.string.auth_login_failed_with_status, e.statusCode))
             } catch (e: Exception) {
                 Log.e(TAG, "Error handling sign in result", e)
-                _loginResult.value = LoginResult.Error(context.getString(R.string.login_failed_with_message, e.message.orEmpty()))
+                _loginResult.value = LoginResult.Error(context.getString(R.string.auth_login_failed_with_message, e.message.orEmpty()))
             }
         }
     }
@@ -103,10 +103,10 @@ class SignInViewModel @Inject constructor(
                 _userName.value = null
                 _userPhotoUrl.value = null
                 _userEmail.value = null
-                _loginResult.value = LoginResult.Success(context.getString(R.string.logout_success))
+                _loginResult.value = LoginResult.Success(context.getString(R.string.auth_logout_success))
             } catch (e: Exception) {
                 Log.e(TAG, "Error signing out", e)
-                _loginResult.value = LoginResult.Error(context.getString(R.string.logout_failed, e.message.orEmpty()))
+                _loginResult.value = LoginResult.Error(context.getString(R.string.auth_logout_failed, e.message.orEmpty()))
             }
         }
     }

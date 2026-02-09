@@ -130,7 +130,7 @@ fun ZoomableImage(
                 Box(
                     modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
-                    Text(stringResource(R.string.load_wallpaper_failed), color = Color.Red)
+                    Text(stringResource(R.string.wallpaper_load_failed), color = Color.Red)
                 }
             },
             success = {

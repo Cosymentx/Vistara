@@ -96,7 +96,7 @@ fun DiamondScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.diamond_recharge)) },
+                title = { Text(stringResource(R.string.diamond_recharge_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {
                         Icon(
@@ -114,7 +114,7 @@ fun DiamondScreen(
                     }) {
                         Icon(
                             imageVector = ObscuraIcons.History,
-                            contentDescription = stringResource(R.string.transaction_history)
+                            contentDescription = stringResource(R.string.diamond_transaction_history_title)
                         )
                     }
                 })

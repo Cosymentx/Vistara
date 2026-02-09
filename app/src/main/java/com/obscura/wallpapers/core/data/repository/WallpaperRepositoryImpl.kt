@@ -78,7 +78,7 @@ class WallpaperRepositoryImpl @Inject constructor(
                 }
                 // 如果本地没有数据，返回错误
                 return@withContext ApiResult.Error(
-                    message = stringProvider.getString(R.string.no_network_wallpapers),
+                    message = stringProvider.getString(R.string.home_no_network_wallpapers),
                     source = wallpaperApiAdapter.getApiSource()
                 )
             }
@@ -88,7 +88,7 @@ class WallpaperRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             ApiResult.Error(
                 message = e.message
-                    ?: stringProvider.getString(R.string.failed_to_get_recommended_wallpapers),
+                    ?: stringProvider.getString(R.string.home_failed_to_get_recommended_wallpapers),
                 source = wallpaperApiAdapter.getApiSource()
             )
         }
@@ -159,7 +159,7 @@ class WallpaperRepositoryImpl @Inject constructor(
             ApiResult.Success(wallpapers)
         } catch (e: Exception) {
             ApiResult.Error(
-                message = e.message ?: stringProvider.getString(R.string.failed_to_get_wallpapers),
+                message = e.message ?: stringProvider.getString(R.string.home_failed_to_get_wallpapers),
                 source = ApiSource.UNSPLASH
             )
         }
@@ -201,7 +201,7 @@ class WallpaperRepositoryImpl @Inject constructor(
                 // 如果本地没有数据，返回错误
                 Log.w(TAG, "本地数据库没有壁纸数据")
                 return@withContext ApiResult.Error(
-                    message = stringProvider.getString(R.string.no_network_category_wallpapers),
+                    message = stringProvider.getString(R.string.categories_no_network_wallpapers),
                     source = ApiSource.UNSPLASH
                 )
             }
@@ -405,7 +405,7 @@ class WallpaperRepositoryImpl @Inject constructor(
             Log.e(TAG, "按分类获取壁纸失败", e)
             ApiResult.Error(
                 message = e.message
-                    ?: stringProvider.getString(R.string.failed_to_get_category_wallpapers),
+                    ?: stringProvider.getString(R.string.categories_failed_to_get_wallpapers),
                 source = ApiSource.UNSPLASH
             )
         }

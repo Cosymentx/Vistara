@@ -250,13 +250,13 @@ class TestViewModel @Inject constructor(
                         userRepository.updatePremiumStatus(isPremium)
                         _isPremiumUser.value = isPremium
                     }
-                    _operationResult.value = context.getString(R.string.login_success)
+                    _operationResult.value = context.getString(R.string.auth_login_success)
                     hideLoginDialog()
                     Log.d(TAG, "Login successful")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error during login: ${e.message}")
-                _operationResult.value = context.getString(R.string.login_failed)
+                _operationResult.value = context.getString(R.string.auth_login_failed)
             } finally {
                 _isLoginLoading.value = false
             }

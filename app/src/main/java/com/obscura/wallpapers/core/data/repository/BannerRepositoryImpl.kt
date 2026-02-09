@@ -31,7 +31,7 @@ class BannerRepositoryImpl @Inject constructor(
             // 检查网络连接
             if (!networkMonitor.isNetworkAvailable()) {
                 return@withContext ApiResult.Error(
-                    message = stringProvider.getString(R.string.no_network_banner_data),
+                    message = stringProvider.getString(R.string.home_banner_no_network),
                     source = ApiSource.UNSPLASH // 使用一个默认的API来源
                 )
             }
@@ -42,24 +42,24 @@ class BannerRepositoryImpl @Inject constructor(
                 Banner(
                     id = "1",
                     imageUrl = "https://picsum.photos/id/237/800/400",
-                    title = stringProvider.getString(R.string.featured_wallpapers),
-                    subtitle = stringProvider.getString(R.string.discover_latest_wallpapers),
+                    title = stringProvider.getString(R.string.home_featured_wallpapers),
+                    subtitle = stringProvider.getString(R.string.home_discover_latest_wallpapers),
                     actionType = BannerActionType.WALLPAPER,
                     actionTarget = "unsplash_Dwu85P9SOIk"
                 ),
                 Banner(
                     id = "2",
                     imageUrl = "https://picsum.photos/id/1015/800/400",
-                    title = stringProvider.getString(R.string.premium_membership),
-                    subtitle = stringProvider.getString(R.string.unlock_all_hd_wallpapers),
+                    title = stringProvider.getString(R.string.membership_premium_membership),
+                    subtitle = stringProvider.getString(R.string.membership_unlock_all_hd_wallpapers),
                     actionType = BannerActionType.PREMIUM,
                     actionTarget = "premium"
                 ),
                 Banner(
                     id = "3",
                     imageUrl = "https://picsum.photos/id/1018/800/400",
-                    title = stringProvider.getString(R.string.live_wallpapers),
-                    subtitle = stringProvider.getString(R.string.make_your_screen_come_alive),
+                    title = stringProvider.getString(R.string.home_live_wallpapers),
+                    subtitle = stringProvider.getString(R.string.home_make_your_screen_come_alive),
                     actionType = BannerActionType.WALLPAPER,
                     actionTarget = "pexels_photo_2014422"
                 )
@@ -68,7 +68,7 @@ class BannerRepositoryImpl @Inject constructor(
             ApiResult.Success(banners)
         } catch (e: Exception) {
             ApiResult.Error(
-                message = e.message ?: stringProvider.getString(R.string.failed_to_get_banner_data),
+                message = e.message ?: stringProvider.getString(R.string.home_banner_load_failed),
                 source = ApiSource.UNSPLASH // 使用一个默认的API来源
             )
         }

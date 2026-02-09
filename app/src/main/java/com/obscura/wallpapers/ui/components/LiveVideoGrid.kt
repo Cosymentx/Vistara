@@ -136,7 +136,7 @@ fun LiveVideoGrid(
                         )
                     } else { // Only show "end" message if not loading AND list has items
                         Text(
-                            text = stringResource(R.string.end_of_list),
+                            text = stringResource(R.string.common_end_of_list),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                             textAlign = TextAlign.Center

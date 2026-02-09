@@ -121,7 +121,7 @@ class DiscoverViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "加载数据时发生异常", e)
-                _error.value = e.message ?: stringProvider.getString(R.string.errors_loading_data)
+                _error.value = e.message ?: stringProvider.getString(R.string.common_error_loading_data)
             } finally {
                 _isLoading.value = false
                 Log.d(TAG, "数据加载完成")
@@ -168,7 +168,7 @@ class DiscoverViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _error.value = e.message
-                    ?: stringProvider.getString(R.string.errors_loading_category_wallpapers)
+                    ?: stringProvider.getString(R.string.categories_error_loading_wallpapers)
             } finally {
                 _isCategoryLoading.value = false
             }

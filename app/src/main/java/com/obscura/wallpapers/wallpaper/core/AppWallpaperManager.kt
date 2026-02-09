@@ -112,7 +112,7 @@ class AppWallpaperManager @Inject constructor(
         } catch (e: Exception) {
             Log.e(TAG, "Error setting static wallpaper", e)
             withContext(Dispatchers.Main) {
-                Toast.makeText(activity, stringProvider.getString(R.string.set_wallpaper_failed), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, stringProvider.getString(R.string.wallpaper_set_failed), Toast.LENGTH_SHORT).show()
                 onComplete(false)
             }
         }
@@ -135,7 +135,7 @@ class AppWallpaperManager @Inject constructor(
             if (videoUrl.isNullOrEmpty()) {
                 Log.e(TAG, "Video URL is null or empty")
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(activity, stringProvider.getString(R.string.invalid_video_url), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, stringProvider.getString(R.string.wallpaper_invalid_video_url), Toast.LENGTH_SHORT).show()
                     onComplete(false)
                 }
                 return
@@ -178,14 +178,14 @@ class AppWallpaperManager @Inject constructor(
                         }
                     } else { notificationUtil.showWallpaperChangedNotification(wallpaper) }
                 } else if (!result.anyMethodSucceeded) {
-                    Toast.makeText(activity, stringProvider.getString(R.string.set_wallpaper_failed), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, stringProvider.getString(R.string.wallpaper_set_failed), Toast.LENGTH_SHORT).show()
                 }
                 onComplete(result.anyMethodSucceeded)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error setting live wallpaper", e)
             withContext(Dispatchers.Main) {
-                Toast.makeText(activity, stringProvider.getString(R.string.set_wallpaper_failed), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, stringProvider.getString(R.string.wallpaper_set_failed), Toast.LENGTH_SHORT).show()
                 onComplete(false)
             }
         }
@@ -218,9 +218,9 @@ class AppWallpaperManager @Inject constructor(
     }
     private fun getSuccessMessage(target: WallpaperTarget): String {
         return when (target) {
-            WallpaperTarget.HOME -> stringProvider.getString(R.string.home_screen_wallpaper_set)
-            WallpaperTarget.LOCK -> stringProvider.getString(R.string.lock_screen_wallpaper_set)
-            WallpaperTarget.BOTH -> stringProvider.getString(R.string.both_screens_wallpaper_set)
+            WallpaperTarget.HOME -> stringProvider.getString(R.string.wallpaper_set_home_success)
+            WallpaperTarget.LOCK -> stringProvider.getString(R.string.wallpaper_set_lock_success)
+            WallpaperTarget.BOTH -> stringProvider.getString(R.string.wallpaper_set_both_success)
         }
     }
     fun getWallpapersDir(): File {

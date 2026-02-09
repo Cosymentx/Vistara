@@ -181,7 +181,7 @@ fun CollectionDetail(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.collection_introduction),
+                        text = stringResource(R.string.collections_introduction),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -211,7 +211,7 @@ fun CollectionDetail(
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
-                            text = stringResource(R.string.related_tags),
+                            text = stringResource(R.string.collections_related_tags),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -309,7 +309,7 @@ fun CollectionDetail(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = stringResource(R.string.wallpaper_list),
+                            text = stringResource(R.string.collections_wallpaper_list),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
