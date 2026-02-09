@@ -20,10 +20,6 @@
     <string name="notifications_download_progress_title">壁紙をダウンロード中</string>
     <string name="notifications_download_progress_text">壁紙をダウンロード中です</string>
 
-    <string name="loading_subscription_products">商品を読み込み中...</string>
-    <string name="errors_loading_subscription_products">商品の読み込みに失敗しました: %1$s</string>
-    <string name="no_subscription_products">利用可能なサブスクリプション商品がありません</string>
-
     <string name="notifications_download_complete_title">壁紙のダウンロードが完了しました</string>
     <string name="notifications_download_complete_text">壁紙がデバイスに正常にダウンロードされました</string>
 
@@ -140,94 +136,6 @@
     <string name="common_unknown_error">不明なエラー</string>
     <string name="common_refresh">更新</string>
 
-    <!-- ホーム（名前空間化） -->
-    <string name="home_title">ホーム</string>
-    <string name="home_search_hint">高品質な壁紙を見つける…</string>
-    <string name="home_partial_data_loading_failed">一部のコンテンツの読み込みに失敗しました。更新して再試行してください</string>
-    <string name="home_hot_static">人気の静止画</string>
-    <string name="home_cool_dynamic">クールなライブ</string>
-    <string name="home_latest_uploads">最新のアップロード</string>
-    <string name="home_search_icon">検索アイコン</string>
-    <string name="home_loading_wallpapers">壁紙を読み込み中…</string>
-    <string name="home_unknown_error">不明なエラー</string>
-    <string name="home_refresh">更新</string>
-    <string name="home_explore_categories">カテゴリーを探索</string>
-    <string name="home_nature_scenery">自然の風景</string>
-    <string name="home_architecture">建築</string>
-    <string name="home_animals">動物</string>
-    <string name="home_space">宇宙</string>
-    <string name="home_minimal">ミニマル</string>
-    <string name="home_no_wallpapers_found">壁紙が見つかりませんでした</string>
-    <string name="home_try_different_keywords">別のキーワードを試してください</string>
-    <string name="home_found_results">%d 件の結果が見つかりました</string>
-    <string name="home_hot_searches">人気の検索</string>
-    <string name="home_search_tips">検索のヒント</string>
-    <string name="home_use_specific_descriptions">具体的な説明を使用する</string>
-    <string name="home_specific_description_examples">例：山の風景、白黒の抽象、夜の都市景観</string>
-    <string name="home_try_different_languages">異なる言語を試す</string>
-    <string name="home_english_keywords_tip">英語のキーワードを使うと、より多くの結果が得られることがあります</string>
-    <string name="home_combine_keywords">キーワードを組み合わせる</string>
-    <string name="home_keyword_combination_examples">例：ミニマル 白黒、自然 緑</string>
-    <string name="home_clear_search">検索をクリア</string>
-    <string name="home_search_history">検索履歴</string>
-
-    <!-- プレミアム関連 -->
-    <!-- メンバーシップ関連（新命名） -->
-    <string name="membership_title">プレミアム機能をアンロック</string>
-    <string name="membership_user_title">あなたはプレミアムユーザーです</string>
-    <string name="membership_description">プレミアムにアップグレードして、すべての壁紙と機能をアンロック</string>
-    <string name="membership_user_description">ご支援ありがとうございます。すべてのプレミアム機能をご利用いただけます</string>
-    <string name="membership_feature_unlimited_downloads">無制限の高品質壁紙ダウンロード</string>
-    <string name="membership_feature_unlimited_downloads_desc">フル解像度で好きなだけ壁紙をダウンロード</string>
-    <string name="membership_feature_exclusive_live_wallpapers">特殊効果付きライブ壁紙</string>
-    <string name="membership_feature_exclusive_live_wallpapers_desc">特殊効果付きの限定ライブ壁紙にアクセス</string>
-    <string name="membership_feature_premium_collections">プレミアム限定の壁紙</string>
-    <string name="membership_feature_premium_collections_desc">プレミアム限定の壁紙コレクションにアクセス</string>
-    <string name="membership_feature_editing">高度な編集機能</string>
-    <string name="membership_feature_editing_desc">プロフェッショナルな編集ツールで壁紙をカスタマイズ</string>
-    <string name="membership_feature_auto_change">自動壁紙変更</string>
-    <string name="membership_feature_auto_change_desc">好みの頻度で自動的に壁紙を切り替えます</string>
-    <string name="membership_select_plan">サブスクリプションプランを選択</string>
-    <string name="membership_already_premium">あなたはすでにプレミアムユーザーです</string>
-    <string name="membership_payment_terms">購入の確認時に、Google Play ストアアカウントに支払いが請求されます。現在の購読期間の終了の少なくとも24時間前に自動更新を停止できます。購読コンテンツの無料試用は提供していません。購読期間は1ヶ月で、同じパッケージ期間内で同じ価格で自動更新されます。購読はいつでもキャンセルできます。</string>
-    <string name="membership_cancel_prefix">こちらをクリックして購読をキャンセル：</string>
-    <string name="membership_cancel_link">購読をキャンセル</string>
-    <string name="membership_plan_title_week">1\n週間</string>
-    <string name="membership_plan_title_month">1\nヶ月</string>
-    <string name="membership_plan_title_quarter">3\nヶ月</string>
-    <string name="membership_plan_name_week">週間プラン</string>
-    <string name="membership_plan_name_month">月額プラン</string>
-    <string name="membership_plan_name_quarter">四半期プラン</string>
-    <string name="membership_plan_name_year">年間プラン</string>
-    <string name="membership_plan_price_week">¥480</string>
-    <string name="membership_plan_price_month">¥1,200</string>
-    <string name="membership_plan_price_quarter">¥3,200</string>
-    <string name="membership_plan_price_year">¥10,800</string>
-    <string name="membership_plan_discount_quarter">11%お得</string>
-    <string name="membership_plan_discount_year">27%お得</string>
-    <string name="payment_service_not_connected">決済サービスに接続されていません。後でもう一度お試しください</string>
-    <string name="membership_plan_desc_week">毎週自動更新、いつでもキャンセル可能</string>
-    <string name="membership_plan_desc_month">毎月自動更新、いつでもキャンセル可能</string>
-    <string name="membership_plan_desc_quarter">3ヶ月ごとに自動更新、いつでもキャンセル可能</string>
-    <string name="membership_plan_desc_year">毎年自動更新、いつでもキャンセル可能</string>
-    <string name="save_about">約27%お得</string>
-    <string name="membership_plan_desc_lifetime">一回限りのお支払い、生液アクセス</string>
-    <string name="upgrade_now">今すぐアップグレード</string>
-    <string name="connecting_payment">決済サービスに接続中…</string>
-    <string name="all_premium_features_unlocked">すべてのプレミアム機能がアンロックされました</string>
-
-    <!-- 壁紙詳細ページ -->
-    <string name="preview_start_download_wallpaper">壁紙のダウンロードを開始</string>
-    <string name="preview_download_failed_permission_denied">壁紙をダウンロードできません：ストレージ権限が拒否されました</string>
-    <string name="preview_storage_permission_required">ストレージ権限が必要です</string>
-    <string name="preview_storage_permission_rationale">壁紙をギャラリーに保存するには、ストレージ権限が必要です。壁紙をダウンロードするには、この権限を許可してください。</string>
-    <string name="preview_grant_permission">権限を付与</string>
-    <string name="preview_download_failed_permission_required">壁紙をダウンロードできません：ストレージ権限が必要です</string>
-    <string name="preview_favorite_login_required">壁紙をお気に入りに追加するにはログインが必要です</string>
-    <string name="preview_download_login_required">壁紙をダウンロードするにはログインが必要です</string>
-    <string name="preview_set_wallpaper_login_required">壁紙を設定するにはログインが必要です</string>
-    <string name="preview_edit_login_required">壁紙を編集するにはログインが必要です</string>
-
     <!-- 壁紙詳細コンポーネント -->
     <string name="author">作者: %1$s</string>
     <string name="source">ソース: %1$s</string>
@@ -236,22 +144,12 @@
     <string name="static_wallpaper">静止壁紙</string>
     <string name="live_wallpaper">ライブ壁紙</string>
     <string name="tags">タグ:</string>
-    <string name="preview_set_as_wallpaper">壁紙に設定</string>
-    <string name="preview_setting_wallpaper">壁紙を設定中…</string>
     <string name="download">ダウンロード</string>
     <string name="share">共有</string>
     <string name="edit">編集</string>
     <string name="set_home_screen">ホーム画面に設定</string>
     <string name="set_lock_screen">ロック画面に設定</string>
     <string name="set_both_screens">両方に設定</string>
-    <string name="preview_collapse_info">情報を折りたたむ</string>
-    <string name="preview_expand_info">情報を展開</string>
-    <string name="preview_wallpaper">壁紙のプレビュー</string>
-    <string name="preview_set_as">設定先</string>
-    <string name="preview_home_screen_wallpaper">ホーム画面の壁紙</string>
-    <string name="preview_lock_screen_wallpaper">ロック画面の壁紙</string>
-    <string name="preview_home_and_lock_screen">ホーム画面とロック画面</string>
-    <string name="preview_upgrade_to_unlock">アップグレードしてこの壁紙をアンロック</string>
 
     <!-- 自動壁紙変更関連 -->
     <string name="cycler_change_settings">設定を変更</string>
@@ -354,10 +252,12 @@
     <string name="add_to_favorites">お気に入りに追加</string>
     <string name="remove_from_favorites">お気に入りから削除</string>
 <string name="loading_failed">読み込み失敗</string>
-    <string name="nav_home">ホーム</string>
-    <string name="nav_static">静的</string>
-    <string name="nav_live">ライブ</string>
-    <string name="nav_mine">マイ</string>
+
+    <string name="nav_discover">発見</string>
+    <string name="nav_photo">写真</string>
+    <string name="nav_video">動画</string>
+    <string name="nav_profile">プロフィール</string>
+
     <string name="api_test_tool">APIテストツール</string>
     <string name="test_tool">テストツール</string>
     <string name="back_button">戻る</string>
@@ -384,42 +284,14 @@
     <string name="test_pexels_api_complete">Pexels APIテスト完了、ログを確認してください</string>
     <string name="test_unsplash_api_complete">Unsplash APIテスト完了、ログを確認してください</string>
     <string name="test_failed">テスト失敗: %1$s</string>
-    <string name="collections_wallpapers_failed">コレクション壁紙の取得に失敗しました: %1$s</string>
-    <string name="collections_introduction">コレクション紹介</string>
-    <string name="collections_related_tags">関連タグ</string>
-    <string name="collections_premium_content">プレミアムコレクションコンテンツ</string>
-    <string name="collections_upgrade_to_unlock_all">プレミアムにアップグレードしてすべての壁紙をアンロック</string>
-    <string name="collections_upgrade_now">今すぐアップグレード</string>
-    <string name="collections_wallpaper_list">壁紙リスト</string>
     <string name="common_end_of_list">リストの終わり</string>
-    <string name="membership_upgrade_success">アップグレード成功！ご支援ありがとうございます</string>
-    <string name="membership_upgrade_failed">アップグレード失敗: %1$s</string>
-    <string name="membership_upgrade_cancelled">アップグレードがキャンセルされました</string>
     <string name="wallpaper_not_exist">壁紙が存在しません</string>
     <string name="wallpaper_load_failed">壁紙の読み込みに失敗しました</string>
-    <string name="preview_share_wallpaper">壁紙を共有</string>
-    <string name="preview_beautiful_wallpaper">美しい壁紙</string>
-    <string name="preview_share_wallpaper_text">美しい壁紙を見つけました\nタイトル: %1$s\n作者: %2$s\nソース: %3$s\n解像度: %4$d x %5$d\nVistara壁紙アプリをダウンロードして、より多くの美しい壁紙を手に入れましょう！</string>
-    <string name="preview_unnamed_wallpaper">名称なしの壁紙</string>
-    <string name="membership_price_unknown">価格不明</string>
-    <string name="membership_plan_name_weekly">週間</string>
-    <string name="membership_plan_name_monthly">月間</string>
-    <string name="membership_plan_name_quarterly">四半期</string>
-    <string name="membership_plan_name_yearly">年間</string>
-    <string name="membership_plan_name_lifetime">生液</string>
     <string name="settings_sign_out_success">サインアウト成功</string>
     <string name="settings_sign_out_failed">サインアウト失敗: %1$s</string>
     <string name="common_error_loading_data">データの読み込み中に不明なエラーが発生しました</string>
     <string name="categories_error_loading_wallpapers">カテゴリ壁紙の読み込み中に不明なエラーが発生しました</string>
     <string name="common_network_request_failed">ネットワークリクエスト失敗</string>
-    <string name="home_banner_no_network">ネットワーク接続がありません、バナーデータを取得できません</string>
-    <string name="home_banner_load_failed">バナーデータの取得に失敗しました</string>
-    <string name="home_featured_wallpapers">特集壁紙</string>
-    <string name="home_discover_latest_wallpapers">最新の美しい壁紙を発見</string>
-    <string name="membership_premium_membership">プレミアムメンバーシップ</string>
-    <string name="membership_unlock_all_hd_wallpapers">すべてのHD壁紙をアンロック</string>
-    <string name="home_live_wallpapers">ライブ壁紙</string>
-    <string name="home_make_your_screen_come_alive">画面に生命を吹き込む</string>
     <string name="auth_login_success">ログイン成功</string>
     <string name="auth_login_failed">ログイン失敗</string>
     <string name="auth_login_failed_with_status">ログイン失敗: %1$s</string>
@@ -439,39 +311,6 @@
     <string name="notifications_live_wallpaper_pending_title">ビデオ壁紙の準備が完了しました</string>
     <string name="notifications_live_wallpaper_pending_text">タップして「%1$s」をビデオ壁紙として設定します</string>
 
-    <!-- Diamond related -->
-    <string name="diamond_recharge_title">ダイヤモンドチャージ</string>
-    <string name="diamond_my_balance_title">マイダイヤモンド残高</string>
-    <string name="diamond_select_package_prompt">ダイヤモンドパッケージを選択</string>
-    <string name="diamond_plural">ダイヤモンド</string>
-    <string name="diamond_discount_percent">%d%% オフ</string>
-    <string name="diamond_purchase_now">今すぐ購入</string>
-    <string name="diamond_transaction_history_title">取引履歴</string>
-    <string name="diamond_balance_current_title">現在の残高</string>
-    <string name="diamond_no_transaction_history">取引履歴がありません</string>
-    <string name="diamond_recharge_type_recharge">チャージ</string>
-    <string name="diamond_transaction_type_purchase">購入</string>
-    <string name="diamond_transaction_type_reward">報酬</string>
-    <string name="diamond_transaction_type_refund">返金</string>
-    <string name="diamond_insufficient">ダイヤモンドが不足しています</string>
-    <string name="diamond_purchase_success">購入成功</string>
-    <string name="diamond_purchase_failed">購入失敗</string>
-    <string name="diamond_recharge_success">チャージ成功</string>
-    <string name="diamond_recharge_failed">チャージ失敗</string>
-    <string name="diamond_balance">ダイヤモンド残高</string>
-    <string name="diamond_price">価格: %d ダイヤモンド</string>
-    <string name="diamond_unlock_with_diamonds">%d ダイヤモンドでアンロック</string>
-    <string name="diamond_recharge_diamonds">ダイヤモンドをチャージ</string>
-    <string name="diamond_unlock_premium_content">プレミアムを開く</string>
-    <!-- ダイヤモンド（名前空間化） -->
-    <string name="diamond_current_balance">現在の残高</string>
-    <string name="purchase_wallpaper">壁紙を購入: %s</string>
-    <string name="diamond_purchase_description">%d ダイヤモンド</string>
-    <string name="diamond_icon">ダイヤモンドアイコン</string>
-    <string name="available_diamonds">利用可能なダイヤモンド</string>
-    <string name="first_recharge_bonus">初回チャージボーナス：20%%追加ダイヤモンドをゲット！</string>
-    <string name="loading_products">商品を読み込み中...</string>
-    <string name="errors_loading_products">商品の読み込みに失敗しました: %1$s</string>
 
     <!-- Browser module (WebView) -->
     <string name="browser_verifying_payment_result">支払い結果を確認中...</string>
@@ -481,21 +320,6 @@
     <string name="browser_payment_success">支払い成功！</string>
     <string name="browser_go_back">戻る</string>
 
-    <!-- Diamond Payment Dialog -->
-    <string name="diamond_label">ダイヤモンド</string>
-    <string name="diamond_payment_methods">支払い方法</string>
-    <string name="diamond_country">国</string>
-    <string name="diamond_indonesia">インドネシア</string>
-    <string name="diamond_coupon">クーポン</string>
-    <string name="diamond_none">なし</string>
-    <string name="diamond_payment_price">¥1,800</string>
-    <string name="diamond_payment">支払い</string>
-    <string name="diamond_creating_order">注文を作成中...</string>
-    <string name="diamond_order_creation_failed">注文の作成に失敗しました</string>
-    <string name="diamond_error_loading_page">ページの読み込みに失敗しました</string>
-    <string name="diamond_no_payment_methods">利用可能な支払い方法はありません</string>
-    <string name="errors_loading_page">ページの読み込みに失敗しました</string>
-    <string name="no_payment_methods">利用可能な支払い方法がありません</string>
     <string name="errors_loading_wallpapers">壁紙の読み込みに失敗しました</string>
     <string name="errors_filtering_wallpapers">壁紙のフィルタリングに失敗しました</string>
     <string name="errors_already_premium">すでにプレミアムユーザーです</string>
@@ -503,34 +327,8 @@
     <string name="errors_network_check">読み込みに失敗しました。ネットワーク接続を確認してください</string>
 
     <!-- Premium Screen related -->
-    <string name="membership_exclusive_privileges">5つの特典</string>
-    <string name="membership_more_info_prefix">詳細については、</string>
-    <string name="membership_terms_of_use">利用規約</string>
-    <string name="membership_and">および</string>
-    <string name="membership_renew_now">今すぐ更新</string>
-    <string name="membership_expired_on">%s に期限切れ</string>
-    <string name="membership_bonus_diamonds">ボーナス：%d</string>
-    <string name="membership_discount_percent_off">%d%% オフ</string>
 
     <!-- Premium Features -->
-    <string name="membership_feature_video_call">ビデオ通話特典</string>
-    <string name="membership_feature_video_call_desc">VIPは1分あたり20%%割引</string>
-    <string name="membership_feature_unlimited_messages">無制限メッセージ</string>
-    <string name="membership_feature_unlimited_messages_desc">メッセージ送信が無料</string>
-    <string name="membership_feature_checkin_bonus">チェックインボーナス</string>
-    <string name="membership_feature_checkin_bonus_desc">最大5,000ダイヤモンドを獲得</string>
-    <string name="membership_feature_match_offer">マッチング特典</string>
-    <string name="membership_feature_match_offer_desc">VIPはマッチングに15ダイヤモンドのみ必要</string>
-    <string name="membership_feature_who_see_me">閲覧者リスト</string>
-    <string name="membership_feature_who_see_me_desc">「誰が見たか」リストを見る特権を解除</string>
-    <string name="membership_feature_photo_voice">写真と音声メッセージ</string>
-    <string name="membership_feature_photo_voice_desc">写真と音声メッセージの送信が無料</string>
-    <string name="membership_feature_secret_content">シークレット画像/動画</string>
-    <string name="membership_feature_secret_content_desc">シークレット画像と動画を見る特権を解除</string>
-    <string name="membership_no_subscription_products">利用可能な購読商品がありません</string>
-    <string name="home_no_network_wallpapers">ネットワーク接続がなく、壁紙を取得できません</string>
-    <string name="home_failed_to_get_recommended_wallpapers">おすすめ壁紙の取得に失敗しました</string>
-    <string name="home_failed_to_get_wallpapers">壁紙の取得に失敗しました</string>
     <string name="categories_no_network_wallpapers">ネットワーク接続がなく、カテゴリ壁紙を取得できません</string>
     <string name="categories_failed_to_get_wallpapers">カテゴリ壁紙の取得に失敗しました</string>
 </resources>

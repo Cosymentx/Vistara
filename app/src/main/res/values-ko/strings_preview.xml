@@ -1,0 +1,26 @@
+<resources>
+    <string name="preview_start_download_wallpaper">배경화면 다운로드 시작</string>
+    <string name="preview_download_failed_permission_denied">배경화면을 다운로드할 수 없음: 저장소 권限이 거부됨</string>
+    <string name="preview_storage_permission_required">저장소 권한 필요</string>
+    <string name="preview_storage_permission_rationale">갤러리에 배경화면을 저장하려면 저장소 권한이 필요합니다. 배경화면을 다운로드하려면 이 권한을 허용해 주세요.</string>
+    <string name="preview_grant_permission">권한 부여</string>
+    <string name="preview_download_failed_permission_required">배경화면을 다운로드할 수 없음: 저장소 권한 필요</string>
+    <string name="preview_favorite_login_required">즐겨찾기에 배경화면을 추가하려면 로그인이 필요합니다</string>
+    <string name="preview_download_login_required">배경화면을 다운로드하려면 로그인이 필요합니다</string>
+    <string name="preview_set_wallpaper_login_required">배경화면을 설정하려면 로그인이 필요합니다</string>
+    <string name="preview_edit_login_required">배경화면을 편집하려면 로그인이 필요합니다</string>
+    <string name="preview_set_as_wallpaper">배경화면으로 설정</string>
+    <string name="preview_setting_wallpaper">배경화면 설정 중…</string>
+    <string name="preview_collapse_info">정보 접기</string>
+    <string name="preview_expand_info">정보 펼치기</string>
+    <string name="preview_wallpaper">벽지 미리 보기</string>
+    <string name="preview_set_as">다음으로 설정</string>
+    <string name="preview_home_screen_wallpaper">홈 화면 배경화면</string>
+    <string name="preview_lock_screen_wallpaper">잠금 화면 배경화면</string>
+    <string name="preview_home_and_lock_screen">홈 및 잠금 화면</string>
+    <string name="preview_upgrade_to_unlock">업그레이드하여 이 배경화면 잠금 해제</string>
+    <string name="preview_share_wallpaper">배경화면 공유</string>
+    <string name="preview_beautiful_wallpaper">아름다운 배경화면</string>
+    <string name="preview_share_wallpaper_text">아름다운 배경화면을 발견했어요\n제목: %1$s\n작성자: %2$s\n출처: %3$s\n해상도: %4$d x %5$d\nVistara 배경화면 앱을 다운로드하여 더 많은 아름다운 배경화면을 가져보세요!</string>
+    <string name="preview_unnamed_wallpaper">이름 없는 배경화면</string>
+</resources>

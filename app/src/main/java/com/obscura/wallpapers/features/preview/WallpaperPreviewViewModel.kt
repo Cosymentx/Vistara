@@ -19,7 +19,6 @@ import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.core.data.repository.WallpaperRepository
-import com.obscura.wallpapers.features.diamond.DiamondPurchaseResult
 import com.obscura.wallpapers.wallpaper.core.AppWallpaperManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -73,9 +72,6 @@ class WallpaperPreviewViewModel @Inject constructor(
     private val _showDiamondPurchaseDialog = mutableStateOf(false)
     val showDiamondPurchaseDialog: State<Boolean> = _showDiamondPurchaseDialog
 
-    private val _diamondPurchaseResult = MutableStateFlow<DiamondPurchaseResult?>(null)
-    val diamondPurchaseResult: StateFlow<DiamondPurchaseResult?> =
-        _diamondPurchaseResult.asStateFlow()
 
     private val _needStoragePermission = mutableStateOf(false)
     val needStoragePermission: State<Boolean> = _needStoragePermission
@@ -275,7 +271,7 @@ class WallpaperPreviewViewModel @Inject constructor(
     }
 
     fun clearDiamondPurchaseResult() {
-        _diamondPurchaseResult.value = null
+//        _diamondPurchaseResult.value = null
     }
 
     fun clearUpgradeResult() {
@@ -283,18 +279,18 @@ class WallpaperPreviewViewModel @Inject constructor(
     }
 
     fun purchaseWithDiamonds() {
-        viewModelScope.launch {
-            val s = _wallpaperState.value
-            if (s is UiState.Success) {
-                val marked = wallpaperRepository.markWallpaperAsPurchased(s.data.id)
-                if (marked) {
-                    _diamondPurchaseResult.value = DiamondPurchaseResult.Success("已购买解锁")
-                    _showDiamondPurchaseDialog.value = false
-                } else {
-                    _diamondPurchaseResult.value = DiamondPurchaseResult.Error("购买失败")
-                }
-            }
-        }
+//        viewModelScope.launch {
+//            val s = _wallpaperState.value
+//            if (s is UiState.Success) {
+//                val marked = wallpaperRepository.markWallpaperAsPurchased(s.data.id)
+//                if (marked) {
+//                    _diamondPurchaseResult.value = DiamondPurchaseResult.Success("已购买解锁")
+//                    _showDiamondPurchaseDialog.value = false
+//                } else {
+//                    _diamondPurchaseResult.value = DiamondPurchaseResult.Error("购买失败")
+//                }
+//            }
+//        }
     }
 
     fun hideDiamondPurchaseDialog() {

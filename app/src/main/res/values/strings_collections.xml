@@ -1,0 +1,9 @@
+<resources>
+    <string name="collections_wallpapers_failed">Failed to get collection wallpapers: %1$s</string>
+    <string name="collections_introduction">Collection Introduction</string>
+    <string name="collections_related_tags">Related Tags</string>
+    <string name="collections_premium_content">Premium Collection Content</string>
+    <string name="collections_upgrade_to_unlock_all">Upgrade to premium to unlock all wallpapers</string>
+    <string name="collections_upgrade_now">Upgrade Now</string>
+    <string name="collections_wallpaper_list">Wallpaper List</string>
+</resources>

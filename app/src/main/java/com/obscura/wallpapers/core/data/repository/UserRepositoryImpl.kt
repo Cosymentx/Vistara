@@ -27,7 +27,6 @@ import javax.inject.Singleton
 class UserRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val apiService: ApiService,
-    private val diamondRepository: dagger.Lazy<DiamondRepository>
 ) : UserRepository {
 
     companion object {
@@ -233,19 +232,19 @@ class UserRepositoryImpl @Inject constructor(
         }
 
         // 同步更新DiamondRepository中的钻石余额
-        try {
-            val currentBalance = diamondRepository.get().getDiamondBalanceValue()
-            if (currentBalance != amount) {
-                Log.d(TAG, "同步钻石余额: 从 $currentBalance 到 $amount")
-                diamondRepository.get().updateDiamondBalance(
-                    amount = amount - currentBalance,
-                    type = com.obscura.wallpapers.core.data.model.DiamondTransactionType.RECHARGE,
-                    description = "同步服务器钻石余额"
-                )
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "同步钻石余额失败: ${e.message}", e)
-        }
+//        try {
+//            val currentBalance = diamondRepository.get().getDiamondBalanceValue()
+//            if (currentBalance != amount) {
+//                Log.d(TAG, "同步钻石余额: 从 $currentBalance 到 $amount")
+//                diamondRepository.get().updateDiamondBalance(
+//                    amount = amount - currentBalance,
+//                    type = com.obscura.wallpapers.core.data.model.DiamondTransactionType.RECHARGE,
+//                    description = "同步服务器钻石余额"
+//                )
+//            }
+//        } catch (e: Exception) {
+//            Log.e(TAG, "同步钻石余额失败: ${e.message}", e)
+//        }
     }
 
     /**

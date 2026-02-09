@@ -1,11 +1,9 @@
 package com.obscura.wallpapers.core.data.remote.service
 
-import com.obscura.wallpapers.core.data.model.DiamondProduct
-import com.obscura.wallpapers.core.data.model.DiamondTransaction
+import kotlinx.serialization.Serializable
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
 
 interface ApiService {
     @POST("google/login")
@@ -13,60 +11,51 @@ interface ApiService {
 
     @GET("/system/user/getUserInfo")
     suspend fun getProfile(): ApiResponse<ProfileResponse>
-
-    @POST("/system/order/add")
-    suspend fun createOrder(@Body request: CreateOrderRequest): ApiResponse<CreateOrderResponse>
-
-    @GET("/system/price/getList")
-    suspend fun getProducts(): ApiResponse<List<DiamondProduct>>
-
-    @GET("/system/method/getPayMethod/{itemName}")
-    suspend fun getPaymentMethods(@Path("itemName") itemName: String): ApiResponse<List<PaymentMethod>>
-
-    @GET("/system/order/list")
-    suspend fun getOrders(): ApiPageResponse<DiamondTransaction>
-
-    @GET("/system/user/deduction/{num}")
-    suspend fun deduct(@Path("num") num: Int): ApiResponse<ProfileResponse>
-
-    @POST("/system/order/myCallback/{outTradeNo}")
-    suspend fun checkOrder(@Path("outTradeNo") outTradeNo: String): ApiResponse<String>
 }
 
+@Serializable
 data class ApiPageResponse<T>(
     val code: Int, val msg: String, val rows: List<T>?
 ) {
     val isSuccess: Boolean
         get() = code == 200
+
     fun apiOk(): Boolean {
         println("apiOk")
         return code == 200
     }
+
     fun apiRowsOrEmpty(): List<T> = rows ?: emptyList()
 }
 
+@Serializable
 data class ApiResponse<T>(
     val code: Int, val msg: String, val data: T?
 ) {
     val isSuccess: Boolean
         get() = code == 200
+
     fun apiOk(): Boolean {
         println("apiOk")
         return code == 200
     }
+
     fun apiDataOrNull(): T? = data
 }
 
+@Serializable
 data class LoginRequest(
     val nickname: String, val email: String, val avatar: String, val token: String
 )
 
+@Serializable
 data class LoginResponse(
     val token: String, val isPremium: Boolean? = false
 ) {
     fun apiIsPremium(): Boolean = isPremium == true
 }
 
+@Serializable
 data class ProfileResponse(
     val nickname: String,
     val email: String,
@@ -81,10 +70,12 @@ data class ProfileResponse(
     fun apiIsWhitelisted(): Boolean = isWhiteList == "1"
 }
 
+@Serializable
 data class CreateOrderRequest(
     val priceId: String, val paymentMethodId: String
 )
 
+@Serializable
 data class CreateOrderResponse(
     val id: String,
     val status: String,
@@ -106,7 +97,7 @@ data class PaymentMethod(
     val productId: String,
     val payMethodId: Int,
     val payTypeMessage: String,
-    val imageUrl: String? = null)
-{
+    val imageUrl: String? = null
+) {
     fun apiIsGooglePay(): Boolean = payMethodId == 1
 }

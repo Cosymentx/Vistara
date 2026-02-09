@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.core.data.remote.ApiResult
-import com.obscura.wallpapers.core.data.repository.DiamondRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +14,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BrowserViewModel @Inject constructor(
-    private val diamondRepository: DiamondRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
     companion object {
@@ -48,26 +46,6 @@ class BrowserViewModel @Inject constructor(
     }
 
     private fun checkOrderStatus(outTradeNo: String) {
-        viewModelScope.launch {
-            try {
-                _paymentProcessingState.value = PaymentProcessingState.CheckingOrder
-
-                val result = diamondRepository.checkOrder(outTradeNo)
-
-                if (result is ApiResult.Success) {
-                    Log.d(TAG, "Order check successful: ${result.data}")
-                    _paymentProcessingState.value = PaymentProcessingState.OrderCheckSuccess
-
-                    refreshUserProfile()
-                } else if (result is ApiResult.Error) {
-                    Log.e(TAG, "Order check failed: ${result.message}")
-                    _paymentProcessingState.value = PaymentProcessingState.OrderCheckFailed(result.message)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error checking order: ${e.message}", e)
-                _paymentProcessingState.value = PaymentProcessingState.OrderCheckFailed(e.message ?: "Unknown error")
-            }
-        }
     }
 
     private suspend fun refreshUserProfile() {

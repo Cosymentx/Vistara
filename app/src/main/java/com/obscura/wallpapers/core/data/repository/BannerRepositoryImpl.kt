@@ -48,14 +48,6 @@ class BannerRepositoryImpl @Inject constructor(
                     actionTarget = "unsplash_Dwu85P9SOIk"
                 ),
                 Banner(
-                    id = "2",
-                    imageUrl = "https://picsum.photos/id/1015/800/400",
-                    title = stringProvider.getString(R.string.membership_premium_membership),
-                    subtitle = stringProvider.getString(R.string.membership_unlock_all_hd_wallpapers),
-                    actionType = BannerActionType.PREMIUM,
-                    actionTarget = "premium"
-                ),
-                Banner(
                     id = "3",
                     imageUrl = "https://picsum.photos/id/1018/800/400",
                     title = stringProvider.getString(R.string.home_live_wallpapers),

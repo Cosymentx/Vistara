@@ -1,9 +1,7 @@
 package com.obscura.wallpapers.features.cycler
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
@@ -15,9 +13,6 @@ import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.core.data.repository.WallpaperRepository
-import com.obscura.wallpapers.wallpaper.core.AppWallpaperManager
-import com.obscura.wallpapers.core.common.NotificationUtil
-import com.obscura.wallpapers.wallpaper.cycler.WallpaperCyclerWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,8 +28,6 @@ class WallpaperCyclerViewModel @Inject constructor(
     private val userPrefsRepository: UserPrefsRepository,
     private val userRepository: UserRepository,
     private val wallpaperRepository: WallpaperRepository,
-    private val notificationUtil: NotificationUtil,
-    private val appWallpaperManager: AppWallpaperManager,
 ) : ViewModel() {
 
     companion object {

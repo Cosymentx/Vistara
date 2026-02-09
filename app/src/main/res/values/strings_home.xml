@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_title">Home</string>
+    <string name="home_search_icon">Search icon</string>
+    <string name="home_search_hint">Search high-quality wallpapers…</string>
+    <string name="home_loading_wallpapers">Loading wallpapers…</string>
+    <string name="home_unknown_error">Unknown error</string>
+    <string name="home_refresh">Refresh</string>
+    <string name="home_partial_data_loading_failed">Some data failed to load, refresh to try again</string>
+    <string name="home_explore_categories">Explore Categories</string>
+    <string name="home_hot_static">Hot Static</string>
+    <string name="home_cool_dynamic">Cool Dynamic</string>
+    <string name="home_latest_uploads">Latest Uploads</string>
+    <string name="home_nature_scenery">Nature Scenery</string>
+    <string name="home_architecture">Architecture</string>
+    <string name="home_animals">Animals</string>
+    <string name="home_space">Space</string>
+    <string name="home_minimal">Minimal</string>
+    <string name="home_no_wallpapers_found">No wallpapers found</string>
+    <string name="home_try_different_keywords">Try different keywords</string>
+    <string name="home_found_results">Found %d results</string>
+    <string name="home_hot_searches">Hot Searches</string>
+    <string name="home_search_tips">Search Tips</string>
+    <string name="home_use_specific_descriptions">Use specific descriptions</string>
+    <string name="home_specific_description_examples">Examples: mountain landscape, black and white abstract, city night view</string>
+    <string name="home_try_different_languages">Try different languages</string>
+    <string name="home_english_keywords_tip">Sometimes English keywords might yield more results</string>
+    <string name="home_combine_keywords">Combine keywords</string>
+    <string name="home_keyword_combination_examples">Examples: minimal black and white, nature green</string>
+    <string name="home_clear_search">Clear Search</string>
+    <string name="home_search_history">Search History</string>
+    <string name="home_banner_no_network">No network connection, unable to get banner data</string>
+    <string name="home_banner_load_failed">Failed to get banner data</string>
+    <string name="home_featured_wallpapers">Featured Wallpapers</string>
+    <string name="home_discover_latest_wallpapers">Discover the latest and most beautiful wallpapers</string>
+    <string name="home_live_wallpapers">Live Wallpapers</string>
+    <string name="home_make_your_screen_come_alive">Make your screen come alive</string>
+    <string name="home_no_network_wallpapers">No network connection, unable to get wallpapers</string>
+    <string name="home_failed_to_get_recommended_wallpapers">Failed to get recommended wallpapers</string>
+    <string name="home_failed_to_get_wallpapers">Failed to get wallpapers</string>
+</resources>

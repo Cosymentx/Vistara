@@ -13,6 +13,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,11 +26,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.CachePolicy
-import coil.request.ImageRequest.Builder
 import coil.request.ImageRequest
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.theme.stringResource
@@ -53,8 +52,8 @@ fun ZoomableImage(
     val context = LocalContext.current
 
     // 缩放和平移状态
-    var targetScale by remember { mutableStateOf(1f) }
-    var targetOffsetX by remember { mutableStateOf(0f) }
+    var targetScale by remember { mutableFloatStateOf(1f) }
+    var targetOffsetX by remember { mutableFloatStateOf(0f) }
     var targetOffsetY by remember { mutableStateOf(0f) }
 
     // 定义动画规格 - 使用弹簧动画效果
@@ -105,7 +104,7 @@ fun ZoomableImage(
                 .diskCacheKey(imageUrl)
                 .diskCachePolicy(CachePolicy.ENABLED)
                 .memoryCachePolicy(CachePolicy.ENABLED)
-                .placeholder(R.drawable.placeholder_image)
+                .placeholder(R.drawable.placeholder)
                 .allowHardware(true)  // 启用硬件加速
                 .allowRgb565(true)   // 允许使用RGB565格式，减少内存使用
                 .build(),

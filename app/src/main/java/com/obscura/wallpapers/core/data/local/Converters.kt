@@ -27,12 +27,12 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromResolution(resolution: com.obscura.wallpapers.core.data.model.Resolution?): String? {
+    fun fromResolution(resolution: Resolution?): String? {
         return resolution?.let { gson.toJson(it) }
     }
 
     @TypeConverter
-    fun toResolution(value: String?): com.obscura.wallpapers.core.data.model.Resolution? {
+    fun toResolution(value: String?): Resolution? {
         return value?.let { gson.fromJson(it, Resolution::class.java) }
     }
 }

@@ -34,13 +34,11 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.BannerActionType
 import com.obscura.wallpapers.features.browser.BrowserScreen
 import com.obscura.wallpapers.features.cycler.WallpaperCyclerScreen
-import com.obscura.wallpapers.features.diamond.DiamondScreen
 import com.obscura.wallpapers.features.discover.DiscoverScreen
 import com.obscura.wallpapers.features.editor.WallpaperEditScreen
 import com.obscura.wallpapers.features.info.InfoScreen
 import com.obscura.wallpapers.features.library.LibraryScreen
 import com.obscura.wallpapers.features.likes.LikesScreen
-import com.obscura.wallpapers.features.membership.MembershipScreen
 import com.obscura.wallpapers.features.photo.PhotoLibraryScreen
 import com.obscura.wallpapers.features.preferences.PreferencesScreen
 import com.obscura.wallpapers.features.preview.WallpaperPreviewScreen
@@ -122,22 +120,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     onSettingsClick = { navController.navigate("settings") },
                     onFeedbackClick = { navController.navigate("feedback") },
                     onAboutClick = { navController.navigate("about") },
-                    onUpgradeClick = { navController.navigate("premium") },
                     onLoginClick = { navController.navigate("auth") },
-                    onDiamondClick = { navController.navigate("diamond") },
                     onTestToolsClick = { navController.navigate("test") })
-            }
-            composable("premium") {
-                MembershipScreen(
-                    onBackPressed = { navController.navigateUp() },
-                    onUpgradeSuccess = { navController.navigateUp() },
-                    navController = navController
-                )
-            }
-            composable("diamond") {
-                DiamondScreen(
-                    onBackPressed = { navController.navigateUp() }, navController = navController
-                )
             }
             composable(
                 route = "search?query={query}", arguments = listOf(navArgument("query") {
@@ -264,14 +248,14 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
 
                     NavDestination.PhotoWallpapers -> {
                         Icon(
-                            ImageVector.vectorResource(id = R.drawable.ic_image),
+                            ImageVector.vectorResource(id = R.drawable.ic_photo),
                             contentDescription = destination.getTitle()
                         )
                     }
 
                     NavDestination.VideoWallpapers -> {
                         Icon(
-                            ImageVector.vectorResource(id = R.drawable.ic_movie),
+                            ImageVector.vectorResource(id = R.drawable.ic_video),
                             contentDescription = destination.getTitle()
                         )
                     }
@@ -296,32 +280,32 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
 }
 
 enum class NavDestination(val route: String, val titleResId: Int) {
-    Home("home", R.string.nav_home) {
+    Home("home", R.string.nav_discover) {
         @Composable
         override fun getTitle(): String {
             val resources = LocalAppResources.current
             return resources.getString(R.string.home_title)
         }
     },
-    PhotoWallpapers("photo", R.string.nav_static) {
+    PhotoWallpapers("photo", R.string.nav_photo) {
         @Composable
         override fun getTitle(): String {
             val resources = LocalAppResources.current
             return resources.getString(R.string.categories_static)
         }
     },
-    VideoWallpapers("video", R.string.nav_live) {
+    VideoWallpapers("video", R.string.nav_video) {
         @Composable
         override fun getTitle(): String {
             val resources = LocalAppResources.current
             return resources.getString(R.string.categories_live)
         }
     },
-    Mine("mine", R.string.nav_mine) {
+    Mine("mine", R.string.nav_profile) {
         @Composable
         override fun getTitle(): String {
             val resources = LocalAppResources.current
-            return resources.getString(R.string.nav_mine)
+            return resources.getString(R.string.nav_profile)
         }
     };
 

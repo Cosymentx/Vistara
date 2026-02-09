@@ -44,8 +44,6 @@ import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.components.WallpaperDetail
 import com.obscura.wallpapers.ui.components.WallpaperSetOptions
-import com.obscura.wallpapers.features.diamond.DiamondPurchaseResult
-import com.obscura.wallpapers.ui.components.DiamondPurchaseDialog
 import com.obscura.wallpapers.ui.theme.AppColors
 import com.obscura.wallpapers.ui.theme.stringResource
 import com.obscura.wallpapers.ui.components.LoadingState
@@ -74,10 +72,6 @@ fun WallpaperPreviewScreen(
     val isProcessingWallpaper by viewModel.isProcessingWallpaper
     val wallpaperSetSuccess by viewModel.wallpaperSetSuccess.collectAsState()
 
-    val diamondBalance by viewModel.diamondBalance.collectAsState()
-    val showDiamondPurchaseDialog by viewModel.showDiamondPurchaseDialog
-    val diamondPurchaseResult by viewModel.diamondPurchaseResult.collectAsState()
-
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
     val needLoginAction by viewModel.needLoginAction.collectAsState()
 
@@ -102,24 +96,6 @@ fun WallpaperPreviewScreen(
                 }
             }
             viewModel.clearUpgradeResult()
-        }
-    }
-
-    LaunchedEffect(diamondPurchaseResult) {
-        diamondPurchaseResult?.let { result ->
-            when (result) {
-                is DiamondPurchaseResult.Success -> {
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(result.message)
-                    }
-                }
-                is DiamondPurchaseResult.Error -> {
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(result.message)
-                    }
-                }
-            }
-            viewModel.clearDiamondPurchaseResult()
         }
     }
 
@@ -288,18 +264,6 @@ fun WallpaperPreviewScreen(
                                 viewModel.hideSetWallpaperOptions()
                             })
                         }
-                    }
-
-                    if (showDiamondPurchaseDialog) {
-                        val currentWallpaper = (wallpaperState as UiState.Success).data
-                        DiamondPurchaseDialog(
-                            wallpaper = currentWallpaper,
-                            diamondBalance = diamondBalance,
-                            onDismiss = { viewModel.hideDiamondPurchaseDialog() },
-                            onPurchase = { viewModel.purchaseWithDiamonds() },
-                            onNavigateToRecharge = { onNavigateToDiamondRecharge() },
-                            isProcessing = isProcessingWallpaper
-                        )
                     }
                 }
                 is UiState.Error -> {

@@ -120,9 +120,7 @@ private fun getLanguageText(language: AppLanguage): String {
     return when (language) {
         AppLanguage.SYSTEM -> resources.getString(R.string.settings_language_system)
         AppLanguage.ENGLISH -> resources.getString(R.string.settings_language_english)
-        AppLanguage.CHINESE -> resources.getString(R.string.settings_language_chinese)
         AppLanguage.JAPANESE -> resources.getString(R.string.settings_language_japanese)
         AppLanguage.KOREAN -> resources.getString(R.string.settings_language_korean)
-        AppLanguage.INDONESIAN -> resources.getString(R.string.settings_language_indonesian)
     }
 }

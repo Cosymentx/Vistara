@@ -71,7 +71,6 @@ fun WallpaperStaggeredGrid(
             val layoutInfo = gridState.layoutInfo
             val totalItemsNumber = layoutInfo.totalItemsCount
             val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            val firstVisibleItemIndex = gridState.firstVisibleItemIndex
 
             // 如果最后可见项的索引接近总项数，则认为滚动到了底部
             lastVisibleItemIndex > 0 && lastVisibleItemIndex >= totalItemsNumber - 5
@@ -85,7 +84,10 @@ fun WallpaperStaggeredGrid(
             // 记录当前滚动位置
             val firstVisibleItemIndex = gridState.firstVisibleItemIndex
             val firstVisibleItemScrollOffset = gridState.firstVisibleItemScrollOffset
-            Log.d("WallpaperStaggeredGrid", "Current scroll position: index=$firstVisibleItemIndex, offset=$firstVisibleItemScrollOffset")
+            Log.d(
+                "WallpaperStaggeredGrid",
+                "Current scroll position: index=$firstVisibleItemIndex, offset=$firstVisibleItemScrollOffset"
+            )
 
             onLoadMore()
         }
@@ -94,34 +96,34 @@ fun WallpaperStaggeredGrid(
     // 跟踪可见项目，用于视频播放控制
     LaunchedEffect(gridState) {
         snapshotFlow { gridState.layoutInfo.visibleItemsInfo }.collectLatest { visibleItems ->
-                // 清除之前的可见项
-                val oldVisibleIds = visibleWallpaperIds.toList()
-                visibleWallpaperIds.clear()
+            // 清除之前的可见项
+            val oldVisibleIds = visibleWallpaperIds.toList()
+            visibleWallpaperIds.clear()
 
-                // 更新可见项列表
-                val newVisibleIds = visibleItems.mapNotNull { info ->
-                    wallpapers.getOrNull(info.index)?.id
-                }
-                visibleWallpaperIds.addAll(newVisibleIds)
+            // 更新可见项列表
+            val newVisibleIds = visibleItems.mapNotNull { info ->
+                wallpapers.getOrNull(info.index)?.id
+            }
+            visibleWallpaperIds.addAll(newVisibleIds)
 
-                // 更新视频播放管理器
-                videoPlaybackManager?.let { manager ->
-                    // 移除不再可见的视频
-                    oldVisibleIds.forEach { id ->
-                        if (id !in newVisibleIds) {
-                            manager.removeVisibleVideo(id)
-                        }
+            // 更新视频播放管理器
+            videoPlaybackManager?.let { manager ->
+                // 移除不再可见的视频
+                oldVisibleIds.forEach { id ->
+                    if (id !in newVisibleIds) {
+                        manager.removeVisibleVideo(id)
                     }
+                }
 
-                    // 添加新可见的视频
-                    newVisibleIds.forEach { id ->
-                        val wallpaper = wallpapers.find { it.id == id }
-                        if (wallpaper?.isLive == true) {
-                            manager.addVisibleVideo(id)
-                        }
+                // 添加新可见的视频
+                newVisibleIds.forEach { id ->
+                    val wallpaper = wallpapers.find { it.id == id }
+                    if (wallpaper?.isLive == true) {
+                        manager.addVisibleVideo(id)
                     }
                 }
             }
+        }
     }
 
     LazyVerticalStaggeredGrid(
@@ -133,9 +135,7 @@ fun WallpaperStaggeredGrid(
         modifier = modifier.fillMaxWidth()
     ) {
         // 壁纸项
-        items(
-            items = wallpapers,
-            key = { wallpaper -> wallpaper.id } // 使用壁纸ID作为稳定的键
+        items(items = wallpapers, key = { wallpaper -> wallpaper.id } // 使用壁纸ID作为稳定的键
         ) { wallpaper ->
             // 根据壁纸的宽高比计算高度
             val aspectRatio = calculateAspectRatio(wallpaper)
@@ -181,9 +181,7 @@ fun WallpaperStaggeredGrid(
                 )
             }
 
-            items(
-                items = loadingWallpapers,
-                key = { it.id } // 使用生成的ID作为稳定的键
+            items(items = loadingWallpapers, key = { it.id } // 使用生成的ID作为稳定的键
             ) { _ ->
                 // 空白项，仅用于占位
                 Box(modifier = Modifier.height(0.dp)) {}
@@ -215,9 +213,7 @@ fun WallpaperStaggeredGrid(
                 )
             }
 
-            items(
-                items = endSpacerWallpapers,
-                key = { it.id } // 使用生成的ID作为稳定的键
+            items(items = endSpacerWallpapers, key = { it.id } // 使用生成的ID作为稳定的键
             ) { _ ->
                 // 空白项，仅用于占位
                 Box(modifier = Modifier.height(0.dp)) {}

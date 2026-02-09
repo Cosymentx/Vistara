@@ -1,0 +1,26 @@
+<resources>
+    <string name="preview_start_download_wallpaper">壁紙のダウンロードを開始</string>
+    <string name="preview_download_failed_permission_denied">壁紙をダウンロードできません：ストレージ権限が拒否されました</string>
+    <string name="preview_storage_permission_required">ストレージ権限が必要です</string>
+    <string name="preview_storage_permission_rationale">壁紙をギャラリーに保存するには、ストレージ権限が必要です。壁紙をダウンロードするには、この権限を許可してください。</string>
+    <string name="preview_grant_permission">権限を付与</string>
+    <string name="preview_download_failed_permission_required">壁紙をダウンロードできません：ストレージ権限が必要です</string>
+    <string name="preview_favorite_login_required">壁紙をお気に入りに追加するにはログインが必要です</string>
+    <string name="preview_download_login_required">壁紙をダウンロードするにはログインが必要です</string>
+    <string name="preview_set_wallpaper_login_required">壁紙を設定するにはログインが必要です</string>
+    <string name="preview_edit_login_required">壁紙を編集するにはログインが必要です</string>
+    <string name="preview_set_as_wallpaper">壁紙に設定</string>
+    <string name="preview_setting_wallpaper">壁紙を設定中…</string>
+    <string name="preview_collapse_info">情報を折りたたむ</string>
+    <string name="preview_expand_info">情報を展開</string>
+    <string name="preview_wallpaper">壁紙のプレビュー</string>
+    <string name="preview_set_as">設定先</string>
+    <string name="preview_home_screen_wallpaper">ホーム画面の壁紙</string>
+    <string name="preview_lock_screen_wallpaper">ロック画面の壁紙</string>
+    <string name="preview_home_and_lock_screen">ホーム画面とロック画面</string>
+    <string name="preview_upgrade_to_unlock">アップグレードしてこの壁紙をアンロック</string>
+    <string name="preview_share_wallpaper">壁紙を共有</string>
+    <string name="preview_beautiful_wallpaper">美しい壁紙</string>
+    <string name="preview_share_wallpaper_text">美しい壁紙を見つけました\nタイトル: %1$s\n作者: %2$s\nソース: %3$s\n解像度: %4$d x %5$d\nVistara壁紙アプリをダウンロードして、より多くの美しい壁紙を手に入れましょう！</string>
+    <string name="preview_unnamed_wallpaper">名称なしの壁紙</string>
+</resources>

@@ -1,0 +1,26 @@
+<resources>
+    <string name="preview_start_download_wallpaper">Start downloading wallpaper</string>
+    <string name="preview_download_failed_permission_denied">Cannot download wallpaper: storage permission denied</string>
+    <string name="preview_storage_permission_required">Storage permission required</string>
+    <string name="preview_storage_permission_rationale">To save wallpapers to gallery, we need storage permission. Please allow this to download wallpapers.</string>
+    <string name="preview_grant_permission">Grant Permission</string>
+    <string name="preview_download_failed_permission_required">Cannot download wallpaper: storage permission required</string>
+    <string name="preview_favorite_login_required">Adding wallpaper to favorites requires login</string>
+    <string name="preview_download_login_required">Downloading wallpaper requires login</string>
+    <string name="preview_set_wallpaper_login_required">Setting wallpaper requires login</string>
+    <string name="preview_edit_login_required">Editing wallpaper requires login</string>
+    <string name="preview_set_as_wallpaper">Set as Wallpaper</string>
+    <string name="preview_setting_wallpaper">Setting wallpaper…</string>
+    <string name="preview_collapse_info">Collapse Info</string>
+    <string name="preview_expand_info">Expand Info</string>
+    <string name="preview_wallpaper">Preview Wallpaper</string>
+    <string name="preview_set_as">Set as</string>
+    <string name="preview_home_screen_wallpaper">Home Screen Wallpaper</string>
+    <string name="preview_lock_screen_wallpaper">Lock Screen Wallpaper</string>
+    <string name="preview_home_and_lock_screen">Home and Lock Screen</string>
+    <string name="preview_upgrade_to_unlock">Upgrade to unlock this wallpaper</string>
+    <string name="preview_share_wallpaper">Share wallpaper</string>
+    <string name="preview_beautiful_wallpaper">Beautiful wallpaper</string>
+    <string name="preview_share_wallpaper_text">I found a beautiful wallpaper\nTitle: %1$s\nAuthor: %2$s\nSource: %3$s\nResolution: %4$d x %5$d\nDownload Vistara Wallpaper app for more beautiful wallpapers!</string>
+    <string name="preview_unnamed_wallpaper">Unnamed wallpaper</string>
+</resources>

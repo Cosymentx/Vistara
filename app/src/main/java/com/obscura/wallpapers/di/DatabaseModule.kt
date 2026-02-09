@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import com.obscura.wallpapers.core.data.local.AppDatabase
 import com.obscura.wallpapers.core.data.local.DatabaseMigrations
-import com.obscura.wallpapers.core.data.local.DiamondDao
 import com.obscura.wallpapers.core.data.local.WallpaperDao
 import dagger.Module
 import dagger.Provides
@@ -48,14 +47,5 @@ object DatabaseDiModule {
     ): WallpaperDao {
         println("apiWallpaperDao")
         return database.wallpaperDao()
-    }
-
-    @Provides
-    @Singleton
-    fun apiDiamondDao(
-        database: AppDatabase
-    ): DiamondDao {
-        println("apiDiamondDao")
-        return database.diamondDao()
     }
 }

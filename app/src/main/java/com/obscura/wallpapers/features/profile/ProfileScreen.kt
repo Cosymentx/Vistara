@@ -1,5 +1,6 @@
 package com.obscura.wallpapers.features.profile
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -8,7 +9,6 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,13 +50,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.annotation.StringRes
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.obscura.wallpapers.R
@@ -73,8 +71,6 @@ fun ProfileScreen(
     onSettingsClick: () -> Unit = {},
     onFeedbackClick: () -> Unit = {},
     onAboutClick: () -> Unit = {},
-    onUpgradeClick: () -> Unit = {},
-    onDiamondClick: () -> Unit = {},
     onTestToolsClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
@@ -82,7 +78,6 @@ fun ProfileScreen(
     val username by viewModel.username.collectAsState()
     val userPhotoUrl by viewModel.userPhotoUrl.collectAsState()
     val isPremiumUser by viewModel.isPremiumUser.collectAsState()
-    val diamondBalance by viewModel.diamondBalance.collectAsState()
     val isDebugMode by viewModel.isDebugMode.collectAsState()
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
     val needLoginAction by viewModel.needLoginAction.collectAsState()
@@ -125,17 +120,15 @@ fun ProfileScreen(
                 username = username,
                 userPhotoUrl = userPhotoUrl,
                 isPremiumUser = isPremiumUser,
-                diamondBalance = diamondBalance,
                 isLoggedIn = isLoggedIn,
                 onLoginClick = onLoginClick,
-                onDiamondClick = onDiamondClick
             )
 
             if (!isPremiumUser && isLoggedIn) {
-                PremiumBanner(
-                    onClick = { onUpgradeClick() },
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
+//                PremiumBanner(
+//                    onClick = { onUpgradeClick() },
+//                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+//                )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -146,20 +139,17 @@ fun ProfileScreen(
                         icon = ObscuraIcons.Favorite,
                         titleRes = R.string.my_favorites,
                         subtitleRes = R.string.my_favorites_desc,
-                        onClick = { viewModel.checkLoginAndExecute(ProfileViewModel.LoginAction.FAVORITES) { onFavoritesClick() } }
-                    ),
+                        onClick = { viewModel.checkLoginAndExecute(ProfileViewModel.LoginAction.FAVORITES) { onFavoritesClick() } }),
                     FeatureEntry(
                         icon = ObscuraIcons.Download,
                         titleRes = R.string.my_downloads,
                         subtitleRes = R.string.my_downloads_desc,
-                        onClick = { viewModel.checkLoginAndExecute(ProfileViewModel.LoginAction.DOWNLOADS) { onDownloadsClick() } }
-                    ),
+                        onClick = { viewModel.checkLoginAndExecute(ProfileViewModel.LoginAction.DOWNLOADS) { onDownloadsClick() } }),
                     FeatureEntry(
                         icon = ObscuraIcons.Refresh,
                         titleRes = R.string.cycler_auto_change_wallpaper,
                         subtitleRes = R.string.cycler_auto_change_wallpaper_desc,
-                        onClick = { viewModel.checkLoginAndExecute(ProfileViewModel.LoginAction.AUTO_WALLPAPER) { onAutoChangeClick() } }
-                    )
+                        onClick = { viewModel.checkLoginAndExecute(ProfileViewModel.LoginAction.AUTO_WALLPAPER) { onAutoChangeClick() } })
                 )
             )
 
@@ -170,9 +160,22 @@ fun ProfileScreen(
 
             FeatureList(
                 items = listOf(
-                    FeatureEntry(icon = ObscuraIcons.Settings, titleRes = R.string.settings_title, subtitleRes = R.string.settings_desc, onClick = onSettingsClick),
-                    FeatureEntry(icon = ObscuraIcons.Star, titleRes = R.string.feedback_title, subtitleRes = R.string.feedback_desc, onClick = onFeedbackClick),
-                    FeatureEntry(icon = ObscuraIcons.Info, titleRes = R.string.info_title, subtitleRes = R.string.info_desc, onClick = onAboutClick)
+                    FeatureEntry(
+                        icon = ObscuraIcons.Settings,
+                        titleRes = R.string.settings_title,
+                        subtitleRes = R.string.settings_desc,
+                        onClick = onSettingsClick
+                    ), FeatureEntry(
+                        icon = ObscuraIcons.Star,
+                        titleRes = R.string.feedback_title,
+                        subtitleRes = R.string.feedback_desc,
+                        onClick = onFeedbackClick
+                    ), FeatureEntry(
+                        icon = ObscuraIcons.Info,
+                        titleRes = R.string.info_title,
+                        subtitleRes = R.string.info_desc,
+                        onClick = onAboutClick
+                    )
                 )
             )
 
@@ -181,7 +184,16 @@ fun ProfileScreen(
                     modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                 )
-                FeatureList(items = listOf(FeatureEntry(icon = Icons.Default.Build, titleRes = R.string.test_title, subtitleRes = R.string.test_desc, onClick = onTestToolsClick)))
+                FeatureList(
+                    items = listOf(
+                        FeatureEntry(
+                            icon = Icons.Default.Build,
+                            titleRes = R.string.test_title,
+                            subtitleRes = R.string.test_desc,
+                            onClick = onTestToolsClick
+                        )
+                    )
+                )
             }
         }
     }
@@ -196,8 +208,7 @@ data class FeatureEntry(
 
 @Composable
 private fun FeatureList(
-    items: List<FeatureEntry>,
-    modifier: Modifier = Modifier
+    items: List<FeatureEntry>, modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         items.forEachIndexed { index, item ->
@@ -255,64 +266,19 @@ private fun FeatureList(
 }
 
 @Composable
-private fun PremiumBanner(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Surface(
-        onClick = onClick,
-        shape = RoundedCornerShape(14.dp),
-        tonalElevation = 2.dp,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
-                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)
-                        )
-                    )
-                )
-                .padding(16.dp)
-        ) {
-            Column {
-                Text(
-                    text = stringResource(R.string.membership_user_description),
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = stringResource(R.string.membership_select_plan),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    }
-}
-
-@Composable
 private fun ProfileHeader(
     username: String,
     userPhotoUrl: String?,
     isPremiumUser: Boolean,
-    diamondBalance: Int,
     isLoggedIn: Boolean,
     onLoginClick: () -> Unit,
-    onDiamondClick: () -> Unit
 ) {
     val glowTransition = rememberInfiniteTransition(label = "premiumGlow")
     val glowAlpha by glowTransition.animateFloat(
-        initialValue = 0.2f,
-        targetValue = 0.7f,
-        animationSpec = infiniteRepeatable(
+        initialValue = 0.2f, targetValue = 0.7f, animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1800, easing = LinearOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
-        ),
-        label = "glowAlpha"
+        ), label = "glowAlpha"
     )
 
     Row(
@@ -322,9 +288,7 @@ private fun ProfileHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(72.dp)
+            contentAlignment = Alignment.Center, modifier = Modifier.size(72.dp)
         ) {
             if (isPremiumUser) {
                 Box(
@@ -342,8 +306,7 @@ private fun ProfileHeader(
                                     Color.Transparent
                                 )
                             )
-                        )
-                )
+                        ))
             }
             Surface(shape = CircleShape, tonalElevation = 2.dp) {
                 if (userPhotoUrl.isNullOrEmpty()) {
@@ -355,10 +318,8 @@ private fun ProfileHeader(
                     )
                 } else {
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(userPhotoUrl)
-                            .crossfade(true)
-                            .build(),
+                        model = ImageRequest.Builder(LocalContext.current).data(userPhotoUrl)
+                            .crossfade(true).build(),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(72.dp)
@@ -380,29 +341,29 @@ private fun ProfileHeader(
             Spacer(modifier = Modifier.height(6.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    tonalElevation = 1.dp,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .clickable { onDiamondClick() }
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = ObscuraIcons.Diamond,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = diamondBalance.toString(),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    }
-                }
+//                Surface(
+//                    shape = RoundedCornerShape(12.dp),
+//                    tonalElevation = 1.dp,
+//                    modifier = Modifier
+//                        .clip(RoundedCornerShape(12.dp))
+//                        .clickable { onDiamondClick() }
+//                ) {
+//                    Row(
+//                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Icon(
+//                            imageVector = ObscuraIcons.Diamond,
+//                            contentDescription = null,
+//                            tint = MaterialTheme.colorScheme.primary
+//                        )
+//                        Spacer(modifier = Modifier.width(6.dp))
+//                        Text(
+//                            text = diamondBalance.toString(),
+//                            style = MaterialTheme.typography.labelMedium
+//                        )
+//                    }
+//                }
 
                 if (!isLoggedIn) {
                     Spacer(modifier = Modifier.width(10.dp))

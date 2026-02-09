@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.remote.service.PaymentMethod
-import com.obscura.wallpapers.ui.components.PaymentMethodDialog
 import com.obscura.wallpapers.ui.components.TextInputDialog
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
@@ -331,13 +330,13 @@ fun TestScreen(
             }
 
             if (showPaymentDialog) {
-                PaymentMethodDialog(
-                    amount = "5600",
-                    onDismiss = { showPaymentDialog = false },
-                    onPaymentSelected = {
-                        showPaymentDialog = false
-                    }
-                )
+//                PaymentMethodDialog(
+//                    amount = "5600",
+//                    onDismiss = { showPaymentDialog = false },
+//                    onPaymentSelected = {
+//                        showPaymentDialog = false
+//                    }
+//                )
             }
 
         }

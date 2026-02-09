@@ -3,8 +3,8 @@ package com.obscura.wallpapers.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.obscura.wallpapers.billing.BillingManager
-import com.obscura.wallpapers.core.data.local.DiamondDao
+import com.obscura.wallpapers.core.common.NetworkMonitor
+import com.obscura.wallpapers.core.common.StringProvider
 import com.obscura.wallpapers.core.data.local.WallpaperDao
 import com.obscura.wallpapers.core.data.mapper.PexelsMapper
 import com.obscura.wallpapers.core.data.mapper.PixabayMapper
@@ -12,17 +12,14 @@ import com.obscura.wallpapers.core.data.mapper.UnsplashMapper
 import com.obscura.wallpapers.core.data.mapper.WallhavenMapper
 import com.obscura.wallpapers.core.data.remote.ApiLoadBalancer
 import com.obscura.wallpapers.core.data.remote.ApiUsageTracker
+import com.obscura.wallpapers.core.data.remote.adapter.WallpaperApiAdapter
 import com.obscura.wallpapers.core.data.remote.service.ApiService
 import com.obscura.wallpapers.core.data.remote.service.PexelsApiService
 import com.obscura.wallpapers.core.data.remote.service.PixabayApiService
 import com.obscura.wallpapers.core.data.remote.service.UnsplashApiService
 import com.obscura.wallpapers.core.data.remote.service.WallhavenApiService
-import com.obscura.wallpapers.core.data.remote.adapter.WallpaperApiAdapter
-import com.obscura.wallpapers.core.data.repository.AuthRepository
 import com.obscura.wallpapers.core.data.repository.BannerRepository
 import com.obscura.wallpapers.core.data.repository.BannerRepositoryImpl
-import com.obscura.wallpapers.core.data.repository.DiamondRepository
-import com.obscura.wallpapers.core.data.repository.DiamondRepositoryImpl
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepositoryImpl
 import com.obscura.wallpapers.core.data.repository.UserRepository
@@ -30,8 +27,6 @@ import com.obscura.wallpapers.core.data.repository.UserRepositoryImpl
 import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import com.obscura.wallpapers.core.data.repository.WallpaperRepositoryImpl
 import com.obscura.wallpapers.settings.ThemeManager
-import com.obscura.wallpapers.core.common.NetworkMonitor
-import com.obscura.wallpapers.core.common.StringProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -101,10 +96,9 @@ object RepositoryDiModule {
     fun apiUserRepository(
         dataStore: DataStore<Preferences>,
         apiService: ApiService,
-        diamondRepository: dagger.Lazy<DiamondRepository>
     ): UserRepository {
         println("apiUserRepository")
-        return UserRepositoryImpl(dataStore, apiService, diamondRepository)
+        return UserRepositoryImpl(dataStore, apiService)
     }
 
     @Provides
@@ -123,20 +117,5 @@ object RepositoryDiModule {
     ): ThemeManager {
         println("apiThemeManager")
         return ThemeManager(userPrefsRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun apiDiamondRepository(
-        diamondDao: DiamondDao,
-        authRepository: AuthRepository,
-        billingManagerProvider: javax.inject.Provider<BillingManager>,
-        stringProvider: StringProvider,
-        apiService: ApiService
-    ): DiamondRepository {
-        println("apiDiamondRepository")
-        return DiamondRepositoryImpl(
-            diamondDao, authRepository, billingManagerProvider, stringProvider, apiService
-        )
     }
 }

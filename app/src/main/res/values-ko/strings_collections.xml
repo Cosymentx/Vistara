@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="collections_wallpapers_failed">컬렉션 배경화면 가져오기 실패: %1$s</string>
+    <string name="collections_introduction">컬렉션 소개</string>
+    <string name="collections_related_tags">관련 태그</string>
+    <string name="collections_premium_content">프리미엄 컬렉션 콘텐츠</string>
+    <string name="collections_upgrade_to_unlock_all">프리미엄으로 업그레이드하여 모든 배경화면 잠금 해제</string>
+    <string name="collections_upgrade_now">지금 업그레이드</string>
+    <string name="collections_wallpaper_list">배경화면 목록</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="collections_wallpapers_failed">コレクション壁紙の取得に失敗しました: %1$s</string>
+    <string name="collections_introduction">コレクション紹介</string>
+    <string name="collections_related_tags">関連タグ</string>
+    <string name="collections_premium_content">プレミアムコレクションコンテンツ</string>
+    <string name="collections_upgrade_to_unlock_all">プレミアムにアップグレードしてすべての壁紙をアンロック</string>
+    <string name="collections_upgrade_now">今すぐアップグレード</string>
+    <string name="collections_wallpaper_list">壁紙リスト</string>
+</resources>

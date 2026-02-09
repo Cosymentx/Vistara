@@ -62,9 +62,7 @@ fun Carousel(
     autoScrollDuration: Long = 3000,
     showIndicator: Boolean = true,
     modifier: Modifier = Modifier,
-    debugTag: String? = null
 ) {
-    val _noop = debugTag?.length ?: 0
     if (banners.isEmpty()) return
 
     val coroutineScope = rememberCoroutineScope()

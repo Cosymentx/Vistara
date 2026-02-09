@@ -296,7 +296,7 @@ fun SignInScreen(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.mipmap.ic_google),
+                                    painter = painterResource(id = R.mipmap.ic_google_login),
                                     contentDescription = "Google",
                                     modifier = Modifier
                                         .size(20.dp)

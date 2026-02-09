@@ -5,11 +5,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.core.data.model.DiamondTransactionType
 import com.obscura.wallpapers.core.data.remote.service.ApiService
 import com.obscura.wallpapers.core.data.remote.service.LoginRequest
 import com.obscura.wallpapers.core.data.repository.AuthRepository
-import com.obscura.wallpapers.core.data.repository.DiamondRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -23,7 +21,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TestViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val diamondRepository: DiamondRepository,
     private val authRepository: AuthRepository,
     private val apiService: ApiService,
     @ApplicationContext private val context: Context
@@ -148,59 +145,59 @@ class TestViewModel @Inject constructor(
     }
 
     private fun checkDiamondBalance() {
-        viewModelScope.launch {
-            try {
-                val balance = diamondRepository.getDiamondBalanceValue()
-                _currentDiamondBalance.value = balance
-                Log.d(TAG, "Diamond balance: $balance")
-            } catch (e: Exception) {
-                Log.e(TAG, "Error checking diamond balance: ${e.message}")
-                _operationResult.value = "检查钻石余额失败: ${e.message}"
-            }
-        }
+//        viewModelScope.launch {
+//            try {
+//                val balance = diamondRepository.getDiamondBalanceValue()
+//                _currentDiamondBalance.value = balance
+//                Log.d(TAG, "Diamond balance: $balance")
+//            } catch (e: Exception) {
+//                Log.e(TAG, "Error checking diamond balance: ${e.message}")
+//                _operationResult.value = "检查钻石余额失败: ${e.message}"
+//            }
+//        }
     }
 
     fun toggleDiamondTest() {
         val newState = !_isDiamondTestEnabled.value
         _isDiamondTestEnabled.value = newState
 
-        viewModelScope.launch {
-            try {
-                if (newState) {
-                    val success = diamondRepository.updateDiamondBalance(
-                        amount = 200,
-                        type = DiamondTransactionType.REWARD,
-                        description = "测试模式奖励"
-                    )
-                    if (success) {
-                        _operationResult.value = "测试模式已开启，已增加200钻石"
-                        checkDiamondBalance()
-                    } else {
-                        _operationResult.value = "增加钻石失败"
-                    }
-                } else {
-                    val currentBalance = diamondRepository.getDiamondBalanceValue()
-                    if (currentBalance > 0) {
-                        val success = diamondRepository.updateDiamondBalance(
-                            amount = -currentBalance,
-                            type = DiamondTransactionType.PURCHASE,
-                            description = "测试模式关闭，清空钻石"
-                        )
-                        if (success) {
-                            _operationResult.value = "测试模式已关闭，钻石已清空"
-                            checkDiamondBalance()
-                        } else {
-                            _operationResult.value = "清空钻石失败"
-                        }
-                    } else {
-                        _operationResult.value = "测试模式已关闭"
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error toggling diamond test: ${e.message}")
-                _operationResult.value = "切换钻石测试模式失败: ${e.message}"
-            }
-        }
+//        viewModelScope.launch {
+//            try {
+//                if (newState) {
+//                    val success = diamondRepository.updateDiamondBalance(
+//                        amount = 200,
+//                        type = DiamondTransactionType.REWARD,
+//                        description = "测试模式奖励"
+//                    )
+//                    if (success) {
+//                        _operationResult.value = "测试模式已开启，已增加200钻石"
+//                        checkDiamondBalance()
+//                    } else {
+//                        _operationResult.value = "增加钻石失败"
+//                    }
+//                } else {
+//                    val currentBalance = diamondRepository.getDiamondBalanceValue()
+//                    if (currentBalance > 0) {
+//                        val success = diamondRepository.updateDiamondBalance(
+//                            amount = -currentBalance,
+//                            type = DiamondTransactionType.PURCHASE,
+//                            description = "测试模式关闭，清空钻石"
+//                        )
+//                        if (success) {
+//                            _operationResult.value = "测试模式已关闭，钻石已清空"
+//                            checkDiamondBalance()
+//                        } else {
+//                            _operationResult.value = "清空钻石失败"
+//                        }
+//                    } else {
+//                        _operationResult.value = "测试模式已关闭"
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                Log.e(TAG, "Error toggling diamond test: ${e.message}")
+//                _operationResult.value = "切换钻石测试模式失败: ${e.message}"
+//            }
+//        }
     }
 
     fun clearOperationResult() {

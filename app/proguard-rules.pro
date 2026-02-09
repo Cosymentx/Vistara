@@ -29,8 +29,5 @@
 # Gson TypeToken 相关
 -keep class com.google.gson.reflect.TypeToken { *; }
 
--keep class com.obscura.wallpapers.data.**{*;}
+-keep class com.obscura.wallpapers.core.data.**{*;}
 
-# Appsflyer
--keep class com.appsflyer.** { *; }
--keep class kotlin.jvm.internal.** { *; }

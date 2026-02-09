@@ -70,8 +70,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlin.math.abs
 
-private const val TAG = "VideoLibraryScreen"
-private const val GRID_COLUMNS = 2
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable

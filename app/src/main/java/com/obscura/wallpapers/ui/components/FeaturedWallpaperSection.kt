@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -28,9 +27,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.theme.stringResource
-import com.obscura.wallpapers.R
 
 /**
  * 精选壁纸展示组件
@@ -45,11 +44,9 @@ fun FeaturedWallpaperSection(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge.copy(
+            text = title, style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.SemiBold
-            ),
-            modifier = Modifier.padding(bottom = 12.dp)
+            ), modifier = Modifier.padding(bottom = 12.dp)
         )
 
         Card(
@@ -76,8 +73,7 @@ fun FeaturedWallpaperSection(
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.7f)
+                                    Color.Transparent, Color.Black.copy(alpha = 0.7f)
                                 )
                             )
                         )

@@ -137,89 +137,8 @@
     <string name="common_refresh">새로고침</string>
 
     <!-- 홈 (네임스페이스화) -->
-    <string name="home_title">홈</string>
-    <string name="home_search_hint">고품질 배경화면을 찾아보세요…</string>
-    <string name="home_partial_data_loading_failed">일부 콘텐츠 로딩 실패, 새로고침 후 다시 시도</string>
-    <string name="home_hot_static">인기 정적</string>
-    <string name="home_cool_dynamic">멋진 라이브</string>
-    <string name="home_latest_uploads">최신 업로드</string>
-    <string name="home_search_icon">검색 아이콘</string>
-    <string name="home_loading_wallpapers">배경화면 로딩 중…</string>
-    <string name="home_unknown_error">알 수 없는 오류</string>
-    <string name="home_refresh">새로고침</string>
-    <string name="home_explore_categories">카테고리 탐색</string>
-    <string name="home_nature_scenery">자연 풍경</string>
-    <string name="home_architecture">건축</string>
-    <string name="home_animals">동물</string>
-    <string name="home_space">우주</string>
-    <string name="home_minimal">미니멀</string>
-    <string name="home_no_wallpapers_found">배경화면을 찾을 수 없습니다</string>
-    <string name="home_try_different_keywords">다른 키워드를 시도해보세요</string>
-    <string name="home_found_results">%d개의 결과 발견</string>
-    <string name="home_hot_searches">인기 검색어</string>
-    <string name="home_search_tips">검색 팁</string>
-    <string name="home_use_specific_descriptions">구체적인 설명 사용하기</string>
-    <string name="home_specific_description_examples">예: 산 풍경, 흑백 추상, 도시 야경</string>
-    <string name="home_try_different_languages">다른 언어 시도하기</string>
-    <string name="home_english_keywords_tip">때로는 영어 키워드가 더 많은 결과를 제공할 수 있습니다</string>
-    <string name="home_combine_keywords">키워드 조합하기</string>
-    <string name="home_keyword_combination_examples">예: 미니멀 흑백, 자연 녹색</string>
-    <string name="home_clear_search">검색 지우기</string>
-    <string name="home_search_history">검색 기록</string>
-
-    <!-- 프리미엄 관련 -->
-    <!-- 멤버십 관련(새 이름) -->
-    <string name="membership_title">프리미엄 기능 잠금 해제</string>
-    <string name="membership_user_title">당신은 프리미엄 사용자입니다</string>
-    <string name="membership_description">프리미엄으로 업그레이드하여 모든 배경화면과 기능을 잠금 해제</string>
-    <string name="membership_user_description">지원해 주셔서 감사합니다. 모든 프리미엄 기능을 사용할 수 있습니다</string>
-    <string name="membership_feature_unlimited_downloads">무제한 고품질 배경화면 다운로드</string>
-    <string name="membership_feature_unlimited_downloads_desc">전체 해상도로 원하는 만큼 배경화면 다운로드</string>
-    <string name="membership_feature_exclusive_live_wallpapers">특수 효과 라이브 배경화면</string>
-    <string name="membership_feature_exclusive_live_wallpapers_desc">특수 효과가 포함된 독점 라이브 배경화면에 액세스</string>
-    <string name="membership_feature_premium_collections">프리미엄 전용 배경화면</string>
-    <string name="membership_feature_premium_collections_desc">프리미엄 전용 배경화면 컬렉션에 액세스</string>
-    <string name="membership_feature_editing">고급 편집 기능</string>
-    <string name="membership_feature_editing_desc">전문 편집 도구로 배경화면을 원하는 대로 꾸미세요</string>
-    <string name="membership_feature_auto_change">자동 배경화면 변경</string>
-    <string name="membership_feature_auto_change_desc">선호하는 빈도에 따라 배경화면이 자동으로 변경되도록 설정</string>
-    <string name="membership_select_plan">구독 플랜 선택</string>
-    <string name="membership_payment_terms">구매 확인 시 Google Play 스토어 계정으로 결제가 청구됩니다. 현재 구독 기간 종료 최소 24시간 전에 자동 갱신을 끌 수 있습니다. 구독 콘텐츠에 대한 무료 체험은 제공하지 않습니다. 구독 기간은 한 달이며 동일한 패키지 기간과 동일한 가격으로 자동 갱신됩니다. 구독은 언제든지 취소할 수 있습니다.</string>
-    <string name="membership_cancel_prefix">여기를 클릭하여 구독 취소:</string>
-    <string name="membership_cancel_link">구독 취소</string>
-    <string name="membership_plan_name_week">주 회원</string>
-    <string name="membership_plan_name_month">월간 플랜</string>
-    <string name="membership_plan_name_quarter">분기 플랜</string>
-    <string name="membership_plan_name_year">연간 플랜</string>
-    <string name="membership_plan_price_week">₩5,900</string>
-    <string name="membership_plan_price_month">₩12,000</string>
-    <string name="membership_plan_price_quarter">₩32,000</string>
-    <string name="membership_plan_price_year">₩108,000</string>
-    <string name="membership_plan_discount_quarter">11% 절약</string>
-    <string name="membership_plan_discount_year">27% 절약</string>
-    <string name="membership_already_premium">이미 프리미엄 사용자입니다</string>
-    <string name="payment_service_not_connected">결제 서비스가 연결되지 않았습니다. 나중에 다시 시도해주세요</string>
-    <string name="membership_plan_desc_week">매주 자동 갱신, 언제든지 취소 가능</string>
-    <string name="membership_plan_desc_month">매월 자동 갱신, 언제든지 취소 가능</string>
-    <string name="membership_plan_desc_quarter">3개월마다 자동 갱신, 언제든지 취소 가능</string>
-    <string name="membership_plan_desc_year">매년 자동 갱신, 언제든지 취소 가능</string>
-    <string name="save_about">약 27% 절약</string>
-    <string name="membership_plan_desc_lifetime">일회성 결제, 영구 사용</string>
-    <string name="upgrade_now">지금 업그레이드</string>
-    <string name="connecting_payment">결제 서비스에 연결 중…</string>
-    <string name="all_premium_features_unlocked">모든 프리미엄 기능이 잠금 해제되었습니다</string>
 
     <!-- 배경화면 상세 페이지 -->
-    <string name="preview_start_download_wallpaper">배경화면 다운로드 시작</string>
-    <string name="preview_download_failed_permission_denied">배경화면을 다운로드할 수 없음: 저장소 권한이 거부됨</string>
-    <string name="preview_storage_permission_required">저장소 권한 필요</string>
-    <string name="preview_storage_permission_rationale">갤러리에 배경화면을 저장하려면 저장소 권한이 필요합니다. 배경화면을 다운로드하려면 이 권한을 허용해 주세요.</string>
-    <string name="preview_grant_permission">권한 부여</string>
-    <string name="preview_download_failed_permission_required">배경화면을 다운로드할 수 없음: 저장소 권한 필요</string>
-    <string name="preview_favorite_login_required">즐겨찾기에 배경화면을 추가하려면 로그인이 필요합니다</string>
-    <string name="preview_download_login_required">배경화면을 다운로드하려면 로그인이 필요합니다</string>
-    <string name="preview_set_wallpaper_login_required">배경화면을 설정하려면 로그인이 필요합니다</string>
-    <string name="preview_edit_login_required">배경화면을 편집하려면 로그인이 필요합니다</string>
 
     <!-- 배경화면 상세 구성 요소 -->
     <string name="author">작성자: %1$s</string>
@@ -229,22 +148,12 @@
     <string name="static_wallpaper">정적</string>
     <string name="live_wallpaper">라이브</string>
     <string name="tags">태그:</string>
-    <string name="preview_set_as_wallpaper">배경화면으로 설정</string>
-    <string name="preview_setting_wallpaper">배경화면 설정 중…</string>
     <string name="download">다운로드</string>
     <string name="share">공유</string>
     <string name="edit">편집</string>
     <string name="set_home_screen">홈 화면으로 설정</string>
     <string name="set_lock_screen">잠금 화면으로 설정</string>
     <string name="set_both_screens">둘 다 설정</string>
-    <string name="preview_collapse_info">정보 접기</string>
-    <string name="preview_expand_info">정보 펼치기</string>
-    <string name="preview_wallpaper">벽지 미리 보기</string>
-    <string name="preview_set_as">다음으로 설정</string>
-    <string name="preview_home_screen_wallpaper">홈 화면 배경화면</string>
-    <string name="preview_lock_screen_wallpaper">잠금 화면 배경화면</string>
-    <string name="preview_home_and_lock_screen">홈 및 잠금 화면</string>
-    <string name="preview_upgrade_to_unlock">업그레이드하여 이 배경화면 잠금 해제</string>
 
     <!-- 자동 배경화면 변경 관련 -->
     <string name="cycler_change_settings">설정 변경</string>
@@ -347,10 +256,10 @@
     <string name="add_to_favorites">즐겨찾기에 추가</string>
     <string name="remove_from_favorites">즐겨찾기에서 제거</string>
 <string name="loading_failed">로딩 실패</string>
-    <string name="nav_home">홈</string>
-    <string name="nav_static">정적</string>
-    <string name="nav_live">라이브</string>
-    <string name="nav_mine">내 것</string>
+    <string name="nav_discover">탐색</string>
+    <string name="nav_photo">사진</string>
+    <string name="nav_video">동영상</string>
+    <string name="nav_profile">프로필</string>
     <string name="api_test_tool">API 테스트 도구</string>
     <string name="test_tool">테스트 도구</string>
     <string name="back_button">뒤로</string>
@@ -377,40 +286,11 @@
     <string name="test_pexels_api_complete">Pexels API 테스트 완료, 로그를 확인하세요</string>
     <string name="test_unsplash_api_complete">Unsplash API 테스트 완료, 로그를 확인하세요</string>
     <string name="test_failed">테스트 실패: %1$s</string>
-    <string name="collections_wallpapers_failed">컬렉션 배경화면 가져오기 실패: %1$s</string>
-    <string name="collections_introduction">컬렉션 소개</string>
-    <string name="collections_related_tags">관련 태그</string>
-    <string name="collections_premium_content">프리미엄 컬렉션 콘텐츠</string>
-    <string name="collections_upgrade_to_unlock_all">프리미엄으로 업그레이드하여 모든 배경화면 잠금 해제</string>
-    <string name="collections_upgrade_now">지금 업그레이드</string>
-    <string name="collections_wallpaper_list">배경화면 목록</string>
     <string name="common_end_of_list">목록의 끝</string>
-    <string name="membership_upgrade_success">업그레이드 성공! 지원해 주셔서 감사합니다</string>
-    <string name="membership_upgrade_failed">업그레이드 실패: %1$s</string>
-    <string name="membership_upgrade_cancelled">업그레이드 취소됨</string>
     <string name="wallpaper_not_exist">배경화면이 존재하지 않습니다</string>
     <string name="wallpaper_load_failed">배경화면 로드 실패</string>
-    <string name="preview_share_wallpaper">배경화면 공유</string>
-    <string name="preview_beautiful_wallpaper">아름다운 배경화면</string>
-    <string name="preview_share_wallpaper_text">아름다운 배경화면을 발견했어요\n제목: %1$s\n작성자: %2$s\n출처: %3$s\n해상도: %4$d x %5$d\nVistara 배경화면 앱을 다운로드하여 더 많은 아름다운 배경화면을 가져보세요!</string>
-    <string name="preview_unnamed_wallpaper">이름 없는 배경화면</string>
-    <string name="membership_price_unknown">가격 미상</string>
-    <string name="membership_plan_name_weekly">주간</string>
-    <string name="membership_plan_name_monthly">월간</string>
-    <string name="membership_plan_name_quarterly">분기</string>
-    <string name="membership_plan_name_yearly">연간</string>
-    <string name="membership_plan_name_lifetime">평생</string>
-    <string name="membership_plan_title_week">1\n주</string>
-    <string name="membership_plan_title_month">1\n개월</string>
-    <string name="membership_plan_title_quarter">3\n개월</string>
     <string name="settings_sign_out_success">로그아웃 성공</string>
     <string name="settings_sign_out_failed">로그아웃 실패: %1$s</string>
-    <string name="home_featured_wallpapers">추천 배경화면</string>
-    <string name="home_discover_latest_wallpapers">최신 및 가장 아름다운 배경화면 발견</string>
-    <string name="membership_premium_membership">프리미엄 멤버십</string>
-    <string name="membership_unlock_all_hd_wallpapers">모든 HD 배경화면 잠금 해제</string>
-    <string name="home_live_wallpapers">라이브 배경화면</string>
-    <string name="home_make_your_screen_come_alive">화면에 생동감을 불어넣으세요</string>
     <string name="auth_login_success">로그인 성공</string>
     <string name="auth_login_failed">로그인 실패</string>
     <string name="auth_login_failed_with_status">로그인 실패: %1$s</string>
@@ -430,43 +310,6 @@
     <string name="notifications_live_wallpaper_pending_title">비디오 배경화면 준비 완료</string>
     <string name="notifications_live_wallpaper_pending_text">터치하여 "%1$s"를 비디오 배경화면으로 설정하세요</string>
 
-    <!-- Diamond related -->
-    <string name="diamond_recharge_title">다이아몬드 충전</string>
-    <string name="diamond_my_balance_title">내 다이아몬드 잔액</string>
-    <string name="diamond_select_package_prompt">다이아몬드 패키지 선택</string>
-    <string name="diamond_plural">다이아몬드</string>
-    <string name="diamond_discount_percent">%d%% 할인</string>
-    <string name="diamond_purchase_now">지금 구매</string>
-    <string name="diamond_transaction_history_title">거래 내역</string>
-    <string name="diamond_balance_current_title">현재 잔액</string>
-    <string name="diamond_no_transaction_history">거래 내역 없음</string>
-    <string name="diamond_recharge_type_recharge">충전</string>
-    <string name="diamond_transaction_type_purchase">구매</string>
-    <string name="diamond_transaction_type_reward">보상</string>
-    <string name="diamond_transaction_type_refund">환불</string>
-    <string name="diamond_insufficient">다이아몬드 부족</string>
-    <string name="diamond_purchase_success">구매 성공</string>
-    <string name="diamond_purchase_failed">구매 실패</string>
-    <string name="diamond_recharge_success">충전 성공</string>
-    <string name="diamond_recharge_failed">충전 실패</string>
-    <string name="diamond_balance">다이아몬드 잔액</string>
-    <string name="diamond_price">가격: %d 다이아몬드</string>
-    <string name="diamond_unlock_with_diamonds">%d 다이아몬드로 잠금 해제</string>
-    <string name="diamond_recharge_diamonds">다이아몬드 충전</string>
-    <string name="diamond_unlock_premium_content">프리미엄 열기</string>
-    <!-- 다이아몬드 (네임스페이스화) -->
-    <string name="diamond_current_balance">현재 잔액</string>
-    <string name="purchase_wallpaper">배경화면 구매: %s</string>
-    <string name="diamond_purchase_description">%d 다이아몬드</string>
-    <string name="diamond_icon">다이아몬드 아이콘</string>
-    <string name="available_diamonds">사용 가능한 다이아몬드</string>
-    <string name="first_recharge_bonus">첫 충전 보너스: 추가 20%% 다이아몬드 획득!</string>
-    <string name="loading_products">상품 로딩 중...</string>
-    <string name="errors_loading_products">상품 로딩 실패: %1$s</string>
-    <string name="loading_subscription_products">상품 로딩 중...</string>
-    <string name="errors_loading_subscription_products">상품 로딩 실패: %1$s</string>
-    <string name="no_subscription_products">이용 가능한 구독 상품이 없습니다</string>
-
     <!-- Browser module (WebView) -->
     <string name="browser_verifying_payment_result">결제 결과 확인 중...</string>
     <string name="browser_payment_success_updating_account">결제 성공, 계정 정보 업데이트 중...</string>
@@ -475,48 +318,8 @@
     <string name="browser_payment_success">결제 성공!</string>
     <string name="browser_go_back">뒤로 가기</string>
 
-    <!-- Diamond Payment Dialog -->
-    <string name="diamond_label">다이아몬드</string>
-    <string name="diamond_payment_methods">결제 방법</string>
-    <string name="diamond_country">국가</string>
-    <string name="diamond_indonesia">인도네시아</string>
-    <string name="diamond_coupon">쿠폰</string>
-    <string name="diamond_none">없음</string>
-    <string name="diamond_payment_price">₩19,800</string>
-    <string name="diamond_payment">결제</string>
-    <string name="diamond_creating_order">주문 생성 중...</string>
-    <string name="diamond_order_creation_failed">주문 생성 실패</string>
-    <string name="diamond_error_loading_page">페이지 로딩 실패</string>
-    <string name="diamond_no_payment_methods">사용 가능한 결제 방법 없음</string>
-    <string name="errors_loading_page">페이지 로딩 실패</string>
-    <string name="no_payment_methods">사용 가능한 결제 방법 없음</string>
-
-    <!-- Premium Screen related -->
-    <string name="membership_exclusive_privileges">5가지 독점 특권</string>
-    <string name="membership_more_info_prefix">자세한 정보는 다음을 방문하세요</string>
-    <string name="membership_terms_of_use">이용 약관</string>
-    <string name="membership_and">및</string>
-    <string name="membership_renew_now">지금 갱신</string>
-    <string name="membership_expired_on">%s에 만료됨</string>
-    <string name="membership_bonus_diamonds">보너스: %d</string>
-    <string name="membership_discount_percent_off">%d%% 할인</string>
 
     <!-- Premium Features -->
-    <string name="membership_feature_video_call">영상 통화 특별 혜택</string>
-    <string name="membership_feature_video_call_desc">VIP는 분당 20%% 할인 혜택</string>
-    <string name="membership_feature_unlimited_messages">무제한 메시지</string>
-    <string name="membership_feature_unlimited_messages_desc">메시지 전송 무료</string>
-    <string name="membership_feature_checkin_bonus">출석 보너스</string>
-    <string name="membership_feature_checkin_bonus_desc">최대 5,000 다이아몬드 획득</string>
-    <string name="membership_feature_match_offer">매치 특별 혜택</string>
-    <string name="membership_feature_match_offer_desc">VIP는 매치당 15 다이아몬드만 필요</string>
-    <string name="membership_feature_who_see_me">나를 본 사람</string>
-    <string name="membership_feature_who_see_me_desc">\"나를 본 사람\" 목록을 볼 수 있는 특권 해제</string>
-    <string name="membership_feature_photo_voice">사진 및 음성 메시지</string>
-    <string name="membership_feature_photo_voice_desc">사진 및 음성 메시지 전송 무료</string>
-    <string name="membership_feature_secret_content">비밀 이미지/비디오</string>
-    <string name="membership_feature_secret_content_desc">비밀 이미지 및 비디오를 볼 수 있는 특권 해제</string>
-    <string name="membership_no_subscription_products">구독 상품이 없습니다</string>
     <string name="errors_loading_wallpapers">배경화면을 불러오지 못했습니다</string>
     <string name="errors_filtering_wallpapers">배경화면 필터링에 실패했습니다</string>
     <string name="errors_already_premium">이미 프리미엄 사용자입니다</string>
@@ -525,11 +328,6 @@
     <string name="common_error_loading_data">데이터 로딩 중 알 수 없는 오류 발생</string>
     <string name="categories_error_loading_wallpapers">카테고리 배경화면 로딩 중 알 수 없는 오류 발생</string>
     <string name="common_network_request_failed">네트워크 요청 실패</string>
-    <string name="home_banner_no_network">네트워크 연결 없음, 배너 데이터를 가져올 수 없음</string>
-    <string name="home_banner_load_failed">배너 데이터 가져오기 실패</string>
-    <string name="home_no_network_wallpapers">네트워크 연결 없음, 배경화면을 가져올 수 없음</string>
-    <string name="home_failed_to_get_recommended_wallpapers">추천 배경화면 가져오기 실패</string>
-    <string name="home_failed_to_get_wallpapers">배경화면 가져오기 실패</string>
     <string name="categories_no_network_wallpapers">네트워크 연결 없음, 카테고리 배경화면을 가져올 수 없음</string>
     <string name="categories_failed_to_get_wallpapers">카테고리 배경화면 가져오기 실패</string>
 </resources>

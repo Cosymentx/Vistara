@@ -32,13 +32,10 @@ class SignInViewModel @Inject constructor(
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn.asStateFlow()
 
     private val _userName = MutableStateFlow<String?>(null)
-    val userName: StateFlow<String?> = _userName.asStateFlow()
 
     private val _userPhotoUrl = MutableStateFlow<String?>(null)
-    val userPhotoUrl: StateFlow<String?> = _userPhotoUrl.asStateFlow()
 
     private val _userEmail = MutableStateFlow<String?>(null)
-    val userEmail: StateFlow<String?> = _userEmail.asStateFlow()
 
     private val _loginResult = MutableStateFlow<LoginResult?>(null)
     val loginResult: StateFlow<LoginResult?> = _loginResult.asStateFlow()

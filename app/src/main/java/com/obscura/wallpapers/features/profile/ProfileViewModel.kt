@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.BuildConfig
 import com.obscura.wallpapers.core.data.repository.AuthRepository
-import com.obscura.wallpapers.core.data.repository.DiamondRepository
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,10 +20,9 @@ class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val userPrefsRepository: UserPrefsRepository,
     private val authRepository: AuthRepository,
-    private val diamondRepository: DiamondRepository
 ) : ViewModel() {
 
-    private val _username = MutableStateFlow("Vistara User")
+    private val _username = MutableStateFlow("Obscura User")
     val username: StateFlow<String> = _username.asStateFlow()
 
     private val _userPhotoUrl = MutableStateFlow<String?>(null)
@@ -60,8 +58,6 @@ class ProfileViewModel @Inject constructor(
                 _isLoggedIn.value = userRepository.checkUserLoggedIn()
                 val isPremium = userRepository.isPremiumUser.first()
                 _isPremiumUser.value = isPremium
-                val balance = diamondRepository.getDiamondBalanceValue()
-                _diamondBalance.value = balance
                 if (_isLoggedIn.value) {
                     val name = authRepository.userName.first()
                     if (!name.isNullOrEmpty()) _username.value = name
@@ -69,8 +65,6 @@ class ProfileViewModel @Inject constructor(
                     _userPhotoUrl.value = photoUrl
                     try {
                         userRepository.refreshUserProfile()
-                        val updatedBalance = diamondRepository.getDiamondBalanceValue()
-                        if (updatedBalance != balance) _diamondBalance.value = updatedBalance
                     } catch (e: Exception) {
                         Log.e("ProfileViewModel", "刷新用户个人资料失败: ${e.message}", e)
                     }
