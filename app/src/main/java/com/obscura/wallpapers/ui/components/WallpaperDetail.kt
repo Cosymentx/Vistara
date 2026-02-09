@@ -405,7 +405,7 @@ fun WallpaperDetail(
                     ) {
                         Icon(
                             imageVector = if (isInfoExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                            contentDescription = if (isInfoExpanded) stringResource(R.string.collapse_info) else stringResource(R.string.expand_info),
+                            contentDescription = if (isInfoExpanded) stringResource(R.string.preview_collapse_info) else stringResource(R.string.preview_expand_info),
                             tint = Color.White
                         )
                     }
@@ -460,9 +460,9 @@ fun WallpaperDetail(
                             )
                         }
                         Text(
-                            text = if (isProcessingWallpaper) stringResource(R.string.setting_wallpaper)
-                            else if (canSetWallpaper) stringResource(R.string.set_as_wallpaper)
-                            else stringResource(R.string.upgrade_to_unlock),
+                            text = if (isProcessingWallpaper) stringResource(R.string.preview_setting_wallpaper)
+                            else if (canSetWallpaper) stringResource(R.string.preview_set_as_wallpaper)
+                            else stringResource(R.string.preview_upgrade_to_unlock),
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                             // 不需要显式设置颜色，因为我们已经在ButtonDefaults中设置了disabledContentColor
                         )
@@ -492,7 +492,7 @@ fun WallpaperSetOptions(
                 .padding(16.dp)
         ) {
             Text(
-                text = stringResource(R.string.set_as), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 16.dp)
+                text = stringResource(R.string.preview_set_as), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 16.dp)
             )
 
             Button(
@@ -500,7 +500,7 @@ fun WallpaperSetOptions(
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             ) {
-                Text(text = stringResource(R.string.home_screen_wallpaper))
+                Text(text = stringResource(R.string.preview_home_screen_wallpaper))
             }
 
             Button(
@@ -508,7 +508,7 @@ fun WallpaperSetOptions(
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             ) {
-                Text(text = stringResource(R.string.lock_screen_wallpaper))
+                Text(text = stringResource(R.string.preview_lock_screen_wallpaper))
             }
 
             Button(
@@ -516,7 +516,7 @@ fun WallpaperSetOptions(
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             ) {
-                Text(text = stringResource(R.string.home_and_lock_screen))
+                Text(text = stringResource(R.string.preview_home_and_lock_screen))
             }
 
             TextButton(

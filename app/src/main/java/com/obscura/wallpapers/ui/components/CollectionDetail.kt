@@ -264,14 +264,14 @@ fun CollectionDetail(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                text = stringResource(R.string.premium_collection_content),
+                                text = stringResource(R.string.collections_premium_content),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
 
                             Text(
-                                text = stringResource(R.string.upgrade_to_unlock_all_wallpapers),
+                                text = stringResource(R.string.collections_upgrade_to_unlock_all),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                             )
@@ -284,7 +284,7 @@ fun CollectionDetail(
                             )
                         ) {
                             Text(
-                                text = stringResource(R.string.upgrade_now_button),
+                                text = stringResource(R.string.collections_upgrade_now),
                                 fontWeight = FontWeight.Bold
                             )
                         }

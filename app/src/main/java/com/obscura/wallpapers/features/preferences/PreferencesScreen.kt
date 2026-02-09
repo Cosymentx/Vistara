@@ -108,7 +108,7 @@ fun PreferencesScreen(
     }
 
     val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.settings),
+        title = stringResource(R.string.settings_title),
         onBackPressed = onBackPressed
     )
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = { topBar() }) { innerPadding ->
@@ -122,20 +122,20 @@ fun PreferencesScreen(
                     bottom = safe.calculateBottomPadding()
                 )
         ) {
-            SettingsGroup(title = stringResource(R.string.theme_settings)) {
+            SettingsGroup(title = stringResource(R.string.settings_theme_settings)) {
                 SettingsToggleList(
                     items = listOf(
                         SettingsToggleEntry(
                             icon = ObscuraIcons.DarkMode,
-                            title = stringResource(R.string.dark_theme),
-                            subtitle = stringResource(R.string.dark_theme_desc),
+                            title = stringResource(R.string.settings_dark_theme),
+                            subtitle = stringResource(R.string.settings_dark_theme_desc),
                             checked = darkTheme,
                             onCheckedChange = { viewModel.updateDarkTheme(it) }
                         ),
                         SettingsToggleEntry(
                             icon = ObscuraIcons.Palette,
-                            title = stringResource(R.string.dynamic_colors),
-                            subtitle = stringResource(R.string.dynamic_colors_desc),
+                            title = stringResource(R.string.settings_dynamic_colors),
+                            subtitle = stringResource(R.string.settings_dynamic_colors_desc),
                             checked = dynamicColors,
                             onCheckedChange = { viewModel.updateDynamicColors(it) }
                         )
@@ -143,20 +143,20 @@ fun PreferencesScreen(
                 )
             }
 
-            SettingsGroup(title = stringResource(R.string.language_settings)) {
+            SettingsGroup(title = stringResource(R.string.settings_language_settings)) {
                 LanguageSelector(
                     currentLanguage = appLanguage,
                     onLanguageSelected = { viewModel.updateAppLanguage(it) }
                 )
             }
 
-            SettingsGroup(title = stringResource(R.string.notification_settings)) {
+            SettingsGroup(title = stringResource(R.string.settings_notification_settings)) {
                 SettingsToggleList(
                     items = listOf(
                         SettingsToggleEntry(
                             icon = ObscuraIcons.Notifications,
-                            title = stringResource(R.string.download_notification),
-                            subtitle = stringResource(R.string.download_notification_desc),
+                            title = stringResource(R.string.settings_download_notification),
+                            subtitle = stringResource(R.string.settings_download_notification_desc),
                             checked = showDownloadNotification,
                             onCheckedChange = {
                                 currentNotificationType = NotificationType.DOWNLOAD
@@ -165,8 +165,8 @@ fun PreferencesScreen(
                         ),
                         SettingsToggleEntry(
                             icon = ObscuraIcons.Notifications,
-                            title = stringResource(R.string.wallpaper_change_notification),
-                            subtitle = stringResource(R.string.wallpaper_change_notification_desc),
+                            title = stringResource(R.string.settings_wallpaper_change_notification),
+                            subtitle = stringResource(R.string.settings_wallpaper_change_notification_desc),
                             checked = showWallpaperChangeNotification,
                             onCheckedChange = {
                                 currentNotificationType = NotificationType.WALLPAPER_CHANGE
@@ -177,11 +177,11 @@ fun PreferencesScreen(
                 )
             }
 
-            SettingsGroup(title = stringResource(R.string.download_settings)) {
+            SettingsGroup(title = stringResource(R.string.settings_download_settings)) {
                 SettingsToggleItem(
                     icon = ObscuraIcons.HighQuality,
-                    title = stringResource(R.string.original_quality),
-                    subtitle = stringResource(R.string.original_quality_desc),
+                    title = stringResource(R.string.settings_original_quality),
+                    subtitle = stringResource(R.string.settings_original_quality_desc),
                     checked = downloadOriginalQuality,
                     onCheckedChange = {
                         viewModel.updateDownloadOriginalQuality(it)
@@ -189,8 +189,8 @@ fun PreferencesScreen(
                 )
                 SettingsActionItem(
                     icon = ObscuraIcons.Delete,
-                    title = stringResource(R.string.clear_cache),
-                    subtitle = stringResource(R.string.current_cache_size, cacheSize),
+                    title = stringResource(R.string.settings_clear_cache),
+                    subtitle = stringResource(R.string.settings_current_cache_size, cacheSize),
                     onClick = { showClearCacheDialog = true },
                     trailingContent = if (isClearingCache) {
                         {
@@ -204,10 +204,10 @@ fun PreferencesScreen(
                 )
             }
 
-            SettingsCategory(title = stringResource(R.string.about_app))
+            SettingsCategory(title = stringResource(R.string.settings_about_app))
             SettingsActionItem(
                 icon = ObscuraIcons.Version,
-                title = stringResource(R.string.app_version),
+                title = stringResource(R.string.settings_app_version),
                 subtitle = appVersion,
                 onClick = {}
             )
@@ -219,11 +219,11 @@ fun PreferencesScreen(
                     color = DividerDefaults.color
                 )
 
-                SettingsCategory(title = stringResource(R.string.account_settings))
+                SettingsCategory(title = stringResource(R.string.settings_account_settings))
                 SettingsActionItem(
                     icon = ObscuraIcons.ExitToApp,
-                    title = stringResource(R.string.sign_out),
-                    subtitle = stringResource(R.string.sign_out_desc),
+                    title = stringResource(R.string.settings_sign_out),
+                    subtitle = stringResource(R.string.settings_sign_out_desc),
                     onClick = { showLogoutConfirmDialog = true },
                     iconTint = MaterialTheme.colorScheme.error,
                     trailingContent = if (isLoggingOut) {
@@ -247,8 +247,8 @@ fun PreferencesScreen(
                         viewModel.clearCache()
                         showClearCacheDialog = false
                     },
-                    title = stringResource(R.string.clear_cache_title),
-                    message = stringResource(R.string.clear_cache_message),
+                    title = stringResource(R.string.settings_clear_cache_title),
+                    message = stringResource(R.string.settings_clear_cache_message),
                     confirmText = stringResource(R.string.clear),
                     dismissText = stringResource(R.string.cancel),
                     isLoading = isClearingCache
@@ -262,9 +262,9 @@ fun PreferencesScreen(
                         viewModel.signOut()
                         showLogoutConfirmDialog = false
                     },
-                    title = stringResource(R.string.sign_out_confirm_title),
-                    message = stringResource(R.string.sign_out_confirm_message),
-                    confirmText = stringResource(R.string.sign_out),
+                    title = stringResource(R.string.settings_sign_out_confirm_title),
+                    message = stringResource(R.string.settings_sign_out_confirm_message),
+                    confirmText = stringResource(R.string.settings_sign_out),
                     dismissText = stringResource(R.string.cancel),
                     isLoading = isLoggingOut
                 )

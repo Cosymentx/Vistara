@@ -137,9 +137,9 @@ fun WallpaperPreviewScreen(
     ) { isGranted: Boolean ->
         if (isGranted) {
             viewModel.continueDownloadAfterPermissionGranted()
-            Toast.makeText(context, R.string.start_download_wallpaper, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.preview_start_download_wallpaper, Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(context, R.string.download_failed_permission_denied, Toast.LENGTH_SHORT)
+            Toast.makeText(context, R.string.preview_download_failed_permission_denied, Toast.LENGTH_SHORT)
                 .show()
         }
     }
@@ -249,7 +249,7 @@ fun WallpaperPreviewScreen(
                             if (wallpaper.isLive) {
                                 Toast.makeText(
                                     context,
-                                    R.string.live_wallpaper_edit_not_supported,
+                                    R.string.editor_live_wallpaper_edit_not_supported,
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 return@WallpaperDetail
@@ -315,17 +315,17 @@ fun WallpaperPreviewScreen(
     if (needStoragePermission) {
         AlertDialog(
             onDismissRequest = { },
-            title = { Text(stringResource(R.string.storage_permission_required)) },
-            text = { Text(stringResource(R.string.storage_permission_rationale)) },
+            title = { Text(stringResource(R.string.preview_storage_permission_required)) },
+            text = { Text(stringResource(R.string.preview_storage_permission_rationale)) },
             confirmButton = {
                 Button(onClick = { permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE) }) {
-                    Text(stringResource(R.string.grant_permission))
+                    Text(stringResource(R.string.preview_grant_permission))
                 }
             },
             dismissButton = {
                 Button(onClick = {
                     Toast.makeText(
-                        context, R.string.download_failed_permission_required, Toast.LENGTH_SHORT
+                        context, R.string.preview_download_failed_permission_required, Toast.LENGTH_SHORT
                     ).show()
                     viewModel.resetPermissionRequest()
                 }) {
@@ -336,10 +336,10 @@ fun WallpaperPreviewScreen(
 
     needLoginAction?.let { action ->
         val message = when (action) {
-            WallpaperPreviewViewModel.LoginAction.FAVORITE -> stringResource(R.string.favorite_login_required)
-            WallpaperPreviewViewModel.LoginAction.DOWNLOAD -> stringResource(R.string.download_login_required)
-            WallpaperPreviewViewModel.LoginAction.SET_WALLPAPER -> stringResource(R.string.set_wallpaper_login_required)
-            WallpaperPreviewViewModel.LoginAction.EDIT -> stringResource(R.string.edit_login_required)
+            WallpaperPreviewViewModel.LoginAction.FAVORITE -> stringResource(R.string.preview_favorite_login_required)
+            WallpaperPreviewViewModel.LoginAction.DOWNLOAD -> stringResource(R.string.preview_download_login_required)
+            WallpaperPreviewViewModel.LoginAction.SET_WALLPAPER -> stringResource(R.string.preview_set_wallpaper_login_required)
+            WallpaperPreviewViewModel.LoginAction.EDIT -> stringResource(R.string.preview_edit_login_required)
         }
 
         LoginPromptDialog(

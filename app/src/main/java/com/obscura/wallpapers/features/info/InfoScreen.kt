@@ -61,7 +61,7 @@ fun InfoScreen(
     viewModel.setNavController(navController)
 
     GlassScaffold(
-        title = stringResource(R.string.about_credits),
+        title = stringResource(R.string.info_title),
         onBackPressed = onBackPressed
     ) { paddingValues ->
         val safe = paddingValues.safeVerticalContentPadding(64.dp, 80.dp)
@@ -122,7 +122,7 @@ private fun AppInfoSection(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = stringResource(R.string.app_description),
+            text = stringResource(R.string.info_app_description),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
@@ -132,9 +132,9 @@ private fun AppInfoSection(
 
         LinkList(
             items = listOf(
-                LinkEntry(title = stringResource(R.string.user_agreement), onClick = onUserAgreementClick),
-                LinkEntry(title = stringResource(R.string.privacy_policy), onClick = onPrivacyPolicyClick),
-                LinkEntry(title = stringResource(R.string.terms_of_service), onClick = onTermsOfServiceClick)
+                LinkEntry(title = stringResource(R.string.info_user_agreement), onClick = onUserAgreementClick),
+                LinkEntry(title = stringResource(R.string.info_privacy_policy), onClick = onPrivacyPolicyClick),
+                LinkEntry(title = stringResource(R.string.info_terms_of_service), onClick = onTermsOfServiceClick)
             )
         )
     }
@@ -146,7 +146,7 @@ private fun OpenSourceSection(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(R.string.open_source_libraries), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold
+            text = stringResource(R.string.info_open_source_libraries), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold
         )
 
         Spacer(modifier = Modifier.height(8.dp))

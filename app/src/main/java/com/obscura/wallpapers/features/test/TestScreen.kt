@@ -68,7 +68,7 @@ fun TestScreen(
     }
 
     val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.test_tools),
+        title = stringResource(R.string.test_title),
         onBackPressed = onBackPressed
     )
     Scaffold(topBar = { topBar() }, snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->

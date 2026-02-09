@@ -57,7 +57,7 @@ fun PhotoLibraryScreen(
         refreshing = isRefreshing, onRefresh = { viewModel.refresh() })
 
     val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.category_static), actions = {
+        title = stringResource(R.string.categories_static), actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -125,7 +125,7 @@ private fun StaticGridContent(
     if (wallpapers.isEmpty()) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
-                stringResource(R.string.no_wallpapers_found),
+                stringResource(R.string.home_no_wallpapers_found),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )

@@ -44,28 +44,28 @@ class NotificationUtil @Inject constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val wallpaperChannel = NotificationChannel(
                 CHANNEL_ID_WALLPAPER,
-                context.getString(R.string.notification_channel_wallpaper),
+                context.getString(R.string.notifications_channel_wallpaper),
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = context.getString(R.string.notification_channel_wallpaper_desc)
+                description = context.getString(R.string.notifications_channel_wallpaper_desc)
                 setShowBadge(false)
             }
 
             val downloadChannel = NotificationChannel(
                 CHANNEL_ID_DOWNLOAD,
-                context.getString(R.string.notification_channel_download),
+                context.getString(R.string.notifications_channel_download),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = context.getString(R.string.notification_channel_download_desc)
+                description = context.getString(R.string.notifications_channel_download_desc)
                 setShowBadge(true)
             }
 
             val liveWallpaperChannel = NotificationChannel(
                 CHANNEL_ID_LIVE_WALLPAPER,
-                context.getString(R.string.notification_channel_live_wallpaper),
+                context.getString(R.string.notifications_channel_live_wallpaper),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = context.getString(R.string.notification_channel_live_wallpaper_desc)
+                description = context.getString(R.string.notifications_channel_live_wallpaper_desc)
                 setShowBadge(true)
             }
 
@@ -94,8 +94,8 @@ class NotificationUtil @Inject constructor(
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_WALLPAPER)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(R.string.notification_wallpaper_changed_title))
-            .setContentText(wallpaper.title ?: context.getString(R.string.notification_wallpaper_changed_text))
+            .setContentTitle(context.getString(R.string.notifications_wallpaper_changed_title))
+            .setContentText(wallpaper.title ?: context.getString(R.string.notifications_wallpaper_changed_text))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -112,8 +112,8 @@ class NotificationUtil @Inject constructor(
         }
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_DOWNLOAD)
             .setSmallIcon(R.drawable.ic_download)
-            .setContentTitle(context.getString(R.string.notification_download_progress_title))
-            .setContentText(wallpaper.title ?: context.getString(R.string.notification_download_progress_text))
+            .setContentTitle(context.getString(R.string.notifications_download_progress_title))
+            .setContentText(wallpaper.title ?: context.getString(R.string.notifications_download_progress_text))
             .setProgress(100, progress, false)
             .setOngoing(true)
             .setSilent(true)
@@ -144,8 +144,8 @@ class NotificationUtil @Inject constructor(
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_DOWNLOAD)
             .setSmallIcon(R.drawable.ic_download)
-            .setContentTitle(context.getString(R.string.notification_download_complete_title))
-            .setContentText(wallpaper.title ?: context.getString(R.string.notification_download_complete_text))
+            .setContentTitle(context.getString(R.string.notifications_download_complete_title))
+            .setContentText(wallpaper.title ?: context.getString(R.string.notifications_download_complete_text))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -160,8 +160,8 @@ class NotificationUtil @Inject constructor(
     fun showLiveWallpaperPendingNotification(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper, pendingIntent: PendingIntent) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_LIVE_WALLPAPER)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(R.string.notification_live_wallpaper_pending_title))
-            .setContentText(context.getString(R.string.notification_live_wallpaper_pending_text, wallpaper.title ?: ""))
+            .setContentTitle(context.getString(R.string.notifications_live_wallpaper_pending_title))
+            .setContentText(context.getString(R.string.notifications_live_wallpaper_pending_text, wallpaper.title ?: ""))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

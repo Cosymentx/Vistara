@@ -28,8 +28,8 @@ import com.obscura.wallpapers.ui.theme.stringResource
  */
 @Composable
 fun LoadingState(
-    message: String? = stringResource(R.string.loading), modifier: Modifier = Modifier
-) {
+    message: String? = stringResource(R.string.common_loading), modifier: Modifier = Modifier
+){
     Box(
         modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
@@ -57,7 +57,7 @@ fun LoadingState(
 fun LoadingStatePreview() {
     ObscuraTheme {
         Surface {
-            LoadingState(message = stringResource(R.string.loading))
+            LoadingState(message = stringResource(R.string.common_loading))
         }
     }
 }

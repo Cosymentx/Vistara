@@ -257,10 +257,10 @@ class PreferencesViewModel @Inject constructor(
                 deleteRecursively(context.cacheDir)
                 deleteRecursively(context.externalCacheDir)
                 calculateCacheSize()
-                _operationResult.value = stringProvider.getString(R.string.clear_cache)
+                _operationResult.value = stringProvider.getString(R.string.settings_clear_cache)
             } catch (e: Exception) {
                 Log.e(TAG, "Error clearing cache: ${e.message}")
-                _operationResult.value = stringProvider.getString(R.string.clear_cache)
+                _operationResult.value = stringProvider.getString(R.string.settings_clear_cache)
             } finally {
                 _isClearingCache.value = false
             }

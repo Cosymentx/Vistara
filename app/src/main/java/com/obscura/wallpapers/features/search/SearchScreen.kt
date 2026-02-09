@@ -158,7 +158,7 @@ fun SearchScreen(
                 LoadingState()
             } else if (error != null) {
                 ErrorState(
-                    message = error ?: stringResource(R.string.unknown_error),
+                    message = error ?: stringResource(R.string.common_unknown_error),
                     onRetry = { viewModel.search(query) }
                 )
             } else if (searchResults.isEmpty() && query.isNotEmpty()) {
@@ -184,13 +184,13 @@ private fun EmptyResultBox() {
             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = stringResource(R.string.no_wallpapers_found),
+                text = stringResource(R.string.home_no_wallpapers_found),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.try_different_keywords),
+                text = stringResource(R.string.home_try_different_keywords),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
@@ -213,7 +213,7 @@ private fun SearchResultList(
     ) {
         item {
             Text(
-                text = stringResource(R.string.found_results, rememberedResults.size),
+                text = stringResource(R.string.home_found_results, rememberedResults.size),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -245,7 +245,7 @@ private fun InitialSearchState(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.hot_searches),
+            text = stringResource(R.string.home_hot_searches),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -263,7 +263,7 @@ private fun InitialSearchState(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = stringResource(R.string.search_tips),
+            text = stringResource(R.string.home_search_tips),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -273,15 +273,15 @@ private fun InitialSearchState(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             SearchTip(
-                title = stringResource(R.string.use_specific_descriptions), description = stringResource(R.string.specific_description_examples)
+                title = stringResource(R.string.home_use_specific_descriptions), description = stringResource(R.string.home_specific_description_examples)
             )
 
             SearchTip(
-                title = stringResource(R.string.try_different_languages), description = stringResource(R.string.english_keywords_tip)
+                title = stringResource(R.string.home_try_different_languages), description = stringResource(R.string.home_english_keywords_tip)
             )
 
             SearchTip(
-                title = stringResource(R.string.combine_keywords), description = stringResource(R.string.keyword_combination_examples)
+                title = stringResource(R.string.home_combine_keywords), description = stringResource(R.string.home_keyword_combination_examples)
             )
         }
     }

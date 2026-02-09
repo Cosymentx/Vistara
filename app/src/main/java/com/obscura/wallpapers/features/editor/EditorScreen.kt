@@ -97,7 +97,7 @@ fun WallpaperEditScreen(
     var selectedTool by remember { mutableStateOf(EditTool.BRIGHTNESS) }
 
     val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.edit_wallpaper),
+        title = stringResource(R.string.editor_edit_wallpaper),
         onBackPressed = {
             if (!isSaving) onBackPressed()
         },
@@ -234,7 +234,7 @@ fun WallpaperEditScreen(
                             when (selectedTool) {
                                 EditTool.BRIGHTNESS -> {
                                     SliderControl(
-                                        label = stringResource(R.string.brightness),
+                                        label = stringResource(R.string.editor_brightness),
                                         value = editState.brightness,
                                         onValueChange = { viewModel.updateBrightness(it) },
                                         valueRange = 0.5f..1.5f
@@ -243,7 +243,7 @@ fun WallpaperEditScreen(
 
                                 EditTool.CONTRAST -> {
                                     SliderControl(
-                                        label = stringResource(R.string.contrast),
+                                        label = stringResource(R.string.editor_contrast),
                                         value = editState.contrast,
                                         onValueChange = { viewModel.updateContrast(it) },
                                         valueRange = 0.5f..1.5f
@@ -252,7 +252,7 @@ fun WallpaperEditScreen(
 
                                 EditTool.SATURATION -> {
                                     SliderControl(
-                                        label = stringResource(R.string.saturation),
+                                        label = stringResource(R.string.editor_saturation),
                                         value = editState.saturation,
                                         onValueChange = { viewModel.updateSaturation(it) },
                                         valueRange = 0f..2f
@@ -297,7 +297,7 @@ fun WallpaperEditScreen(
                                     contentDescription = stringResource(R.string.reset),
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
-                                Text(stringResource(R.string.reset_edits))
+                                Text(stringResource(R.string.editor_reset_edits))
                             }
                         }
                     }
@@ -380,7 +380,7 @@ fun FilterOptions(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(R.string.filter),
+            text = stringResource(R.string.editor_filter),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
@@ -408,7 +408,7 @@ fun CropOptions(
 ) {
     if (originalBitmap == null) {
         Text(
-            text = stringResource(R.string.loading_image),
+            text = stringResource(R.string.editor_loading_image),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(16.dp)
         )
@@ -459,7 +459,7 @@ fun CropOptions(
             ) {
                 Image(
                     bitmap = originalBitmap.asImageBitmap(),
-                    contentDescription = stringResource(R.string.original),
+                    contentDescription = stringResource(R.string.editor_original),
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -503,15 +503,15 @@ fun CropOptions(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 CropTypeButton(
-                    title = stringResource(R.string.free_crop),
+                    title = stringResource(R.string.editor_free_crop),
                     isSelected = cropType == CropType.FREE,
                     onClick = { cropType = CropType.FREE })
                 CropTypeButton(
-                    title = stringResource(R.string.square),
+                    title = stringResource(R.string.editor_square),
                     isSelected = cropType == CropType.SQUARE,
                     onClick = { cropType = CropType.SQUARE })
                 CropTypeButton(
-                    title = stringResource(R.string.circle),
+                    title = stringResource(R.string.editor_circle),
                     isSelected = cropType == CropType.CIRCLE,
                     onClick = { cropType = CropType.CIRCLE })
             }
@@ -584,7 +584,7 @@ fun CropOptions(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.crop_applied),
+                    text = stringResource(R.string.editor_crop_applied),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -596,10 +596,10 @@ fun CropOptions(
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(R.string.recrop),
+                    contentDescription = stringResource(R.string.editor_recrop),
                     modifier = Modifier.padding(end = 4.dp)
                 )
-                Text(stringResource(R.string.recrop))
+                Text(stringResource(R.string.editor_recrop))
             }
         }
     }
@@ -712,34 +712,34 @@ fun FilterOption(
 }
 
 enum class EditTool(val titleRes: Int) {
-    BRIGHTNESS(R.string.brightness), CONTRAST(R.string.contrast), SATURATION(R.string.saturation), FILTER(
-        R.string.filter
+    BRIGHTNESS(R.string.editor_brightness), CONTRAST(R.string.editor_contrast), SATURATION(R.string.editor_saturation), FILTER(
+        R.string.editor_filter
     ),
-    CROP(R.string.crop)
+    CROP(R.string.editor_crop)
 }
 
 enum class ImageFilter(val titleRes: Int, val previewColor: Color) {
-    NONE(R.string.original, Color.White), GRAYSCALE(
-        R.string.grayscale,
+    NONE(R.string.editor_original, Color.White), GRAYSCALE(
+        R.string.editor_grayscale,
         Color.Gray
     ),
-    SEPIA(R.string.sepia, Color(0xFFD2B48C)), VINTAGE(
-        R.string.vintage,
+    SEPIA(R.string.editor_sepia, Color(0xFFD2B48C)), VINTAGE(
+        R.string.editor_vintage,
         Color(0xFFCDC9A5)
     ),
-    COLD(R.string.cold, Color(0xFF87CEFA)), WARM(
-        R.string.warm,
+    COLD(R.string.editor_cold, Color(0xFF87CEFA)), WARM(
+        R.string.editor_warm,
         Color(0xFFFFB347)
     ),
-    PURPLE(R.string.purple, Color(0xFFB19CD9)), BLUE(
-        R.string.blue,
+    PURPLE(R.string.editor_purple, Color(0xFFB19CD9)), BLUE(
+        R.string.editor_blue,
         Color(0xFF6495ED)
     ),
-    GREEN(R.string.green, Color(0xFF90EE90)), PINK(
-        R.string.pink,
+    GREEN(R.string.editor_green, Color(0xFF90EE90)), PINK(
+        R.string.editor_pink,
         Color(0xFFFFB6C1)
     ),
-    ORANGE(R.string.orange, Color(0xFFFF8C00))
+    ORANGE(R.string.editor_orange, Color(0xFFFF8C00))
 }
 
 fun createPreviewColorMatrix(

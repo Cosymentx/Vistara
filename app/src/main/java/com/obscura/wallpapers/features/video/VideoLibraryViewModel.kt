@@ -124,7 +124,7 @@ class VideoLibraryViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(TAG, "Exception during loading: ${e.message}", e)
                 _wallpapersState.value =
-                    UiState.Error(e.message ?: context.getString(R.string.error_loading_wallpapers))
+                    UiState.Error(e.message ?: context.getString(R.string.errors_loading_wallpapers))
             } finally {
                 if (isRefresh) {
                     RefreshUtil.delayedEndRefreshing(_isRefreshing, viewModelScope)

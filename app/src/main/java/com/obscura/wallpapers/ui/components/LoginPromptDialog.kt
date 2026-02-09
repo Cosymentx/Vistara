@@ -17,15 +17,15 @@ import com.obscura.wallpapers.R
 fun LoginPromptDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    title: String = stringResource(R.string.login_required),
-    message: String = stringResource(R.string.login_required_message)
+    title: String = stringResource(R.string.common_login_required),
+    message: String = stringResource(R.string.common_login_required_message)
 ) {
     ConfirmDialog(
         onDismiss = onDismiss,
         onConfirm = onConfirm,
         title = title,
         message = message,
-        confirmText = stringResource(R.string.go_to_login),
+        confirmText = stringResource(R.string.common_go_to_login),
         dismissText = stringResource(R.string.cancel)
     )
 }

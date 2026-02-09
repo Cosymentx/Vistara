@@ -79,9 +79,6 @@ fun SignInScreen(
 ) {
     val context = LocalContext.current
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
-    val userName by viewModel.userName.collectAsState()
-    val userPhotoUrl by viewModel.userPhotoUrl.collectAsState()
-    val userEmail by viewModel.userEmail.collectAsState()
     val loginResult by viewModel.loginResult.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 

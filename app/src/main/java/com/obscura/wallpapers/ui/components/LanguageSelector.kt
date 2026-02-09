@@ -66,7 +66,7 @@ fun LanguageSelector(
                 Box(modifier = Modifier.weight(1f)) {
                     Column {
                         Text(
-                            text = resources.getString(R.string.language),
+                            text = resources.getString(R.string.settings_language),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface
                         )

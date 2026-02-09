@@ -1,6 +1,5 @@
 package com.obscura.wallpapers.features.diamond
 
-import android.app.Activity
 import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -46,23 +45,18 @@ fun DiamondScreen(
     navController: NavController? = null,
     viewModel: DiamondViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-    val activity = context as? Activity
     val diamondBalance by viewModel.diamondBalance.collectAsState()
     val diamondProducts by viewModel.diamondProducts.collectAsState()
     val transactions by viewModel.transactions.collectAsState()
     val transactionsLoading by viewModel.transactionsLoading.collectAsState()
     val transactionsError by viewModel.transactionsError.collectAsState()
     val selectedProduct by viewModel.selectedProduct.collectAsState()
-    val billingConnectionState by viewModel.billingConnectionState.collectAsState()
-    val purchaseState by viewModel.purchaseState.collectAsState()
     val productPrices by viewModel.productPrices.collectAsState()
     val apiProductsLoading by viewModel.apiProductsLoading.collectAsState()
     val apiProductsError by viewModel.apiProductsError.collectAsState()
     val paymentMethods by viewModel.paymentMethods.collectAsState()
     val showPaymentDialog by viewModel.showPaymentDialog.collectAsState()
     val paymentUrl by viewModel.paymentUrl.collectAsState()
-    val orderCreationState by viewModel.orderCreationState.collectAsState()
 
     var showTransactions by remember { mutableStateOf(false) }
 
@@ -91,7 +85,7 @@ fun DiamondScreen(
 
     if (showPaymentDialog && selectedProduct != null) {
         PaymentMethodDialog(
-            amount =  "${selectedProduct?.diamondAmount}",
+            amount = "${selectedProduct?.diamondAmount}",
             paymentMethods = paymentMethods,
             isLoading = viewModel.paymentMethodsLoading.collectAsState().value,
             onDismiss = viewModel::dismissPaymentDialog,

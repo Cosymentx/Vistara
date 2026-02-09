@@ -80,7 +80,7 @@ fun SearchBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(R.string.search_icon),
+                    contentDescription = stringResource(R.string.home_search_icon),
                     tint = contentColor.copy(alpha = 0.6f)
                 )
 
@@ -124,7 +124,7 @@ fun SearchBar(
                         onClick = { onQueryChange("") }) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = stringResource(R.string.clear_search),
+                            contentDescription = stringResource(R.string.home_clear_search),
                             tint = contentColor.copy(alpha = 0.6f)
                         )
                     }
@@ -287,7 +287,7 @@ fun SearchBarWithHistory(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = stringResource(R.string.search_history),
+                            text = stringResource(R.string.home_search_history),
                             style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -401,7 +401,7 @@ fun AdvancedSearchBar(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = stringResource(R.string.search_history),
+                                text = stringResource(R.string.home_search_history),
                                 style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onSurface
                             )

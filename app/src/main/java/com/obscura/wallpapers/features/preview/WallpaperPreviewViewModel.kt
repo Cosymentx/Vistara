@@ -12,17 +12,13 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.obscura.wallpapers.billing.BillingManager
+import com.obscura.wallpapers.cache.EditedImageCache
 import com.obscura.wallpapers.core.common.ImageProcessor
-import com.obscura.wallpapers.core.common.NotificationUtil
 import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.core.data.model.WallpaperTarget
-import com.obscura.wallpapers.core.data.repository.DiamondRepository
-import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.core.data.repository.WallpaperRepository
-import com.obscura.wallpapers.cache.EditedImageCache
 import com.obscura.wallpapers.features.diamond.DiamondPurchaseResult
 import com.obscura.wallpapers.wallpaper.core.AppWallpaperManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,12 +33,8 @@ import javax.inject.Inject
 class WallpaperPreviewViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val wallpaperRepository: WallpaperRepository,
-    private val userPrefsRepository: UserPrefsRepository,
     private val userRepository: UserRepository,
-    private val diamondRepository: DiamondRepository,
-    private val billingManager: BillingManager,
     private val wallpaperManager: AppWallpaperManager,
-    private val notificationUtil: NotificationUtil,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 

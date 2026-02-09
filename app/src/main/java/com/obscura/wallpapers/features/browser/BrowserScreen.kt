@@ -166,7 +166,7 @@ fun BrowserScreen(
 
             if (hasError) {
                 Text(
-                    text = stringResource(R.string.error_network_check),
+                    text = stringResource(R.string.errors_network_check),
                     modifier = Modifier.align(Alignment.Center),
                     color = MaterialTheme.colorScheme.error
                 )
@@ -189,7 +189,7 @@ fun BrowserScreen(
                             )
                             Spacer(modifier = androidx.compose.ui.Modifier.height(16.dp))
                             Text(
-                                text = stringResource(R.string.verifying_payment_result),
+                                text = stringResource(R.string.browser_verifying_payment_result),
                                 color = Color.White,
                                 style = MaterialTheme.typography.bodyLarge
                             )
@@ -212,7 +212,7 @@ fun BrowserScreen(
                             )
                             Spacer(modifier = androidx.compose.ui.Modifier.height(16.dp))
                             Text(
-                                text = stringResource(R.string.payment_success_updating_account),
+                                text = stringResource(R.string.browser_payment_success_updating_account),
                                 color = Color.White,
                                 style = MaterialTheme.typography.bodyLarge
                             )
@@ -232,7 +232,7 @@ fun BrowserScreen(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Text(
-                                text = stringResource(R.string.payment_verification_failed),
+                                text = stringResource(R.string.browser_payment_verification_failed),
                                 color = Color.White,
                                 style = MaterialTheme.typography.titleLarge
                             )
@@ -250,7 +250,7 @@ fun BrowserScreen(
                                     containerColor = MaterialTheme.colorScheme.primary
                                 )
                             ) {
-                                Text(stringResource(R.string.confirm))
+                            Text(stringResource(R.string.common_confirm))
                             }
                         }
                     }
@@ -268,7 +268,7 @@ fun BrowserScreen(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Text(
-                                text = stringResource(R.string.payment_success_but_update_failed),
+                                text = stringResource(R.string.browser_payment_success_but_update_failed),
                                 color = Color.White,
                                 style = MaterialTheme.typography.titleLarge,
                                 textAlign = TextAlign.Center
@@ -287,7 +287,7 @@ fun BrowserScreen(
                                     containerColor = MaterialTheme.colorScheme.primary
                                 )
                             ) {
-                                Text(stringResource(R.string.confirm))
+                                Text(stringResource(R.string.common_confirm))
                             }
                         }
                     }
@@ -305,7 +305,7 @@ fun BrowserScreen(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Text(
-                                text = stringResource(R.string.payment_success),
+                                text = stringResource(R.string.browser_payment_success),
                                 color = Color.White,
                                 style = MaterialTheme.typography.titleLarge
                             )
@@ -319,7 +319,7 @@ fun BrowserScreen(
                                     containerColor = MaterialTheme.colorScheme.primary
                                 )
                             ) {
-                                Text(stringResource(R.string.go_back))
+                                Text(stringResource(R.string.browser_go_back))
                             }
                         }
                     }

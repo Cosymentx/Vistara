@@ -65,7 +65,7 @@ fun ErrorState(
         Button(
             onClick = onRetry
         ) {
-            Text(stringResource(R.string.retry))
+            Text(stringResource(R.string.common_retry))
         }
     }
 }
@@ -76,7 +76,7 @@ fun ErrorStatePreview() {
     ObscuraTheme {
         Surface {
             ErrorState(
-                message = stringResource(R.string.error_network_check),
+                message = stringResource(R.string.errors_network_check),
                 onRetry = {}
             )
         }

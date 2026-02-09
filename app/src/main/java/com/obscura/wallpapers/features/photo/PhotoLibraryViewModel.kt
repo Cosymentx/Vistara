@@ -214,18 +214,18 @@ class PhotoLibraryViewModel @Inject constructor(
 
     fun filterByCategory(categoryResId: Int) {
         val category = when (categoryResId) {
-            R.string.category_all -> WallpaperCategory.ALL
-            R.string.category_nature -> WallpaperCategory.NATURE
-            R.string.category_city -> WallpaperCategory.CITY
-            R.string.category_abstract -> WallpaperCategory.ABSTRACT
-            R.string.category_minimal -> WallpaperCategory.MINIMAL
-            R.string.category_animals -> WallpaperCategory.ANIMALS
-            R.string.category_food -> WallpaperCategory.FOOD
-            R.string.category_architecture -> WallpaperCategory.ARCHITECTURE
-            R.string.category_art -> WallpaperCategory.ART
-            R.string.category_space -> WallpaperCategory.SPACE
-            R.string.category_illustration -> WallpaperCategory.ILLUSTRATION
-            R.string.category_technology -> WallpaperCategory.TECHNOLOGY
+            R.string.categories_all -> WallpaperCategory.ALL
+            R.string.categories_nature -> WallpaperCategory.NATURE
+            R.string.categories_city -> WallpaperCategory.CITY
+            R.string.categories_abstract -> WallpaperCategory.ABSTRACT
+            R.string.categories_minimal -> WallpaperCategory.MINIMAL
+            R.string.categories_animals -> WallpaperCategory.ANIMALS
+            R.string.categories_food -> WallpaperCategory.FOOD
+            R.string.categories_architecture -> WallpaperCategory.ARCHITECTURE
+            R.string.categories_art -> WallpaperCategory.ART
+            R.string.categories_space -> WallpaperCategory.SPACE
+            R.string.categories_illustration -> WallpaperCategory.ILLUSTRATION
+            R.string.categories_technology -> WallpaperCategory.TECHNOLOGY
             else -> WallpaperCategory.ALL
         }
 

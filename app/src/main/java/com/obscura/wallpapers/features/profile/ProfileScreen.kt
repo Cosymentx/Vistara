@@ -104,9 +104,9 @@ fun ProfileScreen(
 
     needLoginAction?.let { action ->
         val message = when (action) {
-            ProfileViewModel.LoginAction.FAVORITES -> stringResource(R.string.favorites_login_required)
-            ProfileViewModel.LoginAction.DOWNLOADS -> stringResource(R.string.downloads_login_required)
-            ProfileViewModel.LoginAction.AUTO_WALLPAPER -> stringResource(R.string.auto_wallpaper_login_required)
+            ProfileViewModel.LoginAction.FAVORITES -> stringResource(R.string.likes_login_required)
+            ProfileViewModel.LoginAction.DOWNLOADS -> stringResource(R.string.library_login_required)
+            ProfileViewModel.LoginAction.AUTO_WALLPAPER -> stringResource(R.string.cycler_login_required)
         }
         LoginPromptDialog(onDismiss = { viewModel.clearNeedLoginAction() }, onConfirm = {
             viewModel.clearNeedLoginAction(); onLoginClick()
@@ -156,8 +156,8 @@ fun ProfileScreen(
                     ),
                     FeatureEntry(
                         icon = ObscuraIcons.Refresh,
-                        titleRes = R.string.auto_change_wallpaper,
-                        subtitleRes = R.string.auto_change_wallpaper_desc,
+                        titleRes = R.string.cycler_auto_change_wallpaper,
+                        subtitleRes = R.string.cycler_auto_change_wallpaper_desc,
                         onClick = { viewModel.checkLoginAndExecute(ProfileViewModel.LoginAction.AUTO_WALLPAPER) { onAutoChangeClick() } }
                     )
                 )
@@ -170,9 +170,9 @@ fun ProfileScreen(
 
             FeatureList(
                 items = listOf(
-                    FeatureEntry(icon = ObscuraIcons.Settings, titleRes = R.string.settings, subtitleRes = R.string.settings_desc, onClick = onSettingsClick),
-                    FeatureEntry(icon = ObscuraIcons.Star, titleRes = R.string.rate_feedback, subtitleRes = R.string.rate_feedback_desc, onClick = onFeedbackClick),
-                    FeatureEntry(icon = ObscuraIcons.Info, titleRes = R.string.about_credits, subtitleRes = R.string.about_credits_desc, onClick = onAboutClick)
+                    FeatureEntry(icon = ObscuraIcons.Settings, titleRes = R.string.settings_title, subtitleRes = R.string.settings_desc, onClick = onSettingsClick),
+                    FeatureEntry(icon = ObscuraIcons.Star, titleRes = R.string.feedback_title, subtitleRes = R.string.feedback_desc, onClick = onFeedbackClick),
+                    FeatureEntry(icon = ObscuraIcons.Info, titleRes = R.string.info_title, subtitleRes = R.string.info_desc, onClick = onAboutClick)
                 )
             )
 
@@ -181,7 +181,7 @@ fun ProfileScreen(
                     modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                 )
-                FeatureList(items = listOf(FeatureEntry(icon = Icons.Default.Build, titleRes = R.string.test_tools, subtitleRes = R.string.test_tools_desc, onClick = onTestToolsClick)))
+                FeatureList(items = listOf(FeatureEntry(icon = Icons.Default.Build, titleRes = R.string.test_title, subtitleRes = R.string.test_desc, onClick = onTestToolsClick)))
             }
         }
     }

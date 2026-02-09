@@ -80,11 +80,11 @@ private fun FavoritesBody(
 
             is UiState.Error -> {
                 val errorMessage = state.message
-                if (errorMessage == stringResource(R.string.login_required_to_view_favorites)) {
+                if (errorMessage == stringResource(R.string.likes_login_required_to_view_favorites)) {
                     LoginPromptDialog(
                         onDismiss = { onBackPressed() },
                         onConfirm = { onNavigateToLogin() },
-                        message = stringResource(R.string.favorites_login_required)
+                        message = stringResource(R.string.likes_login_required)
                     )
                 } else {
                     ErrorState(
@@ -121,13 +121,13 @@ private fun EmptyFavoritesContent() {
         Spacer(modifier = Modifier.weight(0.3f))
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = stringResource(R.string.no_favorite_wallpapers),
+            text = stringResource(R.string.likes_no_favorite_wallpapers),
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.browse_and_favorite_tip),
+            text = stringResource(R.string.likes_browse_and_favorite_tip),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,

@@ -42,17 +42,17 @@ android {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("release")
             buildConfigField(
-                "String", "UNSPLASH_API_KEY", "\"WnVAinP7jaof1NjifR_hULHSod66MMdr2bspQxyeyhw\""
+                "String", "UNSPLASH_API_KEY", "\"ArwfDau23I8us1FPDmGpWPxq-hyTLQZD5jLzFf3yW6Y\""
             )
             buildConfigField(
-                "String", "UNSPLASH_SECRET_KEY", "\"-IBwR1mET4I7C4fp9XMgozKmRw7Fu7Oyttdt5iQ2Ca4\""
+                "String", "UNSPLASH_SECRET_KEY", "\"pwjik-aoLuGQaeiiZEYPYpWtNd_TI2xyntxq64pB0c4\""
             )
             buildConfigField(
                 "String",
                 "PEXELS_API_KEY",
-                "\"3Hu4ltF8QgCdrqZTxZPbC7M6LipoqYF41dCaRH7iYvgchtCRBpGPH4D0\""
+                "\"yXpt7p5ZWXXugGXFL9jO2O5EDk4IbuGLtErQguWItYWlCo8s81eYoStG\""
             )
-            buildConfigField("String", "PIXABAY_API_KEY", "\"49629695-35e6ee8fb0f82cc4b4ed4b6a2\"")
+            buildConfigField("String", "PIXABAY_API_KEY", "\"54580018-2a621c7522359851a91f530b2\"")
             buildConfigField("String", "WALLHAVEN_API_KEY", "\"QMbjLhJGSPHVIPQ91HCFUL4UOJtRjTk8\"")
             buildConfigField("boolean", "IS_DEV_MODE", "false")
             proguardFiles(
@@ -65,17 +65,17 @@ android {
             versionNameSuffix = ".test"
             signingConfig = signingConfigs.getByName("release")
             buildConfigField(
-                "String", "UNSPLASH_API_KEY", "\"WnVAinP7jaof1NjifR_hULHSod66MMdr2bspQxyeyhw\""
+                "String", "UNSPLASH_API_KEY", "\"ArwfDau23I8us1FPDmGpWPxq-hyTLQZD5jLzFf3yW6Y\""
             )
             buildConfigField(
-                "String", "UNSPLASH_SECRET_KEY", "\"-IBwR1mET4I7C4fp9XMgozKmRw7Fu7Oyttdt5iQ2Ca4\""
+                "String", "UNSPLASH_SECRET_KEY", "\"pwjik-aoLuGQaeiiZEYPYpWtNd_TI2xyntxq64pB0c4\""
             )
             buildConfigField(
                 "String",
                 "PEXELS_API_KEY",
-                "\"3Hu4ltF8QgCdrqZTxZPbC7M6LipoqYF41dCaRH7iYvgchtCRBpGPH4D0\""
+                "\"yXpt7p5ZWXXugGXFL9jO2O5EDk4IbuGLtErQguWItYWlCo8s81eYoStG\""
             )
-            buildConfigField("String", "PIXABAY_API_KEY", "\"49629695-35e6ee8fb0f82cc4b4ed4b6a2\"")
+            buildConfigField("String", "PIXABAY_API_KEY", "\"54580018-2a621c7522359851a91f530b2\"")
             buildConfigField("String", "WALLHAVEN_API_KEY", "\"QMbjLhJGSPHVIPQ91HCFUL4UOJtRjTk8\"")
             buildConfigField("boolean", "IS_DEV_MODE", "true")
             proguardFiles(

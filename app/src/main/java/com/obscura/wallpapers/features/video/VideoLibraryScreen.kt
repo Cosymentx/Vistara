@@ -239,7 +239,7 @@ fun VideoLibraryScreen(
     }
 
     val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.category_live), actions = {
+        title = stringResource(R.string.categories_live), actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_hint))
             }
@@ -383,7 +383,7 @@ private fun LiveGridContent(
     if (wallpapers.isEmpty()) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
-                stringResource(R.string.no_wallpapers_found),
+                stringResource(R.string.home_no_wallpapers_found),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )

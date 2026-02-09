@@ -78,20 +78,20 @@ fun WallpaperCyclerScreen(
         }, onConfirm = {
             viewModel.clearNeedLogin()
             onNavigateToLogin()
-        }, message = stringResource(R.string.auto_wallpaper_login_required)
+        }, message = stringResource(R.string.cycler_login_required)
         )
     }
 
     LaunchedEffect(settingsApplied) {
         if (settingsApplied) {
-            Toast.makeText(context, R.string.settings_applied_successfully, Toast.LENGTH_SHORT)
+            Toast.makeText(context, R.string.cycler_settings_applied_successfully, Toast.LENGTH_SHORT)
                 .show()
             onBackPressed()
         }
     }
 
     GlassScaffold(
-        title = stringResource(R.string.auto_change_wallpaper),
+        title = stringResource(R.string.cycler_auto_change_wallpaper),
         onBackPressed = onBackPressed
     ) { paddingValues ->
         Column(
@@ -116,12 +116,12 @@ fun WallpaperCyclerScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = stringResource(R.string.auto_change_wallpaper),
+                            text = stringResource(R.string.cycler_auto_change_wallpaper),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = stringResource(R.string.auto_change_wallpaper_desc),
+                            text = stringResource(R.string.cycler_auto_change_wallpaper_desc),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -135,7 +135,7 @@ fun WallpaperCyclerScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             if (autoChangeEnabled) {
-                SectionTitle(text = stringResource(R.string.change_settings))
+                SectionTitle(text = stringResource(R.string.cycler_change_settings))
 
                 FrequencySelector(
                     currentFrequency = autoChangeFrequency,
@@ -147,8 +147,8 @@ fun WallpaperCyclerScreen(
 
                 SettingsToggleItem(
                     icon = ObscuraIcons.Wifi,
-                    title = stringResource(R.string.wifi_only_change),
-                    subtitle = stringResource(R.string.avoid_mobile_data),
+                    title = stringResource(R.string.cycler_wifi_only_change),
+                    subtitle = stringResource(R.string.cycler_avoid_mobile_data),
                     checked = autoChangeWifiOnly,
                     onCheckedChange = { viewModel.updateAutoChangeWifiOnly(it) })
 
@@ -158,7 +158,7 @@ fun WallpaperCyclerScreen(
                     color = DividerDefaults.color
                 )
 
-                SectionTitle(text = stringResource(R.string.wallpaper_source))
+                SectionTitle(text = stringResource(R.string.cycler_wallpaper_source))
 
                 SourceSelector(
                     currentSource = autoChangeSource,
@@ -168,7 +168,7 @@ fun WallpaperCyclerScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                SectionTitle(text = stringResource(R.string.wallpaper_target))
+                SectionTitle(text = stringResource(R.string.cycler_wallpaper_target))
 
                 TargetSelector(
                     currentTarget = autoChangeTarget,
@@ -181,7 +181,7 @@ fun WallpaperCyclerScreen(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isChangingWallpaper
                 ) {
-                    Text(stringResource(R.string.apply_settings))
+                    Text(stringResource(R.string.cycler_apply_settings))
                 }
 
                 if (BuildConfig.IS_DEV_MODE && autoChangeFrequency == AutoChangeFrequency.EACH_UNLOCK && isPremiumUser) {
@@ -195,7 +195,7 @@ fun WallpaperCyclerScreen(
                             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     ) {
-                        Text(stringResource(R.string.test_unlock_broadcast))
+                        Text(stringResource(R.string.cycler_test_unlock_broadcast))
                     }
                 }
             }
@@ -229,7 +229,7 @@ private fun FrequencySelector(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(R.string.change_frequency),
+                    text = stringResource(R.string.cycler_change_frequency),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -319,7 +319,7 @@ private fun SourceSelector(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(R.string.wallpaper_source),
+                    text = stringResource(R.string.cycler_wallpaper_source),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -427,7 +427,7 @@ private fun getFrequencyText(frequency: AutoChangeFrequency): String {
         AutoChangeFrequency.TWELVE_HOURS -> stringResource(R.string.every_twelve_hours)
         AutoChangeFrequency.SIX_HOURS -> stringResource(R.string.every_six_hours)
         AutoChangeFrequency.HOURLY -> stringResource(R.string.hourly)
-        AutoChangeFrequency.EACH_UNLOCK -> stringResource(R.string.each_unlock)
+        AutoChangeFrequency.EACH_UNLOCK -> stringResource(R.string.cycler_each_unlock)
     }
 }
 
@@ -435,9 +435,9 @@ private fun getFrequencyText(frequency: AutoChangeFrequency): String {
 private fun getSourceText(source: AutoChangeSource): String {
     return when (source) {
         AutoChangeSource.FAVORITES -> stringResource(R.string.my_favorites)
-        AutoChangeSource.DOWNLOADED -> stringResource(R.string.downloaded_wallpapers)
-        AutoChangeSource.CATEGORY -> stringResource(R.string.specific_category)
-        AutoChangeSource.TRENDING -> stringResource(R.string.trending_wallpapers)
+        AutoChangeSource.DOWNLOADED -> stringResource(R.string.cycler_downloaded_wallpapers)
+        AutoChangeSource.CATEGORY -> stringResource(R.string.cycler_specific_category)
+        AutoChangeSource.TRENDING -> stringResource(R.string.cycler_trending_wallpapers)
     }
 }
 
@@ -465,7 +465,7 @@ private fun TargetSelector(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(R.string.wallpaper_target),
+                    text = stringResource(R.string.cycler_wallpaper_target),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )

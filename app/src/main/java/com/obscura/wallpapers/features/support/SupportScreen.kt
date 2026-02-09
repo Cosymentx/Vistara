@@ -84,7 +84,7 @@ fun SupportScreen(
     }
 
     val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.rate_feedback),
+        title = stringResource(R.string.feedback_title),
         onBackPressed = onBackPressed
     )
     Scaffold(topBar = { topBar() }, snackbarHost = { SnackbarHost(snackbarHostState) }) { innerPadding ->
@@ -105,16 +105,16 @@ fun SupportScreen(
                         icon = Icons.Default.Star,
                         iconTint = MaterialTheme.colorScheme.primary,
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleRes = R.string.rate_in_app_store,
-                        subtitleRes = R.string.like_our_app_rate_us,
+                        titleRes = R.string.feedback_rate_in_app_store,
+                        subtitleRes = R.string.feedback_like_our_app_rate_us,
                         onClick = { viewModel.openAppRating() }
                     ),
                     FeedbackActionEntry(
                         icon = Icons.Default.Email,
                         iconTint = MaterialTheme.colorScheme.secondary,
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        titleRes = R.string.send_email_feedback,
-                        subtitleRes = R.string.have_questions_email_us,
+                        titleRes = R.string.feedback_send_email_feedback,
+                        subtitleRes = R.string.feedback_have_questions_email_us,
                         onClick = { viewModel.sendEmailFeedback() }
                     )
                 )
@@ -123,7 +123,7 @@ fun SupportScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = stringResource(R.string.direct_feedback),
+                text = stringResource(R.string.feedback_direct_feedback),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -133,8 +133,8 @@ fun SupportScreen(
             OutlinedTextField(
                 value = feedbackText,
                 onValueChange = { viewModel.updateFeedbackText(it) },
-                label = { Text(stringResource(R.string.your_feedback_or_suggestion)) },
-                placeholder = { Text(stringResource(R.string.enter_feedback_placeholder)) },
+                label = { Text(stringResource(R.string.feedback_your_feedback_or_suggestion)) },
+                placeholder = { Text(stringResource(R.string.feedback_enter_feedback_placeholder)) },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 4
             )
@@ -144,15 +144,15 @@ fun SupportScreen(
             OutlinedTextField(
                 value = contactInfo,
                 onValueChange = { viewModel.updateContactInfo(it) },
-                label = { Text(stringResource(R.string.contact_info_optional)) },
-                placeholder = { Text(stringResource(R.string.email_or_other_contact)) },
+                label = { Text(stringResource(R.string.feedback_contact_info_optional)) },
+                placeholder = { Text(stringResource(R.string.feedback_email_or_other_contact)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             SubmitButton(
-                label = stringResource(R.string.submit_feedback),
+                label = stringResource(R.string.feedback_submit_feedback),
                 isSubmitting = isSubmitting,
                 enabled = !isSubmitting && feedbackText.isNotBlank(),
                 onClick = { viewModel.submitFeedback() },

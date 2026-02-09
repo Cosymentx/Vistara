@@ -75,7 +75,7 @@ fun LibraryScreen(
                             modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = stringResource(R.string.no_downloaded_wallpapers),
+                                text = stringResource(R.string.library_no_downloaded_wallpapers),
                                 style = MaterialTheme.typography.bodyLarge,
                                 textAlign = TextAlign.Center
                             )
@@ -94,11 +94,11 @@ fun LibraryScreen(
                         LoginPromptDialog(
                             onDismiss = { onBackPressed() },
                             onConfirm = { onNavigateToLogin() },
-                            message = stringResource(R.string.downloads_login_required)
+                            message = stringResource(R.string.library_login_required)
                         )
                     } else {
                         ErrorState(
-                            message = state.message ?: stringResource(R.string.error_network_check),
+                            message = state.message ?: stringResource(R.string.errors_network_check),
                             onRetry = { viewModel.refresh() }
                         )
                     }

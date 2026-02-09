@@ -215,7 +215,7 @@ fun PaymentMethodDialog(
 
                             // 支付方式
                             Text(
-                                text = stringResource(R.string.payment_methods),
+                                text = stringResource(R.string.diamond_payment_methods),
                                 color = Color(0xFF9F9CA6),
                                 fontSize = 12.sp,
                                 modifier = Modifier.padding(top = 20.dp)
@@ -243,7 +243,7 @@ fun PaymentMethodDialog(
                                         .padding(top = 5.dp), contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = stringResource(R.string.no_payment_methods),
+                                        text = stringResource(R.string.diamond_no_payment_methods),
                                         color = Color.White,
                                         fontSize = 16.sp,
                                         textAlign = TextAlign.Center
@@ -274,7 +274,7 @@ private fun CountrySelector(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.country), color = Color(0xFF9F9CA6), fontSize = 12.sp
+            text = stringResource(R.string.diamond_country), color = Color(0xFF9F9CA6), fontSize = 12.sp
         )
 
         Card(
@@ -316,7 +316,7 @@ private fun CountrySelector(
                 Spacer(modifier = Modifier.width(14.dp))
 
                 Text(
-                    text = stringResource(R.string.indonesia),
+                    text = stringResource(R.string.diamond_indonesia),
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
@@ -344,7 +344,7 @@ private fun CouponSelector(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.coupon), color = Color(0xFF9F9CA6), fontSize = 12.sp
+            text = stringResource(R.string.diamond_coupon), color = Color(0xFF9F9CA6), fontSize = 12.sp
         )
 
         Card(
@@ -363,7 +363,7 @@ private fun CouponSelector(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.none),
+                    text = stringResource(R.string.diamond_none),
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium

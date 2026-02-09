@@ -77,7 +77,7 @@ fun DiamondPurchaseDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(R.string.unlock_premium_content),
+                        text = stringResource(R.string.diamond_unlock_premium_content),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -85,7 +85,7 @@ fun DiamondPurchaseDialog(
                     IconButton(onClick = onDismiss) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = stringResource(R.string.close)
+                            contentDescription = stringResource(R.string.common_close)
                         )
                     }
                 }
@@ -135,7 +135,7 @@ fun DiamondPurchaseDialog(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.current_balance),
+                        text = stringResource(R.string.diamond_current_balance),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -170,7 +170,7 @@ fun DiamondPurchaseDialog(
                         )
                     } else {
                         Text(
-                            text = stringResource(R.string.unlock_with_diamonds, diamondPrice),
+                            text = stringResource(R.string.diamond_unlock_with_diamonds, diamondPrice),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -184,7 +184,7 @@ fun DiamondPurchaseDialog(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = stringResource(R.string.recharge_diamonds),
+                            text = stringResource(R.string.diamond_recharge_diamonds),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.primary

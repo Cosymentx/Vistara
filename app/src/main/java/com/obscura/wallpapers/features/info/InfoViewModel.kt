@@ -95,15 +95,15 @@ class InfoViewModel @Inject constructor(
     }
 
     fun openPrivacyPolicy() {
-        openInWebView(PRIVACY_POLICY_URL, context.getString(R.string.privacy_policy))
+        openInWebView(PRIVACY_POLICY_URL, context.getString(R.string.info_privacy_policy))
     }
 
     fun openTermsOfService() {
-        openInWebView(TERMS_OF_SERVICE_URL, context.getString(R.string.terms_of_service))
+        openInWebView(TERMS_OF_SERVICE_URL, context.getString(R.string.info_terms_of_service))
     }
 
     fun openUserAgreement() {
-        openInWebView(USER_AGREEMENT_URL, context.getString(R.string.user_agreement))
+        openInWebView(USER_AGREEMENT_URL, context.getString(R.string.info_user_agreement))
     }
 
     private fun openInWebView(url: String, title: String) {
@@ -139,7 +139,7 @@ class InfoViewModel @Inject constructor(
     }
 
     fun openLibraryUrl(url: String) {
-        openInWebView(url, context.getString(R.string.open_source_libraries))
+        openInWebView(url, context.getString(R.string.info_open_source_libraries))
     }
 }
 

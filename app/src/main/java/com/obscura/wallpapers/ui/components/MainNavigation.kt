@@ -300,28 +300,28 @@ enum class NavDestination(val route: String, val titleResId: Int) {
         @Composable
         override fun getTitle(): String {
             val resources = LocalAppResources.current
-            return resources.getString(R.string.home)
+            return resources.getString(R.string.home_title)
         }
     },
     PhotoWallpapers("photo", R.string.nav_static) {
         @Composable
         override fun getTitle(): String {
             val resources = LocalAppResources.current
-            return resources.getString(R.string.category_static)
+            return resources.getString(R.string.categories_static)
         }
     },
     VideoWallpapers("video", R.string.nav_live) {
         @Composable
         override fun getTitle(): String {
             val resources = LocalAppResources.current
-            return resources.getString(R.string.category_live)
+            return resources.getString(R.string.categories_live)
         }
     },
     Mine("mine", R.string.nav_mine) {
         @Composable
         override fun getTitle(): String {
             val resources = LocalAppResources.current
-            return resources.getString(R.string.mine)
+            return resources.getString(R.string.nav_mine)
         }
     };
 

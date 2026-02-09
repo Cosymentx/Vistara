@@ -66,7 +66,7 @@ fun DiscoverScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    GlassScaffold(title = stringResource(R.string.home)) { paddingValues ->
+    GlassScaffold(title = stringResource(R.string.home_title)) { paddingValues ->
         if (isLoading) {
             LoadingState()
             return@GlassScaffold
@@ -74,7 +74,7 @@ fun DiscoverScreen(
 
         if (error != null && featuredWallpapers.isEmpty() && staticWallpapers.isEmpty() && liveWallpapers.isEmpty()) {
             ErrorState(
-                message = error ?: stringResource(R.string.unknown_error),
+                message = error ?: stringResource(R.string.common_unknown_error),
                 onRetry = { viewModel.refresh() }
             )
             return@GlassScaffold
@@ -102,7 +102,7 @@ fun DiscoverScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = stringResource(R.string.partial_data_loading_failed),
+                                text = stringResource(R.string.home_partial_data_loading_failed),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onErrorContainer,
                                 modifier = Modifier.weight(1f)
@@ -113,7 +113,7 @@ fun DiscoverScreen(
                                 shape = RoundedCornerShape(4.dp)
                             ) {
                                 Text(
-                                    text = stringResource(R.string.refresh),
+                                    text = stringResource(R.string.common_refresh),
                                     color = MaterialTheme.colorScheme.onError,
                                     style = MaterialTheme.typography.labelMedium,
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -144,14 +144,14 @@ fun DiscoverScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(R.string.search_icon),
+                            contentDescription = stringResource(R.string.home_search_icon),
                             tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
-                            text = stringResource(R.string.search_high_quality_wallpapers),
+                            text = stringResource(R.string.home_search_hint),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                             modifier = Modifier.weight(1f)
@@ -202,9 +202,9 @@ fun DiscoverScreen(
                 val s = sections[index]
                 TwoColumnSection(
                     title = when (s.type) {
-                        SectionType.Photo -> if (s.items.isNotEmpty()) stringResource(R.string.hot_static) else null
-                        SectionType.Video -> if (s.items.isNotEmpty()) stringResource(R.string.cool_dynamic) else null
-                        SectionType.Latest -> if (s.items.isNotEmpty()) stringResource(R.string.latest_uploads) else null
+                        SectionType.Photo -> if (s.items.isNotEmpty()) stringResource(R.string.home_hot_static) else null
+                        SectionType.Video -> if (s.items.isNotEmpty()) stringResource(R.string.home_cool_dynamic) else null
+                        SectionType.Latest -> if (s.items.isNotEmpty()) stringResource(R.string.home_latest_uploads) else null
                     },
                     wallpapers = s.items,
                     onWallpaperClick = onWallpaperClick,
@@ -307,7 +307,7 @@ private fun CategorySection(
             }
         } else if (categoryWallpapers.isEmpty()) {
             Text(
-                text = stringResource(R.string.no_wallpapers_found),
+                text = stringResource(R.string.home_no_wallpapers_found),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
