@@ -12,7 +12,7 @@ import com.obscura.wallpapers.core.data.model.AppLanguage
 import com.obscura.wallpapers.core.data.repository.AuthRepository
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
-import com.obscura.wallpapers.manager.LocaleManager
+import com.obscura.wallpapers.settings.LocaleManager
 import com.obscura.wallpapers.core.common.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

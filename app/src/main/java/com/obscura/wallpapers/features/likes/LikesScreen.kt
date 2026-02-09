@@ -28,6 +28,8 @@ import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.components.WallpaperGrid
 import com.obscura.wallpapers.ui.components.GlassScaffold
 import com.obscura.wallpapers.ui.components.LoadingState
+import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
+import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +45,7 @@ fun LikesScreen(
         title = stringResource(R.string.my_favorites),
         onBackPressed = onBackPressed
     ) { paddingValues ->
+        val safe = paddingValues.safeVerticalContentPadding(64.dp, 80.dp)
         FavoritesBody(
             state = favoritesState,
             onWallpaperClick = onWallpaperClick,
@@ -51,7 +54,11 @@ fun LikesScreen(
             onBackPressed = onBackPressed,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 64.dp, bottom = 80.dp)
+                .applyVerticalInnerPadding(paddingValues)
+                .padding(
+                    top = safe.calculateTopPadding(),
+                    bottom = safe.calculateBottomPadding()
+                )
         )
     }
 }

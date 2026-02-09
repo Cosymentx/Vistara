@@ -45,6 +45,8 @@ import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.components.FeaturedWallpaperSection
 import com.obscura.wallpapers.ui.components.GlassScaffold
+import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
+import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.WallpaperItem
 import com.obscura.wallpapers.ui.theme.stringResource
@@ -80,9 +82,11 @@ fun DiscoverScreen(
 
         LazyColumn(
             state = rememberLazyListState(),
-            contentPadding = PaddingValues(top = 64.dp, bottom = 80.dp),
+            contentPadding = paddingValues.safeVerticalContentPadding(64.dp, 80.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .applyVerticalInnerPadding(paddingValues)
         ) {
             if (error != null) {
                 item {

@@ -18,7 +18,7 @@ import com.obscura.wallpapers.core.data.remote.ApiResult
 import com.obscura.wallpapers.core.data.remote.service.PaymentMethod
 import com.obscura.wallpapers.core.data.repository.DiamondRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
-import com.obscura.wallpapers.manager.ThemeManager
+import com.obscura.wallpapers.settings.ThemeManager
 import com.obscura.wallpapers.features.membership.OrderCreationState
 import com.obscura.wallpapers.di.ActivityScopeHolder
 import com.obscura.wallpapers.core.common.AppConstants.PRIVACY_POLICY_URL
@@ -235,8 +235,8 @@ class MembershipViewModel @Inject constructor(
         val defaultProducts = listOf(
             DiamondProduct(
                 id = "subscription_weekly",
-                name = stringProvider.getString(R.string.subscription_title_week),
-                itemName = stringProvider.getString(R.string.subscription_title_week),
+                name = stringProvider.getString(R.string.membership_plan_title_week),
+                itemName = stringProvider.getString(R.string.membership_plan_title_week),
                 diamondAmount = 0,
                 price = 19.99,
                 currency = "¥",
@@ -248,8 +248,8 @@ class MembershipViewModel @Inject constructor(
             ),
             DiamondProduct(
                 id = "subscription_monthly",
-                name = stringProvider.getString(R.string.subscription_title_month),
-                itemName = stringProvider.getString(R.string.subscription_title_month),
+                name = stringProvider.getString(R.string.membership_plan_title_month),
+                itemName = stringProvider.getString(R.string.membership_plan_title_month),
                 diamondAmount = 0,
                 price = 49.99,
                 currency = "¥",
@@ -261,8 +261,8 @@ class MembershipViewModel @Inject constructor(
             ),
             DiamondProduct(
                 id = "subscription_quarterly",
-                name = stringProvider.getString(R.string.subscription_title_quarter),
-                itemName = stringProvider.getString(R.string.subscription_title_quarter),
+                name = stringProvider.getString(R.string.membership_plan_title_quarter),
+                itemName = stringProvider.getString(R.string.membership_plan_title_quarter),
                 diamondAmount = 0,
                 price = 129.99,
                 currency = "¥",
@@ -331,7 +331,7 @@ class MembershipViewModel @Inject constructor(
 
     fun upgrade(activity: Activity?) {
         if (_isPremiumUser.value) {
-            _upgradeResult.value = UpgradeResult.Error(stringProvider.getString(R.string.already_premium_user))
+            _upgradeResult.value = UpgradeResult.Error(stringProvider.getString(R.string.membership_already_premium))
             return
         }
         showPaymentDialog()

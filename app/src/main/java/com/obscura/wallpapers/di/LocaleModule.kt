@@ -1,7 +1,7 @@
 package com.obscura.wallpapers.di
 
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
-import com.obscura.wallpapers.manager.LocaleManager
+import com.obscura.wallpapers.settings.LocaleManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

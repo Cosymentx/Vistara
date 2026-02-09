@@ -63,6 +63,8 @@ import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
+import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
+import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -244,7 +246,7 @@ fun VideoLibraryScreen(
         })
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = { topBar() }) { _ ->
+        topBar = { topBar() }) { innerPadding ->
         val pullRefreshState = rememberPullRefreshState(
             refreshing = isRefreshing, onRefresh = {
                 playingIndex = -1
@@ -253,12 +255,16 @@ fun VideoLibraryScreen(
                 viewModel.refresh()
             })
 
-        Box(modifier = contentModifier.pullRefresh(pullRefreshState)) {
+        Box(modifier = contentModifier
+            .applyVerticalInnerPadding(innerPadding)
+            .pullRefresh(pullRefreshState)) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 64.dp)
-                    .padding(bottom = 80.dp)
+                    .padding(
+                        top = innerPadding.safeVerticalContentPadding(64.dp, 80.dp).calculateTopPadding(),
+                        bottom = innerPadding.safeVerticalContentPadding(64.dp, 80.dp).calculateBottomPadding()
+                    )
             ) {
                 CategorySelector(
                     categories = categories,

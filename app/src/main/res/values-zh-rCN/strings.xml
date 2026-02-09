@@ -2,6 +2,11 @@
 <resources>
     <string name="app_name">Obscura</string>
     <string name="search_hint">搜索壁纸…</string>
+    <string name="app_title">Obscura</string>
+    <string name="app_tagline">高品质壁纸，让设备焕然一新</string>
+    <string name="auth_description">登录以同步收藏与下载</string>
+    <string name="auth_google_sign_in">使用 Google 登录</string>
+    <string name="auth_skip">跳过登录</string>
 
     <!-- 通知相关字符串 -->
     <string name="notification_channel_wallpaper">壁纸更换通知</string>
@@ -152,21 +157,25 @@
     <!-- 高级会员相关 -->
     <string name="upgrade_to_premium">升级高级会员</string>
     <string name="restore_purchases">恢复购买</string>
-    <string name="premium_title">解锁高级功能</string>
-    <string name="premium_user_title">您已是高级会员</string>
-    <string name="premium_description">升级到高级版，解锁所有壁纸和功能</string>
-    <string name="premium_user_description">感谢您的支持，您可以使用所有高级功能</string>
-    <string name="premium_feature_1">无限下载高清壁纸</string>
-    <string name="premium_feature_1_desc">以原始分辨率下载任意数量的壁纸</string>
-    <string name="premium_feature_2">特效动态壁纸</string>
-    <string name="premium_feature_2_desc">访问带有特殊效果的专属动态壁纸</string>
-    <string name="premium_feature_3">专属高级壁纸</string>
-    <string name="premium_feature_3_desc">访问仅限高级会员的壁纸合集</string>
-    <string name="premium_feature_4">高级编辑功能</string>
-    <string name="premium_feature_4_desc">使用专业编辑工具自定义您的壁纸</string>
-    <string name="premium_feature_5">自动更换壁纸</string>
-    <string name="premium_feature_5_desc">设置壁纸按照您喜欢的频率自动更换</string>
-    <string name="select_subscription">选择订阅计划</string>
+    <!-- 会员（新命名） -->
+    <string name="membership_title">解锁高级功能</string>
+    <string name="membership_user_title">您已是高级会员</string>
+    <string name="membership_description">升级到高级版，解锁所有壁纸和功能</string>
+    <string name="membership_user_description">感谢您的支持，您可以使用所有高级功能</string>
+    <string name="membership_feature_1">无限下载高清壁纸</string>
+    <string name="membership_feature_1_desc">以原始分辨率下载任意数量的壁纸</string>
+    <string name="membership_feature_2">特效动态壁纸</string>
+    <string name="membership_feature_2_desc">访问带有特殊效果的专属动态壁纸</string>
+    <string name="membership_feature_3">专属高级壁纸</string>
+    <string name="membership_feature_3_desc">访问仅限高级会员的壁纸合集</string>
+    <string name="membership_feature_4">高级编辑功能</string>
+    <string name="membership_feature_4_desc">使用专业编辑工具自定义您的壁纸</string>
+    <string name="membership_feature_5">自动更换壁纸</string>
+    <string name="membership_feature_5_desc">设置壁纸按照您喜欢的频率自动更换</string>
+    <string name="membership_select_plan">选择订阅计划</string>
+    <string name="membership_plan_title_week">1\n周</string>
+    <string name="membership_plan_title_month">1\n月</string>
+    <string name="membership_plan_title_quarter">3\n月</string>
     <string name="weekly_plan">周会员</string>
     <string name="monthly_plan">月会员</string>
     <string name="quarterly_plan">季度会员</string>
@@ -177,7 +186,7 @@
     <string name="yearly_price">¥598.99</string>
     <string name="quarterly_discount">省18%</string>
     <string name="yearly_discount">省27%</string>
-    <string name="already_premium_user">您已经是高级用户</string>
+    <string name="membership_already_premium">您已经是高级用户</string>
     <string name="payment_service_not_connected">支付服务未连接，请稍后再试</string>
     <string name="weekly_plan_description">每周自动续费，随时可取消</string>
     <string name="monthly_plan_description">每月自动续费，随时可取消</string>
@@ -191,6 +200,9 @@
     <string name="all_premium_features_unlocked">已解锁全部高级功能</string>
     <string name="payment_success_notice">支付成功后，您将立即获得高级功能。订阅可随时取消。</string>
     <string name="subscription_terms">订阅即表示您同意我们的服务条款和隐私政策。除非在当前订阅期结束前至少24小时取消，否则订阅将自动续订。您可以在Google Play商店中管理或取消您的订阅。</string>
+    <string name="membership_payment_terms">订阅即表示您同意我们的服务条款和隐私政策。除非在当前订阅期结束前至少24小时取消，否则订阅将自动续订。您可以在Google Play商店中管理或取消您的订阅。</string>
+    <string name="membership_cancel_prefix">点击此处取消订阅：</string>
+    <string name="membership_cancel_link">取消订阅</string>
     <string name="manage_subscription">管理订阅</string>
     <string name="cancel_subscription">取消订阅</string>
 
@@ -406,9 +418,6 @@
     <string name="subscription_quarterly">季度</string>
     <string name="subscription_yearly">年</string>
     <string name="premium_lifetime">终身</string>
-    <string name="subscription_title_week">1\n周</string>
-    <string name="subscription_title_month">1\n个月</string>
-    <string name="subscription_title_quarter">3\n个月</string>
     <string name="sign_out_success">退出登录成功</string>
     <string name="sign_out_failed">退出登录失败: %1$s</string>
     <string name="error_loading_data">加载数据时发生未知错误</string>
@@ -435,10 +444,6 @@
     <string name="logout_failed">退出登录失败: %1$s</string>
 
     <!-- 认证页面相关 -->
-    <string name="app_subtitle">壁纸</string>
-    <string name="auth_app_description">精美壁纸，让您的设备焕然一新</string>
-    <string name="sign_in_with_google">使用Google账号登录</string>
-    <string name="skip_login">跳过登录并浏览</string>
     <string name="system_language">跟随系统</string>
     <string name="english_language">English</string>
     <string name="chinese_language">中文</string>
@@ -509,9 +514,6 @@
 
     <!-- 高级会员页面相关 -->
     <string name="exclusive_privileges">5项专属特权</string>
-    <string name="payment_terms">购买确认后，费用将从您的Google Play商店账户中扣除。您可以在当前订阅期结束前至少24小时关闭自动续订。我们不提供订阅内容的免费试用。订阅期为一个月，您的订阅将在相同的套餐期限内以相同的价格自动续订。订阅可以随时取消。</string>
-    <string name="cancel_subscription_prefix">点击此处取消您的订阅：</string>
-    <string name="cancel_subscription_link">取消订阅</string>
     <string name="more_info_prefix">更多信息，请访问我们的</string>
     <string name="terms_of_use">使用条款</string>
     <string name="and">和</string>

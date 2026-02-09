@@ -36,6 +36,8 @@ import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.WallpaperStaggeredGrid
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
+import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
+import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -66,14 +68,17 @@ fun PhotoLibraryScreen(
     Scaffold(topBar = { topBar() }) { paddingValues ->
         Box(
             modifier = contentModifier
-                .padding(paddingValues)
+                .applyVerticalInnerPadding(paddingValues)
                 .pullRefresh(pullRefreshState)
         ) {
+            val safe = paddingValues.safeVerticalContentPadding(64.dp, 80.dp)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 64.dp)
-                    .padding(bottom = 80.dp)
+                    .padding(
+                        top = safe.calculateTopPadding(),
+                        bottom = safe.calculateBottomPadding()
+                    )
             ) {
                 CategorySelector(
                     categories = categories,

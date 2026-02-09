@@ -2,6 +2,11 @@
 <resources>
     <string name="app_name">Obscura</string>
     <string name="search_hint">배경화면 검색…</string>
+    <string name="app_title">Obscura</string>
+    <string name="app_tagline">고품질 배경화면으로 기기를 새롭게</string>
+    <string name="auth_description">즐겨찾기와 다운로드를 동기화하려면 로그인하세요</string>
+    <string name="auth_google_sign_in">Google로 로그인</string>
+    <string name="auth_skip">로그인 건너뛰기</string>
 
     <!-- 알림 관련 문자열 -->
     <string name="notification_channel_wallpaper">배경화면 변경 알림</string>
@@ -175,21 +180,25 @@
     <string name="search_history">검색 기록</string>
 
     <!-- 프리미엄 관련 -->
-    <string name="premium_title">프리미엄 기능 잠금 해제</string>
-    <string name="premium_user_title">프리미엄 사용자입니다</string>
-    <string name="premium_description">프리미엄으로 업그레이드하여 모든 배경화면과 기능 잠금 해제</string>
-    <string name="premium_user_description">지원해 주셔서 감사합니다. 모든 프리미엄 기능을 사용할 수 있습니다</string>
-    <string name="premium_feature_1">무제한 고품질 배경화면 다운로드</string>
-    <string name="premium_feature_1_desc">원하는 만큼 전체 해상도로 배경화면 다운로드</string>
-    <string name="premium_feature_2">특수 효과 라이브 배경화면</string>
-    <string name="premium_feature_2_desc">특수 효과가 있는 독점 동적 배경화면 액세스</string>
-    <string name="premium_feature_3">독점 프리미엄 배경화면</string>
-    <string name="premium_feature_3_desc">프리미엄 전용 배경화면 컬렉션 액세스</string>
-    <string name="premium_feature_4">고급 편집 기능</string>
-    <string name="premium_feature_4_desc">전문 편집 도구로 배경화면 사용자 정의</string>
-    <string name="premium_feature_5">자동 배경화면 변경</string>
-    <string name="premium_feature_5_desc">원하는 빈도로 배경화면이 자동으로 변경되도록 설정</string>
-    <string name="select_subscription">구독 플랜 선택</string>
+    <!-- 멤버십 관련(새 이름) -->
+    <string name="membership_title">프리미엄 기능 잠금 해제</string>
+    <string name="membership_user_title">당신은 프리미엄 사용자입니다</string>
+    <string name="membership_description">프리미엄으로 업그레이드하여 모든 배경화면과 기능을 잠금 해제</string>
+    <string name="membership_user_description">지원해 주셔서 감사합니다. 모든 프리미엄 기능을 사용할 수 있습니다</string>
+    <string name="membership_feature_1">무제한 고품질 배경화면 다운로드</string>
+    <string name="membership_feature_1_desc">전체 해상도로 원하는 만큼 배경화면 다운로드</string>
+    <string name="membership_feature_2">특수 효과 라이브 배경화면</string>
+    <string name="membership_feature_2_desc">특수 효과가 포함된 독점 라이브 배경화면에 액세스</string>
+    <string name="membership_feature_3">프리미엄 전용 배경화면</string>
+    <string name="membership_feature_3_desc">프리미엄 전용 배경화면 컬렉션에 액세스</string>
+    <string name="membership_feature_4">고급 편집 기능</string>
+    <string name="membership_feature_4_desc">전문 편집 도구로 배경화면을 커스터마이즈</string>
+    <string name="membership_feature_5">자동 배경화면 변경</string>
+    <string name="membership_feature_5_desc">원하는 빈도로 자동 변경하도록 설정</string>
+    <string name="membership_select_plan">구독 플랜 선택</string>
+    <string name="membership_payment_terms">구매 확인 시 Google Play 스토어 계정으로 결제가 청구됩니다. 현재 구독 기간 종료 최소 24시간 전에 자동 갱신을 끌 수 있습니다. 구독 콘텐츠에 대한 무료 체험은 제공하지 않습니다. 구독 기간은 한 달이며 동일한 패키지 기간과 동일한 가격으로 자동 갱신됩니다. 구독은 언제든지 취소할 수 있습니다.</string>
+    <string name="membership_cancel_prefix">여기를 클릭하여 구독 취소:</string>
+    <string name="membership_cancel_link">구독 취소</string>
     <string name="weekly_plan">주 회원</string>
     <string name="monthly_plan">월간 플랜</string>
     <string name="quarterly_plan">분기 플랜</string>
@@ -200,7 +209,7 @@
     <string name="yearly_price">₩108,000</string>
     <string name="quarterly_discount">11% 절약</string>
     <string name="yearly_discount">27% 절약</string>
-    <string name="already_premium_user">이미 프리미엄 사용자입니다</string>
+    <string name="membership_already_premium">이미 프리미엄 사용자입니다</string>
     <string name="payment_service_not_connected">결제 서비스가 연결되지 않았습니다. 나중에 다시 시도해주세요</string>
     <string name="weekly_plan_description">매주 자동 갱신, 언제든지 취소 가능</string>
     <string name="monthly_plan_description">매월 자동 갱신, 언제든지 취소 가능</string>
@@ -344,10 +353,6 @@
     <string name="simulate_logout_failed">로그아웃 시뮬레이션 실패: %1$s</string>
 
     <!-- Authentication screen related -->
-    <string name="app_subtitle">배경화면</string>
-    <string name="auth_app_description">아름다운 배경화면으로 당신의 기기를 새롭게</string>
-    <string name="sign_in_with_google">Google로 로그인</string>
-    <string name="skip_login">로그인 건너뛰고 둘러보기</string>
 
     <!-- 새로 추가된 문자열 -->
     <string name="wallpaper">배경화면</string>
@@ -408,9 +413,9 @@
     <string name="subscription_quarterly">분기</string>
     <string name="subscription_yearly">연간</string>
     <string name="premium_lifetime">평생</string>
-    <string name="subscription_title_week">1\n주</string>
-    <string name="subscription_title_month">1\n개월</string>
-    <string name="subscription_title_quarter">3\n개월</string>
+    <string name="membership_plan_title_week">1\n주</string>
+    <string name="membership_plan_title_month">1\n개월</string>
+    <string name="membership_plan_title_quarter">3\n개월</string>
     <string name="sign_out_success">로그아웃 성공</string>
     <string name="sign_out_failed">로그아웃 실패: %1$s</string>
     <string name="error_loading_data">데이터 로딩 중 알 수 없는 오류 발생</string>
@@ -506,9 +511,6 @@
 
     <!-- Premium Screen related -->
     <string name="exclusive_privileges">5가지 독점 특권</string>
-    <string name="payment_terms">구매 확인 시 Google Play 스토어 계정으로 결제가 청구됩니다. 현재 구독 기간이 끝나기 최소 24시간 전에 자동 갱신을 끌 수 있습니다. 구독 콘텐츠에 대한 무료 체험은 제공하지 않습니다. 구독 기간은 1개월이며, 구독은 동일한 패키지 기간 동안 동일한 가격으로 자동 갱신됩니다. 구독은 언제든지 취소할 수 있습니다.</string>
-    <string name="cancel_subscription_prefix">여기를 클릭하여 구독 취소:</string>
-    <string name="cancel_subscription_link">구독 취소</string>
     <string name="more_info_prefix">자세한 정보는 다음을 방문하세요</string>
     <string name="terms_of_use">이용 약관</string>
     <string name="and">및</string>

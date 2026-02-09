@@ -279,13 +279,13 @@ private fun PremiumBanner(
         ) {
             Column {
                 Text(
-                    text = stringResource(R.string.premium_user_description),
+                    text = stringResource(R.string.membership_user_description),
                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = stringResource(R.string.select_subscription),
+                    text = stringResource(R.string.membership_select_plan),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

@@ -15,9 +15,9 @@ import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.core.data.repository.WallpaperRepository
-import com.obscura.wallpapers.manager.AppWallpaperManager
+import com.obscura.wallpapers.wallpaper.core.AppWallpaperManager
 import com.obscura.wallpapers.core.common.NotificationUtil
-import com.obscura.wallpapers.worker.AutoWallpaperWorker
+import com.obscura.wallpapers.wallpaper.cycler.WallpaperCyclerWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

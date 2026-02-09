@@ -113,12 +113,12 @@ fun MembershipScreen(
     if (showPaymentDialog && selectedPlan != null) {
         PaymentMethodDialog(
             amount = when (selectedPlan) {
-                PremiumPlan.WEEKLY -> stringResource(R.string.subscription_title_week)
-                PremiumPlan.MONTHLY -> stringResource(R.string.subscription_title_month)
-                PremiumPlan.QUARTERLY -> stringResource(R.string.subscription_title_quarter)
+                PremiumPlan.WEEKLY -> stringResource(R.string.membership_plan_title_week)
+                PremiumPlan.MONTHLY -> stringResource(R.string.membership_plan_title_month)
+                PremiumPlan.QUARTERLY -> stringResource(R.string.membership_plan_title_quarter)
                 PremiumPlan.YEARLY -> stringResource(R.string.weekly_plan)
                 PremiumPlan.LIFETIME -> stringResource(R.string.monthly_plan)
-                null -> stringResource(R.string.subscription_title_month)
+                null -> stringResource(R.string.membership_plan_title_month)
             },
             paymentMethods = paymentMethods,
             isLoading = viewModel.paymentMethodsLoading.collectAsState().value,
@@ -197,9 +197,9 @@ fun MembershipScreen(
 
                             SubscriptionCard(
                                 title = when (plan) {
-                                    PremiumPlan.WEEKLY -> stringResource(R.string.subscription_title_week)
-                                    PremiumPlan.MONTHLY -> stringResource(R.string.subscription_title_month)
-                                    PremiumPlan.QUARTERLY -> stringResource(R.string.subscription_title_quarter)
+                                    PremiumPlan.WEEKLY -> stringResource(R.string.membership_plan_title_week)
+                                    PremiumPlan.MONTHLY -> stringResource(R.string.membership_plan_title_month)
+                                    PremiumPlan.QUARTERLY -> stringResource(R.string.membership_plan_title_quarter)
                                     else -> product.itemName
                                 },
                                 price = displayPrice,
@@ -290,7 +290,7 @@ fun MembershipScreen(
                 }
 
                 Text(
-                    text = stringResource(R.string.payment_terms),
+                    text = stringResource(R.string.membership_payment_terms),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF524C5F),
                     modifier = Modifier.fillMaxWidth()
@@ -302,12 +302,12 @@ fun MembershipScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(R.string.cancel_subscription_prefix) + " ",
+                        text = stringResource(R.string.membership_cancel_prefix) + " ",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFF524C5F)
                     )
                     Text(
-                        text = stringResource(R.string.cancel_subscription_link),
+                        text = stringResource(R.string.membership_cancel_link),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFFF71FE3),
                         textDecoration = TextDecoration.Underline,
@@ -425,24 +425,24 @@ private fun SubscriptionCard(
 private fun PremiumFeaturesList(modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth()) {
         FeatureRow(
-            title = stringResource(R.string.premium_feature_1),
-            desc = stringResource(R.string.premium_feature_1_desc)
+            title = stringResource(R.string.membership_feature_1),
+            desc = stringResource(R.string.membership_feature_1_desc)
         )
         FeatureRow(
-            title = stringResource(R.string.premium_feature_2),
-            desc = stringResource(R.string.premium_feature_2_desc)
+            title = stringResource(R.string.membership_feature_2),
+            desc = stringResource(R.string.membership_feature_2_desc)
         )
         FeatureRow(
-            title = stringResource(R.string.premium_feature_3),
-            desc = stringResource(R.string.premium_feature_3_desc)
+            title = stringResource(R.string.membership_feature_3),
+            desc = stringResource(R.string.membership_feature_3_desc)
         )
         FeatureRow(
-            title = stringResource(R.string.premium_feature_4),
-            desc = stringResource(R.string.premium_feature_4_desc)
+            title = stringResource(R.string.membership_feature_4),
+            desc = stringResource(R.string.membership_feature_4_desc)
         )
         FeatureRow(
-            title = stringResource(R.string.premium_feature_5),
-            desc = stringResource(R.string.premium_feature_5_desc)
+            title = stringResource(R.string.membership_feature_5),
+            desc = stringResource(R.string.membership_feature_5_desc)
         )
     }
 }

@@ -29,7 +29,7 @@ import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.core.data.repository.UserRepositoryImpl
 import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import com.obscura.wallpapers.core.data.repository.WallpaperRepositoryImpl
-import com.obscura.wallpapers.manager.ThemeManager
+import com.obscura.wallpapers.settings.ThemeManager
 import com.obscura.wallpapers.core.common.NetworkMonitor
 import com.obscura.wallpapers.core.common.StringProvider
 import dagger.Module

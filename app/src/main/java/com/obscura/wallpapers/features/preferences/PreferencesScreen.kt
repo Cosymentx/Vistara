@@ -52,6 +52,8 @@ import com.obscura.wallpapers.features.preferences.PreferencesViewModel.Notifica
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
+import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
+import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,11 +111,16 @@ fun PreferencesScreen(
         title = stringResource(R.string.settings),
         onBackPressed = onBackPressed
     )
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = { topBar() }) { _ ->
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = { topBar() }) { innerPadding ->
+        val safe = innerPadding.safeVerticalContentPadding(64.dp, 80.dp)
         Column(
             modifier = contentModifier
+                .applyVerticalInnerPadding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(top = 64.dp, bottom = 80.dp)
+                .padding(
+                    top = safe.calculateTopPadding(),
+                    bottom = safe.calculateBottomPadding()
+                )
         ) {
             SettingsGroup(title = stringResource(R.string.theme_settings)) {
                 SettingsToggleList(

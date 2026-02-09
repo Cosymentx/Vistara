@@ -50,6 +50,8 @@ import com.obscura.wallpapers.ui.theme.stringResource
 import dev.chrisbanes.haze.rememberHazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
+import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
+import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 
 @Composable
 fun SearchScreen(
@@ -134,11 +136,15 @@ fun SearchScreen(
                 }
             }
         }) { paddingValues ->
+        val safe = paddingValues.safeVerticalContentPadding(0.dp, 80.dp)
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(bottom = 80.dp)
+                .applyVerticalInnerPadding(paddingValues)
+                .padding(
+                    top = safe.calculateTopPadding(),
+                    bottom = safe.calculateBottomPadding()
+                )
                 .hazeSource(state = hazeState)
         ) {
 

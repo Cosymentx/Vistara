@@ -10,6 +10,7 @@ import android.os.Build
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
@@ -179,22 +180,51 @@ class NotificationUtil @Inject constructor(
     }
     fun apiNotifyWallpaperChanged(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper) {
         println("apiNotifyWallpaperChanged")
-        showWallpaperChangedNotification(wallpaper)
+        if (canPostNotifications()) {
+            try {
+                showWallpaperChangedNotification(wallpaper)
+            } catch (e: SecurityException) {
+            }
+        }
     }
     fun apiNotifyDownloadProgress(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper, progress: Int) {
         println("apiNotifyDownloadProgress")
-        showDownloadProgressNotification(wallpaper, progress)
+        if (canPostNotifications()) {
+            try {
+                showDownloadProgressNotification(wallpaper, progress)
+            } catch (e: SecurityException) {
+            }
+        }
     }
     fun apiNotifyDownloadComplete(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper, filePath: String) {
         println("apiNotifyDownloadComplete")
-        showDownloadCompleteNotification(wallpaper, filePath)
+        if (canPostNotifications()) {
+            try {
+                showDownloadCompleteNotification(wallpaper, filePath)
+            } catch (e: SecurityException) {
+            }
+        }
     }
     fun apiNotifyLivePending(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper, pendingIntent: PendingIntent) {
         println("apiNotifyLivePending")
-        showLiveWallpaperPendingNotification(wallpaper, pendingIntent)
+        if (canPostNotifications()) {
+            try {
+                showLiveWallpaperPendingNotification(wallpaper, pendingIntent)
+            } catch (e: SecurityException) {
+            }
+        }
     }
     fun apiEnsureChannels() {
         println("apiEnsureChannels")
         createNotificationChannels()
+    }
+
+    private fun canPostNotifications(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
+                android.content.pm.PackageManager.PERMISSION_GRANTED
+            return granted && NotificationManagerCompat.from(context).areNotificationsEnabled()
+        }
+        return NotificationManagerCompat.from(context).areNotificationsEnabled()
     }
 }

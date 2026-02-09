@@ -237,7 +237,7 @@ fun SignInScreen(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = stringResource(R.string.app_name), style = TextStyle(
+                            text = stringResource(R.string.app_title), style = TextStyle(
                                 fontSize = 32.sp,
                                 fontWeight = FontWeight.Bold,
                                 letterSpacing = 2.sp,
@@ -253,7 +253,7 @@ fun SignInScreen(
                         Spacer(modifier = Modifier.height(4.dp))
 
                         Text(
-                            text = stringResource(R.string.app_subtitle),
+                            text = stringResource(R.string.app_tagline),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Medium, letterSpacing = 4.sp
                             ),
@@ -263,7 +263,7 @@ fun SignInScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
-                            text = stringResource(R.string.auth_app_description),
+                            text = stringResource(R.string.auth_description),
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
@@ -307,7 +307,7 @@ fun SignInScreen(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = stringResource(R.string.sign_in_with_google),
+                                    text = stringResource(R.string.auth_google_sign_in),
                                     color = Color.Black,
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontWeight = FontWeight.SemiBold
@@ -318,7 +318,7 @@ fun SignInScreen(
 
                         TextButton(onClick = { onSkipLogin() }) {
                             Text(
-                                text = stringResource(R.string.skip_login),
+                                text = stringResource(R.string.auth_skip),
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }

@@ -2,6 +2,11 @@
 <resources>
     <string name="app_name">Obscura</string>
     <string name="search_hint">Cari wallpaper…</string>
+    <string name="app_title">Obscura</string>
+    <string name="app_tagline">Wallpaper berkualitas tinggi, segarkan perangkat Anda</string>
+    <string name="auth_description">Masuk untuk menyinkronkan favorit dan unduhan</string>
+    <string name="auth_google_sign_in">Masuk dengan Google</string>
+    <string name="auth_skip">Lewati login</string>
 
     <!-- Notification related strings -->
     <string name="notification_channel_wallpaper">Notifikasi Perubahan Wallpaper</string>
@@ -173,21 +178,26 @@
     <string name="mine">Saya</string>
 
     <!-- Premium related -->
-    <string name="premium_title">Buka Fitur Premium</string>
-    <string name="premium_user_title">Anda adalah Pengguna Premium</string>
-    <string name="premium_description">Tingkatkan ke premium, buka semua wallpaper dan fitur</string>
-    <string name="premium_user_description">Terima kasih atas dukungan Anda, Anda dapat menggunakan semua fitur premium</string>
-    <string name="premium_feature_1">Unduh wallpaper berkualitas tinggi tanpa batas</string>
-    <string name="premium_feature_1_desc">Unduh sebanyak mungkin wallpaper yang Anda inginkan dalam resolusi penuh</string>
-    <string name="premium_feature_2">Wallpaper hidup dengan efek khusus</string>
-    <string name="premium_feature_2_desc">Akses ke wallpaper hidup eksklusif dengan efek khusus</string>
-    <string name="premium_feature_3">Wallpaper premium eksklusif</string>
-    <string name="premium_feature_3_desc">Akses ke koleksi wallpaper khusus premium</string>
-    <string name="premium_feature_4">Fitur pengeditan lanjutan</string>
-    <string name="premium_feature_4_desc">Gunakan alat pengeditan profesional untuk menyesuaikan wallpaper Anda</string>
-    <string name="premium_feature_5">Perubahan wallpaper otomatis</string>
-    <string name="premium_feature_5_desc">Atur wallpaper Anda untuk berubah secara otomatis pada frekuensi yang Anda inginkan</string>
-    <string name="select_subscription">Pilih Paket Langganan</string>
+    <!-- Keanggotaan (penamaan baru) -->
+    <string name="membership_title">Buka Fitur Premium</string>
+    <string name="membership_user_title">Anda adalah Pengguna Premium</string>
+    <string name="membership_description">Tingkatkan ke premium, buka semua wallpaper dan fitur</string>
+    <string name="membership_user_description">Terima kasih atas dukungan Anda, Anda dapat menggunakan semua fitur premium</string>
+    <string name="membership_feature_1">Unduh wallpaper berkualitas tinggi tanpa batas</string>
+    <string name="membership_feature_1_desc">Unduh sebanyak mungkin wallpaper dalam resolusi penuh</string>
+    <string name="membership_feature_2">Wallpaper hidup dengan efek khusus</string>
+    <string name="membership_feature_2_desc">Akses ke wallpaper dinamis eksklusif dengan efek khusus</string>
+    <string name="membership_feature_3">Wallpaper premium eksklusif</string>
+    <string name="membership_feature_3_desc">Akses ke koleksi wallpaper khusus premium</string>
+    <string name="membership_feature_4">Fitur pengeditan lanjutan</string>
+    <string name="membership_feature_4_desc">Gunakan alat pengeditan profesional untuk menyesuaikan wallpaper Anda</string>
+    <string name="membership_feature_5">Perubahan wallpaper otomatis</string>
+    <string name="membership_feature_5_desc">Atur wallpaper berubah otomatis sesuai frekuensi pilihan Anda</string>
+    <string name="membership_select_plan">Pilih Paket Langganan</string>
+    <string name="membership_already_premium">Anda sudah menjadi pengguna premium</string>
+    <string name="membership_payment_terms">Pembayaran akan dibebankan ke akun Google Play Store Anda saat konfirmasi pembelian. Anda dapat mematikan perpanjangan otomatis setidaknya 24 jam sebelum akhir periode langganan saat ini. Kami tidak menawarkan uji coba gratis untuk konten langganan. Periode langganan adalah satu bulan, dan langganan Anda akan diperpanjang secara otomatis dalam periode paket yang sama dengan harga yang sama. Langganan dapat dibatalkan kapan saja.</string>
+    <string name="membership_cancel_prefix">Batalkan langganan Anda dengan mengklik di sini:</string>
+    <string name="membership_cancel_link">Batalkan langganan</string>
     <string name="weekly_plan">Rencana Minggu</string>
     <string name="monthly_plan">Paket Bulanan</string>
     <string name="quarterly_plan">Paket Triwulanan</string>
@@ -198,7 +208,6 @@
     <string name="yearly_price">Rp449.990</string>
     <string name="quarterly_discount">Hemat 13%</string>
     <string name="yearly_discount">Hemat 27%</string>
-    <string name="already_premium_user">Anda sudah menjadi pengguna premium</string>
     <string name="payment_service_not_connected">Layanan pembayaran tidak terhubung, silakan coba lagi nanti</string>
     <string name="weekly_plan_description">Perpanjangan otomatis mingguan, batalkan kapan saja</string>
     <string name="monthly_plan_description">Perpanjangan otomatis bulanan, batalkan kapan saja</string>
@@ -342,10 +351,6 @@
     <string name="simulate_logout_failed">Simulasi logout gagal: %1$s</string>
 
     <!-- Authentication screen related -->
-    <string name="app_subtitle">Wallpaper</string>
-    <string name="auth_app_description">Segarkan perangkat Anda dengan wallpaper yang indah</string>
-    <string name="sign_in_with_google">Masuk dengan Google</string>
-    <string name="skip_login">Lewati login dan jelajahi</string>
 
     <string name="sign_out_confirm_title">Konfirmasi Keluar</string>
     <string name="sign_out_confirm_message">Apakah Anda yakin ingin keluar dari akun Anda?</string>
@@ -409,9 +414,9 @@
     <string name="subscription_quarterly">Triwulanan</string>
     <string name="subscription_yearly">Tahunan</string>
     <string name="premium_lifetime">Seumur hidup</string>
-    <string name="subscription_title_week">1\nMinggu</string>
-    <string name="subscription_title_month">1\nBulan</string>
-    <string name="subscription_title_quarter">3\nBulan</string>
+    <string name="membership_plan_title_week">1\nMinggu</string>
+    <string name="membership_plan_title_month">1\nBulan</string>
+    <string name="membership_plan_title_quarter">3\nBulan</string>
     <string name="sign_out_success">Berhasil keluar</string>
     <string name="sign_out_failed">Gagal keluar: %1$s</string>
     <string name="error_loading_data">Terjadi kesalahan tidak diketahui saat memuat data</string>
@@ -509,9 +514,6 @@
 
     <!-- Premium Screen related -->
     <string name="exclusive_privileges">5 Hak Istimewa Eksklusif</string>
-    <string name="payment_terms">Pembayaran akan dibebankan ke akun Google Play Store Anda pada saat konfirmasi pembelian. Anda dapat mematikan perpanjangan otomatis setidaknya 24 jam sebelum akhir periode langganan Anda saat ini. Kami tidak menawarkan uji coba gratis untuk konten berlangganan. Periode langganan adalah satu bulan, dan langganan Anda akan diperpanjang secara otomatis dalam periode paket yang sama dengan harga yang sama. Langganan dapat dibatalkan kapan saja.</string>
-    <string name="cancel_subscription_prefix">Batalkan langganan Anda dengan mengklik di sini:</string>
-    <string name="cancel_subscription_link">Batalkan langganan</string>
     <string name="more_info_prefix">Info lebih lanjut:</string>
     <string name="terms_of_use">Ketentuan</string>
     <string name="and">dan</string>

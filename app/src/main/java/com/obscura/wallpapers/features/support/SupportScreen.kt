@@ -45,6 +45,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
+import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
+import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,11 +87,16 @@ fun SupportScreen(
         title = stringResource(R.string.rate_feedback),
         onBackPressed = onBackPressed
     )
-    Scaffold(topBar = { topBar() }, snackbarHost = { SnackbarHost(snackbarHostState) }) { _ ->
+    Scaffold(topBar = { topBar() }, snackbarHost = { SnackbarHost(snackbarHostState) }) { innerPadding ->
+        val safe = innerPadding.safeVerticalContentPadding(64.dp, 80.dp)
         Column(
             modifier = contentModifier
+                .applyVerticalInnerPadding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(top = 64.dp, bottom = 80.dp)
+                .padding(
+                    top = safe.calculateTopPadding(),
+                    bottom = safe.calculateBottomPadding()
+                )
                 .padding(16.dp)
         ) {
             FeedbackActionList(

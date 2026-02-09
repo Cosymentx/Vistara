@@ -72,6 +72,8 @@ import com.obscura.wallpapers.ui.components.GlassTopAppBar
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import com.obscura.wallpapers.ui.theme.stringResource
+import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
+import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,9 +115,15 @@ fun WallpaperEditScreen(
                 )
             }
         })
-    Scaffold(topBar = { topBar() }) { _ ->
+    Scaffold(topBar = { topBar() }) { innerPadding ->
+        val safe = innerPadding.safeVerticalContentPadding(64.dp, 80.dp)
         Box(
-            modifier = contentModifier.padding(top = 64.dp, bottom = 80.dp)
+            modifier = contentModifier
+                .applyVerticalInnerPadding(innerPadding)
+                .padding(
+                    top = safe.calculateTopPadding(),
+                    bottom = safe.calculateBottomPadding()
+                )
         ) {
             when (wallpaperState) {
                 is UiState.Loading -> {

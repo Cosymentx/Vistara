@@ -60,7 +60,7 @@
 
         <!-- 视频壁纸服务 -->
         <service
-            android:name=".service.LiveWallpaperService"
+            android:name=".wallpaper.live.LiveWallpaperService"
             android:enabled="true"
             android:exported="true"
             android:label="Vistara"
@@ -75,7 +75,7 @@
 
         <!-- 解锁屏幕壁纸更换广播接收器 -->
         <receiver
-            android:name=".receiver.UnlockWallpaperReceiver"
+            android:name=".wallpaper.cycler.UnlockCyclerReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
