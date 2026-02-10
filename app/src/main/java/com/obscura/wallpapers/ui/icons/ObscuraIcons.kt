@@ -28,11 +28,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -101,11 +101,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -155,11 +155,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -202,11 +202,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -241,11 +241,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -291,11 +291,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -347,11 +347,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -394,11 +394,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -431,11 +431,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -473,11 +473,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -513,11 +513,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -555,11 +555,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -592,11 +592,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -656,11 +656,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -718,11 +718,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -791,11 +791,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -864,11 +864,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -910,11 +910,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -956,11 +956,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1000,11 +1000,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1053,11 +1053,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1120,11 +1120,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1174,11 +1174,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1216,11 +1216,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1335,11 +1335,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1424,11 +1424,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1505,11 +1505,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1572,11 +1572,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1639,11 +1639,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1715,11 +1715,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1769,11 +1769,11 @@ object ObscuraIcons {
                 path(
                     fill = SolidColor(Color.Black),
                     fillAlpha = 1.0f,
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
                     strokeAlpha = 1.0f,
-                    strokeLineWidth = 1.0f,
-                    strokeLineCap = StrokeCap.Butt,
-                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 1.0f,
                     pathFillType = PathFillType.NonZero
                 ) {
@@ -1803,7 +1803,11 @@ object ObscuraIcons {
             ).apply {
                 path(
                     fill = SolidColor(Color.Black),
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
+                    strokeAlpha = 1.0f,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     pathFillType = PathFillType.NonZero
                 ) {
                     moveTo(12.0f, 3.0f)
@@ -1815,7 +1819,11 @@ object ObscuraIcons {
                 }
                 path(
                     fill = SolidColor(Color.Black),
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
+                    strokeAlpha = 1.0f,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     pathFillType = PathFillType.NonZero
                 ) {
                     moveTo(12.0f, 7.0f)
@@ -1835,7 +1843,11 @@ object ObscuraIcons {
             ).apply {
                 path(
                     fill = SolidColor(Color.Black),
-                    stroke = null,
+                    stroke = SolidColor(Color.Black),
+                    strokeAlpha = 1.0f,
+                    strokeLineWidth = 1.6f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
                     pathFillType = PathFillType.NonZero
                 ) {
                     moveTo(3.0f, 5.0f)

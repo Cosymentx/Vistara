@@ -1,16 +1,10 @@
 package com.obscura.wallpapers.ui.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -235,11 +229,10 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
             NavigationBarItem(icon = {
                 when (destination) {
                     NavDestination.Discover -> {
-                        if (selected) {
-                            Icon(Icons.Filled.Home, contentDescription = destination.getTitle())
-                        } else {
-                            Icon(Icons.Outlined.Home, contentDescription = destination.getTitle())
-                        }
+                        Icon(
+                            ImageVector.vectorResource(id = R.drawable.ic_discover),
+                            contentDescription = destination.getTitle()
+                        )
                     }
 
                     NavDestination.PhotoWallpapers -> {
@@ -257,14 +250,13 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
                     }
 
                     NavDestination.Profile -> {
-                        if (selected) {
-                            Icon(Icons.Filled.Person, contentDescription = destination.getTitle())
-                        } else {
-                            Icon(Icons.Outlined.Person, contentDescription = destination.getTitle())
-                        }
+                        Icon(
+                            ImageVector.vectorResource(id = R.drawable.ic_profile),
+                            contentDescription = destination.getTitle()
+                        )
                     }
                 }
-            }, label = { Text(destination.getTitle()) }, selected = selected, onClick = {
+            }, label = { }, selected = selected, onClick = {
                 navController.navigate(destination.route) {
                     popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                     launchSingleTop = true
