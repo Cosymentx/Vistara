@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="home_title">Home</string>
+    <string name="home_title">Discover</string>
     <string name="home_search_icon">Search icon</string>
     <string name="home_search_hint">Search high-quality wallpapers…</string>
     <string name="home_loading_wallpapers">Loading wallpapers…</string>

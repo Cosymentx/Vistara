@@ -2,7 +2,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-//    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.gradle.ksp)
@@ -117,11 +116,6 @@ dependencies {
     implementation(libs.androidx.material.icons.core)
     implementation(libs.haze)
 
-    // StaggeredGrid for waterfall layout
-    // 使用Compose相关依赖（已移除Glide，统一采用Coil）
-//    implementation(libs.accompanist.flowlayout)
-//    implementation(libs.accompanist.swiperefresh)
-
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.work.runtime.ktx)
@@ -148,11 +142,6 @@ dependencies {
     // DataStore
     implementation(libs.androidx.datastore.preferences)
 
-    // Accompanist
-//    implementation(libs.accompanist.permissions)
-//    implementation(libs.accompanist.systemuicontroller)
-//    implementation(libs.accompanist.drawablepainter)
-
     // Media3 for video playback
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
@@ -163,18 +152,11 @@ dependencies {
     implementation(libs.imagecropper)
 
     // Google Play Billing
-    implementation(libs.google.play.billing)
-    implementation(libs.google.play.billing.ktx)
 
     // Google Auth
     implementation(libs.google.auth)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
-
-    // AppsFlyer SDK
-    implementation(libs.af.android.sdk)
-    // 如果需要广告ID,添加Google Play Services Ads
-    implementation(libs.play.services.ads.identifier)
 
     debugImplementation(libs.ui.tooling)
 

@@ -41,6 +41,18 @@ class WallpaperPreviewViewModel @Inject constructor(
         private const val TAG = "WallpaperPreviewViewModel"
     }
 
+
+    init {
+        viewModelScope.launch {
+            try {
+                _isLoggedIn.value = userRepository.checkUserLoggedIn()
+            } catch (_: Exception) {
+                _isLoggedIn.value = false
+            }
+        }
+        loadWallpaper()
+    }
+
     private val wallpaperId: String = checkNotNull(savedStateHandle["wallpaperId"])
 
     private val _wallpaperState = MutableStateFlow<UiState<Wallpaper>>(UiState.Loading)
@@ -182,7 +194,7 @@ class WallpaperPreviewViewModel @Inject constructor(
         }
     }
 
-    fun previewWallpaper(activity: android.app.Activity?) {
+    fun preview(activity: android.app.Activity?) {
         viewModelScope.launch {
             val s = _wallpaperState.value
             if (s is UiState.Success && activity != null) {
@@ -191,7 +203,7 @@ class WallpaperPreviewViewModel @Inject constructor(
         }
     }
 
-    fun shareWallpaper() {
+    fun share() {
         viewModelScope.launch {
             val s = _wallpaperState.value
             if (s is UiState.Success) {
@@ -203,7 +215,7 @@ class WallpaperPreviewViewModel @Inject constructor(
         }
     }
 
-    fun downloadWallpaper() {
+    fun download() {
         viewModelScope.launch {
             val s = _wallpaperState.value
             if (s is UiState.Success) {
@@ -231,7 +243,7 @@ class WallpaperPreviewViewModel @Inject constructor(
 
     fun continueDownloadAfterPermissionGranted() {
         _needStoragePermission.value = false
-        downloadWallpaper()
+        download()
     }
 
     fun resetPermissionRequest() {
@@ -307,16 +319,5 @@ class WallpaperPreviewViewModel @Inject constructor(
 
     fun clearWallpaperSetSuccess() {
         _wallpaperSetSuccess.value = null
-    }
-
-    init {
-        viewModelScope.launch {
-            try {
-                _isLoggedIn.value = userRepository.checkUserLoggedIn()
-            } catch (_: Exception) {
-                _isLoggedIn.value = false
-            }
-        }
-        loadWallpaper()
     }
 }

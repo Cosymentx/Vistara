@@ -45,10 +45,10 @@ import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.components.FeaturedWallpaperSection
 import com.obscura.wallpapers.ui.components.GlassScaffold
-import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
-import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.WallpaperItem
+import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
+import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 import com.obscura.wallpapers.ui.theme.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,8 +75,7 @@ fun DiscoverScreen(
         if (error != null && featuredWallpapers.isEmpty() && staticWallpapers.isEmpty() && liveWallpapers.isEmpty()) {
             ErrorState(
                 message = error ?: stringResource(R.string.common_unknown_error),
-                onRetry = { viewModel.refresh() }
-            )
+                onRetry = { viewModel.refresh() })
             return@GlassScaffold
         }
 
@@ -224,9 +223,7 @@ enum class SectionType { Photo, Video, Latest }
 data class Section(val type: SectionType, val items: List<Wallpaper>)
 
 private fun buildSections(
-    staticItems: List<Wallpaper>,
-    liveItems: List<Wallpaper>,
-    latestItems: List<Wallpaper>
+    staticItems: List<Wallpaper>, liveItems: List<Wallpaper>, latestItems: List<Wallpaper>
 ): List<Section> {
     return listOf(
         Section(SectionType.Photo, staticItems),
@@ -291,8 +288,7 @@ private fun CategorySection(
         CategorySelector(
             categories = WallpaperCategory.values().toList(),
             selectedCategory = selectedCategory ?: WallpaperCategory.ALL,
-            onCategorySelected = { viewModel.loadWallpapersByCategory(it) }
-        )
+            onCategorySelected = { viewModel.loadWallpapersByCategory(it) })
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -314,9 +310,7 @@ private fun CategorySection(
             )
         } else {
             TwoColumnSection(
-                title = null,
-                wallpapers = categoryWallpapers,
-                onWallpaperClick = onWallpaperClick
+                title = null, wallpapers = categoryWallpapers, onWallpaperClick = onWallpaperClick
             )
         }
     }

@@ -25,23 +25,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.Resolution
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
+import com.obscura.wallpapers.ui.theme.stringResource
 
 /**
  * 壁纸列表项组件
  * @param wallpaper 壁纸数据
- * @param isPremium 是否为高级壁纸
  * @param onClick 点击事件回调
  * @param modifier 可选修饰符
  */
 @Composable
 fun WallpaperItem(
-    wallpaper: Wallpaper,
-    isPremium: Boolean = wallpaper.isPremium,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    wallpaper: Wallpaper, onClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
@@ -55,40 +53,10 @@ fun WallpaperItem(
             // 壁纸图片
             AsyncImage(
                 model = wallpaper.thumbnailUrl,
-                contentDescription = wallpaper.title ?: "Wallpaper",
+                contentDescription = wallpaper.title ?: stringResource(R.string.app_title),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
-
-            // 高级标记
-            if (isPremium) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = "👑",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White
-                    )
-                }
-            } else if (wallpaper.isLive) {
-                // 普通动态壁纸显示钻石图标
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = "💎",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White
-                    )
-                }
-            }
 
             // 动态壁纸标记
             if (wallpaper.isLive) {
@@ -98,12 +66,16 @@ fun WallpaperItem(
                         .padding(8.dp)
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                 ) {
-                    Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Live Wallpaper", tint = Color.White)
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = "Live Wallpaper",
+                        tint = Color.White
+                    )
                 }
             }
 
             // 添加底部渐变和标题
-            if (wallpaper.title != null && wallpaper.title.isNotEmpty()) {
+            if (!wallpaper.title.isNullOrEmpty()) {
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
@@ -111,8 +83,7 @@ fun WallpaperItem(
                         .background(
                             Brush.verticalGradient(
                                 colors = listOf(
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.6f)
+                                    Color.Transparent, Color.Black.copy(alpha = 0.6f)
                                 )
                             )
                         )

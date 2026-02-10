@@ -3,8 +3,6 @@ package com.obscura.wallpapers
 import android.app.Application
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
-import com.appsflyer.AppsFlyerConversionListener
-import com.appsflyer.AppsFlyerLib
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.settings.LocaleManager
 import dagger.hilt.android.HiltAndroidApp
@@ -36,11 +34,11 @@ class ObscuraApp : Application() {
 
     private fun refreshUser() {
         appScope.launch {
-            try {
+            runCatching {
                 userRepository.refreshUserProfile()
                 Log.d(TAG, "用户资料刷新完成")
-            } catch (e: Exception) {
-                Log.e(TAG, "刷新用户资料失败: ${e.message}", e)
+            }.getOrElse {
+                Log.e(TAG, "刷新用户资料失败: ${it.message}")
             }
         }
     }

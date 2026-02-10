@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -65,7 +64,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
     Box(modifier = Modifier.hazeSource(state = hazeState)) {
         NavHost(
             navController = navController,
-            startDestination = NavDestination.Home.route,
+            startDestination = NavDestination.Discover.route,
             modifier = Modifier
         ) {
             composable("auth") {
@@ -75,7 +74,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     navController.popBackStack()
                 })
             }
-            composable(NavDestination.Home.route) {
+            composable(NavDestination.Discover.route) {
                 DiscoverScreen(onWallpaperClick = { wallpaper ->
                     navController.navigate("preview/${wallpaper.id}")
                 }, onSearch = { query ->
@@ -111,8 +110,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     navController.navigate("search")
                 })
             }
-            composable(NavDestination.Mine.route) {
-                val context = LocalContext.current
+            composable(NavDestination.Profile.route) {
                 ProfileScreen(
                     onFavoritesClick = { navController.navigate("favorites") },
                     onDownloadsClick = { navController.navigate("downloads") },
@@ -152,9 +150,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     onNavigateToEdit = { wallpaperId ->
                         navController.navigate("edit/$wallpaperId")
                     },
-                    onNavigateToUpgrade = { navController.navigate("premium") },
-                    onNavigateToLogin = { navController.navigate("auth") },
-                    onNavigateToDiamondRecharge = { navController.navigate("diamond") })
+                    onNavigateToLogin = { navController.navigate("auth") })
             }
             composable("favorites") {
                 LikesScreen(
@@ -238,7 +234,7 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
                 currentDestination?.hierarchy?.any { it.route == destination.route } == true
             NavigationBarItem(icon = {
                 when (destination) {
-                    NavDestination.Home -> {
+                    NavDestination.Discover -> {
                         if (selected) {
                             Icon(Icons.Filled.Home, contentDescription = destination.getTitle())
                         } else {
@@ -260,7 +256,7 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
                         )
                     }
 
-                    NavDestination.Mine -> {
+                    NavDestination.Profile -> {
                         if (selected) {
                             Icon(Icons.Filled.Person, contentDescription = destination.getTitle())
                         } else {
@@ -280,33 +276,21 @@ fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
 }
 
 enum class NavDestination(val route: String, val titleResId: Int) {
-    Home("home", R.string.nav_discover) {
+    Discover("discover", R.string.nav_discover) {
         @Composable
-        override fun getTitle(): String {
-            val resources = LocalAppResources.current
-            return resources.getString(R.string.home_title)
-        }
+        override fun getTitle(): String = LocalAppResources.current.getString(R.string.nav_discover)
     },
     PhotoWallpapers("photo", R.string.nav_photo) {
         @Composable
-        override fun getTitle(): String {
-            val resources = LocalAppResources.current
-            return resources.getString(R.string.categories_static)
-        }
+        override fun getTitle(): String = LocalAppResources.current.getString(R.string.nav_photo)
     },
     VideoWallpapers("video", R.string.nav_video) {
         @Composable
-        override fun getTitle(): String {
-            val resources = LocalAppResources.current
-            return resources.getString(R.string.categories_live)
-        }
+        override fun getTitle(): String = LocalAppResources.current.getString(R.string.nav_video)
     },
-    Mine("mine", R.string.nav_profile) {
+    Profile("profile", R.string.nav_profile) {
         @Composable
-        override fun getTitle(): String {
-            val resources = LocalAppResources.current
-            return resources.getString(R.string.nav_profile)
-        }
+        override fun getTitle(): String = LocalAppResources.current.getString(R.string.nav_profile)
     };
 
     @Composable

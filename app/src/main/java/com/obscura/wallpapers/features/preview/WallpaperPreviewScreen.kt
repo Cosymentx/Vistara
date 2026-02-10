@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -25,9 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -54,9 +50,7 @@ import kotlinx.coroutines.launch
 fun WallpaperPreviewScreen(
     onBackPressed: () -> Unit,
     onNavigateToEdit: (String) -> Unit,
-    onNavigateToUpgrade: () -> Unit = {},
     onNavigateToLogin: () -> Unit = {},
-    onNavigateToDiamondRecharge: () -> Unit = {},
     viewModel: WallpaperPreviewViewModel = hiltViewModel()
 ) {
     val wallpaperState by viewModel.wallpaperState.collectAsState()
@@ -126,7 +120,6 @@ fun WallpaperPreviewScreen(
 
     LaunchedEffect(navigateToUpgrade) {
         if (navigateToUpgrade) {
-            onNavigateToUpgrade()
             viewModel.resetNavigateToUpgrade()
         }
     }
@@ -214,9 +207,9 @@ fun WallpaperPreviewScreen(
                             viewModel.showSetWallpaperOptions(activity)
                         },
                         onDownload = {
-                            viewModel.downloadWallpaper()
+                            viewModel.download()
                         },
-                        onShare = { viewModel.shareWallpaper() },
+                        onShare = { viewModel.share() },
                         onEdit = {
                             if (!isLoggedIn) {
                                 viewModel.setNeedLoginAction(WallpaperPreviewViewModel.LoginAction.EDIT)
@@ -238,7 +231,7 @@ fun WallpaperPreviewScreen(
                             onNavigateToEdit(wallpaperId)
                         },
                         onPreview = {
-                            viewModel.previewWallpaper(activity)
+                            viewModel.preview(activity)
                         },
                         isPremiumUser = isPremiumUser,
                         editedBitmap = editedBitmap,
