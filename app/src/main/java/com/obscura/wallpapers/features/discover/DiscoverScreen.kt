@@ -66,7 +66,7 @@ fun DiscoverScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    GlassScaffold(title = stringResource(R.string.home_title)) { paddingValues ->
+    GlassScaffold { paddingValues ->
         if (isLoading) {
             LoadingState()
             return@GlassScaffold
@@ -81,7 +81,7 @@ fun DiscoverScreen(
 
         LazyColumn(
             state = rememberLazyListState(),
-            contentPadding = paddingValues.safeVerticalContentPadding(64.dp, 80.dp),
+            contentPadding = paddingValues.safeVerticalContentPadding(0.dp, 80.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier
                 .fillMaxSize()
