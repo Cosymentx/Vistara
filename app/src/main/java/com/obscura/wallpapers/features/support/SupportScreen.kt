@@ -102,14 +102,6 @@ fun SupportScreen(
             FeedbackActionList(
                 items = listOf(
                     FeedbackActionEntry(
-                        icon = Icons.Default.Star,
-                        iconTint = MaterialTheme.colorScheme.primary,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleRes = R.string.feedback_rate_in_app_store,
-                        subtitleRes = R.string.feedback_like_our_app_rate_us,
-                        onClick = { viewModel.openAppRating() }
-                    ),
-                    FeedbackActionEntry(
                         icon = Icons.Default.Email,
                         iconTint = MaterialTheme.colorScheme.secondary,
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,

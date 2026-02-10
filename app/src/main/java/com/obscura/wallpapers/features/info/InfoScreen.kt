@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
@@ -38,15 +37,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.obscura.wallpapers.ui.theme.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.components.GlassScaffold
 import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
 import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
+import com.obscura.wallpapers.ui.icons.ObscuraIcons
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
+import com.obscura.wallpapers.ui.theme.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,8 +61,7 @@ fun InfoScreen(
     viewModel.setNavController(navController)
 
     GlassScaffold(
-        title = stringResource(R.string.info_title),
-        onBackPressed = onBackPressed
+        title = stringResource(R.string.info_title), onBackPressed = onBackPressed
     ) { paddingValues ->
         val safe = paddingValues.safeVerticalContentPadding(64.dp, 80.dp)
         Column(
@@ -71,10 +70,9 @@ fun InfoScreen(
                 .verticalScroll(rememberScrollState())
                 .applyVerticalInnerPadding(paddingValues)
                 .padding(
-                    top = safe.calculateTopPadding(),
-                    bottom = safe.calculateBottomPadding()
+                    top = safe.calculateTopPadding(), bottom = safe.calculateBottomPadding()
                 )
-                .padding(16.dp)
+                .padding(vertical = 16.dp)
         ) {
             AppInfoSection(
                 appVersion = appVersion,
@@ -84,15 +82,18 @@ fun InfoScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            OpenSourceSection(
-                libraries = openSourceLibraries, onLibraryClick = { viewModel.openLibraryUrl(it) })
+//            OpenSourceSection(
+//                libraries = openSourceLibraries, onLibraryClick = { viewModel.openLibraryUrl(it) })
         }
     }
 }
 
 @Composable
 private fun AppInfoSection(
-    appVersion: String, onPrivacyPolicyClick: () -> Unit, onTermsOfServiceClick: () -> Unit, onUserAgreementClick: () -> Unit
+    appVersion: String,
+    onPrivacyPolicyClick: () -> Unit,
+    onTermsOfServiceClick: () -> Unit,
+    onUserAgreementClick: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
@@ -103,20 +104,26 @@ private fun AppInfoSection(
                 .clip(RoundedCornerShape(20.dp))
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher), contentDescription = stringResource(R.string.app_name), modifier = Modifier.fillMaxSize()
+                painter = painterResource(id = R.drawable.ic_launcher),
+                contentDescription = stringResource(R.string.app_name),
+                modifier = Modifier.fillMaxSize()
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = stringResource(R.string.app_name), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold
+            text = stringResource(R.string.app_name),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = appVersion, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            text = appVersion,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -124,7 +131,8 @@ private fun AppInfoSection(
         Text(
             text = stringResource(R.string.info_app_description),
             style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.padding(horizontal = 20.dp),
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
         )
 
@@ -132,9 +140,16 @@ private fun AppInfoSection(
 
         LinkList(
             items = listOf(
-                LinkEntry(title = stringResource(R.string.info_user_agreement), onClick = onUserAgreementClick),
-                LinkEntry(title = stringResource(R.string.info_privacy_policy), onClick = onPrivacyPolicyClick),
-                LinkEntry(title = stringResource(R.string.info_terms_of_service), onClick = onTermsOfServiceClick)
+                LinkEntry(
+                    title = stringResource(R.string.info_user_agreement),
+                    onClick = onUserAgreementClick
+                ), LinkEntry(
+                    title = stringResource(R.string.info_privacy_policy),
+                    onClick = onPrivacyPolicyClick
+                ), LinkEntry(
+                    title = stringResource(R.string.info_terms_of_service),
+                    onClick = onTermsOfServiceClick
+                )
             )
         )
     }
@@ -146,7 +161,9 @@ private fun OpenSourceSection(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(R.string.info_open_source_libraries), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold
+            text = stringResource(R.string.info_open_source_libraries),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -184,28 +201,34 @@ private fun LinkItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically
+                .padding(vertical = 12.dp, horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = ObscuraIcons.Info, contentDescription = null,tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-            )
+//            Icon(
+//                imageVector = ObscuraIcons.Info,
+//                contentDescription = null,
+//                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+//            )
 
-            Spacer(modifier = Modifier.width(16.dp))
+//            Spacer(modifier = Modifier.width(16.dp))
 
             Text(
-                text = title, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f)
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.weight(1f)
             )
 
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
 
 data class LinkEntry(
-    val title: String,
-    val onClick: () -> Unit
+    val title: String, val onClick: () -> Unit
 )
 
 @Composable
@@ -231,13 +254,17 @@ private fun LibraryItem(
             .clickable { onClick() }
             .padding(16.dp)) {
             Text(
-                text = library.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold
+                text = library.name,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = library.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = library.description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -249,8 +276,7 @@ fun InfoScreenPreview() {
     ObscuraTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             InfoScreen(
-                onBackPressed = {},
-                navController = rememberNavController()
+                onBackPressed = {}, navController = rememberNavController()
             )
         }
     }
