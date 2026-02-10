@@ -43,10 +43,6 @@ import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.obscura.wallpapers.core.data.model.Wallpaper
 
-// REMOVE: import com.obscura.wallpapers.utils.SharedExoPlayer
-
-// Removed lifecycle imports as they are not used for local control anymore
-
 private const val TAG = "VideoPreviewItem" // Added TAG for logging consistency
 
 /**
@@ -123,14 +119,15 @@ fun VideoPreviewItem(
             AsyncImage(
                 model = wallpaper.previewUrl ?: wallpaper.url, // Use appropriate URL
                 contentDescription = wallpaper.title, // Content description for accessibility
-                modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop // Crop to fill the card bounds
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop // Crop to fill the card bounds
                 // Keep placeholder/error logic for AsyncImage if needed,
                 // but remember they need Painter?, not Composables.
             )
 
             // --- Conditional Player View (Overlay) ---
             // Use standard if-statement for clarity, or AnimatedVisibility if preferred
-            if (isCurrentlyPlaying&&!isBuffering) {
+            if (isCurrentlyPlaying && !isBuffering) {
                 // Use a key that includes wallpaper.id to potentially help
                 // Compose differentiate PlayerView instances if items change rapidly,
                 // though the update block is the primary driver.
@@ -145,14 +142,20 @@ fun VideoPreviewItem(
                                 setKeepContentOnPlayerReset(true)
                                 setShutterBackgroundColor(android.graphics.Color.TRANSPARENT)
                                 setUseArtwork(false)
-                                layoutParams = android.widget.FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                                layoutParams = android.widget.FrameLayout.LayoutParams(
+                                    MATCH_PARENT, MATCH_PARENT
+                                )
                                 clipToOutline = true // Keep clipping settings
-                                outlineProvider = android.view.ViewOutlineProvider.BACKGROUND // Keep outline provider
+                                outlineProvider =
+                                    android.view.ViewOutlineProvider.BACKGROUND // Keep outline provider
                             }
                         },
                         // This update block is crucial for connecting/disconnecting the player
                         update = { playerView ->
-                            Log.d(TAG, "Update PlayerView for ${wallpaper.id}. isCurrentlyPlaying=$isCurrentlyPlaying")
+                            Log.d(
+                                TAG,
+                                "Update PlayerView for ${wallpaper.id}. isCurrentlyPlaying=$isCurrentlyPlaying"
+                            )
                             // Attach the single shared ExoPlayer only when this item is the one playing
                             playerView.player = if (isCurrentlyPlaying) exoPlayer else null
                         },
@@ -160,7 +163,8 @@ fun VideoPreviewItem(
                         onReset = { playerView ->
                             Log.d(TAG, "Resetting player in PlayerView for ${wallpaper.id}")
                             playerView.player = null
-                        }, modifier = Modifier
+                        },
+                        modifier = Modifier
                             .fillMaxSize()
                             .clip(RoundedCornerShape(12.dp)) // Clip PlayerView itself if needed
                             .background(Color.Black) // Keep background if needed for player
@@ -172,7 +176,8 @@ fun VideoPreviewItem(
             androidx.compose.animation.AnimatedVisibility(
                 visible = isCurrentlyPlaying && isBuffering, // NEW logic
                 enter = fadeIn(animationSpec = tween(500, delayMillis = 300)), // Keep animations
-                exit = fadeOut(animationSpec = tween(500)), modifier = Modifier.fillMaxSize() // Fill size to overlay correctly
+                exit = fadeOut(animationSpec = tween(500)),
+                modifier = Modifier.fillMaxSize() // Fill size to overlay correctly
             ) {
                 // Keep your buffering indicator layout
                 Box(

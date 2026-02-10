@@ -237,7 +237,7 @@ fun VideoLibraryScreen(
     }
 
     val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.categories_live), actions = {
+        title = stringResource(R.string.nav_video), actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_hint))
             }

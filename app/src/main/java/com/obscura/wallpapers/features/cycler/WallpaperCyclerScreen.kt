@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -39,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import com.obscura.wallpapers.ui.theme.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,9 +46,10 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.AutoChangeFrequency
 import com.obscura.wallpapers.core.data.model.AutoChangeSource
 import com.obscura.wallpapers.core.data.model.WallpaperTarget
+import com.obscura.wallpapers.ui.components.GlassScaffold
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
-import com.obscura.wallpapers.ui.components.GlassScaffold
+import com.obscura.wallpapers.ui.theme.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,25 +83,26 @@ fun WallpaperCyclerScreen(
 
     LaunchedEffect(settingsApplied) {
         if (settingsApplied) {
-            Toast.makeText(context, R.string.cycler_settings_applied_successfully, Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(
+                context, R.string.cycler_settings_applied_successfully, Toast.LENGTH_SHORT
+            ).show()
             onBackPressed()
         }
     }
 
     GlassScaffold(
-        title = stringResource(R.string.cycler_auto_change_wallpaper),
-        onBackPressed = onBackPressed
+        title = stringResource(R.string.cycler_auto_change_wallpaper), onBackPressed = onBackPressed
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
-                .padding(16.dp)
         ) {
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
@@ -140,7 +140,6 @@ fun WallpaperCyclerScreen(
                 FrequencySelector(
                     currentFrequency = autoChangeFrequency,
                     onFrequencySelected = { viewModel.updateAutoChangeFrequency(it) },
-                    isPremiumUser = isPremiumUser
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -163,7 +162,6 @@ fun WallpaperCyclerScreen(
                 SourceSelector(
                     currentSource = autoChangeSource,
                     onSourceSelected = { viewModel.updateAutoChangeSource(it) },
-                    isPremiumUser = isPremiumUser
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -178,7 +176,7 @@ fun WallpaperCyclerScreen(
 
                 Button(
                     onClick = { viewModel.applyAutoChangeSettings() },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
                     enabled = !isChangingWallpaper
                 ) {
                     Text(stringResource(R.string.cycler_apply_settings))
@@ -207,7 +205,6 @@ fun WallpaperCyclerScreen(
 private fun FrequencySelector(
     currentFrequency: AutoChangeFrequency,
     onFrequencySelected: (AutoChangeFrequency) -> Unit,
-    isPremiumUser: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -217,7 +214,7 @@ private fun FrequencySelector(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp),
+                .padding(vertical = 12.dp, horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -244,7 +241,8 @@ private fun FrequencySelector(
             DropdownMenu(
                 expanded = expanded, onDismissRequest = { expanded = false }) {
                 AutoChangeFrequency.values().forEach { frequency ->
-                    val isEnabled = !frequency.isPremium || isPremiumUser
+//                    val isEnabled = !frequency.isPremium || isPremiumUser
+                    val isEnabled = true
                     DropdownMenuItem(
                         text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -253,14 +251,14 @@ private fun FrequencySelector(
                                 color = if (isEnabled) MaterialTheme.colorScheme.onSurface
                                 else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                             )
-                            if (frequency.isPremium) {
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = stringResource(R.string.premium),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
+//                            if (frequency.isPremium) {
+//                                Spacer(modifier = Modifier.width(8.dp))
+//                                Text(
+//                                    text = stringResource(R.string.premium),
+//                                    style = MaterialTheme.typography.labelSmall,
+//                                    color = MaterialTheme.colorScheme.primary
+//                                )
+//                            }
                         }
                     }, onClick = {
                         if (isEnabled) {
@@ -289,7 +287,9 @@ private fun SectionTitle(text: String) {
         text = text,
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(bottom = 8.dp)
+        modifier = Modifier
+            .padding(bottom = 8.dp)
+            .padding(horizontal = 16.dp)
     )
 }
 
@@ -297,7 +297,6 @@ private fun SectionTitle(text: String) {
 private fun SourceSelector(
     currentSource: AutoChangeSource,
     onSourceSelected: (AutoChangeSource) -> Unit,
-    isPremiumUser: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -307,7 +306,7 @@ private fun SourceSelector(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp),
+                .padding(vertical = 12.dp, horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -334,7 +333,8 @@ private fun SourceSelector(
             DropdownMenu(
                 expanded = expanded, onDismissRequest = { expanded = false }) {
                 AutoChangeSource.values().forEach { source ->
-                    val isEnabled = !source.isPremium || isPremiumUser
+//                    val isEnabled = !source.isPremium || isPremiumUser
+                    val isEnabled = true
                     DropdownMenuItem(
                         text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -343,14 +343,14 @@ private fun SourceSelector(
                                 color = if (isEnabled) MaterialTheme.colorScheme.onSurface
                                 else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                             )
-                            if (source.isPremium) {
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = stringResource(R.string.premium),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
+//                            if (source.isPremium) {
+//                                Spacer(modifier = Modifier.width(8.dp))
+//                                Text(
+//                                    text = stringResource(R.string.premium),
+//                                    style = MaterialTheme.typography.labelSmall,
+//                                    color = MaterialTheme.colorScheme.primary
+//                                )
+//                            }
                         }
                     }, onClick = {
                         if (isEnabled) {
@@ -387,7 +387,7 @@ private fun SettingsToggleItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp),
+                .padding(vertical = 12.dp, horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -448,12 +448,14 @@ private fun TargetSelector(
     var expanded by remember { mutableStateOf(false) }
 
     Surface(
-        onClick = { expanded = true }, modifier = Modifier.fillMaxWidth()
+        onClick = { expanded = true },
+        modifier = Modifier
+            .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp),
+                .padding(vertical = 12.dp,horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -480,22 +482,18 @@ private fun TargetSelector(
             DropdownMenu(
                 expanded = expanded, onDismissRequest = { expanded = false }) {
                 WallpaperTarget.values().forEach { target ->
-                    DropdownMenuItem(
-                        text = { Text(text = getTargetText(target)) },
-                        onClick = {
-                            onTargetSelected(target)
-                            expanded = false
-                        },
-                        trailingIcon = {
-                            if (target == currentTarget) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
+                    DropdownMenuItem(text = { Text(text = getTargetText(target)) }, onClick = {
+                        onTargetSelected(target)
+                        expanded = false
+                    }, trailingIcon = {
+                        if (target == currentTarget) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
-                    )
+                    })
                 }
             }
         }

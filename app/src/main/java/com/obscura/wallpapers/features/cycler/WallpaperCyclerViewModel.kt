@@ -105,7 +105,7 @@ class WallpaperCyclerViewModel @Inject constructor(
                 _autoChangeWifiOnly.value = userSettings.autoChangeWifiOnly
                 _autoChangeSource.value = userSettings.autoChangeSource
                 _autoChangeCategory.value = userSettings.autoChangeCategory
-                _autoChangeTarget.value = userSettings.autoChangeTarget ?: WallpaperTarget.BOTH
+                _autoChangeTarget.value = userSettings.autoChangeTarget
             } catch (_: Exception) {
             }
         }

@@ -57,7 +57,7 @@ fun PhotoLibraryScreen(
         refreshing = isRefreshing, onRefresh = { viewModel.refresh() })
 
     val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.categories_static), actions = {
+        title = stringResource(R.string.nav_photo), actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(
                     imageVector = Icons.Default.Search,
