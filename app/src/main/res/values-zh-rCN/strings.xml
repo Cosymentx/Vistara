@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallpaper_set_home_success">已设置主屏幕壁纸</string>
+    <string name="wallpaper_set_lock_success">已设置锁屏壁纸</string>
+    <string name="wallpaper_set_both_success">已同时设置主屏与锁屏</string>
+</resources>

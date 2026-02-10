@@ -38,7 +38,7 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.core.data.model.WallpaperTarget
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
-import com.obscura.wallpapers.ui.components.WallpaperDetail
+import com.obscura.wallpapers.ui.components.WallpaperPreview
 import com.obscura.wallpapers.ui.components.WallpaperSetOptions
 import com.obscura.wallpapers.ui.theme.AppColors
 import com.obscura.wallpapers.ui.theme.stringResource
@@ -142,13 +142,6 @@ fun WallpaperPreviewScreen(
         }
     }
 
-    val focusManager = LocalFocusManager.current
-    LaunchedEffect(focusManager) {
-    }
-
-    LaunchedEffect(activity) {
-    }
-
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -190,7 +183,7 @@ fun WallpaperPreviewScreen(
                         }
                     }
 
-                    WallpaperDetail(
+                    WallpaperPreview(
                         wallpaper = wallpaper,
                         isFavorite = isFavorite,
                         isInfoExpanded = isInfoExpanded,
@@ -202,7 +195,7 @@ fun WallpaperPreviewScreen(
                         onSetWallpaper = {
                             if (!isLoggedIn) {
                                 viewModel.setNeedLoginAction(WallpaperPreviewViewModel.LoginAction.SET_WALLPAPER)
-                                return@WallpaperDetail
+                                return@WallpaperPreview
                             }
                             viewModel.showSetWallpaperOptions(activity)
                         },
@@ -213,7 +206,7 @@ fun WallpaperPreviewScreen(
                         onEdit = {
                             if (!isLoggedIn) {
                                 viewModel.setNeedLoginAction(WallpaperPreviewViewModel.LoginAction.EDIT)
-                                return@WallpaperDetail
+                                return@WallpaperPreview
                             }
                             if (wallpaper.isLive) {
                                 Toast.makeText(
@@ -221,12 +214,12 @@ fun WallpaperPreviewScreen(
                                     R.string.editor_live_wallpaper_edit_not_supported,
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                return@WallpaperDetail
+                                return@WallpaperPreview
                             }
-                            if (wallpaper.isPremium && !isPremiumUser) {
-                                viewModel.showPremiumPrompt()
-                                return@WallpaperDetail
-                            }
+//                            if (wallpaper.isPremium && !isPremiumUser) {
+//                                viewModel.showPremiumPrompt()
+//                                return@WallpaperPreview
+//                            }
                             val wallpaperId = wallpaper.id
                             onNavigateToEdit(wallpaperId)
                         },

@@ -7,6 +7,7 @@
     <string name="preview_download_failed_permission_required">Cannot download wallpaper: storage permission required</string>
     <string name="preview_favorite_login_required">Adding wallpaper to favorites requires login</string>
     <string name="preview_download_login_required">Downloading wallpaper requires login</string>
+    <string name="preview_download_success">Saved to gallery</string>
     <string name="preview_set_wallpaper_login_required">Setting wallpaper requires login</string>
     <string name="preview_edit_login_required">Editing wallpaper requires login</string>
     <string name="preview_set_as_wallpaper">Set as Wallpaper</string>

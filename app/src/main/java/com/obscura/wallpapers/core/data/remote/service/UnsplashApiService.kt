@@ -3,6 +3,7 @@ package com.obscura.wallpapers.core.data.remote.service
 import com.obscura.wallpapers.core.data.model.unsplash.UnsplashCollection
 import com.obscura.wallpapers.core.data.model.unsplash.UnsplashPhoto
 import com.obscura.wallpapers.core.data.model.unsplash.UnsplashSearchResponse
+import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -79,7 +80,7 @@ interface UnsplashApiService {
      * @param id 照片ID
      */
     @GET("photos/{id}/download")
-    suspend fun trackDownload(@Path("id") id: String): Any
+    suspend fun trackDownload(@Path("id") id: String): ResponseBody
 
     /**
      * 获取精选集合

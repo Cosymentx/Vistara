@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.widget.Toast
 import com.obscura.wallpapers.cache.EditedImageCache
 import com.obscura.wallpapers.core.common.ImageProcessor
 import com.obscura.wallpapers.core.data.model.UiState
@@ -39,18 +40,6 @@ class WallpaperPreviewViewModel @Inject constructor(
 
     companion object {
         private const val TAG = "WallpaperPreviewViewModel"
-    }
-
-
-    init {
-        viewModelScope.launch {
-            try {
-                _isLoggedIn.value = userRepository.checkUserLoggedIn()
-            } catch (_: Exception) {
-                _isLoggedIn.value = false
-            }
-        }
-        loadWallpaper()
     }
 
     private val wallpaperId: String = checkNotNull(savedStateHandle["wallpaperId"])
@@ -121,6 +110,7 @@ class WallpaperPreviewViewModel @Inject constructor(
         FAVORITE, DOWNLOAD, SET_WALLPAPER, EDIT
     }
 
+
     private fun loadWallpaper() {
         viewModelScope.launch {
             try {
@@ -182,9 +172,9 @@ class WallpaperPreviewViewModel @Inject constructor(
                     _showSetWallpaperOptions.value = false
                     if (success) {
                         _wallpaperSetSuccess.value = when (target) {
-                            WallpaperTarget.HOME -> "已设置主屏幕壁纸"
-                            WallpaperTarget.LOCK -> "已设置锁屏壁纸"
-                            WallpaperTarget.BOTH -> "已同时设置主屏与锁屏"
+                            WallpaperTarget.HOME -> context.getString(com.obscura.wallpapers.R.string.wallpaper_set_home_success)
+                            WallpaperTarget.LOCK -> context.getString(com.obscura.wallpapers.R.string.wallpaper_set_lock_success)
+                            WallpaperTarget.BOTH -> context.getString(com.obscura.wallpapers.R.string.wallpaper_set_both_success)
                         }
                     } else {
                         _wallpaperSetSuccess.value = null
@@ -233,10 +223,37 @@ class WallpaperPreviewViewModel @Inject constructor(
                     }
                 }
                 _isDownloading.value = true
-                _downloadProgress.value = 0.1f
-                wallpaperRepository.trackWallpaperDownload(s.data.id)
-                _downloadProgress.value = 1.0f
-                _isDownloading.value = false
+                _downloadProgress.value = 0f
+                try {
+                    wallpaperManager
+                        .downloadWallpaper(s.data, downloadOriginalQuality = true)
+                        .collect { (progress, filePath) ->
+                            when {
+                                progress < 0f -> {
+                                    _downloadProgress.value = 0f
+                                    _isDownloading.value = false
+                                }
+                                progress >= 1f -> {
+                                    _downloadProgress.value = 1f
+                                    _isDownloading.value = false
+                                    wallpaperRepository.trackWallpaperDownload(s.data.id)
+                                    try {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(com.obscura.wallpapers.R.string.preview_download_success),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } catch (_: Exception) { }
+                                }
+                                else -> {
+                                    _downloadProgress.value = progress
+                                }
+                            }
+                        }
+                } catch (_: Exception) {
+                    _downloadProgress.value = 0f
+                    _isDownloading.value = false
+                }
             }
         }
     }
@@ -273,40 +290,13 @@ class WallpaperPreviewViewModel @Inject constructor(
         }
     }
 
-    fun showPremiumPrompt() {
-        _navigateToUpgrade.value = true
-        _upgradeResult.value = UpgradeResult.Error("需要升级为高级用户")
-    }
 
     fun resetNavigateToUpgrade() {
         _navigateToUpgrade.value = false
     }
 
-    fun clearDiamondPurchaseResult() {
-//        _diamondPurchaseResult.value = null
-    }
-
     fun clearUpgradeResult() {
         _upgradeResult.value = null
-    }
-
-    fun purchaseWithDiamonds() {
-//        viewModelScope.launch {
-//            val s = _wallpaperState.value
-//            if (s is UiState.Success) {
-//                val marked = wallpaperRepository.markWallpaperAsPurchased(s.data.id)
-//                if (marked) {
-//                    _diamondPurchaseResult.value = DiamondPurchaseResult.Success("已购买解锁")
-//                    _showDiamondPurchaseDialog.value = false
-//                } else {
-//                    _diamondPurchaseResult.value = DiamondPurchaseResult.Error("购买失败")
-//                }
-//            }
-//        }
-    }
-
-    fun hideDiamondPurchaseDialog() {
-        _showDiamondPurchaseDialog.value = false
     }
 
     fun setNeedLoginAction(action: LoginAction) {
@@ -319,5 +309,16 @@ class WallpaperPreviewViewModel @Inject constructor(
 
     fun clearWallpaperSetSuccess() {
         _wallpaperSetSuccess.value = null
+    }
+
+    init {
+        viewModelScope.launch {
+            try {
+                _isLoggedIn.value = userRepository.checkUserLoggedIn()
+            } catch (_: Exception) {
+                _isLoggedIn.value = false
+            }
+        }
+        loadWallpaper()
     }
 }

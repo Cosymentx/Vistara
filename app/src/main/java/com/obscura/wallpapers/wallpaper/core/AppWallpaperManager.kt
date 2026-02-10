@@ -30,7 +30,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -43,6 +42,8 @@ import java.net.URL
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.graphics.createBitmap
+import androidx.core.net.toUri
 
 @Singleton
 class AppWallpaperManager @Inject constructor(
@@ -153,7 +154,7 @@ class AppWallpaperManager @Inject constructor(
             val wallpaperManager = WallpaperManager.getInstance(activity)
             withContext(Dispatchers.IO) {
                 try {
-                    val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+                    val bitmap = createBitmap(1, 1)
                     bitmap.eraseColor(Color.TRANSPARENT)
                     when (target) {
                         WallpaperTarget.HOME -> wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_SYSTEM)
@@ -166,7 +167,7 @@ class AppWallpaperManager @Inject constructor(
                     bitmap.recycle(); Log.d(TAG, "Successfully reset wallpaper state"); delay(300)
                 } catch (e: Exception) { Log.e(TAG, "Failed to reset wallpaper: ${e.message}") }
             }
-            LiveWallpaperService.setVideoUri(activity, Uri.parse(videoUrl))
+            LiveWallpaperService.setVideoUri(activity, videoUrl.toUri())
             Log.d(TAG, "Set video URI directly from URL: $videoUrl")
             val result = setVideoWallpaper(activity)
             withContext(Dispatchers.Main) {
@@ -252,41 +253,168 @@ class AppWallpaperManager @Inject constructor(
     private suspend fun downloadImageFile(
         wallpaper: Wallpaper, downloadOriginalQuality: Boolean, progressCallback: DownloadProgressCallback
     ): String {
-        val directory = createDownloadDirectory("images")
-        val fileName = "${sanitizeFileName(wallpaper.title)}_${System.currentTimeMillis()}.jpg"
-        val targetFile = File(directory, fileName)
         val chosen = if (downloadOriginalQuality) {
-            // 优先使用高清或原始链接，否则回退到主链接
             wallpaper.url ?: wallpaper.previewUrl ?: ""
         } else {
-            // 优先使用预览/标清链接，否则回退到主链接
             wallpaper.previewUrl ?: wallpaper.url ?: ""
         }
-        val url = URL(chosen)
-        downloadFileWithProgress(url.toString(), targetFile, progressCallback)
-        addImageToGallery(targetFile)
-        return targetFile.absolutePath
+        val url = URL(chosen).toString()
+        return withContext(Dispatchers.IO) {
+            val client = OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).build()
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Accept", "*/*")
+                .addHeader("User-Agent", "Obscura/1.0")
+                .build()
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) throw IOException("Failed to download image: ${response.code}")
+            val body = response.body ?: throw IOException("Empty image response body")
+            val contentType = body.contentType()?.toString()
+            val ext = when {
+                contentType?.contains("png", ignoreCase = true) == true -> "png"
+                contentType?.contains("webp", ignoreCase = true) == true -> "webp"
+                else -> "jpg"
+            }
+            val displayName = "${sanitizeFileName(wallpaper.title)}_${System.currentTimeMillis()}.$ext"
+            val mime = when (ext) {
+                "png" -> "image/png"
+                "webp" -> "image/webp"
+                else -> "image/jpeg"
+            }
+            val contentLength = body.contentLength()
+            var bytesReadTotal = 0L
+            val rawBytes = ByteArrayOutputStream().use { out ->
+                body.byteStream().use { input ->
+                    val buffer = ByteArray(DOWNLOAD_BUFFER_SIZE)
+                    while (true) {
+                        val bytesRead = input.read(buffer)
+                        if (bytesRead == -1) break
+                        out.write(buffer, 0, bytesRead)
+                        bytesReadTotal += bytesRead
+                        if (contentLength > 0) {
+                            val progress = bytesReadTotal.toFloat() / contentLength
+                            progressCallback.onProgressUpdate(progress)
+                        }
+                    }
+                }
+                out.toByteArray()
+            }
+            val decodedBitmap = BitmapFactory.decodeByteArray(rawBytes, 0, rawBytes.size)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val values = ContentValues().apply {
+                    put(MediaStore.Images.Media.DISPLAY_NAME, displayName)
+                    put(MediaStore.Images.Media.MIME_TYPE, mime)
+                    put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Obscura")
+                    put(MediaStore.Images.Media.IS_PENDING, 1)
+                    if (decodedBitmap != null) {
+                        put(MediaStore.Images.Media.WIDTH, decodedBitmap.width)
+                        put(MediaStore.Images.Media.HEIGHT, decodedBitmap.height)
+                    }
+                }
+                val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                val uri = context.contentResolver.insert(contentUri, values)
+                    ?: throw IOException("Failed to create image media entry")
+                context.contentResolver.openOutputStream(uri)?.use { output ->
+                    if (decodedBitmap != null) {
+                        when (ext) {
+                            "png" -> decodedBitmap.compress(Bitmap.CompressFormat.PNG, 100, output)
+                            "webp" -> decodedBitmap.compress(Bitmap.CompressFormat.WEBP, 100, output)
+                            else -> decodedBitmap.compress(Bitmap.CompressFormat.JPEG, 95, output)
+                        }
+                    } else {
+                        output.write(rawBytes)
+                    }
+                    output.flush()
+                } ?: throw IOException("Failed to open output stream for image")
+                val finalize = ContentValues().apply { put(MediaStore.Images.Media.IS_PENDING, 0) }
+                context.contentResolver.update(uri, finalize, null, null)
+                uri.toString()
+            } else {
+                val baseOld = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                val dir = File(baseOld, "Obscura/images"); if (!dir.exists()) dir.mkdirs()
+                val targetFile = File(dir, displayName)
+                FileOutputStream(targetFile).use { output ->
+                    if (decodedBitmap != null) {
+                        when (ext) {
+                            "png" -> decodedBitmap.compress(Bitmap.CompressFormat.PNG, 100, output)
+                            "webp" -> decodedBitmap.compress(Bitmap.CompressFormat.WEBP, 100, output)
+                            else -> decodedBitmap.compress(Bitmap.CompressFormat.JPEG, 95, output)
+                        }
+                    } else {
+                        output.write(rawBytes)
+                    }
+                    output.flush()
+                }
+                addImageToGallery(targetFile)
+                targetFile.absolutePath
+            }
+        }
     }
     private suspend fun downloadVideoFile(
         wallpaper: Wallpaper, downloadOriginalQuality: Boolean, progressCallback: DownloadProgressCallback
     ): String {
-        val directory = createDownloadDirectory("videos")
-        val fileName = "${sanitizeFileName(wallpaper.title)}_${System.currentTimeMillis()}.mp4"
-        val targetFile = File(directory, fileName)
         val chosen = if (downloadOriginalQuality) {
             wallpaper.downloadHdUrl ?: wallpaper.downloadUrl ?: wallpaper.url ?: ""
         } else {
             wallpaper.downloadSdUrl ?: wallpaper.downloadUrl ?: wallpaper.url ?: ""
         }
-        val url = URL(chosen)
-        downloadFileWithProgress(url.toString(), targetFile, progressCallback)
-        addVideoToGallery(targetFile)
-        return targetFile.absolutePath
+        val url = URL(chosen).toString()
+        return withContext(Dispatchers.IO) {
+            val client = OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).build()
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Accept", "*/*")
+                .addHeader("User-Agent", "Obscura/1.0")
+                .build()
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) throw IOException("Failed to download video: ${response.code}")
+            val body = response.body ?: throw IOException("Empty video response body")
+            val values = ContentValues().apply {
+                put(MediaStore.Video.Media.DISPLAY_NAME, "${sanitizeFileName(wallpaper.title)}_${System.currentTimeMillis()}.mp4")
+                put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/Obscura")
+                    put(MediaStore.Video.Media.IS_PENDING, 1)
+                } else {
+                    // 对于旧版本，仍写入公共存储路径
+                    val baseOld = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    val oldFile = File(File(baseOld, "Obscura/videos"), "${sanitizeFileName(wallpaper.title)}_${System.currentTimeMillis()}.mp4")
+                    oldFile.parentFile?.mkdirs()
+                    put(MediaStore.Video.Media.DATA, oldFile.absolutePath)
+                }
+            }
+            val contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+            val uri = context.contentResolver.insert(contentUri, values)
+                ?: throw IOException("Failed to create video media entry")
+            val contentLength = body.contentLength()
+            var bytesReadTotal = 0L
+            body.byteStream().use { input ->
+                context.contentResolver.openOutputStream(uri)?.use { output ->
+                    val buffer = ByteArray(DOWNLOAD_BUFFER_SIZE)
+                    while (true) {
+                        val bytesRead = input.read(buffer)
+                        if (bytesRead == -1) break
+                        output.write(buffer, 0, bytesRead)
+                        bytesReadTotal += bytesRead
+                        if (contentLength > 0) {
+                            val progress = bytesReadTotal.toFloat() / contentLength
+                            progressCallback.onProgressUpdate(progress)
+                        }
+                    }
+                    output.flush()
+                } ?: throw IOException("Failed to open output stream for video")
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val finalize = ContentValues().apply { put(MediaStore.Video.Media.IS_PENDING, 0) }
+                context.contentResolver.update(uri, finalize, null, null)
+            }
+            uri.toString()
+        }
     }
     private fun createDownloadDirectory(type: String): File {
         val baseDir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
         else Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val dir = File(baseDir, "Vistara/$type"); if (!dir.exists()) dir.mkdirs(); return dir
+        val dir = File(baseDir, "Obscura/$type"); if (!dir.exists()) dir.mkdirs(); return dir
     }
     private fun sanitizeFileName(name: String?): String {
         return name?.replace(Regex("[^a-zA-Z0-9_\\-]"), "_") ?: "wallpaper"
@@ -294,10 +422,14 @@ class AppWallpaperManager @Inject constructor(
     private suspend fun downloadFileWithProgress(url: String, targetFile: File, progressCallback: DownloadProgressCallback) {
         withContext(Dispatchers.IO) {
             val client = OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).build()
-            val request = Request.Builder().url(url).build()
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Accept", "*/*")
+                .addHeader("User-Agent", "Obscura/1.0")
+                .build()
             val response = client.newCall(request).execute()
             if (!response.isSuccessful) throw IOException("Failed to download file: ${response.code}")
-            val body = response.body ?: throw IOException("Empty response body")
+            val body = response.body
             val contentLength = body.contentLength()
             var bytesReadTotal = 0L
             body.byteStream().use { input ->
@@ -322,9 +454,18 @@ class AppWallpaperManager @Inject constructor(
         try {
             val values = ContentValues().apply {
                 put(MediaStore.Images.Media.DISPLAY_NAME, file.name)
-                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) put(MediaStore.Images.Media.RELATIVE_PATH, "Download/Vistara/images")
-                else put(MediaStore.Images.Media.DATA, file.absolutePath)
+                val mime = when {
+                    file.name.endsWith(".png", true) -> "image/png"
+                    file.name.endsWith(".webp", true) -> "image/webp"
+                    else -> "image/jpeg"
+                }
+                put(MediaStore.Images.Media.MIME_TYPE, mime)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Obscura")
+                    put(MediaStore.Images.Media.IS_PENDING, 1)
+                } else {
+                    put(MediaStore.Images.Media.DATA, file.absolutePath)
+                }
             }
             val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             context.contentResolver.insert(contentUri, values)?.let { uri ->
@@ -334,6 +475,10 @@ class AppWallpaperManager @Inject constructor(
                         while (input.read(buffer).also { bytesRead = it } != -1) { output.write(buffer, 0, bytesRead) }
                     }
                 }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val finalize = ContentValues().apply { put(MediaStore.Images.Media.IS_PENDING, 0) }
+                    context.contentResolver.update(uri, finalize, null, null)
+                }
             }
         } catch (e: Exception) { Log.e(TAG, "Failed to add image to gallery", e) }
     }
@@ -342,8 +487,12 @@ class AppWallpaperManager @Inject constructor(
             val values = ContentValues().apply {
                 put(MediaStore.Video.Media.DISPLAY_NAME, file.name)
                 put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) put(MediaStore.Video.Media.RELATIVE_PATH, "Download/Vistara/videos")
-                else put(MediaStore.Video.Media.DATA, file.absolutePath)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/Obscura")
+                    put(MediaStore.Video.Media.IS_PENDING, 1)
+                } else {
+                    put(MediaStore.Video.Media.DATA, file.absolutePath)
+                }
             }
             val contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
             context.contentResolver.insert(contentUri, values)?.let { uri ->
@@ -352,6 +501,10 @@ class AppWallpaperManager @Inject constructor(
                         val buffer = ByteArray(DOWNLOAD_BUFFER_SIZE); var bytesRead: Int
                         while (input.read(buffer).also { bytesRead = it } != -1) { output.write(buffer, 0, bytesRead) }
                     }
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val finalize = ContentValues().apply { put(MediaStore.Video.Media.IS_PENDING, 0) }
+                    context.contentResolver.update(uri, finalize, null, null)
                 }
             }
         } catch (e: Exception) { Log.e(TAG, "Failed to add video to gallery", e) }
@@ -366,7 +519,10 @@ class AppWallpaperManager @Inject constructor(
     private suspend fun downloadFile(url: String, targetFile: File, progressCallback: DownloadProgressCallback) {
         withContext(Dispatchers.IO) {
             val client = OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).build()
-            val request = Request.Builder().url(url).build()
+            val request = Request.Builder().url(url)
+                .addHeader("Accept", "*/*")
+                .addHeader("User-Agent", "Obscura/1.0")
+                .build()
             val response = client.newCall(request).execute()
             if (!response.isSuccessful) throw IOException("Failed to download file: ${response.code}")
             val body = response.body ?: throw IOException("Empty response body")

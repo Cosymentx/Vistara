@@ -65,7 +65,7 @@ import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 
 @Composable
-fun WallpaperDetail(
+fun WallpaperPreview(
     wallpaper: Wallpaper,
     isFavorite: Boolean,
     isInfoExpanded: Boolean = false,
@@ -355,33 +355,34 @@ fun WallpaperDetail(
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_download),
                                     contentDescription = stringResource(R.string.download),
-                                    tint = if (canDownload && !isDownloading) Color.White else Color.White.copy(
-                                        alpha = 0.5f
-                                    )
+                                    tint =Color.White
+//                                    tint = if (canDownload && !isDownloading) Color.White else Color.White.copy(
+//                                        alpha = 0.5f
+//                                    )
                                 )
                             }
                         }
 
                         // 添加标识图标
-                        if (wallpaper.isPremium && !isPremiumUser) {
-                            // 高级壁纸显示皇冠图标
-                            Text(
-                                text = "👑",
-                                style = MaterialTheme.typography.labelSmall,
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .offset(x = 1.dp, y = (-5).dp)
-                            )
-                        } else if (wallpaper.isLive && !isPremiumUser) {
-                            // 普通动态壁纸显示钻石图标
-                            Text(
-                                text = "💎",
-                                style = MaterialTheme.typography.labelSmall,
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .offset(x = 1.dp, y = (-5).dp)
-                            )
-                        }
+//                        if (wallpaper.isPremium && !isPremiumUser) {
+//                            // 高级壁纸显示皇冠图标
+//                            Text(
+//                                text = "👑",
+//                                style = MaterialTheme.typography.labelSmall,
+//                                modifier = Modifier
+//                                    .align(Alignment.TopEnd)
+//                                    .offset(x = 1.dp, y = (-5).dp)
+//                            )
+//                        } else if (wallpaper.isLive && !isPremiumUser) {
+//                            // 普通动态壁纸显示钻石图标
+//                            Text(
+//                                text = "💎",
+//                                style = MaterialTheme.typography.labelSmall,
+//                                modifier = Modifier
+//                                    .align(Alignment.TopEnd)
+//                                    .offset(x = 1.dp, y = (-5).dp)
+//                            )
+//                        }
                     }
 
                     // 分享按钮
@@ -446,23 +447,23 @@ fun WallpaperDetail(
                             Spacer(modifier = Modifier.width(8.dp))
                         } else if (wallpaper.isPremium) {
                             // 对于高级壁纸和非高级用户，显示皇冠图标
-                            Text(
-                                text = "👑", // 皇冠emoji
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.padding(end = 4.dp)
-                            )
+//                            Text(
+//                                text = "👑", // 皇冠emoji
+//                                style = MaterialTheme.typography.bodyMedium,
+//                                modifier = Modifier.padding(end = 4.dp)
+//                            )
                         } else if (wallpaper.isLive && !isPremiumUser) {
                             // 对于普通动态壁纸和非高级用户，显示钻石图标
-                            Text(
-                                text = "💎", // 钻石emoji
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.padding(end = 4.dp)
-                            )
+//                            Text(
+//                                text = "💎", // 钻石emoji
+//                                style = MaterialTheme.typography.bodyMedium,
+//                                modifier = Modifier.padding(end = 4.dp)
+//                            )
                         }
                         Text(
                             text = if (isProcessingWallpaper) stringResource(R.string.preview_setting_wallpaper)
-                            else if (canSetWallpaper) stringResource(R.string.preview_set_as_wallpaper)
-                            else stringResource(R.string.preview_upgrade_to_unlock),
+                            else  stringResource(R.string.preview_set_as_wallpaper),
+//                            else stringResource(R.string.preview_upgrade_to_unlock),
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                             // 不需要显式设置颜色，因为我们已经在ButtonDefaults中设置了disabledContentColor
                         )
@@ -532,9 +533,9 @@ fun WallpaperSetOptions(
 
 @Preview
 @Composable
-fun WallpaperDetailPreview() {
+fun WallpaperPreviewPreview() {
     ObscuraTheme {
-        WallpaperDetail(
+        WallpaperPreview(
             wallpaper = Wallpaper(
                 id = "1",
                 title = "Beautiful Landscape",
