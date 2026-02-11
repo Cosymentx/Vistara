@@ -33,21 +33,21 @@
     <!-- 設定画面 -->
     <string name="back">戻る</string>
     <string name="settings_title">設定</string>
-    <string name="settings_theme_settings">テーマ設定</string>
-    <string name="settings_language_settings">言語設定</string>
-    <string name="settings_notification_settings">通知設定</string>
+    <string name="settings_theme_settings">テーマ</string>
+    <string name="settings_language_settings">言語</string>
+    <string name="settings_notification_settings">通知</string>
     <string name="settings_download_notification">ダウンロード通知</string>
     <string name="settings_download_notification_desc">壁紙のダウンロード完了通知を表示</string>
     <string name="settings_wallpaper_change_notification">壁紙変更通知</string>
     <string name="settings_wallpaper_change_notification_desc">自動壁紙変更通知を表示</string>
-    <string name="settings_download_settings">ダウンロード設定</string>
+    <string name="settings_download_settings">ダウンロード</string>
     <string name="settings_original_quality">オリジナル品質</string>
     <string name="settings_original_quality_desc">オリジナル品質の壁紙をダウンロード（大きいファイル）</string>
     <string name="settings_clear_cache">キャッシュを消去</string>
     <string name="settings_current_cache_size">現在のキャッシュサイズ: %1$s</string>
     <string name="settings_about_app">アプリについて</string>
     <string name="settings_app_version">アプリバージョン</string>
-    <string name="settings_account_settings">アカウント設定</string>
+    <string name="settings_account_settings">アカウント</string>
     <string name="settings_clear_cache_title">キャッシュを消去</string>
     <string name="settings_clear_cache_message">アプリのキャッシュを消去してもよろしいですか？これにより、キャッシュされたすべての画像とデータが削除されます。</string>
     <string name="settings_dark_theme">ダークテーマ</string>

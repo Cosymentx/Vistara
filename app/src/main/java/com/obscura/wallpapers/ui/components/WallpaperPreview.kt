@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.border
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
@@ -52,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -287,124 +289,61 @@ fun WallpaperPreview(
                 }
 
                 // 操作按钮行
-                Row(
-                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
-                    // 收藏按钮
-                    IconButton(
-                        onClick = onToggleFavorite, modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.2f))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
+                        GlassIconButton(
+                            onClick = onToggleFavorite,
                             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = if (isFavorite) "取消收藏" else "收藏",
                             tint = if (isFavorite) Color.Red else Color.White
                         )
-                    }
-
-                    // 编辑按钮 - 仅对静态壁纸显示且不是动态壁纸时
-                    if (!wallpaper.isLive) {
-                        // 如果壁纸不是高级壁纸，或者用户是高级用户，或者壁纸已经购买（isPremium为false），则可以编辑
-                        val canEdit = !wallpaper.isPremium || isPremiumUser
-                        IconButton(
-                            onClick = onEdit,
-                            enabled = canEdit,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(Color.White.copy(alpha = if (canEdit) 0.2f else 0.1f))
-                        ) {
-                            Icon(
+                        if (!wallpaper.isLive) {
+                            val canEdit = !wallpaper.isPremium || isPremiumUser
+                            GlassIconButton(
+                                onClick = onEdit,
+                                enabled = canEdit,
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = stringResource(R.string.edit),
                                 tint = if (canEdit) Color.White else Color.White.copy(alpha = 0.5f)
                             )
                         }
-                    }
-
-                    // 下载按钮
-                    // 如果壁纸不是高级壁纸，或者用户是高级用户，或者壁纸已经购买（isPremium为false），则可以下载
-                    val canDownload = !wallpaper.isPremium || isPremiumUser
-                    Box(
-                        contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)
-                    ) {
-                        // 下载进度指示器
-                        if (isDownloading) {
-                            CircularProgressIndicator(
-                                progress = { downloadProgress },
-                                modifier = Modifier.size(40.dp),
-                                color = MaterialTheme.colorScheme.primary,
-                                trackColor = Color.White.copy(alpha = 0.2f),
-                                strokeWidth = 2.dp
-                            )
-                        }
-
-                        IconButton(
-                            onClick = onDownload,
-                            enabled = !isDownloading,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(Color.White.copy(alpha = if (!isDownloading) 0.2f else 0.1f))
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.size(56.dp)
                         ) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_download),
-                                    contentDescription = stringResource(R.string.download),
-                                    tint =Color.White
-//                                    tint = if (canDownload && !isDownloading) Color.White else Color.White.copy(
-//                                        alpha = 0.5f
-//                                    )
+                            if (isDownloading) {
+                                CircularProgressIndicator(
+                                    progress = { downloadProgress },
+                                    modifier = Modifier.size(56.dp),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    trackColor = Color.White.copy(alpha = 0.15f),
+                                    strokeWidth = 2.dp
                                 )
                             }
+                            GlassIconButton(
+                                onClick = onDownload,
+                                enabled = !isDownloading,
+                                painter = painterResource(id = R.drawable.ic_download),
+                                contentDescription = stringResource(R.string.download),
+                                tint = Color.White
+                            )
                         }
-
-                        // 添加标识图标
-//                        if (wallpaper.isPremium && !isPremiumUser) {
-//                            // 高级壁纸显示皇冠图标
-//                            Text(
-//                                text = "👑",
-//                                style = MaterialTheme.typography.labelSmall,
-//                                modifier = Modifier
-//                                    .align(Alignment.TopEnd)
-//                                    .offset(x = 1.dp, y = (-5).dp)
-//                            )
-//                        } else if (wallpaper.isLive && !isPremiumUser) {
-//                            // 普通动态壁纸显示钻石图标
-//                            Text(
-//                                text = "💎",
-//                                style = MaterialTheme.typography.labelSmall,
-//                                modifier = Modifier
-//                                    .align(Alignment.TopEnd)
-//                                    .offset(x = 1.dp, y = (-5).dp)
-//                            )
-//                        }
-                    }
-
-                    // 分享按钮
-                    IconButton(
-                        onClick = onShare, modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.2f))
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Share, contentDescription = stringResource(R.string.share), tint = Color.White
+                        GlassIconButton(
+                            onClick = onShare,
+                            imageVector = Icons.Default.Share,
+                            contentDescription = stringResource(R.string.share),
+                            tint = Color.White
                         )
-                    }
-
-                    // 信息展开/收起按钮
-                    IconButton(
-                        onClick = onToggleInfo, modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.2f))
-                    ) {
-                        Icon(
+                        GlassIconButton(
+                            onClick = onToggleInfo,
                             imageVector = if (isInfoExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                             contentDescription = if (isInfoExpanded) stringResource(R.string.preview_collapse_info) else stringResource(R.string.preview_expand_info),
                             tint = Color.White
@@ -422,7 +361,7 @@ fun WallpaperPreview(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
-                        .height(48.dp),
+                        .height(52.dp),
                     colors = ButtonDefaults.buttonColors(
                         // 自定义禁用状态的颜色，使其保持高可见度
                         disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
@@ -431,7 +370,8 @@ fun WallpaperPreview(
                         // 正常状态的颜色
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
+                    ),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -476,6 +416,38 @@ fun WallpaperPreview(
     }
 }
 
+@Composable
+private fun GlassIconButton(
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    painter: androidx.compose.ui.graphics.painter.Painter? = null,
+    imageVector: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    contentDescription: String? = null,
+    tint: Color = Color.White
+) {
+    Box(
+        modifier = Modifier
+            .size(56.dp)
+            .shadow(12.dp, CircleShape, clip = false)
+            .clip(CircleShape)
+            .background(Color.White.copy(alpha = 0.14f))
+            .border(width = 1.dp, color = Color.White.copy(alpha = 0.22f), shape = CircleShape)
+    ) {
+        IconButton(
+            onClick = onClick,
+            enabled = enabled,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(56.dp)
+        ) {
+            if (painter != null) {
+                Icon(painter = painter, contentDescription = contentDescription, tint = tint)
+            } else if (imageVector != null) {
+                Icon(imageVector = imageVector, contentDescription = contentDescription, tint = tint)
+            }
+        }
+    }
+}
 @Composable
 fun WallpaperSetOptions(
     onSetHomeScreen: () -> Unit, onSetLockScreen: () -> Unit, onSetBoth: () -> Unit, onDismiss: () -> Unit,
