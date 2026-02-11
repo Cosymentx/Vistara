@@ -38,21 +38,21 @@
     <!-- Settings screen -->
     <string name="back">Back</string>
     <string name="settings_title">Settings</string>
-    <string name="settings_theme_settings">Theme Settings</string>
-    <string name="settings_language_settings">Language Settings</string>
-    <string name="settings_notification_settings">Notification Settings</string>
+    <string name="settings_theme_settings">Theme</string>
+    <string name="settings_language_settings">Language</string>
+    <string name="settings_notification_settings">Notification</string>
     <string name="settings_download_notification">Download Notification</string>
     <string name="settings_download_notification_desc">Show wallpaper download completion notification</string>
     <string name="settings_wallpaper_change_notification">Wallpaper Change Notification</string>
     <string name="settings_wallpaper_change_notification_desc">Show auto wallpaper change notification</string>
-    <string name="settings_download_settings">Download Settings</string>
+    <string name="settings_download_settings">Download</string>
     <string name="settings_original_quality">Original Quality</string>
     <string name="settings_original_quality_desc">Download wallpapers in original quality (larger files)</string>
     <string name="settings_clear_cache">Clear Cache</string>
     <string name="settings_current_cache_size">Current cache size: %1$s</string>
     <string name="settings_about_app">About App</string>
     <string name="settings_app_version">App Version</string>
-    <string name="settings_account_settings">Account Settings</string>
+    <string name="settings_account_settings">Account</string>
     <string name="settings_clear_cache_title">Clear Cache</string>
     <string name="settings_clear_cache_message">Are you sure you want to clear the app cache? This will delete all cached images and data.</string>
     <string name="settings_dark_theme">Dark Theme</string>

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.R
@@ -22,6 +23,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+
+data class SettingsToggleEntry(
+    val icon: ImageVector,
+    val title: String,
+    val subtitle: String?,
+    val checked: Boolean,
+    val onCheckedChange: (Boolean) -> Unit
+)
 
 @HiltViewModel
 class PreferencesViewModel @Inject constructor(
