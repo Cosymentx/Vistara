@@ -1,7 +1,11 @@
 package com.obscura.wallpapers.features.info
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -32,6 +37,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -98,16 +105,39 @@ private fun AppInfoSection(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
     ) {
-        Box(
-            modifier = Modifier
-                .size(80.dp)
-                .clip(RoundedCornerShape(20.dp))
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher),
-                contentDescription = stringResource(R.string.app_name),
-                modifier = Modifier.fillMaxSize()
+        Surface(
+            modifier = Modifier.size(96.dp),
+            shape = RoundedCornerShape(24.dp),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
+            tonalElevation = 2.dp,
+            shadowElevation = 2.dp,
+            border = BorderStroke(
+                1.dp, Brush.linearGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.25f), Color.Transparent
+                    )
+                )
             )
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
+                                    Color.Transparent
+                                )
+                            )
+                        )
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher),
+                    contentDescription = stringResource(R.string.app_name),
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -123,7 +153,7 @@ private fun AppInfoSection(
         Text(
             text = appVersion,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -133,7 +163,7 @@ private fun AppInfoSection(
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Start,
             modifier = Modifier.padding(horizontal = 20.dp),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -192,29 +222,70 @@ private fun OpenSourceSection(
 }
 
 @Composable
-private fun LinkItem(
+private fun LinkList(
+    items: List<LinkEntry>
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items.forEach { entry ->
+            LinkItemGlass(title = entry.title, onClick = entry.onClick)
+        }
+    }
+}
+
+@Composable
+private fun LinkItemGlass(
     title: String, onClick: () -> Unit
 ) {
     Surface(
-        onClick = onClick, modifier = Modifier.fillMaxWidth()
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
+        tonalElevation = 2.dp,
+        shadowElevation = 2.dp,
+        border = BorderStroke(
+            1.dp, Brush.linearGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.25f), Color.Transparent
+                )
+            )
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 16.dp),
+                .padding(horizontal = 20.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-//            Icon(
-//                imageVector = ObscuraIcons.Info,
-//                contentDescription = null,
-//                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-//            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.12f))
+                    .border(1.dp, Color.White.copy(alpha = 0.16f), CircleShape)
+            ) {
+                Icon(
+                    imageVector = ObscuraIcons.Info,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(22.dp)
+                )
+            }
 
-//            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(14.dp))
 
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
             )
 
@@ -227,21 +298,6 @@ private fun LinkItem(
     }
 }
 
-data class LinkEntry(
-    val title: String, val onClick: () -> Unit
-)
-
-@Composable
-private fun LinkList(
-    items: List<LinkEntry>
-) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        items.forEach { entry ->
-            LinkItem(title = entry.title, onClick = entry.onClick)
-        }
-    }
-}
-
 @Composable
 private fun LibraryItem(
     library: Library, onClick: () -> Unit
@@ -249,10 +305,11 @@ private fun LibraryItem(
     Surface(
         onClick = onClick, modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(16.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(16.dp)) {
             Text(
                 text = library.name,
                 style = MaterialTheme.typography.titleSmall,

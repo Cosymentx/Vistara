@@ -18,6 +18,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.net.URLEncoder
 import javax.inject.Inject
 
+data class LinkEntry(
+    val title: String, val onClick: () -> Unit
+)
+
 @HiltViewModel
 class InfoViewModel @Inject constructor(
     @ApplicationContext private val context: Context

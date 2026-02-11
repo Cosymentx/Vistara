@@ -30,6 +30,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -71,6 +72,9 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import androidx.compose.ui.graphics.Brush.Companion.verticalGradient
 import androidx.compose.ui.graphics.Brush.Companion.radialGradient
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.material3.Surface
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -145,28 +149,60 @@ fun SignInScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            val bgAnim = rememberInfiniteTransition(label = "bgAnim")
+            val bgShiftX by bgAnim.animateFloat(
+                initialValue = -200f,
+                targetValue = 200f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 6000, easing = FastOutSlowInEasing),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "bgShiftX"
+            )
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        brush = verticalGradient(
+                        brush = Brush.linearGradient(
                             colors = listOf(
                                 MaterialTheme.colorScheme.surface,
+                                MaterialTheme.colorScheme.secondary.copy(alpha = 0.10f),
                                 MaterialTheme.colorScheme.surfaceVariant
-                            )
+                            ),
+                            start = Offset(bgShiftX, 0f),
+                            end = Offset(bgShiftX + 900f, 1200f)
                         )
                     )
             )
 
+            val glowAnim = rememberInfiniteTransition(label = "glowAnim")
+            val glowShiftA by glowAnim.animateFloat(
+                initialValue = -40f,
+                targetValue = 40f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 7000, easing = FastOutSlowInEasing),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "glowShiftA"
+            )
+            val glowShiftB by glowAnim.animateFloat(
+                initialValue = -30f,
+                targetValue = 30f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 8000, easing = FastOutSlowInEasing),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "glowShiftB"
+            )
             Box(
                 modifier = Modifier
                     .size(300.dp)
-                    .offset((-50).dp, (-50).dp)
-                    .alpha(0.1f)
+                    .offset(((-50) + glowShiftA).dp, ((-50) + glowShiftB).dp)
+                    .alpha(0.10f)
                     .background(
                         brush = radialGradient(
                             colors = listOf(
-                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
                                 MaterialTheme.colorScheme.primary.copy(alpha = 0f)
                             )
                         ), shape = RoundedCornerShape(100)
@@ -177,12 +213,12 @@ fun SignInScreen(
                 modifier = Modifier
                     .size(200.dp)
                     .align(Alignment.BottomEnd)
-                    .offset(50.dp, 50.dp)
-                    .alpha(0.1f)
+                    .offset((50 + glowShiftB).dp, (50 - glowShiftA).dp)
+                    .alpha(0.10f)
                     .background(
                         brush = radialGradient(
                             colors = listOf(
-                                MaterialTheme.colorScheme.tertiary,
+                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.45f),
                                 MaterialTheme.colorScheme.tertiary.copy(alpha = 0f)
                             )
                         ), shape = CircleShape
@@ -224,6 +260,21 @@ fun SignInScreen(
                                 .size(120.dp)
                                 .alpha(0.9f)
                         )
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clip(RoundedCornerShape(100))
+                                .border(
+                                    width = 1.dp,
+                                    brush = Brush.linearGradient(
+                                        colors = listOf(
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
+                                            Color.Transparent
+                                        )
+                                    ),
+                                    shape = RoundedCornerShape(100)
+                                )
+                        )
                     }
                 }
 
@@ -232,39 +283,58 @@ fun SignInScreen(
                 AnimatedVisibility(
                     visible = isContentVisible, enter = fadeIn(tween(500))
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = stringResource(R.string.app_title), style = TextStyle(
-                                fontSize = 32.sp,
-                                fontWeight = FontWeight.Bold,
-                                letterSpacing = 2.sp,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                shadow = Shadow(
-                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                                    offset = Offset(0f, 2f),
-                                    blurRadius = 4f
+                    Surface(
+                        shape = RoundedCornerShape(24.dp),
+//                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
+                        tonalElevation = 2.dp,
+                        shadowElevation = 6.dp,
+                        border = BorderStroke(
+                            1.dp,
+                            Brush.linearGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                                    Color.Transparent
                                 )
                             )
                         )
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(20.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.app_title), style = TextStyle(
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = 2.sp,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    shadow = Shadow(
+                                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                                        offset = Offset(0f, 2f),
+                                        blurRadius = 4f
+                                    )
+                                )
+                            )
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
 
-                        Text(
-                            text = stringResource(R.string.app_tagline),
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Medium, letterSpacing = 4.sp
-                            ),
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
-                        )
+                            Text(
+                                text = stringResource(R.string.app_tagline),
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Medium, letterSpacing = 4.sp
+                                ),
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                            )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        Text(
-                            text = stringResource(R.string.auth_description),
-                            style = MaterialTheme.typography.bodyMedium,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                        )
+                            Text(
+                                text = stringResource(R.string.auth_description),
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                            )
+                        }
                     }
                 }
 
@@ -313,10 +383,15 @@ fun SignInScreen(
                             }
                         }
 
-                        TextButton(onClick = { onSkipLogin() }) {
+                        OutlinedButton(
+                            onClick = { onSkipLogin() },
+                            shape = RoundedCornerShape(28.dp),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                            modifier = Modifier.height(48.dp)
+                        ) {
                             Text(
                                 text = stringResource(R.string.auth_skip),
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
