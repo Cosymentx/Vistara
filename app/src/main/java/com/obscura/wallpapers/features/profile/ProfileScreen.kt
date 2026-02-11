@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -116,12 +117,11 @@ fun ProfileScreen(
     }
 
     HomeTabScaffold(
-        title = null, showTopBar = false
-    ) { paddingValues, contentModifier ->
+        showTopBar = false
+    ) { _, contentModifier ->
         Column(
             modifier = contentModifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
                 .background(MaterialTheme.colorScheme.background)
         ) {
@@ -134,7 +134,7 @@ fun ProfileScreen(
             )
 
             // Section Title
-            SectionHeader(title = "MY GALLERY", modifier = Modifier.padding(top = 30.dp))
+            SectionHeader(title = "MY GALLERY", modifier = Modifier.padding(top = 20.dp))
 
             FeatureGrid(
                 items = listOf(
@@ -199,7 +199,7 @@ fun ProfileScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(120.dp))
         }
     }
 }
@@ -369,7 +369,7 @@ private fun ProfileHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(260.dp)
+            .height(280.dp)
     ) {
         // Blurred Background
         if (!userPhotoUrl.isNullOrEmpty()) {
@@ -391,14 +391,14 @@ private fun ProfileHeader(
                     })
         }
 
-        // Gradient Scrim
+        // Gradient Scrim for immersion
         Box(
             modifier = Modifier
                 .fillMaxSize()
 //                .background(
 //                    Brush.verticalGradient(
 //                        colors = listOf(
-//                            Color.Transparent,
+//                            MaterialTheme.colorScheme.background.copy(alpha = 0.4f),
 //                            MaterialTheme.colorScheme.background.copy(alpha = 0.8f),
 //                            MaterialTheme.colorScheme.background
 //                        )
@@ -410,9 +410,10 @@ private fun ProfileHeader(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 12.dp),
+                .statusBarsPadding()
+                .padding(top = 20.dp, bottom = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
+            verticalArrangement = Arrangement.Center
         ) {
             Box(
                 contentAlignment = Alignment.Center, modifier = Modifier.size(100.dp)

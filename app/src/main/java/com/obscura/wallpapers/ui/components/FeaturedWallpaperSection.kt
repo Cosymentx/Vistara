@@ -50,9 +50,12 @@ fun FeaturedWallpaperSection(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = title, style = MaterialTheme.typography.titleLarge.copy(
+            text = title,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.SemiBold
-            ), modifier = Modifier.padding(bottom = 12.dp)
+            ),
+            modifier = Modifier.padding(bottom = 12.dp)
         )
 
         Card(

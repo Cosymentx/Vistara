@@ -38,17 +38,6 @@ import kotlinx.coroutines.flow.collectLatest
 /**
  * 瀑布流壁纸网格组件
  * 使用LazyVerticalStaggeredGrid实现瀑布流布局
- *
- * @param wallpapers 壁纸列表
- * @param onWallpaperClick 点击壁纸回调
- * @param onLoadMore 加载更多回调
- * @param isLoadingMore 是否正在加载更多
- * @param canLoadMore 是否可以加载更多
- * @param showEndMessage 是否显示到底部提示
- * @param columns 网格列数，默认为2
- * @param contentPadding 内容内边距
- * @param videoPlaybackManager 视频播放管理器，用于控制视频预览
- * @param modifier 可选的修饰符
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -60,7 +49,7 @@ fun WallpaperStaggeredGrid(
     canLoadMore: Boolean = true,
     showEndMessage: Boolean = false,
     columns: Int = 2,
-    contentPadding: PaddingValues = PaddingValues(8.dp),
+    contentPadding: PaddingValues = PaddingValues(16.dp),
     videoPlaybackManager: VideoPlaybackManager? = null,
     gridState: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
     modifier: Modifier = Modifier,
@@ -68,60 +57,38 @@ fun WallpaperStaggeredGrid(
     animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
 
-    // 跟踪可见的壁纸项
     val visibleWallpaperIds = remember { mutableStateListOf<String>() }
 
-    // 检测是否滚动到底部
     val shouldLoadMore = remember {
         derivedStateOf {
             val layoutInfo = gridState.layoutInfo
             val totalItemsNumber = layoutInfo.totalItemsCount
             val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-
-            // 如果最后可见项的索引接近总项数，则认为滚动到了底部
             lastVisibleItemIndex > 0 && lastVisibleItemIndex >= totalItemsNumber - 5
         }
     }
 
-    // 当滚动到底部时自动加载更多
     LaunchedEffect(shouldLoadMore.value, isLoadingMore, canLoadMore) {
         if (shouldLoadMore.value && !isLoadingMore && canLoadMore) {
-            Log.d("WallpaperStaggeredGrid", "Reached bottom, loading more...")
-            // 记录当前滚动位置
-            val firstVisibleItemIndex = gridState.firstVisibleItemIndex
-            val firstVisibleItemScrollOffset = gridState.firstVisibleItemScrollOffset
-            Log.d(
-                "WallpaperStaggeredGrid",
-                "Current scroll position: index=$firstVisibleItemIndex, offset=$firstVisibleItemScrollOffset"
-            )
-
             onLoadMore()
         }
     }
 
-    // 跟踪可见项目，用于视频播放控制
     LaunchedEffect(gridState) {
         snapshotFlow { gridState.layoutInfo.visibleItemsInfo }.collectLatest { visibleItems ->
-            // 清除之前的可见项
             val oldVisibleIds = visibleWallpaperIds.toList()
             visibleWallpaperIds.clear()
-
-            // 更新可见项列表
             val newVisibleIds = visibleItems.mapNotNull { info ->
                 wallpapers.getOrNull(info.index)?.id
             }
             visibleWallpaperIds.addAll(newVisibleIds)
 
-            // 更新视频播放管理器
             videoPlaybackManager?.let { manager ->
-                // 移除不再可见的视频
                 oldVisibleIds.forEach { id ->
                     if (id !in newVisibleIds) {
                         manager.removeVisibleVideo(id)
                     }
                 }
-
-                // 添加新可见的视频
                 newVisibleIds.forEach { id ->
                     val wallpaper = wallpapers.find { it.id == id }
                     if (wallpaper?.isLive == true) {
@@ -136,72 +103,37 @@ fun WallpaperStaggeredGrid(
         columns = StaggeredGridCells.Fixed(columns),
         state = gridState,
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalItemSpacing = 8.dp,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalItemSpacing = 12.dp,
         modifier = modifier.fillMaxWidth()
     ) {
-        // 壁纸项
-        items(items = wallpapers, key = { wallpaper -> wallpaper.id } // 使用壁纸ID作为稳定的键
-        ) { wallpaper ->
-            // 根据壁纸的宽高比计算高度
+        items(items = wallpapers, key = { wallpaper -> wallpaper.id }) { wallpaper ->
             val aspectRatio = calculateAspectRatio(wallpaper)
             val itemHeight = remember(aspectRatio) {
-                // 根据宽高比和壁纸ID生成不同的高度，使瀑布流更自然
                 (180 + (wallpaper.id.hashCode() % 120)).dp
             }
 
-            // 检查该壁纸是否应该播放视频
-            val isVisible = wallpaper.id in visibleWallpaperIds
-            val shouldPlayVideo = videoPlaybackManager?.shouldPlayVideo(wallpaper.id) ?: false
-
-            if (wallpaper.isLive) {
-                // 动态壁纸使用视频预览组件
-                WallpaperItem(
-                    wallpaper = wallpaper,
-                    onClick = { onWallpaperClick(wallpaper) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(itemHeight)
-                        .padding(4.dp),
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedVisibilityScope
-                )
-            } else {
-                // 静态壁纸使用普通壁纸项
-                WallpaperItem(
-                    wallpaper = wallpaper,
-                    onClick = { onWallpaperClick(wallpaper) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(itemHeight)
-                        .padding(4.dp),
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedVisibilityScope
-                )
-            }
+            WallpaperItem(
+                wallpaper = wallpaper,
+                onClick = { onWallpaperClick(wallpaper) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(itemHeight),
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope
+            )
         }
 
-        // 如果正在加载更多，显示加载指示器
         if (isLoadingMore) {
-            // 使用虚拟壁纸项来显示加载指示器
             val loadingWallpapers = List(columns) { index ->
-                Wallpaper(
-                    id = "loading_$index", title = null, thumbnailUrl = null, author = null
-                )
+                Wallpaper(id = "loading_$index", title = null, thumbnailUrl = null, author = null)
             }
-
-            items(items = loadingWallpapers, key = { it.id } // 使用生成的ID作为稳定的键
-            ) { _ ->
-                // 空白项，仅用于占位
+            items(items = loadingWallpapers, key = { it.id }) { _ ->
                 Box(modifier = Modifier.height(0.dp)) {}
             }
-
-            // 使用单独的项来显示加载指示器，确保它占满整个宽度
             item(span = StaggeredGridItemSpan.FullLine) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(
@@ -213,27 +145,16 @@ fun WallpaperStaggeredGrid(
             }
         }
 
-        // 如果显示底部提示，添加一个底部项
         if (showEndMessage) {
-            // 使用虚拟壁纸项来占位，确保“已经到底了”提示在最后一行
             val endSpacerWallpapers = List(columns) { index ->
-                Wallpaper(
-                    id = "end_spacer_$index", title = null, thumbnailUrl = null, author = null
-                )
+                Wallpaper(id = "end_spacer_$index", title = null, thumbnailUrl = null, author = null)
             }
-
-            items(items = endSpacerWallpapers, key = { it.id } // 使用生成的ID作为稳定的键
-            ) { _ ->
-                // 空白项，仅用于占位
+            items(items = endSpacerWallpapers, key = { it.id }) { _ ->
                 Box(modifier = Modifier.height(0.dp)) {}
             }
-
-            // 使用单独的项来显示“已经到底了”提示，确保它占满整个宽度
             item(span = StaggeredGridItemSpan.FullLine) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -248,18 +169,12 @@ fun WallpaperStaggeredGrid(
     }
 }
 
-/**
- * 计算壁纸的宽高比
- * 如果壁纸有分辨率信息，则使用实际宽高比
- * 否则使用默认宽高比0.75f (3:4)
- */
 private fun calculateAspectRatio(wallpaper: Wallpaper): Float {
     return if (wallpaper.width > 0 && wallpaper.height > 0) {
         wallpaper.width.toFloat() / wallpaper.height.toFloat()
     } else if (wallpaper.resolution != null && wallpaper.resolution.width > 0 && wallpaper.resolution.height > 0) {
         wallpaper.resolution.width.toFloat() / wallpaper.resolution.height.toFloat()
     } else {
-        // 默认宽高比
         0.75f
     }
 }

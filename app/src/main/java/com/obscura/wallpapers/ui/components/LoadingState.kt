@@ -1,5 +1,6 @@
 package com.obscura.wallpapers.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,9 +30,12 @@ import com.obscura.wallpapers.ui.theme.stringResource
 @Composable
 fun LoadingState(
     message: String? = stringResource(R.string.common_loading), modifier: Modifier = Modifier
-){
+) {
     Box(
-        modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.Center
     ) {
 
         Column(modifier = Modifier.align(Alignment.Center)) {

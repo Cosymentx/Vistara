@@ -4,8 +4,10 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -22,10 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
@@ -36,10 +36,13 @@ import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.components.HomeTabScaffold
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.WallpaperStaggeredGrid
-import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class, ExperimentalSharedTransitionApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterialApi::class,
+    ExperimentalSharedTransitionApi::class
+)
 @Composable
 fun PhotoLibraryScreen(
     onWallpaperClick: (Wallpaper) -> Unit,
@@ -61,50 +64,59 @@ fun PhotoLibraryScreen(
     HomeTabScaffold(
         title = stringResource(R.string.nav_photo),
         showTopBar = true,
+        headerExtra = {
+            CategorySelector(
+                categories = categories,
+                selectedCategory = selectedCategory,
+                onCategorySelected = { category ->
+                    viewModel.filterByCategory(category)
+                })
+            Spacer(Modifier.height(8.dp))
+        },
         actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(R.string.search_hint)
+                    contentDescription = null
                 )
             }
         }
-    ) { paddingValues, contentModifier ->
+    ) { _, contentModifier ->
         Box(
             modifier = contentModifier
+                .fillMaxSize()
                 .pullRefresh(pullRefreshState)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = paddingValues.calculateTopPadding(),
-                        bottom = paddingValues.calculateBottomPadding()
-                    )
-            ) {
-                CategorySelector(
-                    categories = categories,
-                    selectedCategory = selectedCategory,
-                    onCategorySelected = { category ->
-                        viewModel.filterByCategory(category)
-                    })
+            val currentData = (wallpapersState as? UiState.Success)?.data ?: emptyList()
 
-                when (wallpapersState) {
-                    is UiState.Loading -> LoadingState()
-                    is UiState.Success -> StaticGridContent(
-                        wallpapers = (wallpapersState as UiState.Success<List<Wallpaper>>).data,
+            when (val state = wallpapersState) {
+                is UiState.Loading -> LoadingState()
+                is UiState.Success, is UiState.Error -> {
+                    StaticGridContent(
+                        wallpapers = currentData,
                         isLoadingMore = isLoadingMore,
                         canLoadMore = canLoadMore,
                         onLoadMore = { viewModel.loadMore() },
                         onWallpaperClick = onWallpaperClick,
+                        // Content padding unified: 16dp horizontal
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            top = 160.dp,
+                            bottom = 100.dp
+                        ),
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope
                     )
-                    is UiState.Error -> ErrorState(
-                        message = (wallpapersState as UiState.Error).message,
-                        onRetry = { viewModel.refresh() })
+
+                    if (state is UiState.Error && currentData.isEmpty()) {
+                        ErrorState(
+                            message = state.message,
+                            onRetry = { viewModel.refresh() })
+                    }
                 }
             }
+
             PullRefreshIndicator(
                 refreshing = isRefreshing,
                 state = pullRefreshState,
@@ -112,7 +124,7 @@ fun PhotoLibraryScreen(
                 contentColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 30.dp)
+                    .padding(top = 160.dp)
             )
         }
     }
@@ -126,6 +138,7 @@ private fun StaticGridContent(
     canLoadMore: Boolean,
     onLoadMore: () -> Unit,
     onWallpaperClick: (Wallpaper) -> Unit,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
@@ -138,33 +151,19 @@ private fun StaticGridContent(
             )
         }
     } else {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.weight(1f)) {
-                val gridState = rememberLazyStaggeredGridState()
-                val rememberedWallpapers = remember(wallpapers) { wallpapers }
-                val rememberedIsLoadingMore = remember(isLoadingMore) { isLoadingMore }
-                val rememberedCanLoadMore = remember(canLoadMore) { canLoadMore }
-                WallpaperStaggeredGrid(
-                    wallpapers = rememberedWallpapers,
-                    onWallpaperClick = onWallpaperClick,
-                    onLoadMore = onLoadMore,
-                    isLoadingMore = rememberedIsLoadingMore,
-                    canLoadMore = rememberedCanLoadMore,
-                    showEndMessage = !rememberedCanLoadMore,
-                    gridState = gridState,
-                    modifier = Modifier.fillMaxSize(),
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedVisibilityScope
-                )
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PhotoLibraryScreenPreview() {
-    ObscuraTheme {
-        PhotoLibraryScreen(onWallpaperClick = {}, onSearchClick = {})
+        val gridState = rememberLazyStaggeredGridState()
+        WallpaperStaggeredGrid(
+            wallpapers = wallpapers,
+            onWallpaperClick = onWallpaperClick,
+            onLoadMore = onLoadMore,
+            isLoadingMore = isLoadingMore,
+            canLoadMore = canLoadMore,
+            showEndMessage = !canLoadMore,
+            gridState = gridState,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = contentPadding,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope
+        )
     }
 }

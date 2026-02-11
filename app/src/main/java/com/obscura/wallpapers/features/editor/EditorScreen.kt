@@ -1,16 +1,8 @@
 package com.obscura.wallpapers.features.editor
 
-import android.graphics.Bitmap
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,8 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,17 +22,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -56,7 +39,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,8 +48,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -76,10 +56,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -92,8 +70,6 @@ import com.obscura.wallpapers.ui.components.GlassTopAppBar
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import com.obscura.wallpapers.ui.theme.stringResource
-import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
-import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -142,9 +118,10 @@ fun WallpaperEditScreen(
             when (wallpaperState) {
                 is UiState.Loading -> LoadingState()
                 is UiState.Error -> ErrorState(
-                    message = (wallpaperState as UiState.Error).message, 
+                    message = (wallpaperState as UiState.Error).message,
                     onRetry = onBackPressed
                 )
+
                 is UiState.Success -> {
                     val wallpaper = (wallpaperState as UiState.Success).data
 
@@ -241,6 +218,7 @@ fun WallpaperEditScreen(
                                                 icon = ObscuraIcons.Brightness
                                             )
                                         }
+
                                         EditTool.CONTRAST -> {
                                             SliderControl(
                                                 label = stringResource(R.string.editor_contrast),
@@ -250,6 +228,7 @@ fun WallpaperEditScreen(
                                                 icon = ObscuraIcons.Contrast
                                             )
                                         }
+
                                         EditTool.SATURATION -> {
                                             SliderControl(
                                                 label = stringResource(R.string.editor_saturation),
@@ -259,12 +238,14 @@ fun WallpaperEditScreen(
                                                 icon = ObscuraIcons.Saturation
                                             )
                                         }
+
                                         EditTool.FILTER -> {
                                             FilterOptions(
                                                 selectedFilter = editState.filter,
                                                 onFilterSelected = { viewModel.applyFilter(it) }
                                             )
                                         }
+
                                         EditTool.CROP -> {
                                             CropOptionsPlaceholder()
                                         }
@@ -351,18 +332,18 @@ fun WallpaperEditScreen(
 
 @Composable
 fun EditToolButton(
-    tool: EditTool, 
-    icon: ImageVector, 
-    isSelected: Boolean, 
+    tool: EditTool,
+    icon: ImageVector,
+    isSelected: Boolean,
     onClick: () -> Unit
 ) {
     val backgroundColor by animateColorAsState(
-        if (isSelected) MaterialTheme.colorScheme.primaryContainer 
+        if (isSelected) MaterialTheme.colorScheme.primaryContainer
         else Color.Transparent,
         label = "bg"
     )
     val contentColor by animateColorAsState(
-        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer 
+        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
         else MaterialTheme.colorScheme.onSurfaceVariant,
         label = "content"
     )
@@ -408,14 +389,14 @@ fun SliderControl(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = icon, 
-                    contentDescription = null, 
+                    imageVector = icon,
+                    contentDescription = null,
                     modifier = Modifier.size(18.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = label, 
+                    text = label,
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -435,9 +416,9 @@ fun SliderControl(
                 )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(12.dp))
-        
+
         Slider(
             value = value,
             onValueChange = onValueChange,
@@ -454,7 +435,7 @@ fun SliderControl(
 
 @Composable
 fun FilterOptions(
-    selectedFilter: ImageFilter, 
+    selectedFilter: ImageFilter,
     onFilterSelected: (ImageFilter) -> Unit
 ) {
     LazyRow(
@@ -474,8 +455,8 @@ fun FilterOptions(
 
 @Composable
 fun FilterOptionItem(
-    filter: ImageFilter, 
-    isSelected: Boolean, 
+    filter: ImageFilter,
+    isSelected: Boolean,
     onClick: () -> Unit
 ) {
     val borderSize by animateDpAsState(if (isSelected) 3.dp else 0.dp, label = "border")
@@ -546,6 +527,7 @@ fun createPreviewColorMatrix(
             m.setToSaturation(0f)
             m
         }
+
         ImageFilter.SEPIA -> ColorMatrix().apply { setToScale(0.8f, 0.6f, 0.4f, 1f) }
         ImageFilter.VINTAGE -> ColorMatrix().apply { setToScale(0.7f, 0.7f, 0.5f, 1f) }
         ImageFilter.COLD -> ColorMatrix().apply { setToScale(0.6f, 0.8f, 1.2f, 1f) }
@@ -569,23 +551,23 @@ fun createPreviewColorMatrix(
 }
 
 enum class EditTool(val titleRes: Int) {
-    BRIGHTNESS(R.string.editor_brightness), 
-    CONTRAST(R.string.editor_contrast), 
-    SATURATION(R.string.editor_saturation), 
+    BRIGHTNESS(R.string.editor_brightness),
+    CONTRAST(R.string.editor_contrast),
+    SATURATION(R.string.editor_saturation),
     FILTER(R.string.editor_filter),
     CROP(R.string.editor_crop)
 }
 
 enum class ImageFilter(val titleRes: Int, val previewColor: Color) {
-    NONE(R.string.editor_original, Color.White), 
+    NONE(R.string.editor_original, Color.White),
     GRAYSCALE(R.string.editor_grayscale, Color.Gray),
-    SEPIA(R.string.editor_sepia, Color(0xFFD2B48C)), 
+    SEPIA(R.string.editor_sepia, Color(0xFFD2B48C)),
     VINTAGE(R.string.editor_vintage, Color(0xFFCDC9A5)),
-    COLD(R.string.editor_cold, Color(0xFF87CEFA)), 
+    COLD(R.string.editor_cold, Color(0xFF87CEFA)),
     WARM(R.string.editor_warm, Color(0xFFFFB347)),
-    PURPLE(R.string.editor_purple, Color(0xFFB19CD9)), 
+    PURPLE(R.string.editor_purple, Color(0xFFB19CD9)),
     BLUE(R.string.editor_blue, Color(0xFF6495ED)),
-    GREEN(R.string.editor_green, Color(0xFF90EE90)), 
+    GREEN(R.string.editor_green, Color(0xFF90EE90)),
     PINK(R.string.editor_pink, Color(0xFFFFB6C1)),
     ORANGE(R.string.editor_orange, Color(0xFFFF8C00))
 }

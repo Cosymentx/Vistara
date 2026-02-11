@@ -79,7 +79,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                         lensSize = size,
                         cornerRadius = 100f,
                         edge = 0.6f,
-                        refraction = 0.5f,
+                        refraction = 0.3f,
                         curve = 0.5f,
                     )
                 } else {

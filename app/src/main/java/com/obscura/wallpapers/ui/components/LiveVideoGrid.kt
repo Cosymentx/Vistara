@@ -1,6 +1,5 @@
 package com.obscura.wallpapers.ui.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -35,103 +34,79 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 
-// Define GRID_COLUMNS if not defined elsewhere accessible
 private const val GRID_COLUMNS = 2
 private const val TAG = "LiveVideoGrid"
-
-// Threshold for triggering load more (e.g., when 2 rows from the end are visible)
 private const val LOAD_MORE_THRESHOLD = GRID_COLUMNS * 2
 
 /**
  * Displays live wallpapers in a grid. Playback control is handled by the parent.
- *
- * @param wallpapers List of wallpapers to display.
- * @param onWallpaperClick Callback when a wallpaper item is clicked.
- * @param gridState The LazyGridState controlled by the parent screen.
- * @param exoPlayer The single shared ExoPlayer instance from the parent screen.
- * @param playingIndex The index of the currently playing wallpaper in the `wallpapers` list (-1 if none).
- * @param isLoadingMore Flag indicating if more items are being loaded.
- * @param canLoadMore Flag indicating if more items can be loaded.
- * @param onLoadMore Callback to trigger loading more items.
- * @param modifier Modifier for the grid.
- * @param contentPadding Padding around the grid content.
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun LiveVideoGrid(
     wallpapers: List<Wallpaper>,
     onWallpaperClick: (Wallpaper) -> Unit,
-    gridState: LazyGridState,           // Received from parent
-    exoPlayer: ExoPlayer,               // Received from parent
-    playingIndex: Int,                // Received from parent
+    gridState: LazyGridState,
+    exoPlayer: ExoPlayer,
+    playingIndex: Int,
     isLoadingMore: Boolean,
     canLoadMore: Boolean,
     onLoadMore: () -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(8.dp), // Default padding
+    contentPadding: PaddingValues = PaddingValues(16.dp),
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(GRID_COLUMNS),
-        state = gridState, // Use the state passed from the parent
+        state = gridState,
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp), // Spacing between columns
-        verticalArrangement = Arrangement.spacedBy(8.dp),   // Spacing between rows
-        modifier = modifier // Apply modifier from parameter (e.g., .weight(1f))
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = modifier
     ) {
         itemsIndexed(
             items = wallpapers,
-            // 使用索引和ID组合作为key，确保唯一性
             key = { index, wallpaper -> "${index}_${wallpaper.id}" }
         ) { index, wallpaper ->
 
-            // Determine if this specific item should be playing
             val isCurrentlyPlaying = index == playingIndex
 
-            // Effect to trigger 'onLoadMore' when scrolling near the end
-            // This runs when the item enters composition and deps change
             LaunchedEffect(gridState, wallpapers.size, canLoadMore, isLoadingMore) {
-                // Flow observing the index of the last visible item
                 snapshotFlow { gridState.layoutInfo.visibleItemsInfo }
                     .map { visibleItems -> visibleItems.lastOrNull()?.index ?: -1 }
-                    .distinctUntilChanged() // Only react when the last visible index actually changes
+                    .distinctUntilChanged()
                     .filter { lastVisibleIndex ->
-                        // Conditions to trigger load more:
-                        lastVisibleIndex != -1 && // Need a valid index
-                                lastVisibleIndex >= wallpapers.size - 1 - LOAD_MORE_THRESHOLD && // Is it near the end?
-                                canLoadMore && // Can we actually load more?
-                                !isLoadingMore // Are we not already loading?
+                        lastVisibleIndex != -1 &&
+                                lastVisibleIndex >= wallpapers.size - 1 - LOAD_MORE_THRESHOLD &&
+                                canLoadMore &&
+                                !isLoadingMore
                     }
-                    .collect { // If all conditions met
-                        Log.d(TAG, "Load More Threshold Reached (last visible: $it). Triggering onLoadMore.")
-                        onLoadMore() // Call the lambda
+                    .collect {
+                        onLoadMore()
                     }
             }
 
-            // Render the individual video item component
-            // Make sure VideoItem is defined/imported correctly
             VideoPreviewItem(
                 wallpaper = wallpaper,
-                exoPlayer = exoPlayer, // Pass down the shared player
-                isCurrentlyPlaying = isCurrentlyPlaying, // Tell the item if it should play
-                onClick = { onWallpaperClick(wallpaper) }, // Handle item clicks
+                exoPlayer = exoPlayer,
+                isCurrentlyPlaying = isCurrentlyPlaying,
+                onClick = { onWallpaperClick(wallpaper) },
                 modifier = Modifier
-                    .aspectRatio(8f / 12f) // Maintain aspect ratio (adjust if needed)
+                    .aspectRatio(8f / 12f)
                     .animateItem(),
                 sharedTransitionScope = sharedTransitionScope,
                 animatedVisibilityScope = animatedVisibilityScope
             )
         }
 
-        // Footer item: Shows loading indicator or "End of list" message
         if (isLoadingMore || (!canLoadMore && wallpapers.isNotEmpty())) {
-            item(span = { GridItemSpan(GRID_COLUMNS) }) { // Span the footer across all columns
+            item(span = { GridItemSpan(GRID_COLUMNS) }) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp), // Add padding for visual spacing
+                        .padding(vertical = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     if (isLoadingMore) {
@@ -140,7 +115,7 @@ fun LiveVideoGrid(
                             color = MaterialTheme.colorScheme.primary,
                             strokeWidth = 3.dp
                         )
-                    } else { // Only show "end" message if not loading AND list has items
+                    } else {
                         Text(
                             text = stringResource(R.string.common_end_of_list),
                             style = MaterialTheme.typography.bodyMedium,
