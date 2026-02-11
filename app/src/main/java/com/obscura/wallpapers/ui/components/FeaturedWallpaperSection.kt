@@ -1,5 +1,8 @@
 package com.obscura.wallpapers.ui.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,12 +38,15 @@ import com.obscura.wallpapers.ui.theme.stringResource
  * 精选壁纸展示组件
  * 用于首页展示精选壁纸
  */
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun FeaturedWallpaperSection(
     wallpaper: Wallpaper,
     onWallpaperClick: (Wallpaper) -> Unit,
     modifier: Modifier = Modifier,
-    title: String = stringResource(R.string.daily_featured)
+    title: String = stringResource(R.string.daily_featured),
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     Column(modifier = modifier) {
         Text(
@@ -61,7 +67,20 @@ fun FeaturedWallpaperSection(
                 AsyncImage(
                     model = wallpaper.thumbnailUrl,
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .run {
+                            if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                                with(sharedTransitionScope) {
+                                    this@run.sharedElement(
+                                        rememberSharedContentState(key = "wallpaper_image_${wallpaper.id}"),
+                                        animatedVisibilityScope = animatedVisibilityScope
+                                    )
+                                }
+                            } else {
+                                this
+                            }
+                        },
                     contentScale = ContentScale.Crop
                 )
 

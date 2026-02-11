@@ -1,5 +1,8 @@
 package com.obscura.wallpapers.features.search
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,9 +52,14 @@ import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SearchScreen(
-    onWallpaperClick: (Wallpaper) -> Unit, onBackClick: () -> Unit, viewModel: SearchViewModel = hiltViewModel()
+    onWallpaperClick: (Wallpaper) -> Unit,
+    onBackClick: () -> Unit,
+    viewModel: SearchViewModel = hiltViewModel(),
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     val query by viewModel.query.collectAsState()
     val searchResults by viewModel.searchResults.collectAsState()
@@ -159,7 +167,9 @@ fun SearchScreen(
             } else {
                 SearchResultList(
                     results = searchResults,
-                    onWallpaperClick = onWallpaperClick
+                    onWallpaperClick = onWallpaperClick,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope
                 )
             }
         }
@@ -191,10 +201,13 @@ private fun EmptyResultBox() {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun SearchResultList(
     results: List<Wallpaper>,
-    onWallpaperClick: (Wallpaper) -> Unit
+    onWallpaperClick: (Wallpaper) -> Unit,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     val listState = rememberLazyListState()
     val rememberedResults = remember(results) { results }
@@ -219,9 +232,13 @@ private fun SearchResultList(
             ) {
                 rowItems.forEachIndexed { index, wallpaper ->
                     WallpaperItem(
-                        wallpaper = wallpaper, onClick = { onWallpaperClick(wallpaper) }, modifier = Modifier
+                        wallpaper = wallpaper,
+                        onClick = { onWallpaperClick(wallpaper) },
+                        modifier = Modifier
                             .weight(1f)
-                            .height(240.dp)
+                            .height(240.dp),
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope
                     )
 
                     if (index == 0 && rowItems.size == 1) {

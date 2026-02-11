@@ -3,6 +3,9 @@ package com.obscura.wallpapers.ui.components
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -55,12 +58,16 @@ private const val TAG = "VideoPreviewItem" // Added TAG for logging consistency
  * @param onClick 点击回调
  * @param modifier 修饰符
  */
-@OptIn(UnstableApi::class) // Keep OptIn if needed for PlayerView/ExoPlayer APIs used
+@OptIn(UnstableApi::class, ExperimentalSharedTransitionApi::class) // Keep OptIn if needed for PlayerView/ExoPlayer APIs used
 @Composable
 fun VideoPreviewItem(
-    wallpaper: Wallpaper, exoPlayer: ExoPlayer,      // CHANGED: Receive shared player
+    wallpaper: Wallpaper,
+    exoPlayer: ExoPlayer,      // CHANGED: Receive shared player
     isCurrentlyPlaying: Boolean, // CHANGED: Receive playing state
-    onClick: () -> Unit, modifier: Modifier = Modifier
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
 
     var isBuffering by remember(wallpaper.id) { mutableStateOf(true) }
@@ -119,7 +126,20 @@ fun VideoPreviewItem(
             AsyncImage(
                 model = wallpaper.previewUrl ?: wallpaper.url, // Use appropriate URL
                 contentDescription = wallpaper.title, // Content description for accessibility
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .run {
+                        if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                            with(sharedTransitionScope) {
+                                this@run.sharedElement(
+                                    rememberSharedContentState(key = "wallpaper_image_${wallpaper.id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                            }
+                        } else {
+                            this
+                        }
+                    },
                 contentScale = ContentScale.Crop // Crop to fill the card bounds
                 // Keep placeholder/error logic for AsyncImage if needed,
                 // but remember they need Painter?, not Composables.

@@ -1,6 +1,9 @@
 package com.obscura.wallpapers.ui.components
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -47,6 +50,7 @@ import kotlinx.coroutines.flow.collectLatest
  * @param videoPlaybackManager 视频播放管理器，用于控制视频预览
  * @param modifier 可选的修饰符
  */
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun WallpaperStaggeredGrid(
     wallpapers: List<Wallpaper>,
@@ -59,7 +63,9 @@ fun WallpaperStaggeredGrid(
     contentPadding: PaddingValues = PaddingValues(8.dp),
     videoPlaybackManager: VideoPlaybackManager? = null,
     gridState: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
 
     // 跟踪可见的壁纸项
@@ -150,15 +156,16 @@ fun WallpaperStaggeredGrid(
 
             if (wallpaper.isLive) {
                 // 动态壁纸使用视频预览组件
-//                VideoPreviewItem(
-//                    wallpaper = wallpaper,
-//                    isVisible = isVisible && shouldPlayVideo,
-//                    onClick = { onWallpaperClick(wallpaper) },
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(itemHeight)
-//                        .padding(4.dp)
-//                )
+                WallpaperItem(
+                    wallpaper = wallpaper,
+                    onClick = { onWallpaperClick(wallpaper) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(itemHeight)
+                        .padding(4.dp),
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
             } else {
                 // 静态壁纸使用普通壁纸项
                 WallpaperItem(
@@ -167,7 +174,9 @@ fun WallpaperStaggeredGrid(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(itemHeight)
-                        .padding(4.dp)
+                        .padding(4.dp),
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope
                 )
             }
         }

@@ -1,5 +1,9 @@
 package com.obscura.wallpapers.ui.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -58,6 +62,7 @@ import com.obscura.wallpapers.ui.theme.LocalAppResources
 import com.skydoves.cloudy.liquidGlass
 import java.net.URLDecoder
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainNavigation(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -86,157 +91,187 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 } ?: Modifier
             )
     ) {
-        NavHost(
-            navController = navController,
-            startDestination = NavDestination.Discover.route,
-            modifier = Modifier.fillMaxSize(),
-            enterTransition = {
-                fadeIn(animationSpec = tween(100))
-            },
-            exitTransition = {
-                fadeOut(animationSpec = tween(100))
-            }
-        ) {
-            composable("auth") {
-                SignInScreen(onLoginSuccess = {
-                    navController.popBackStack()
-                }, onSkipLogin = {
-                    navController.popBackStack()
-                })
-            }
-            composable(NavDestination.Discover.route) {
-                DiscoverScreen(onWallpaperClick = { wallpaper ->
-                    navController.navigate("preview/${wallpaper.id}")
-                }, onSearch = { query ->
-                    navController.navigate("search?query=$query")
-                }, onBannerClick = { banner ->
-                    when (banner.actionType) {
-                        BannerActionType.WALLPAPER, BannerActionType.COLLECTION -> {
-                            banner.actionTarget?.let { wallpaperId ->
-                                navController.navigate("preview/$wallpaperId")
+        SharedTransitionLayout {
+            NavHost(
+                navController = navController,
+                startDestination = NavDestination.Discover.route,
+                modifier = Modifier.fillMaxSize(),
+                enterTransition = {
+                    fadeIn(animationSpec = tween(300))
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(300))
+                }
+            ) {
+                composable("auth") {
+                    SignInScreen(onLoginSuccess = {
+                        navController.popBackStack()
+                    }, onSkipLogin = {
+                        navController.popBackStack()
+                    })
+                }
+                composable(NavDestination.Discover.route) {
+                    DiscoverScreen(
+                        onWallpaperClick = { wallpaper ->
+                            navController.navigate("preview/${wallpaper.id}")
+                        },
+                        onSearch = { query ->
+                            navController.navigate("search?query=$query")
+                        },
+                        onBannerClick = { banner ->
+                            when (banner.actionType) {
+                                BannerActionType.WALLPAPER, BannerActionType.COLLECTION -> {
+                                    banner.actionTarget?.let { wallpaperId ->
+                                        navController.navigate("preview/$wallpaperId")
+                                    }
+                                }
+                                BannerActionType.PREMIUM -> {
+                                    navController.navigate("premium")
+                                }
+                                BannerActionType.URL -> {
+                                }
                             }
-                        }
-
-                        BannerActionType.PREMIUM -> {
-                            navController.navigate("premium")
-                        }
-
-                        BannerActionType.URL -> {
-                        }
-                    }
-                })
-            }
-            composable(NavDestination.PhotoWallpapers.route) {
-                PhotoLibraryScreen(onWallpaperClick = { wallpaper ->
-                    navController.navigate("preview/${wallpaper.id}")
-                }, onSearchClick = {
-                    navController.navigate("search")
-                })
-            }
-            composable(NavDestination.VideoWallpapers.route) {
-                VideoLibraryScreen(onWallpaperClick = { wallpaper ->
-                    navController.navigate("preview/${wallpaper.id}")
-                }, onSearchClick = {
-                    navController.navigate("search")
-                })
-            }
-            composable(NavDestination.Profile.route) {
-                ProfileScreen(
-                    onFavoritesClick = { navController.navigate("favorites") },
-                    onDownloadsClick = { navController.navigate("downloads") },
-                    onAutoChangeClick = { navController.navigate("cycler") },
-                    onSettingsClick = { navController.navigate("settings") },
-                    onFeedbackClick = { navController.navigate("feedback") },
-                    onAboutClick = { navController.navigate("about") },
-                    onLoginClick = { navController.navigate("auth") },
-                    onTestToolsClick = { navController.navigate("test") })
-            }
-            composable(
-                route = "search?query={query}", arguments = listOf(navArgument("query") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                })
-            ) { backStackEntry ->
-                val query = backStackEntry.arguments?.getString("query") ?: ""
-                SearchScreen(onWallpaperClick = { wallpaper ->
-                    navController.navigate("wallpaper/${wallpaper.id}")
-                }, onBackClick = { navController.navigateUp() })
-            }
-            composable(
-                route = "edit/{wallpaperId}",
-                arguments = listOf(navArgument("wallpaperId") { type = NavType.StringType })
-            ) {
-                val wallpaperId = it.arguments?.getString("wallpaperId") ?: ""
-                WallpaperEditScreen(
-                    onBackPressed = { navController.navigateUp() },
-                    onSaveComplete = { navController.navigateUp() })
-            }
-            composable(
-                route = "preview/{wallpaperId}",
-                arguments = listOf(navArgument("wallpaperId") { type = NavType.StringType })
-            ) {
-                WallpaperPreviewScreen(
-                    onBackPressed = { navController.navigateUp() },
-                    onNavigateToEdit = { wallpaperId ->
-                        navController.navigate("edit/$wallpaperId")
-                    },
-                    onNavigateToLogin = { navController.navigate("auth") })
-            }
-            composable("favorites") {
-                LikesScreen(
-                    onBackPressed = { navController.navigateUp() },
-                    onWallpaperClick = { wallpaper ->
-                        navController.navigate("preview/${wallpaper.id}")
-                    },
-                    onNavigateToLogin = { navController.navigate("auth") })
-            }
-            composable("downloads") {
-                LibraryScreen(
-                    onBackPressed = { navController.navigateUp() },
-                    onWallpaperClick = { wallpaper ->
-                        navController.navigate("preview/${wallpaper.id}")
-                    },
-                    onNavigateToLogin = { navController.navigate("auth") })
-            }
-            composable("settings") {
-                PreferencesScreen(onBackPressed = { navController.navigateUp() })
-            }
-            composable("cycler") {
-                WallpaperCyclerScreen(
-                    onBackPressed = { navController.navigateUp() },
-                    onNavigateToLogin = { navController.navigate("auth") })
-            }
-            composable("feedback") {
-                SupportScreen(onBackPressed = { navController.navigateUp() })
-            }
-            composable("about") {
-                InfoScreen(
-                    onBackPressed = { navController.navigateUp() }, navController = navController
-                )
-            }
-            composable(
-                route = "browser?url={url}", arguments = listOf(navArgument("url") {
-                    type = NavType.StringType
-                    nullable = false
-                }, navArgument("title") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                })
-            ) { backStackEntry ->
-                val encodedUrl = backStackEntry.arguments?.getString("url") ?: ""
-                val encodedTitle = backStackEntry.arguments?.getString("title") ?: ""
-                val url = URLDecoder.decode(encodedUrl, "UTF-8")
-                val title = URLDecoder.decode(encodedTitle, "UTF-8")
-                BrowserScreen(
-                    url = url, title = title, onBackPressed = { navController.navigateUp() })
-            }
-            composable("test") {
-                TestScreen(
-                    onBackPressed = { navController.navigateUp() },
-                    onNavigateToApiTest = { navController.navigate("test/api") })
-            }
-            composable("test/api") {
-                ApiTestScreen(onBackPressed = { navController.navigateUp() })
+                        },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this@composable
+                    )
+                }
+                composable(NavDestination.PhotoWallpapers.route) {
+                    PhotoLibraryScreen(
+                        onWallpaperClick = { wallpaper ->
+                            navController.navigate("preview/${wallpaper.id}")
+                        },
+                        onSearchClick = {
+                            navController.navigate("search")
+                        },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this@composable
+                    )
+                }
+                composable(NavDestination.VideoWallpapers.route) {
+                    VideoLibraryScreen(
+                        onWallpaperClick = { wallpaper ->
+                            navController.navigate("preview/${wallpaper.id}")
+                        },
+                        onSearchClick = {
+                            navController.navigate("search")
+                        },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this@composable
+                    )
+                }
+                composable(NavDestination.Profile.route) {
+                    ProfileScreen(
+                        onFavoritesClick = { navController.navigate("favorites") },
+                        onDownloadsClick = { navController.navigate("downloads") },
+                        onAutoChangeClick = { navController.navigate("cycler") },
+                        onSettingsClick = { navController.navigate("settings") },
+                        onFeedbackClick = { navController.navigate("feedback") },
+                        onAboutClick = { navController.navigate("about") },
+                        onLoginClick = { navController.navigate("auth") },
+                        onTestToolsClick = { navController.navigate("test") })
+                }
+                composable(
+                    route = "search?query={query}", arguments = listOf(navArgument("query") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    })
+                ) { backStackEntry ->
+                    val query = backStackEntry.arguments?.getString("query") ?: ""
+                    SearchScreen(
+                        onWallpaperClick = { wallpaper ->
+                            navController.navigate("preview/${wallpaper.id}")
+                        },
+                        onBackClick = { navController.navigateUp() },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this@composable
+                    )
+                }
+                composable(
+                    route = "edit/{wallpaperId}",
+                    arguments = listOf(navArgument("wallpaperId") { type = NavType.StringType })
+                ) {
+                    val wallpaperId = it.arguments?.getString("wallpaperId") ?: ""
+                    WallpaperEditScreen(
+                        onBackPressed = { navController.navigateUp() },
+                        onSaveComplete = { navController.navigateUp() })
+                }
+                composable(
+                    route = "preview/{wallpaperId}",
+                    arguments = listOf(navArgument("wallpaperId") { type = NavType.StringType })
+                ) {
+                    WallpaperPreviewScreen(
+                        onBackPressed = { navController.navigateUp() },
+                        onNavigateToEdit = { wallpaperId ->
+                            navController.navigate("edit/$wallpaperId")
+                        },
+                        onNavigateToLogin = { navController.navigate("auth") },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this@composable
+                    )
+                }
+                composable("favorites") {
+                    LikesScreen(
+                        onBackPressed = { navController.navigateUp() },
+                        onWallpaperClick = { wallpaper ->
+                            navController.navigate("preview/${wallpaper.id}")
+                        },
+                        onNavigateToLogin = { navController.navigate("auth") },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this@composable
+                    )
+                }
+                composable("downloads") {
+                    LibraryScreen(
+                        onBackPressed = { navController.navigateUp() },
+                        onWallpaperClick = { wallpaper ->
+                            navController.navigate("preview/${wallpaper.id}")
+                        },
+                        onNavigateToLogin = { navController.navigate("auth") },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this@composable
+                    )
+                }
+                composable("settings") {
+                    PreferencesScreen(onBackPressed = { navController.navigateUp() })
+                }
+                composable("cycler") {
+                    WallpaperCyclerScreen(
+                        onBackPressed = { navController.navigateUp() },
+                        onNavigateToLogin = { navController.navigate("auth") })
+                }
+                composable("feedback") {
+                    SupportScreen(onBackPressed = { navController.navigateUp() })
+                }
+                composable("about") {
+                    InfoScreen(
+                        onBackPressed = { navController.navigateUp() }, navController = navController
+                    )
+                }
+                composable(
+                    route = "browser?url={url}", arguments = listOf(navArgument("url") {
+                        type = NavType.StringType
+                        nullable = false
+                    }, navArgument("title") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    })
+                ) { backStackEntry ->
+                    val encodedUrl = backStackEntry.arguments?.getString("url") ?: ""
+                    val encodedTitle = backStackEntry.arguments?.getString("title") ?: ""
+                    val url = URLDecoder.decode(encodedUrl, "UTF-8")
+                    val title = URLDecoder.decode(encodedTitle, "UTF-8")
+                    BrowserScreen(
+                        url = url, title = title, onBackPressed = { navController.navigateUp() })
+                }
+                composable("test") {
+                    TestScreen(
+                        onBackPressed = { navController.navigateUp() },
+                        onNavigateToApiTest = { navController.navigate("test/api") })
+                }
+                composable("test/api") {
+                    ApiTestScreen(onBackPressed = { navController.navigateUp() })
+                }
             }
         }
         if (isMainScreen) {

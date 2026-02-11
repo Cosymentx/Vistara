@@ -1,5 +1,8 @@
 package com.obscura.wallpapers.features.likes
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,13 +34,15 @@ import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
 import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun LikesScreen(
     onBackPressed: () -> Unit,
     onWallpaperClick: (Wallpaper) -> Unit,
     onNavigateToLogin: () -> Unit = {},
-    viewModel: LikesViewModel = hiltViewModel()
+    viewModel: LikesViewModel = hiltViewModel(),
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     val favoritesState by viewModel.favoritesState.collectAsState()
 
@@ -58,11 +63,14 @@ fun LikesScreen(
                 .padding(
                     top = safe.calculateTopPadding(),
                     bottom = safe.calculateBottomPadding()
-                )
+                ),
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope
         )
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun FavoritesBody(
     state: UiState<*>,
@@ -70,7 +78,9 @@ private fun FavoritesBody(
     onRetry: () -> Unit,
     onNavigateToLogin: () -> Unit,
     onBackPressed: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     Box(modifier = modifier) {
         when (state) {
@@ -102,7 +112,9 @@ private fun FavoritesBody(
                     WallpaperGrid(
                         wallpapers = wallpapers,
                         onWallpaperClick = onWallpaperClick,
-                        contentPadding = PaddingValues(16.dp)
+                        contentPadding = PaddingValues(16.dp),
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope
                     )
                 }
             }

@@ -2,6 +2,9 @@ package com.obscura.wallpapers.features.discover
 
 /* Moved from features/home to features/discover to align folder with package */
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,13 +51,15 @@ import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.WallpaperItem
 import com.obscura.wallpapers.ui.theme.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun DiscoverScreen(
     onWallpaperClick: (Wallpaper) -> Unit,
     onSearch: (String) -> Unit = {},
     onBannerClick: (Banner) -> Unit = {},
-    viewModel: DiscoverViewModel = hiltViewModel()
+    viewModel: DiscoverViewModel = hiltViewModel(),
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     val featuredWallpapers by viewModel.featuredWallpapers.collectAsState()
     val staticWallpapers by viewModel.staticWallpapers.collectAsState()
@@ -165,7 +170,9 @@ fun DiscoverScreen(
                         FeaturedWallpaperSection(
                             wallpaper = featuredWallpapers.first(),
                             onWallpaperClick = onWallpaperClick,
-                            modifier = Modifier.padding(horizontal = 16.dp)
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
                         )
                     }
                 }
@@ -188,7 +195,9 @@ fun DiscoverScreen(
                         titlePadding = when (s.type) {
                             SectionType.Video -> PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                             else -> PaddingValues(horizontal = 16.dp)
-                        }
+                        },
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope
                     )
                 }
             }
@@ -213,12 +222,15 @@ private fun buildSections(
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun TwoColumnSection(
     title: String?,
     wallpapers: List<Wallpaper>,
     onWallpaperClick: (Wallpaper) -> Unit,
-    titlePadding: PaddingValues = PaddingValues(horizontal = 16.dp)
+    titlePadding: PaddingValues = PaddingValues(horizontal = 16.dp),
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     Column {
         title?.let {
@@ -243,7 +255,9 @@ private fun TwoColumnSection(
                             onClick = { onWallpaperClick(wallpaper) },
                             modifier = Modifier
                                 .weight(1f)
-                                .height(200.dp)
+                                .height(200.dp),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
                         )
                         if (index == 0 && rowItems.size == 1) {
                             Spacer(modifier = Modifier.weight(1f))

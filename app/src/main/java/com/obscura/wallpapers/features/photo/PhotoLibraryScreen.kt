@@ -1,5 +1,8 @@
 package com.obscura.wallpapers.features.photo
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +18,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -37,12 +39,14 @@ import com.obscura.wallpapers.ui.components.WallpaperStaggeredGrid
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun PhotoLibraryScreen(
     onWallpaperClick: (Wallpaper) -> Unit,
     onSearchClick: () -> Unit = {},
-    viewModel: PhotoLibraryViewModel = hiltViewModel()
+    viewModel: PhotoLibraryViewModel = hiltViewModel(),
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     val wallpapersState by viewModel.wallpapersState.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
@@ -92,7 +96,9 @@ fun PhotoLibraryScreen(
                         isLoadingMore = isLoadingMore,
                         canLoadMore = canLoadMore,
                         onLoadMore = { viewModel.loadMore() },
-                        onWallpaperClick = onWallpaperClick
+                        onWallpaperClick = onWallpaperClick,
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope
                     )
                     is UiState.Error -> ErrorState(
                         message = (wallpapersState as UiState.Error).message,
@@ -112,13 +118,16 @@ fun PhotoLibraryScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun StaticGridContent(
     wallpapers: List<Wallpaper>,
     isLoadingMore: Boolean,
     canLoadMore: Boolean,
     onLoadMore: () -> Unit,
-    onWallpaperClick: (Wallpaper) -> Unit
+    onWallpaperClick: (Wallpaper) -> Unit,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     if (wallpapers.isEmpty()) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -143,7 +152,9 @@ private fun StaticGridContent(
                     canLoadMore = rememberedCanLoadMore,
                     showEndMessage = !rememberedCanLoadMore,
                     gridState = gridState,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope
                 )
             }
         }

@@ -1,6 +1,9 @@
 package com.obscura.wallpapers.ui.components
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,7 +56,7 @@ private const val LOAD_MORE_THRESHOLD = GRID_COLUMNS * 2
  * @param modifier Modifier for the grid.
  * @param contentPadding Padding around the grid content.
  */
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun LiveVideoGrid(
     wallpapers: List<Wallpaper>,
@@ -65,7 +68,9 @@ fun LiveVideoGrid(
     canLoadMore: Boolean,
     onLoadMore: () -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(8.dp) // Default padding
+    contentPadding: PaddingValues = PaddingValues(8.dp), // Default padding
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
 
     LazyVerticalGrid(
@@ -114,8 +119,9 @@ fun LiveVideoGrid(
                 onClick = { onWallpaperClick(wallpaper) }, // Handle item clicks
                 modifier = Modifier
                     .aspectRatio(8f / 12f) // Maintain aspect ratio (adjust if needed)
-                    .animateItem()
-//                    .animateItemPlacement() // Animate item position changes
+                    .animateItem(),
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope
             )
         }
 

@@ -3,6 +3,9 @@ package com.obscura.wallpapers.features.video
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -69,12 +72,14 @@ import kotlinx.coroutines.flow.map
 import kotlin.math.abs
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun VideoLibraryScreen(
     onWallpaperClick: (Wallpaper) -> Unit,
     onSearchClick: () -> Unit = {},
-    viewModel: VideoLibraryViewModel = hiltViewModel()
+    viewModel: VideoLibraryViewModel = hiltViewModel(),
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -287,7 +292,9 @@ fun VideoLibraryScreen(
                             isLoadingMore = isLoadingMore,
                             canLoadMore = canLoadMore,
                             onLoadMore = { viewModel.loadMore() },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
                         )
                     }
                     is UiState.Error -> {
@@ -309,6 +316,8 @@ fun VideoLibraryScreen(
                                     isLoadingMore = false,
                                     canLoadMore = false,
                                     onLoadMore = {},
+                                    sharedTransitionScope = sharedTransitionScope,
+                                    animatedVisibilityScope = animatedVisibilityScope
                                 )
                             }
                         }
@@ -367,6 +376,8 @@ fun findBestVisibleItemToPlay(
     }
     return candidate?.index ?: -1
 }
+
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun LiveGridContent(
     wallpapers: List<Wallpaper>,
@@ -377,7 +388,9 @@ private fun LiveGridContent(
     isLoadingMore: Boolean,
     canLoadMore: Boolean,
     onLoadMore: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     if (wallpapers.isEmpty()) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -397,7 +410,9 @@ private fun LiveGridContent(
             isLoadingMore = isLoadingMore,
             canLoadMore = canLoadMore,
             onLoadMore = onLoadMore,
-            modifier = modifier
+            modifier = modifier,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope
         )
     }
 }

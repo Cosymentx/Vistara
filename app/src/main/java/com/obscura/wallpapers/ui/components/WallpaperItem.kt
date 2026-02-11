@@ -1,5 +1,8 @@
 package com.obscura.wallpapers.ui.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -37,9 +40,14 @@ import com.obscura.wallpapers.ui.theme.stringResource
  * @param onClick 点击事件回调
  * @param modifier 可选修饰符
  */
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun WallpaperItem(
-    wallpaper: Wallpaper, onClick: () -> Unit, modifier: Modifier = Modifier
+    wallpaper: Wallpaper,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     Card(
         modifier = modifier
@@ -55,7 +63,20 @@ fun WallpaperItem(
                 model = wallpaper.thumbnailUrl,
                 contentDescription = wallpaper.title ?: stringResource(R.string.app_title),
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .run {
+                        if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                            with(sharedTransitionScope) {
+                                this@run.sharedElement(
+                                    rememberSharedContentState(key = "wallpaper_image_${wallpaper.id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                            }
+                        } else {
+                            this
+                        }
+                    }
             )
 
             // 动态壁纸标记

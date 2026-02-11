@@ -1,5 +1,8 @@
 package com.obscura.wallpapers.ui.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -22,13 +25,16 @@ import com.obscura.wallpapers.core.data.model.Wallpaper
  * @param contentPadding 内容内边距
  * @param modifier 可选的修饰符
  */
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun WallpaperGrid(
     wallpapers: List<Wallpaper>,
     onWallpaperClick: (Wallpaper) -> Unit,
     columns: Int = 2,
     contentPadding: PaddingValues = PaddingValues(8.dp),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
@@ -41,7 +47,9 @@ fun WallpaperGrid(
             WallpaperItem(
                 wallpaper = wallpaper,
                 onClick = { onWallpaperClick(wallpaper) },
-                modifier = Modifier.aspectRatio(0.75f) // 设置宽高比为3:4
+                modifier = Modifier.aspectRatio(0.75f), // 设置宽高比为3:4
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope
             )
         }
     }

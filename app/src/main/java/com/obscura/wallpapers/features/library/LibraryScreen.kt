@@ -1,12 +1,12 @@
 package com.obscura.wallpapers.features.library
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -22,25 +22,27 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.obscura.wallpapers.ui.theme.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.obscura.wallpapers.R
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.components.ErrorState
+import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.components.WallpaperGrid
-import com.obscura.wallpapers.ui.components.LoadingState
+import com.obscura.wallpapers.ui.theme.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun LibraryScreen(
     onBackPressed: () -> Unit,
     onWallpaperClick: (Wallpaper) -> Unit,
     onNavigateToLogin: () -> Unit = {},
-    viewModel: LibraryViewModel = hiltViewModel()
+    viewModel: LibraryViewModel = hiltViewModel(),
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     val downloadsState by viewModel.downloadsState.collectAsState()
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
@@ -68,6 +70,7 @@ fun LibraryScreen(
                 is UiState.Loading -> {
                     LoadingState()
                 }
+
                 is UiState.Success -> {
                     val wallpapers = state.data
                     if (wallpapers.isEmpty()) {
@@ -85,10 +88,13 @@ fun LibraryScreen(
                             wallpapers = wallpapers,
                             onWallpaperClick = onWallpaperClick,
                             contentPadding = PaddingValues(4.dp),
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.fillMaxSize(),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
                         )
                     }
                 }
+
                 is UiState.Error -> {
                     if (!isLoggedIn) {
                         LoginPromptDialog(
@@ -98,7 +104,8 @@ fun LibraryScreen(
                         )
                     } else {
                         ErrorState(
-                            message = state.message ?: stringResource(R.string.errors_network_check),
+                            message = state.message
+                                ?: stringResource(R.string.errors_network_check),
                             onRetry = { viewModel.refresh() }
                         )
                     }

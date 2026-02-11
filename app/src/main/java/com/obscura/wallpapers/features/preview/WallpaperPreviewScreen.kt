@@ -5,6 +5,17 @@ import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,12 +30,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -32,7 +43,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.UiState
@@ -45,12 +55,32 @@ import com.obscura.wallpapers.ui.components.WallpaperSetOptions
 import com.obscura.wallpapers.ui.theme.stringResource
 import kotlinx.coroutines.launch
 
+/**
+ * Screen that displays a preview of a wallpaper and provides options to set it as home/lock screen,
+ * download it, share it, or edit it.
+ *
+ * This screen handles:
+ * - Displaying the wallpaper (static or blurred background for live).
+ * - Toggling favorite status.
+ * - Downloading wallpapers with permission handling.
+ * - Navigating to the editor.
+ * - Showing wallpaper metadata.
+ * - Handling login-restricted actions.
+ *
+ * @param onBackPressed Callback to navigate back to the previous screen.
+ * @param onNavigateToEdit Callback to navigate to the wallpaper editor screen with the given wallpaper ID.
+ * @param onNavigateToLogin Callback to navigate to the login screen.
+ * @param viewModel The [WallpaperPreviewViewModel] that manages the state for this screen.
+ */
+@OptIn(ExperimentalAnimationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun WallpaperPreviewScreen(
     onBackPressed: () -> Unit,
     onNavigateToEdit: (String) -> Unit,
     onNavigateToLogin: () -> Unit = {},
-    viewModel: WallpaperPreviewViewModel = hiltViewModel()
+    viewModel: WallpaperPreviewViewModel = hiltViewModel(),
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     val wallpaperState by viewModel.wallpaperState.collectAsState()
     val isFavorite by viewModel.isFavorite
@@ -137,117 +167,128 @@ fun WallpaperPreviewScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
-        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
+        containerColor = Color.Black // Set background to black for better transition
     ) { paddingValues ->
-        Box(
+        AnimatedContent(
+            targetState = wallpaperState,
+            transitionSpec = {
+                (fadeIn(animationSpec = tween(500)) + scaleIn(initialScale = 1.05f, animationSpec = tween(500)))
+                    .togetherWith(fadeOut(animationSpec = tween(400)) + scaleOut(targetScale = 0.95f, animationSpec = tween(400)))
+            },
+            label = "WallpaperStateTransition",
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-        ) {
-            when (wallpaperState) {
-                is UiState.Loading -> {
-                    LoadingState()
-                }
-                is UiState.Success -> {
-                    val wallpaper = (wallpaperState as UiState.Success).data
-                    val editedBitmap by viewModel.editedBitmap
+        ) { targetState ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                when (targetState) {
+                    is UiState.Loading -> {
+                        LoadingState()
+                    }
+                    is UiState.Success -> {
+                        val wallpaper = targetState.data
+                        val editedBitmap by viewModel.editedBitmap
 
-                    if (wallpaper.isLive) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.background)
-                        )
-                    } else {
-                        val blurredBitmap by viewModel.blurredBackgroundBitmap
-                        if (blurredBitmap != null) {
-                            androidx.compose.foundation.Image(
-                                bitmap = blurredBitmap!!.asImageBitmap(),
-                                contentDescription = null,
-                                contentScale = ContentScale.FillBounds,
-                                modifier = Modifier.fillMaxSize()
-                            )
+                        // Background Layer
+                        if (!wallpaper.isLive) {
+                            val blurredBitmap by viewModel.blurredBackgroundBitmap
+                            if (blurredBitmap != null) {
+                                androidx.compose.foundation.Image(
+                                    bitmap = blurredBitmap!!.asImageBitmap(),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.FillBounds,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                                // Dark overlay for better text readability
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(Color.Black.copy(alpha = 0.3f))
+                                )
+                            } else {
+                                LaunchedEffect(wallpaper.id) {
+                                    viewModel.loadBlurredBackground()
+                                }
+                                Box(modifier = Modifier.fillMaxSize().background(Color.Black))
+                            }
                         } else {
-                            LaunchedEffect(wallpaper.id) {
-                                viewModel.loadBlurredBackground()
+                            Box(modifier = Modifier.fillMaxSize().background(Color.Black))
+                        }
+
+                        WallpaperPreview(
+                            wallpaper = wallpaper,
+                            isFavorite = isFavorite,
+                            isInfoExpanded = isInfoExpanded,
+                            isDownloading = isDownloading,
+                            downloadProgress = downloadProgress,
+                            onBackPressed = onBackPressed,
+                            onToggleFavorite = { viewModel.toggleFavorite() },
+                            onToggleInfo = { viewModel.toggleInfoExpanded() },
+                            onSetWallpaper = {
+                                if (!isLoggedIn) {
+                                    viewModel.setNeedLoginAction(WallpaperPreviewViewModel.LoginAction.SET_WALLPAPER)
+                                    return@WallpaperPreview
+                                }
+                                viewModel.showSetWallpaperOptions(activity)
+                            },
+                            onDownload = {
+                                viewModel.download()
+                            },
+                            onShare = { viewModel.share() },
+                            onEdit = {
+                                if (!isLoggedIn) {
+                                    viewModel.setNeedLoginAction(WallpaperPreviewViewModel.LoginAction.EDIT)
+                                    return@WallpaperPreview
+                                }
+                                if (wallpaper.isLive) {
+                                    Toast.makeText(
+                                        context,
+                                        R.string.editor_live_wallpaper_edit_not_supported,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    return@WallpaperPreview
+                                }
+                                val wallpaperId = wallpaper.id
+                                onNavigateToEdit(wallpaperId)
+                            },
+                            onPreview = {
+                                viewModel.preview(activity)
+                            },
+                            isPremiumUser = isPremiumUser,
+                            editedBitmap = editedBitmap,
+                            isProcessingWallpaper = isProcessingWallpaper,
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+
+                        if (showSetWallpaperOptions) {
+                            Dialog(
+                                onDismissRequest = { viewModel.hideSetWallpaperOptions() },
+                                properties = DialogProperties(
+                                    dismissOnBackPress = true,
+                                    dismissOnClickOutside = true,
+                                    usePlatformDefaultWidth = false
+                                )
+                            ) {
+                                WallpaperSetOptions(onSetHomeScreen = {
+                                    viewModel.setWallpaper(activity, WallpaperTarget.HOME)
+                                }, onSetLockScreen = {
+                                    viewModel.setWallpaper(activity, WallpaperTarget.LOCK)
+                                }, onSetBoth = {
+                                    viewModel.setWallpaper(activity, WallpaperTarget.BOTH)
+                                }, onDismiss = {
+                                    viewModel.hideSetWallpaperOptions()
+                                })
                             }
                         }
                     }
-
-                    WallpaperPreview(
-                        wallpaper = wallpaper,
-                        isFavorite = isFavorite,
-                        isInfoExpanded = isInfoExpanded,
-                        isDownloading = isDownloading,
-                        downloadProgress = downloadProgress,
-                        onBackPressed = onBackPressed,
-                        onToggleFavorite = { viewModel.toggleFavorite() },
-                        onToggleInfo = { viewModel.toggleInfoExpanded() },
-                        onSetWallpaper = {
-                            if (!isLoggedIn) {
-                                viewModel.setNeedLoginAction(WallpaperPreviewViewModel.LoginAction.SET_WALLPAPER)
-                                return@WallpaperPreview
-                            }
-                            viewModel.showSetWallpaperOptions(activity)
-                        },
-                        onDownload = {
-                            viewModel.download()
-                        },
-                        onShare = { viewModel.share() },
-                        onEdit = {
-                            if (!isLoggedIn) {
-                                viewModel.setNeedLoginAction(WallpaperPreviewViewModel.LoginAction.EDIT)
-                                return@WallpaperPreview
-                            }
-                            if (wallpaper.isLive) {
-                                Toast.makeText(
-                                    context,
-                                    R.string.editor_live_wallpaper_edit_not_supported,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                return@WallpaperPreview
-                            }
-//                            if (wallpaper.isPremium && !isPremiumUser) {
-//                                viewModel.showPremiumPrompt()
-//                                return@WallpaperPreview
-//                            }
-                            val wallpaperId = wallpaper.id
-                            onNavigateToEdit(wallpaperId)
-                        },
-                        onPreview = {
-                            viewModel.preview(activity)
-                        },
-                        isPremiumUser = isPremiumUser,
-                        editedBitmap = editedBitmap,
-                        isProcessingWallpaper = isProcessingWallpaper
-                    )
-
-                    if (showSetWallpaperOptions) {
-                        Dialog(
-                            onDismissRequest = { viewModel.hideSetWallpaperOptions() },
-                            properties = DialogProperties(
-                                dismissOnBackPress = true,
-                                dismissOnClickOutside = true,
-                                usePlatformDefaultWidth = false
-                            )
-                        ) {
-                            WallpaperSetOptions(onSetHomeScreen = {
-                                viewModel.setWallpaper(activity, WallpaperTarget.HOME)
-                            }, onSetLockScreen = {
-                                viewModel.setWallpaper(activity, WallpaperTarget.LOCK)
-                            }, onSetBoth = {
-                                viewModel.setWallpaper(activity, WallpaperTarget.BOTH)
-                            }, onDismiss = {
-                                viewModel.hideSetWallpaperOptions()
-                            })
-                        }
+                    is UiState.Error -> {
+                        ErrorState(
+                            message = targetState.message,
+                            onRetry = { onBackPressed() }
+                        )
                     }
-                }
-                is UiState.Error -> {
-                    ErrorState(
-                        message = (wallpaperState as UiState.Error).message,
-                        onRetry = { onBackPressed() }
-                    )
                 }
             }
         }
