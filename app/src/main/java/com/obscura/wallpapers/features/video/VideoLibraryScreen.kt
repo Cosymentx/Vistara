@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -173,7 +174,7 @@ fun VideoLibraryScreen(
                     exoPlayer.clearMediaItems()
                     viewModel.filterByCategory(category)
                 })
-            Spacer(Modifier.height(8.dp))
+//            Spacer(Modifier.height(8.dp))
         },
         actions = {
             IconButton(onClick = onSearchClick) {
@@ -193,6 +194,7 @@ fun VideoLibraryScreen(
         Box(
             modifier = contentModifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .pullRefresh(pullRefreshState)
         ) {
             when (val state = wallpapersUiState) {

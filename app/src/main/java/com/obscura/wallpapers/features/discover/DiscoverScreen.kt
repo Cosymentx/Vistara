@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,7 +67,7 @@ fun DiscoverScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+                color = Color.White.copy(alpha = 0.1f), // Very subtle background, Haze handles the rest
                 border = BorderStroke(0.5.dp, Color.White.copy(alpha = 0.2f)),
                 onClick = { onSearch("") }) {
                 Row(
@@ -89,17 +90,21 @@ fun DiscoverScreen(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
+//            Spacer(modifier = Modifier.height(4.dp))
         }) { _, _ ->
         if (isLoading) {
             LoadingState()
             return@HomeTabScaffold
         }
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
             LazyColumn(
                 state = rememberLazyListState(),
-                contentPadding = PaddingValues(top = 110.dp, bottom = 100.dp),
+                contentPadding = PaddingValues(top = 130.dp, bottom = 100.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 modifier = Modifier.fillMaxSize()
             ) {

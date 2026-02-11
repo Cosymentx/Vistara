@@ -3,6 +3,7 @@ package com.obscura.wallpapers.features.photo
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -71,7 +72,7 @@ fun PhotoLibraryScreen(
                 onCategorySelected = { category ->
                     viewModel.filterByCategory(category)
                 })
-            Spacer(Modifier.height(8.dp))
+//            Spacer(Modifier.height(8.dp))
         },
         actions = {
             IconButton(onClick = onSearchClick) {
@@ -85,6 +86,7 @@ fun PhotoLibraryScreen(
         Box(
             modifier = contentModifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .pullRefresh(pullRefreshState)
         ) {
             val currentData = (wallpapersState as? UiState.Success)?.data ?: emptyList()

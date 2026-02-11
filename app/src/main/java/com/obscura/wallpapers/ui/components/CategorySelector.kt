@@ -31,12 +31,9 @@ fun CategorySelector(
     val rememberedCategories = remember(categories) { categories }
 
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        modifier = modifier.fillMaxWidth()
+        contentPadding = PaddingValues(horizontal = 16.dp), modifier = modifier.fillMaxWidth()
     ) {
-        items(
-            items = rememberedCategories,
-            key = { it.apiValue } // 使用分类的API值作为key，确保在重组时保持正确的状态
+        items(items = rememberedCategories, key = { it.apiValue } // 使用分类的API值作为key，确保在重组时保持正确的状态
         ) { category ->
             val isSelected = category == selectedCategory
 
@@ -74,12 +71,9 @@ fun CategorySelector(
     val rememberedCategories = remember(categories) { categories }
 
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        modifier = modifier.fillMaxWidth()
+        contentPadding = PaddingValues(horizontal = 16.dp), modifier = modifier.fillMaxWidth()
     ) {
-        items(
-            items = rememberedCategories,
-            key = { it } // 使用分类资源ID作为key，确保在重组时保持正确的状态
+        items(items = rememberedCategories, key = { it } // 使用分类资源ID作为key，确保在重组时保持正确的状态
         ) { categoryResId ->
             val isSelected = categoryResId == selectedCategory
 

@@ -115,6 +115,7 @@ dependencies {
     implementation(libs.androidx.constraint.compose)
     implementation(libs.androidx.material.icons.core)
     implementation(libs.compose.cloudy)
+    implementation(libs.haze)
 
     // Hilt
     implementation(libs.hilt.android)

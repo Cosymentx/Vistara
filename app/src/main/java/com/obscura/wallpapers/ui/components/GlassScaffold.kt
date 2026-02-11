@@ -22,19 +22,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.boundsInRoot
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
-import com.skydoves.cloudy.liquidGlass
+import dev.chrisbanes.haze.HazeDefaults
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.hazeEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,71 +66,6 @@ fun GlassTopAppBar(
     return contentModifier to topBar
 }
 
-/**
- * A scaffold that allows content to be drawn behind a blurred (translucent) header.
- */
-@Composable
-fun GlassHeaderScaffold(
-    headerContent: @Composable BoxScope.() -> Unit,
-    snackbarHost: (@Composable () -> Unit)? = null,
-    content: @Composable (PaddingValues) -> Unit
-) {
-    var headerSize by remember { mutableStateOf(Size.Zero) }
-    var headerOffset by remember { mutableStateOf(Offset.Zero) }
-
-    Scaffold(
-        snackbarHost = { snackbarHost?.invoke() },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        containerColor = Color.Transparent
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .then(
-                    // Apply PURE GAUSSIAN BLUR using liquidGlass with 0 distortion
-                    if (headerSize.width > 0) {
-                        Modifier.liquidGlass(
-                            lensCenter = headerOffset,
-                            lensSize = headerSize,
-                            cornerRadius = 0f,
-                            edge = 0f,
-                            refraction = 0f,
-                            curve = 0f
-                        )
-                    } else Modifier
-                )
-        ) {
-            // 1. Content Layer (Bottom Layer) - Fills entire screen
-            Box(modifier = Modifier.fillMaxSize()) {
-                content(paddingValues)
-            }
-
-            // 2. High-end Frosted Glass Header Overlay
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .onGloballyPositioned { layoutCoordinates ->
-                        val bounds = layoutCoordinates.boundsInRoot()
-                        headerSize = bounds.size
-                        headerOffset = bounds.center
-                    }
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.45f))
-            ) {
-                headerContent()
-                
-                // Elegant thin light border at bottom
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(0.5.dp)
-                        .align(Alignment.BottomCenter)
-                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-                )
-            }
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTabScaffold(
@@ -145,51 +77,75 @@ fun HomeTabScaffold(
     headerExtra: @Composable (ColumnScope.() -> Unit)? = null,
     content: @Composable (PaddingValues, Modifier) -> Unit
 ) {
-    if (showTopBar) {
-        GlassHeaderScaffold(
-            headerContent = {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    if (title != null) {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    text = title,
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                            },
-                            navigationIcon = {
-                                if (onBackPressed != null) {
-                                    IconButton(onClick = onBackPressed) {
-                                        Icon(
-                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = null
-                                        )
-                                    }
-                                }
-                            },
-                            actions = { actions?.invoke() },
-                            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                            modifier = Modifier.statusBarsPadding()
-                        )
-                    } else {
-                        // If no title, still need safe area for headerExtra like Search Bar
-                        Box(modifier = Modifier.statusBarsPadding())
-                    }
-                    headerExtra?.invoke(this)
-                }
-            },
-            snackbarHost = snackbarHost
-        ) { paddingValues ->
-            content(paddingValues, Modifier.fillMaxSize())
-        }
-    } else {
-        Scaffold(
-            snackbarHost = { snackbarHost?.invoke() },
-            contentWindowInsets = WindowInsets(0, 0, 0, 0)
-        ) { paddingValues ->
-            Box(modifier = Modifier.fillMaxSize()) {
+    val hazeState = remember { HazeState() }
+
+    Scaffold(
+        snackbarHost = { snackbarHost?.invoke() },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        containerColor = Color.Transparent
+    ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            // 1. Content Layer (Bottom) - The source for blur
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .hazeSource(state = hazeState)
+            ) {
                 content(paddingValues, Modifier.fillMaxSize())
+            }
+
+            // 2. High-end Frosted Glass Header (Top) - The effect child
+            if (showTopBar) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .hazeEffect(
+                            state = hazeState,
+                            style = HazeStyle(
+                                tint = HazeTint(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)),
+                                blurRadius = 20.dp,
+                                noiseFactor = 0.1f
+                            )
+                        )
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        if (title != null) {
+                            TopAppBar(
+                                title = {
+                                    Text(
+                                        text = title,
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                },
+                                navigationIcon = {
+                                    if (onBackPressed != null) {
+                                        IconButton(onClick = onBackPressed) {
+                                            Icon(
+                                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                                contentDescription = null
+                                            )
+                                        }
+                                    }
+                                },
+                                actions = { actions?.invoke() },
+                                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                                modifier = Modifier.statusBarsPadding()
+                            )
+                        } else {
+                            Box(modifier = Modifier.statusBarsPadding())
+                        }
+                        headerExtra?.invoke(this)
+                        
+                        // Elegant bottom line
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .height(0.5.dp)
+//                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+//                        )
+                    }
+                }
             }
         }
     }
@@ -203,14 +159,39 @@ fun GlassScaffold(
     actions: @Composable (() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit
 ) {
-    val (contentModifier, topBar) = GlassTopAppBar(
-        title = title, onBackPressed = onBackPressed, actions = actions
-    )
+    val hazeState = remember { HazeState() }
+    
     Scaffold(
-        topBar = { title?.let { topBar() } },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        topBar = {
+            if (title != null) {
+                TopAppBar(
+                    title = { Text(title) },
+                    navigationIcon = {
+                        if (onBackPressed != null) {
+                            IconButton(onClick = onBackPressed) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                            }
+                        }
+                    },
+                    actions = { actions?.invoke() },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .hazeEffect(
+                            state = hazeState, 
+                            style = HazeStyle(blurRadius = 15.dp, tint = HazeTint(Color.Transparent))
+                        )
+                )
+            }
+        },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        containerColor = Color.Transparent
     ) { paddingValues ->
-        Box(modifier = contentModifier) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeSource(state = hazeState)
+        ) {
             content(paddingValues)
         }
     }
