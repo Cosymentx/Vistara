@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -27,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -37,13 +37,12 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.core.data.model.WallpaperTarget
+import com.obscura.wallpapers.ui.components.ErrorState
+import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.components.WallpaperPreview
 import com.obscura.wallpapers.ui.components.WallpaperSetOptions
-import com.obscura.wallpapers.ui.theme.AppColors
 import com.obscura.wallpapers.ui.theme.stringResource
-import com.obscura.wallpapers.ui.components.LoadingState
-import com.obscura.wallpapers.ui.components.ErrorState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -165,7 +164,7 @@ fun WallpaperPreviewScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(AppColors.WallpaperDetailBackground)
+                                .background(MaterialTheme.colorScheme.background)
                         )
                     } else {
                         val blurredBitmap by viewModel.blurredBackgroundBitmap

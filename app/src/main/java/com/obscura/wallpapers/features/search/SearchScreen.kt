@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,18 +39,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.core.data.model.WallpaperCategory
+import com.obscura.wallpapers.ui.components.CategoryChip
 import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.components.LoadingState
-import com.obscura.wallpapers.ui.components.CategoryChip
 import com.obscura.wallpapers.ui.components.SearchBar
 import com.obscura.wallpapers.ui.components.WallpaperItem
-import com.obscura.wallpapers.ui.theme.ObscuraTheme
-import com.obscura.wallpapers.ui.theme.stringResource
-import dev.chrisbanes.haze.rememberHazeState
-import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
 import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
 import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
+import com.obscura.wallpapers.ui.theme.ObscuraTheme
+import com.obscura.wallpapers.ui.theme.stringResource
 
 @Composable
 fun SearchScreen(
@@ -65,10 +61,9 @@ fun SearchScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    val hazeState = rememberHazeState()
     Scaffold(
         topBar = {
-            Column(modifier = Modifier.statusBarsPadding().hazeEffect(state = hazeState)) {
+            Column(modifier = Modifier.statusBarsPadding()) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                         .fillMaxWidth()
@@ -143,9 +138,7 @@ fun SearchScreen(
                 .applyVerticalInnerPadding(paddingValues)
                 .padding(
                     top = safe.calculateTopPadding(),
-                    bottom = safe.calculateBottomPadding()
                 )
-                .hazeSource(state = hazeState)
         ) {
 
             if (query.isEmpty() && searchResults.isEmpty()) {

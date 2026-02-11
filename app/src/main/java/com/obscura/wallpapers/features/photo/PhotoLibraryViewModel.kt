@@ -157,7 +157,7 @@ class PhotoLibraryViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                _wallpapersState.value = UiState.Error(e.message ?: "加载壁纸失败")
+                _wallpapersState.value = UiState.Error(e.message ?: context.getString(R.string.errors_loading_wallpapers))
             } finally {
                 if (isRefresh) {
                     RefreshUtil.delayedEndRefreshing(_isRefreshing, viewModelScope)

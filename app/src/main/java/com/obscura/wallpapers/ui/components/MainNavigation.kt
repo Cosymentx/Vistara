@@ -1,16 +1,27 @@
 package com.obscura.wallpapers.ui.components
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -43,10 +54,7 @@ import com.obscura.wallpapers.features.test.ApiTestScreen
 import com.obscura.wallpapers.features.test.TestScreen
 import com.obscura.wallpapers.features.video.VideoLibraryScreen
 import com.obscura.wallpapers.ui.theme.LocalAppResources
-import dev.chrisbanes.haze.HazeDefaults
-import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
+import com.skydoves.cloudy.liquidGlass
 import java.net.URLDecoder
 
 @Composable
@@ -54,12 +62,39 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val isMainScreen = currentRoute in NavDestination.entries.map { it.route }
-    val hazeState = rememberHazeState()
-    Box(modifier = Modifier.hazeSource(state = hazeState)) {
+    var navigationBarSize: Size? by remember { mutableStateOf(null) }
+    var navigationBarOffset: Offset by remember { mutableStateOf(Offset.Zero) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(
+                navigationBarSize?.let { size ->
+                    if(isMainScreen){
+                        Modifier.liquidGlass(
+                            lensCenter = navigationBarOffset,
+                            lensSize = size,
+                            cornerRadius = 100f,
+                            edge = 0.6f,
+                            refraction = 0.5f,
+                            curve = 0.5f,
+                        )
+                    }else{
+                        null
+                    }
+                } ?: Modifier
+            )
+    ) {
         NavHost(
             navController = navController,
             startDestination = NavDestination.Discover.route,
-            modifier = Modifier
+            modifier = Modifier.fillMaxSize(),
+            enterTransition = {
+                fadeIn(animationSpec = tween(100))
+            },
+            exitTransition = {
+                fadeOut(animationSpec = tween(100))
+            }
         ) {
             composable("auth") {
                 SignInScreen(onLoginSuccess = {
@@ -206,23 +241,36 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
         if (isMainScreen) {
             BottomNavBar(
                 navController = navController,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .hazeEffect(
-                        state = hazeState, style = HazeDefaults.style(
-                            backgroundColor = MaterialTheme.colorScheme.surface, blurRadius = 10.dp
-                        )
-                    )
+                modifier = Modifier.align(Alignment.BottomCenter).padding(start = 18.dp, end = 18.dp, bottom = 8.dp),
+                onSizeChange = { size, offset ->
+                    navigationBarSize = size
+                    navigationBarOffset = offset
+                }
             )
         }
     }
 }
 
 @Composable
-fun BottomNavBar(navController: NavController, modifier: Modifier = Modifier) {
+fun BottomNavBar(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    onSizeChange: (Size, Offset) -> Unit
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    NavigationBar(modifier = modifier, containerColor = Color.Transparent, tonalElevation = 0.dp) {
+    NavigationBar(
+        modifier = modifier
+            .onGloballyPositioned { layoutCoordinates ->
+                if (layoutCoordinates.size.width > 10) {
+                    val bounds = layoutCoordinates.boundsInRoot()
+                    onSizeChange(
+                        bounds.size,
+                        bounds.center,
+                    )
+                }
+            }, containerColor = Color.Transparent, tonalElevation = 0.dp
+    ) {
         NavDestination.entries.forEach { destination ->
             val selected =
                 currentDestination?.hierarchy?.any { it.route == destination.route } == true

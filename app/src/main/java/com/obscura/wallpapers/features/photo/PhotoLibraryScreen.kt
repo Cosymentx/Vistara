@@ -31,13 +31,11 @@ import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.ErrorState
-import com.obscura.wallpapers.ui.components.GlassTopAppBar
+import com.obscura.wallpapers.ui.components.HomeTabScaffold
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.WallpaperStaggeredGrid
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
-import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
-import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -56,28 +54,28 @@ fun PhotoLibraryScreen(
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing, onRefresh = { viewModel.refresh() })
 
-    val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.nav_photo), actions = {
+    HomeTabScaffold(
+        title = stringResource(R.string.nav_photo),
+        showTopBar = true,
+        actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = stringResource(R.string.search_hint)
                 )
             }
-        })
-    Scaffold(topBar = { topBar() }) { paddingValues ->
+        }
+    ) { paddingValues, contentModifier ->
         Box(
             modifier = contentModifier
-                .applyVerticalInnerPadding(paddingValues)
                 .pullRefresh(pullRefreshState)
         ) {
-            val safe = paddingValues.safeVerticalContentPadding(64.dp, 80.dp)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(
-                        top = safe.calculateTopPadding(),
-                        bottom = safe.calculateBottomPadding()
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = paddingValues.calculateBottomPadding()
                     )
             ) {
                 CategorySelector(

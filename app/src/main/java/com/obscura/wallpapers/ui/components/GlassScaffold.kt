@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -16,11 +15,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeDefaults
-import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,10 +24,7 @@ fun GlassTopAppBar(
     actions: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ): Pair<Modifier, @Composable () -> Unit> {
-    val hazeState = rememberHazeState()
-    val contentModifier = Modifier
-        .fillMaxSize()
-        .hazeSource(state = hazeState)
+    val contentModifier = Modifier.fillMaxSize()
 
     val topBar: @Composable () -> Unit = {
         TopAppBar(
@@ -53,11 +44,6 @@ fun GlassTopAppBar(
             modifier = modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .hazeEffect(
-                    state = hazeState, style = HazeDefaults.style(
-                        backgroundColor = MaterialTheme.colorScheme.surface, blurRadius = 24.dp
-                    )
-                )
         )
     }
     return contentModifier to topBar
@@ -79,6 +65,30 @@ fun GlassScaffold(
     ) { paddingValues ->
         Box(modifier = contentModifier) {
             content(paddingValues)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeTabScaffold(
+    title: String? = null,
+    showTopBar: Boolean = false,
+    onBackPressed: (() -> Unit)? = null,
+    actions: @Composable (() -> Unit)? = null,
+    snackbarHost: (@Composable () -> Unit)? = null,
+    content: @Composable (PaddingValues, Modifier) -> Unit
+) {
+    val (baseModifier, topBar) = GlassTopAppBar(
+        title = title, onBackPressed = onBackPressed, actions = actions
+    )
+    Scaffold(
+        topBar = { if (showTopBar && title != null) topBar() },
+        snackbarHost = { snackbarHost?.invoke() },
+        contentWindowInsets = WindowInsets(0)
+    ) { paddingValues ->
+        Box(modifier = baseModifier) {
+            content(paddingValues, baseModifier)
         }
     }
 }

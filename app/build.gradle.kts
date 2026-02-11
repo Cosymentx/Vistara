@@ -114,7 +114,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.constraint.compose)
     implementation(libs.androidx.material.icons.core)
-    implementation(libs.haze)
+    implementation(libs.compose.cloudy)
 
     // Hilt
     implementation(libs.hilt.android)

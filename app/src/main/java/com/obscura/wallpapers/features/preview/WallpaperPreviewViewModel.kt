@@ -6,13 +6,14 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import android.widget.Toast
+import com.obscura.wallpapers.R
 import com.obscura.wallpapers.cache.EditedImageCache
 import com.obscura.wallpapers.core.common.ImageProcessor
 import com.obscura.wallpapers.core.data.model.UiState
@@ -122,10 +123,13 @@ class WallpaperPreviewViewModel @Inject constructor(
                     _isPremiumUser.value = userRepository.checkPremiumStatus()
                     _wallpaperState.value = UiState.Success(wallpaper)
                 } else {
-                    _wallpaperState.value = UiState.Error("加载壁纸失败")
+                    _wallpaperState.value =
+                        UiState.Error(context.getString(R.string.errors_loading_wallpapers))
                 }
             } catch (e: Exception) {
-                _wallpaperState.value = UiState.Error(e.message ?: "加载壁纸失败")
+                _wallpaperState.value = UiState.Error(
+                    e.message ?: context.getString(R.string.errors_loading_wallpapers)
+                )
             }
         }
     }
@@ -233,6 +237,7 @@ class WallpaperPreviewViewModel @Inject constructor(
                                     _downloadProgress.value = 0f
                                     _isDownloading.value = false
                                 }
+
                                 progress >= 1f -> {
                                     _downloadProgress.value = 1f
                                     _isDownloading.value = false
@@ -243,8 +248,10 @@ class WallpaperPreviewViewModel @Inject constructor(
                                             context.getString(com.obscura.wallpapers.R.string.preview_download_success),
                                             Toast.LENGTH_SHORT
                                         ).show()
-                                    } catch (_: Exception) { }
+                                    } catch (_: Exception) {
+                                    }
                                 }
+
                                 else -> {
                                     _downloadProgress.value = progress
                                 }

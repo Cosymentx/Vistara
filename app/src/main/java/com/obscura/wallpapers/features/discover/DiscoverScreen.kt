@@ -40,15 +40,12 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.Banner
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.core.data.model.WallpaperCategory
-import com.obscura.wallpapers.ui.components.Carousel
 import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.components.FeaturedWallpaperSection
-import com.obscura.wallpapers.ui.components.GlassScaffold
+import com.obscura.wallpapers.ui.components.HomeTabScaffold
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.WallpaperItem
-import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
-import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 import com.obscura.wallpapers.ui.theme.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,161 +56,145 @@ fun DiscoverScreen(
     onBannerClick: (Banner) -> Unit = {},
     viewModel: DiscoverViewModel = hiltViewModel()
 ) {
-    val banners by viewModel.banners.collectAsState()
     val featuredWallpapers by viewModel.featuredWallpapers.collectAsState()
     val staticWallpapers by viewModel.staticWallpapers.collectAsState()
     val liveWallpapers by viewModel.liveWallpapers.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    GlassScaffold { paddingValues ->
+    HomeTabScaffold(
+        title = null,
+        showTopBar = false
+    ) { paddingValues, contentModifier ->
         if (isLoading) {
             LoadingState()
-            return@GlassScaffold
+            return@HomeTabScaffold
         }
 
         if (error != null && featuredWallpapers.isEmpty() && staticWallpapers.isEmpty() && liveWallpapers.isEmpty()) {
             ErrorState(
                 message = error ?: stringResource(R.string.common_unknown_error),
                 onRetry = { viewModel.refresh() })
-            return@GlassScaffold
+            return@HomeTabScaffold
         }
 
-        LazyColumn(
-            state = rememberLazyListState(),
-            contentPadding = paddingValues.safeVerticalContentPadding(0.dp, 80.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .applyVerticalInnerPadding(paddingValues)
+
+        Column(
+            modifier = contentModifier
         ) {
-            if (error != null) {
-                item {
-                    Surface(
-                        color = MaterialTheme.colorScheme.errorContainer,
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(12.dp),
-                            verticalAlignment = Alignment.CenterVertically
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .height(56.dp)
+                    .clip(RoundedCornerShape(28.dp))
+                    .clickable { onSearch("") },
+                color = MaterialTheme.colorScheme.surface,
+                shadowElevation = 4.dp
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(R.string.home_search_icon),
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = stringResource(R.string.home_search_hint),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            LazyColumn(
+                state = rememberLazyListState(),
+                contentPadding = PaddingValues(bottom = 80.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+            ) {
+                if (error != null) {
+                    item {
+                        Surface(
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
                         ) {
-                            Text(
-                                text = stringResource(R.string.home_partial_data_loading_failed),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onErrorContainer,
-                                modifier = Modifier.weight(1f)
-                            )
-                            Surface(
-                                onClick = { viewModel.refresh() },
-                                color = MaterialTheme.colorScheme.error,
-                                shape = RoundedCornerShape(4.dp)
+                            Row(
+                                modifier = Modifier.padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = stringResource(R.string.common_refresh),
-                                    color = MaterialTheme.colorScheme.onError,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                    text = stringResource(R.string.home_partial_data_loading_failed),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
+                                    modifier = Modifier.weight(1f)
                                 )
+                                Surface(
+                                    onClick = { viewModel.refresh() },
+                                    color = MaterialTheme.colorScheme.error,
+                                    shape = RoundedCornerShape(4.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.common_refresh),
+                                        color = MaterialTheme.colorScheme.onError,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        modifier = Modifier.padding(
+                                            horizontal = 8.dp,
+                                            vertical = 4.dp
+                                        )
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            item {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .height(56.dp)
-                        .clip(RoundedCornerShape(28.dp))
-                        .clickable { onSearch("") },
-                    color = MaterialTheme.colorScheme.surface,
-                    shadowElevation = 4.dp
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(R.string.home_search_icon),
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = stringResource(R.string.home_search_hint),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                            modifier = Modifier.weight(1f)
+                if (featuredWallpapers.isNotEmpty()) {
+                    item {
+                        FeaturedWallpaperSection(
+                            wallpaper = featuredWallpapers.first(),
+                            onWallpaperClick = onWallpaperClick,
+                            modifier = Modifier.padding(horizontal = 16.dp)
                         )
                     }
                 }
-            }
 
-            if (banners.isNotEmpty()) {
-                item {
-                    Carousel(
-                        banners = banners,
-                        onBannerClick = onBannerClick,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(160.dp)
-                            .padding(horizontal = 10.dp)
-                            .clip(RoundedCornerShape(15.dp))
-                    )
-                }
-            }
-
-            if (featuredWallpapers.isNotEmpty()) {
-                item {
-                    FeaturedWallpaperSection(
-                        wallpaper = featuredWallpapers.first(),
+                val sections = buildSections(
+                    staticItems = staticWallpapers,
+                    liveItems = liveWallpapers,
+                    latestItems = featuredWallpapers
+                )
+                items(sections.size) { index ->
+                    val s = sections[index]
+                    TwoColumnSection(
+                        title = when (s.type) {
+                            SectionType.Photo -> if (s.items.isNotEmpty()) stringResource(R.string.home_hot_static) else null
+                            SectionType.Video -> if (s.items.isNotEmpty()) stringResource(R.string.home_cool_dynamic) else null
+                            SectionType.Latest -> if (s.items.isNotEmpty()) stringResource(R.string.home_latest_uploads) else null
+                        },
+                        wallpapers = s.items,
                         onWallpaperClick = onWallpaperClick,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        titlePadding = when (s.type) {
+                            SectionType.Video -> PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                            else -> PaddingValues(horizontal = 16.dp)
+                        }
                     )
                 }
-            }
-
-            item {
-                CategorySection(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    onWallpaperClick = onWallpaperClick
-                )
-            }
-
-            val sections = buildSections(
-                staticItems = staticWallpapers,
-                liveItems = liveWallpapers,
-                latestItems = featuredWallpapers
-            )
-            items(sections.size) { index ->
-                val s = sections[index]
-                TwoColumnSection(
-                    title = when (s.type) {
-                        SectionType.Photo -> if (s.items.isNotEmpty()) stringResource(R.string.home_hot_static) else null
-                        SectionType.Video -> if (s.items.isNotEmpty()) stringResource(R.string.home_cool_dynamic) else null
-                        SectionType.Latest -> if (s.items.isNotEmpty()) stringResource(R.string.home_latest_uploads) else null
-                    },
-                    wallpapers = s.items,
-                    onWallpaperClick = onWallpaperClick,
-                    titlePadding = when (s.type) {
-                        SectionType.Video -> PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-                        else -> PaddingValues(horizontal = 16.dp)
-                    }
-                )
             }
         }
+
+
     }
 }
 

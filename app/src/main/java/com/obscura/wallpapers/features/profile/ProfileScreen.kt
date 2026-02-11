@@ -30,7 +30,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,6 +57,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.obscura.wallpapers.R
+import com.obscura.wallpapers.ui.components.HomeTabScaffold
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import com.obscura.wallpapers.ui.theme.stringResource
@@ -108,14 +108,16 @@ fun ProfileScreen(
         }, message = message)
     }
 
-    Scaffold { paddingValues ->
+    HomeTabScaffold(
+        title = null,
+        showTopBar = false
+    ) { paddingValues, contentModifier ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = contentModifier
                 .verticalScroll(rememberScrollState())
-                .padding(paddingValues)
-                .padding(bottom = 16.dp)
         ) {
+            Spacer(modifier = Modifier.height(56.dp))
+
             ProfileHeader(
                 username = username,
                 userPhotoUrl = userPhotoUrl,
@@ -195,6 +197,8 @@ fun ProfileScreen(
                     )
                 )
             }
+
+            Spacer(modifier = Modifier.height(88.dp))
         }
     }
 }

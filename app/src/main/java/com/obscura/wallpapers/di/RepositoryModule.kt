@@ -18,8 +18,6 @@ import com.obscura.wallpapers.core.data.remote.service.PexelsApiService
 import com.obscura.wallpapers.core.data.remote.service.PixabayApiService
 import com.obscura.wallpapers.core.data.remote.service.UnsplashApiService
 import com.obscura.wallpapers.core.data.remote.service.WallhavenApiService
-import com.obscura.wallpapers.core.data.repository.BannerRepository
-import com.obscura.wallpapers.core.data.repository.BannerRepositoryImpl
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepositoryImpl
 import com.obscura.wallpapers.core.data.repository.UserRepository
@@ -99,15 +97,6 @@ object RepositoryDiModule {
     ): UserRepository {
         println("apiUserRepository")
         return UserRepositoryImpl(dataStore, apiService)
-    }
-
-    @Provides
-    @Singleton
-    fun apiBannerRepository(
-        networkMonitor: NetworkMonitor, stringProvider: StringProvider
-    ): BannerRepository {
-        println("apiBannerRepository")
-        return BannerRepositoryImpl(networkMonitor, stringProvider)
     }
 
     @Provides

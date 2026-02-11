@@ -44,6 +44,7 @@ splashscreen = "1.2.0"
 serialization = "1.8.1"
 retrofitKotlinxSerialization = "1.0.0"
 gson = "2.13.2"
+cloudy = "0.5.0"
 
 [libraries]
 af-android-sdk = { module = "com.appsflyer:af-android-sdk", version.ref = "afAndroidSdk" }
@@ -51,7 +52,6 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "materialIconsCore" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
-haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 imagecropper = { group = "com.vanniktech", name = "android-image-cropper", version.ref = "imagecropper" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -102,6 +102,9 @@ androidx-datastore-preferences-core = { group = "androidx.datastore", name = "da
 
 # Coil
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+# cloudy
+compose-cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 
 # Accompanist
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }

@@ -57,14 +57,12 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.components.CategorySelector
-import com.obscura.wallpapers.ui.components.GlassTopAppBar
+import com.obscura.wallpapers.ui.components.HomeTabScaffold
 import com.obscura.wallpapers.ui.components.LiveVideoGrid
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
-import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
-import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -236,32 +234,35 @@ fun VideoLibraryScreen(
         }
     }
 
-    val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.nav_video), actions = {
+    HomeTabScaffold(
+        title = stringResource(R.string.nav_video),
+        showTopBar = true,
+        actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_hint))
             }
-        })
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = { topBar() }) { innerPadding ->
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { paddingValues, contentModifier ->
         val pullRefreshState = rememberPullRefreshState(
-            refreshing = isRefreshing, onRefresh = {
+            refreshing = isRefreshing,
+            onRefresh = {
                 playingIndex = -1
                 exoPlayer.stop()
                 exoPlayer.clearMediaItems()
                 viewModel.refresh()
-            })
-
-        Box(modifier = contentModifier
-            .applyVerticalInnerPadding(innerPadding)
-            .pullRefresh(pullRefreshState)) {
+            }
+        )
+        Box(
+            modifier = contentModifier
+                .pullRefresh(pullRefreshState)
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(
-                        top = innerPadding.safeVerticalContentPadding(64.dp, 80.dp).calculateTopPadding(),
-                        bottom = innerPadding.safeVerticalContentPadding(64.dp, 80.dp).calculateBottomPadding()
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = paddingValues.calculateBottomPadding()
                     )
             ) {
                 CategorySelector(

@@ -7,11 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.common.StringProvider
-import com.obscura.wallpapers.core.data.model.Banner
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.core.data.model.WallpaperCategory
 import com.obscura.wallpapers.core.data.remote.ApiResult
-import com.obscura.wallpapers.core.data.repository.BannerRepository
 import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,12 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
     private val wallpaperRepository: WallpaperRepository,
-    private val bannerRepository: BannerRepository,
     private val stringProvider: StringProvider
 ) : ViewModel() {
-
-    private val _banners = MutableStateFlow<List<Banner>>(emptyList())
-    val banners: StateFlow<List<Banner>> = _banners.asStateFlow()
 
     private val _featuredWallpapers = MutableStateFlow<List<Wallpaper>>(emptyList())
     val featuredWallpapers: StateFlow<List<Wallpaper>> = _featuredWallpapers.asStateFlow()
@@ -56,22 +50,6 @@ class DiscoverViewModel @Inject constructor(
             _error.value = null
 
             try {
-                try {
-                    when (val result = bannerRepository.getHomeBanners()) {
-                        is ApiResult.Success -> {
-                            _banners.value = result.data
-                        }
-
-                        is ApiResult.Error -> {
-                            Log.e(TAG, "轮播图数据加载失败: ${result.message}")
-                        }
-
-                        is ApiResult.Loading -> {}
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "轮播图数据加载异常", e)
-                }
-
                 try {
                     when (val result = wallpaperRepository.getFeaturedWallpapers(1, 10)) {
                         is ApiResult.Success -> {
@@ -121,7 +99,8 @@ class DiscoverViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "加载数据时发生异常", e)
-                _error.value = e.message ?: stringProvider.getString(R.string.common_error_loading_data)
+                _error.value =
+                    e.message ?: stringProvider.getString(R.string.common_error_loading_data)
             } finally {
                 _isLoading.value = false
                 Log.d(TAG, "数据加载完成")

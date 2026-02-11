@@ -15,36 +15,80 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-/**
- * Vistara应用的深色配色方案
- */
-private val DarkColorScheme = darkColorScheme(
-    primary = AppColors.Primary,
-    secondary = AppColors.Secondary,
-    background = AppColors.DarkBackground,
-    surface = AppColors.DarkSurface,
-    error = AppColors.DarkError,
-    onPrimary = AppColors.DarkOnPrimary,
-    onSecondary = AppColors.DarkOnSecondary,
-    onBackground = AppColors.DarkOnBackground,
-    onSurface = AppColors.DarkOnSurface,
-    onError = AppColors.DarkOnError
+private val lightScheme = lightColorScheme(
+    primary = _root_ide_package_.com.obscura.wallpapers.ui.theme.primaryLight,
+    onPrimary = _root_ide_package_.com.obscura.wallpapers.ui.theme.onPrimaryLight,
+    primaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.primaryContainerLight,
+    onPrimaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.onPrimaryContainerLight,
+    secondary = _root_ide_package_.com.obscura.wallpapers.ui.theme.secondaryLight,
+    onSecondary = _root_ide_package_.com.obscura.wallpapers.ui.theme.onSecondaryLight,
+    secondaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.secondaryContainerLight,
+    onSecondaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.onSecondaryContainerLight,
+    tertiary = _root_ide_package_.com.obscura.wallpapers.ui.theme.tertiaryLight,
+    onTertiary = _root_ide_package_.com.obscura.wallpapers.ui.theme.onTertiaryLight,
+    tertiaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.tertiaryContainerLight,
+    onTertiaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.onTertiaryContainerLight,
+    error = _root_ide_package_.com.obscura.wallpapers.ui.theme.errorLight,
+    onError = _root_ide_package_.com.obscura.wallpapers.ui.theme.onErrorLight,
+    errorContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.errorContainerLight,
+    onErrorContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.onErrorContainerLight,
+    background = _root_ide_package_.com.obscura.wallpapers.ui.theme.backgroundLight,
+    onBackground = _root_ide_package_.com.obscura.wallpapers.ui.theme.onBackgroundLight,
+    surface = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceLight,
+    onSurface = _root_ide_package_.com.obscura.wallpapers.ui.theme.onSurfaceLight,
+    surfaceVariant = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceVariantLight,
+    onSurfaceVariant = _root_ide_package_.com.obscura.wallpapers.ui.theme.onSurfaceVariantLight,
+    outline = _root_ide_package_.com.obscura.wallpapers.ui.theme.outlineLight,
+    outlineVariant = _root_ide_package_.com.obscura.wallpapers.ui.theme.outlineVariantLight,
+    scrim = _root_ide_package_.com.obscura.wallpapers.ui.theme.scrimLight,
+    inverseSurface = _root_ide_package_.com.obscura.wallpapers.ui.theme.inverseSurfaceLight,
+    inverseOnSurface = _root_ide_package_.com.obscura.wallpapers.ui.theme.inverseOnSurfaceLight,
+    inversePrimary = _root_ide_package_.com.obscura.wallpapers.ui.theme.inversePrimaryLight,
+    surfaceDim = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceDimLight,
+    surfaceBright = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceBrightLight,
+    surfaceContainerLowest = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceContainerLowestLight,
+    surfaceContainerLow = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceContainerLowLight,
+    surfaceContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceContainerLight,
+    surfaceContainerHigh = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceContainerHighLight,
+    surfaceContainerHighest = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceContainerHighestLight,
 )
 
-/**
- * Vistara应用的浅色配色方案
- */
-private val LightColorScheme = lightColorScheme(
-    primary = AppColors.Primary,
-    secondary = AppColors.Secondary,
-    background = AppColors.LightBackground,
-    surface = AppColors.LightSurface,
-    error = AppColors.Error,
-    onPrimary = AppColors.LightOnPrimary,
-    onSecondary = AppColors.LightOnSecondary,
-    onBackground = AppColors.LightOnBackground,
-    onSurface = AppColors.LightOnSurface,
-    onError = AppColors.LightOnError
+private val darkScheme = darkColorScheme(
+    primary = _root_ide_package_.com.obscura.wallpapers.ui.theme.primaryDark,
+    onPrimary = _root_ide_package_.com.obscura.wallpapers.ui.theme.onPrimaryDark,
+    primaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.primaryContainerDark,
+    onPrimaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.onPrimaryContainerDark,
+    secondary = _root_ide_package_.com.obscura.wallpapers.ui.theme.secondaryDark,
+    onSecondary = _root_ide_package_.com.obscura.wallpapers.ui.theme.onSecondaryDark,
+    secondaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.secondaryContainerDark,
+    onSecondaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.onSecondaryContainerDark,
+    tertiary = _root_ide_package_.com.obscura.wallpapers.ui.theme.tertiaryDark,
+    onTertiary = _root_ide_package_.com.obscura.wallpapers.ui.theme.onTertiaryDark,
+    tertiaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.tertiaryContainerDark,
+    onTertiaryContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.onTertiaryContainerDark,
+    error = _root_ide_package_.com.obscura.wallpapers.ui.theme.errorDark,
+    onError = _root_ide_package_.com.obscura.wallpapers.ui.theme.onErrorDark,
+    errorContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.errorContainerDark,
+    onErrorContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.onErrorContainerDark,
+    background = _root_ide_package_.com.obscura.wallpapers.ui.theme.backgroundDark,
+    onBackground = _root_ide_package_.com.obscura.wallpapers.ui.theme.onBackgroundDark,
+    surface = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceDark,
+    onSurface = _root_ide_package_.com.obscura.wallpapers.ui.theme.onSurfaceDark,
+    surfaceVariant = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceVariantDark,
+    onSurfaceVariant = _root_ide_package_.com.obscura.wallpapers.ui.theme.onSurfaceVariantDark,
+    outline = _root_ide_package_.com.obscura.wallpapers.ui.theme.outlineDark,
+    outlineVariant = _root_ide_package_.com.obscura.wallpapers.ui.theme.outlineVariantDark,
+    scrim = _root_ide_package_.com.obscura.wallpapers.ui.theme.scrimDark,
+    inverseSurface = _root_ide_package_.com.obscura.wallpapers.ui.theme.inverseSurfaceDark,
+    inverseOnSurface = _root_ide_package_.com.obscura.wallpapers.ui.theme.inverseOnSurfaceDark,
+    inversePrimary = _root_ide_package_.com.obscura.wallpapers.ui.theme.inversePrimaryDark,
+    surfaceDim = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceDimDark,
+    surfaceBright = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceBrightDark,
+    surfaceContainerLowest = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceContainerLowestDark,
+    surfaceContainerLow = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceContainerLowDark,
+    surfaceContainer = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceContainerDark,
+    surfaceContainerHigh = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceContainerHighDark,
+    surfaceContainerHighest = _root_ide_package_.com.obscura.wallpapers.ui.theme.surfaceContainerHighestDark,
 )
 
 /**
@@ -65,8 +109,8 @@ fun ObscuraTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> darkScheme
+        else -> lightScheme
     }
 
     val view = LocalView.current
