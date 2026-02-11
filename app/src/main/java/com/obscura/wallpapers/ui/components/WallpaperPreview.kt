@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -54,6 +53,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -197,7 +199,7 @@ fun WallpaperPreview(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                        brush = Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent, Color.Black.copy(alpha = 0.5f), Color.Black.copy(alpha = 0.8f)
                             )
@@ -356,57 +358,42 @@ fun WallpaperPreview(
                 val canSetWallpaper = !wallpaper.isPremium || isPremiumUser
                 Button(
                     onClick = onSetWallpaper,
-                    // 当正在处理壁纸时禁用按钮，防止重复点击
                     enabled = !isProcessingWallpaper,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
-                        .height(52.dp),
+                        .height(56.dp),
                     colors = ButtonDefaults.buttonColors(
-                        // 自定义禁用状态的颜色，使其保持高可见度
-                        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-                        // 自定义禁用状态的文字颜色，使其保持高可见度
-                        disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
-                        // 正常状态的颜色
                         containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.85f),
+                        disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.95f)
                     ),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(18.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        if (isProcessingWallpaper) {
-                            // 显示加载指示器，使用高对比度的颜色
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                color = MaterialTheme.colorScheme.onPrimary, // 确保加载指示器清晰可见
-                                strokeWidth = 2.dp
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            if (isProcessingWallpaper) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    strokeWidth = 2.dp
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+                            Text(
+                                text = if (isProcessingWallpaper) stringResource(R.string.preview_setting_wallpaper)
+                                else stringResource(R.string.preview_set_as_wallpaper),
+                                style = MaterialTheme.typography.titleMedium,
+                                maxLines = 1
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                        } else if (wallpaper.isPremium) {
-                            // 对于高级壁纸和非高级用户，显示皇冠图标
-//                            Text(
-//                                text = "👑", // 皇冠emoji
-//                                style = MaterialTheme.typography.bodyMedium,
-//                                modifier = Modifier.padding(end = 4.dp)
-//                            )
-                        } else if (wallpaper.isLive && !isPremiumUser) {
-                            // 对于普通动态壁纸和非高级用户，显示钻石图标
-//                            Text(
-//                                text = "💎", // 钻石emoji
-//                                style = MaterialTheme.typography.bodyMedium,
-//                                modifier = Modifier.padding(end = 4.dp)
-//                            )
                         }
-                        Text(
-                            text = if (isProcessingWallpaper) stringResource(R.string.preview_setting_wallpaper)
-                            else  stringResource(R.string.preview_set_as_wallpaper),
-//                            else stringResource(R.string.preview_upgrade_to_unlock),
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-                            // 不需要显式设置颜色，因为我们已经在ButtonDefaults中设置了disabledContentColor
-                        )
                     }
                 }
             }
@@ -453,8 +440,19 @@ fun WallpaperSetOptions(
     onSetHomeScreen: () -> Unit, onSetLockScreen: () -> Unit, onSetBoth: () -> Unit, onDismiss: () -> Unit,
 ) {
     Surface(
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
+        tonalElevation = 6.dp,
+        shadowElevation = 8.dp,
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            androidx.compose.ui.graphics.Brush.linearGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.28f),
+                    Color.Transparent
+                )
+            )
+        ),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
@@ -462,40 +460,61 @@ fun WallpaperSetOptions(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(20.dp)
         ) {
             Text(
-                text = stringResource(R.string.preview_set_as), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 16.dp)
+                text = stringResource(R.string.preview_set_as),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            Button(
-                onClick = onSetHomeScreen, modifier = Modifier
+            androidx.compose.material3.OutlinedButton(
+                onClick = onSetHomeScreen,
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                    .padding(vertical = 6.dp)
+                    .height(48.dp)
             ) {
-                Text(text = stringResource(R.string.preview_home_screen_wallpaper))
+                Text(
+                    text = stringResource(R.string.preview_home_screen_wallpaper),
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
+
+            androidx.compose.material3.OutlinedButton(
+                onClick = onSetLockScreen,
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+                    .height(48.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.preview_lock_screen_wallpaper),
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
+
+            androidx.compose.material3.OutlinedButton(
+                onClick = onSetBoth,
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+                    .height(48.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.preview_home_and_lock_screen),
+                    style = MaterialTheme.typography.titleSmall
+                )
             }
 
             Button(
-                onClick = onSetLockScreen, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            ) {
-                Text(text = stringResource(R.string.preview_lock_screen_wallpaper))
-            }
-
-            Button(
-                onClick = onSetBoth, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            ) {
-                Text(text = stringResource(R.string.preview_home_and_lock_screen))
-            }
-
-            TextButton(
                 onClick = onDismiss, modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                    .padding(top = 8.dp)
+                    .height(44.dp)
             ) {
                 Text(text = stringResource(R.string.cancel))
             }

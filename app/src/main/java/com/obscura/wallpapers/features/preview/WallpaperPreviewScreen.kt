@@ -123,17 +123,9 @@ fun WallpaperPreviewScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-    }
-
-    SideEffect {
-    }
-
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val lifecycleObserver = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME || event == Lifecycle.Event.ON_START) {
-            }
         }
         lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
         onDispose {

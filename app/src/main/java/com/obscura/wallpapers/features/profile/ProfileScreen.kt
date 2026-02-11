@@ -119,10 +119,9 @@ fun ProfileScreen(
     ) { paddingValues, contentModifier ->
         Column(
             modifier = contentModifier
+                .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(56.dp))
-
             ProfileHeader(
                 username = username,
                 userPhotoUrl = userPhotoUrl,

@@ -15,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.obscura.wallpapers.ObscuraApp
 import com.obscura.wallpapers.core.data.model.AppLanguage
@@ -48,7 +49,8 @@ class EntryActivity : ComponentActivity() {
         splashScreen.setKeepOnScreenCondition { !contentReady }
         enableEdgeToEdge()
         applyIntentDestination(intent)
-        bindUi()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        setupUi()
         contentReady = true
     }
 
@@ -62,7 +64,7 @@ class EntryActivity : ComponentActivity() {
         super.onStop()
     }
 
-    private fun bindUi() {
+    private fun setupUi() {
         setContent {
             val language by localeManager.appLanguageFlow.collectAsState(initial = AppLanguage.SYSTEM)
             val darkTheme by themeManager.darkTheme()

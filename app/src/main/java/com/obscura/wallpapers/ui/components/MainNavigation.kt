@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -67,7 +68,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize().navigationBarsPadding()
             .then(
                 navigationBarSize?.let { size ->
                     if(isMainScreen){
