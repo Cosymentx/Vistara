@@ -11,7 +11,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -30,9 +32,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.border
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -42,10 +45,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.CheckCircle
-import com.obscura.wallpapers.ui.icons.ObscuraIcons
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -63,13 +62,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -77,6 +74,7 @@ import androidx.compose.ui.unit.sp
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.Resolution
 import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 
@@ -85,18 +83,18 @@ import com.obscura.wallpapers.ui.theme.stringResource
 fun WallpaperPreview(
     wallpaper: Wallpaper,
     isFavorite: Boolean,
-    isInfoExpanded: Boolean = false,
-    isDownloading: Boolean = false,
-    downloadProgress: Float = 0f,
     onBackPressed: () -> Unit,
     onToggleFavorite: () -> Unit,
-    onToggleInfo: () -> Unit = {},
     onSetWallpaper: () -> Unit,
     onDownload: () -> Unit,
     onShare: () -> Unit,
     onEdit: () -> Unit,
-    onPreview: () -> Unit = {},
     modifier: Modifier = Modifier,
+    isInfoExpanded: Boolean = false,
+    isDownloading: Boolean = false,
+    downloadProgress: Float = 0f,
+    onToggleInfo: () -> Unit = {},
+    onPreview: () -> Unit = {},
     isPremiumUser: Boolean = false,
     editedBitmap: Bitmap? = null,
     isProcessingWallpaper: Boolean = false,
@@ -130,21 +128,28 @@ fun WallpaperPreview(
                 onTap = { showControls = !showControls })
         } else if (wallpaper.isLive) {
             LiveVideoPlayer(
-                wallpaper = wallpaper, modifier = contentModifier, onTap = { showControls = !showControls })
+                wallpaper = wallpaper,
+                modifier = contentModifier,
+                onTap = { showControls = !showControls })
         } else {
             ZoomableImage(
                 imageUrl = wallpaper.url ?: "",
                 contentDescription = wallpaper.title ?: "",
                 modifier = contentModifier,
                 onTap = { showControls = !showControls },
-                thumbnailUrl = wallpaper.thumbnailUrl)
+                thumbnailUrl = wallpaper.thumbnailUrl
+            )
         }
 
         // Top Control Bar
         AnimatedVisibility(
             visible = showControls,
             enter = fadeIn(animationSpec = tween(400)) + slideInVertically(animationSpec = tween(400)) { -it / 2 },
-            exit = fadeOut(animationSpec = tween(400)) + slideOutVertically(animationSpec = tween(400)) { -it / 2 },
+            exit = fadeOut(animationSpec = tween(400)) + slideOutVertically(
+                animationSpec = tween(
+                    400
+                )
+            ) { -it / 2 },
             modifier = Modifier.align(Alignment.TopCenter)
         ) {
             Box(
@@ -160,8 +165,7 @@ fun WallpaperPreview(
                         )
                     )
                     .statusBarsPadding()
-                    .height(64.dp),
-                contentAlignment = Alignment.CenterStart
+                    .height(64.dp), contentAlignment = Alignment.CenterStart
             ) {
                 IconButton(
                     onClick = onBackPressed,
@@ -182,8 +186,7 @@ fun WallpaperPreview(
                     Text(
                         text = it,
                         style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 0.5.sp
+                            fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp
                         ),
                         color = Color.White,
                         maxLines = 1,
@@ -218,7 +221,11 @@ fun WallpaperPreview(
         AnimatedVisibility(
             visible = showControls,
             enter = fadeIn(animationSpec = tween(400)) + slideInVertically(animationSpec = tween(400)) { it / 2 },
-            exit = fadeOut(animationSpec = tween(400)) + slideOutVertically(animationSpec = tween(400)) { it / 2 },
+            exit = fadeOut(animationSpec = tween(400)) + slideOutVertically(
+                animationSpec = tween(
+                    400
+                )
+            ) { it / 2 },
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             Column(
@@ -238,8 +245,7 @@ fun WallpaperPreview(
             ) {
                 // Author and Source
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Bottom
+                    modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
@@ -268,10 +274,15 @@ fun WallpaperPreview(
                             .background(Color.White.copy(alpha = 0.08f))
                             .padding(12.dp)
                     ) {
-                        InfoRow(label = stringResource(R.string.resolution, 0, 0).split(":")[0], value = "${wallpaper.resolution?.width ?: 0} x ${wallpaper.resolution?.height ?: 0}")
+                        InfoRow(
+                            label = stringResource(R.string.resolution, 0, 0).split(":")[0],
+                            value = "${wallpaper.resolution?.width ?: 0} x ${wallpaper.resolution?.height ?: 0}"
+                        )
                         InfoRow(
                             label = stringResource(R.string.wallpaper_type, "").split(":")[0],
-                            value = if (wallpaper.isLive) stringResource(R.string.live_wallpaper) else stringResource(R.string.static_wallpaper)
+                            value = if (wallpaper.isLive) stringResource(R.string.live_wallpaper) else stringResource(
+                                R.string.static_wallpaper
+                            )
                         )
 
                         if (wallpaper.tags.isNotEmpty()) {
@@ -283,14 +294,19 @@ fun WallpaperPreview(
                                     Surface(
                                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                                         shape = RoundedCornerShape(8.dp),
-                                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)),
+                                        border = BorderStroke(
+                                            1.dp,
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                                        ),
                                         modifier = Modifier.padding(end = 6.dp)
                                     ) {
                                         Text(
                                             text = "#$tag",
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.primaryContainer,
-                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                            modifier = Modifier.padding(
+                                                horizontal = 8.dp, vertical = 4.dp
+                                            )
                                         )
                                     }
                                 }
@@ -311,7 +327,7 @@ fun WallpaperPreview(
                         contentDescription = "Favorite",
                         tint = if (isFavorite) Color(0xFFFF4081) else Color.White
                     )
-                    
+
                     if (!wallpaper.isLive) {
                         val canEdit = !wallpaper.isPremium || isPremiumUser
                         GlassIconButton(
@@ -359,11 +375,10 @@ fun WallpaperPreview(
                 // Modern Primary Set Wallpaper Button
                 val buttonBrush = Brush.linearGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.tertiary
+                        MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary
                     )
                 )
-                
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -403,8 +418,7 @@ fun WallpaperPreview(
                             text = if (isProcessingWallpaper) stringResource(R.string.preview_setting_wallpaper)
                             else stringResource(R.string.preview_set_as_wallpaper),
                             style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.ExtraBold,
-                                letterSpacing = 1.sp
+                                fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp
                             ),
                             color = MaterialTheme.colorScheme.onPrimary
                         )
@@ -423,8 +437,16 @@ private fun InfoRow(label: String, value: String) {
             .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.6f))
-        Text(text = value, style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium), color = Color.White)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.White.copy(alpha = 0.6f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+            color = Color.White
+        )
     }
 }
 
@@ -433,13 +455,13 @@ private fun GlassIconButton(
     onClick: () -> Unit,
     enabled: Boolean = true,
     painter: androidx.compose.ui.graphics.painter.Painter? = null,
-    imageVector: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    imageVector: ImageVector? = null,
     contentDescription: String? = null,
     tint: Color = Color.White,
     active: Boolean = false
 ) {
     val scale by animateFloatAsState(if (active) 1.15f else 1f, label = "scale")
-    
+
     Box(
         modifier = Modifier
             .size(54.dp)
@@ -454,18 +476,17 @@ private fun GlassIconButton(
                 color = if (active) MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
                 else Color.White.copy(alpha = 0.25f),
                 shape = CircleShape
-            ),
-        contentAlignment = Alignment.Center
+            ), contentAlignment = Alignment.Center
     ) {
         IconButton(
-            onClick = onClick,
-            enabled = enabled,
-            modifier = Modifier.fillMaxSize()
+            onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxSize()
         ) {
             if (painter != null) {
                 Icon(painter = painter, contentDescription = contentDescription, tint = tint)
             } else if (imageVector != null) {
-                Icon(imageVector = imageVector, contentDescription = contentDescription, tint = tint)
+                Icon(
+                    imageVector = imageVector, contentDescription = contentDescription, tint = tint
+                )
             }
         }
     }
@@ -479,69 +500,82 @@ fun WallpaperSetOptions(
     onDismiss: () -> Unit,
 ) {
     Surface(
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 8.dp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
+        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
+        tonalElevation = 16.dp,
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .navigationBarsPadding()
+                .padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Drag Handle for aesthetics
             Box(
                 modifier = Modifier
-                    .width(40.dp)
+                    .width(36.dp)
                     .height(4.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f))
             )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
+
+            Spacer(modifier = Modifier.height(28.dp))
+
             Text(
                 text = stringResource(R.string.preview_set_as),
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                textAlign = TextAlign.Center
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.ExtraBold, letterSpacing = 0.5.sp
+                ),
+                color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            SetOptionButton(
-                text = stringResource(R.string.preview_home_screen_wallpaper),
+            SetOptionItem(
+                title = stringResource(R.string.preview_home_screen_wallpaper),
+                description = "Apply to your home screen only",
+                icon = Icons.Default.Home,
                 onClick = onSetHomeScreen,
-                icon = Icons.Default.Home
-            )
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            SetOptionButton(
-                text = stringResource(R.string.preview_lock_screen_wallpaper),
-                onClick = onSetLockScreen,
-                icon = Icons.Default.Lock
-            )
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            SetOptionButton(
-                text = stringResource(R.string.preview_home_and_lock_screen),
-                onClick = onSetBoth,
-                icon = Icons.Default.Star
+                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            SetOptionItem(
+                title = stringResource(R.string.preview_lock_screen_wallpaper),
+                description = "Apply to your lock screen only",
+                icon = Icons.Default.Lock,
+                onClick = onSetLockScreen,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f),
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            SetOptionItem(
+                title = stringResource(R.string.preview_home_and_lock_screen),
+                description = "Set for both screens at once",
+                icon = Icons.Default.Star,
+                onClick = onSetBoth,
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f),
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                isPremium = true
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
 
             TextButton(
                 onClick = onDismiss,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Text(
                     text = stringResource(R.string.cancel),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.outline
                 )
             }
         }
@@ -549,39 +583,74 @@ fun WallpaperSetOptions(
 }
 
 @Composable
-private fun SetOptionButton(
-    text: String,
+private fun SetOptionItem(
+    title: String,
+    description: String,
+    icon: ImageVector,
     onClick: () -> Unit,
-    icon: ImageVector? = null
+    containerColor: Color,
+    contentColor: Color,
+    isPremium: Boolean = false
 ) {
-    Button(
+    Surface(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        ),
-        elevation = ButtonDefaults.buttonElevation(0.dp)
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = containerColor,
+        border = BorderStroke(1.dp, contentColor.copy(alpha = 0.1f))
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (icon != null) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(contentColor.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
+                    tint = contentColor,
                     modifier = Modifier.size(24.dp)
                 )
-                Spacer(modifier = Modifier.width(16.dp))
             }
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = contentColor
+                    )
+                    if (isPremium) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
+                }
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = contentColor.copy(alpha = 0.7f)
+                )
+            }
+
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = contentColor.copy(alpha = 0.4f),
+                modifier = Modifier.size(24.dp)
             )
         }
     }

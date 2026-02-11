@@ -17,12 +17,13 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -34,6 +35,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -99,6 +101,7 @@ fun WallpaperPreviewScreen(
                         snackbarHostState.showSnackbar(result.message)
                     }
                 }
+
                 is WallpaperPreviewViewModel.UpgradeResult.Error -> {
                     coroutineScope.launch {
                         snackbarHostState.showSnackbar(result.message)
@@ -123,9 +126,14 @@ fun WallpaperPreviewScreen(
     ) { isGranted: Boolean ->
         if (isGranted) {
             viewModel.continueDownloadAfterPermissionGranted()
-            Toast.makeText(context, R.string.preview_start_download_wallpaper, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.preview_start_download_wallpaper, Toast.LENGTH_SHORT)
+                .show()
         } else {
-            Toast.makeText(context, R.string.preview_download_failed_permission_denied, Toast.LENGTH_SHORT)
+            Toast.makeText(
+                context,
+                R.string.preview_download_failed_permission_denied,
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
     }
@@ -161,8 +169,16 @@ fun WallpaperPreviewScreen(
             targetState = wallpaperState,
             transitionSpec = {
                 // Faster transition for smoother feel
-                (fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = 1.02f, animationSpec = tween(300)))
-                    .togetherWith(fadeOut(animationSpec = tween(250)) + scaleOut(targetScale = 0.98f, animationSpec = tween(250)))
+                (fadeIn(animationSpec = tween(300)) + scaleIn(
+                    initialScale = 1.02f,
+                    animationSpec = tween(300)
+                ))
+                    .togetherWith(
+                        fadeOut(animationSpec = tween(250)) + scaleOut(
+                            targetScale = 0.98f,
+                            animationSpec = tween(250)
+                        )
+                    )
             },
             label = "WallpaperStateTransition",
             modifier = Modifier
@@ -175,6 +191,7 @@ fun WallpaperPreviewScreen(
                         // Keep loading indicator very simple to avoid clashing with next loading
                         LoadingState()
                     }
+
                     is UiState.Success -> {
                         val wallpaper = targetState.data
                         val editedBitmap by viewModel.editedBitmap
@@ -198,10 +215,14 @@ fun WallpaperPreviewScreen(
                                 LaunchedEffect(wallpaper.id) {
                                     viewModel.loadBlurredBackground()
                                 }
-                                Box(modifier = Modifier.fillMaxSize().background(Color.Black))
+                                Box(modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(Color.Black))
                             }
                         } else {
-                            Box(modifier = Modifier.fillMaxSize().background(Color.Black))
+                            Box(modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black))
                         }
 
                         WallpaperPreview(
@@ -259,18 +280,39 @@ fun WallpaperPreviewScreen(
                                     usePlatformDefaultWidth = false
                                 )
                             ) {
-                                WallpaperSetOptions(onSetHomeScreen = {
-                                    viewModel.setWallpaper(activity, WallpaperTarget.HOME)
-                                }, onSetLockScreen = {
-                                    viewModel.setWallpaper(activity, WallpaperTarget.LOCK)
-                                }, onSetBoth = {
-                                    viewModel.setWallpaper(activity, WallpaperTarget.BOTH)
-                                }, onDismiss = {
-                                    viewModel.hideSetWallpaperOptions()
-                                })
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.BottomCenter
+                                ) {
+                                    // Clickable area to dismiss
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clickable(
+                                                interactionSource = remember { MutableInteractionSource() },
+                                                indication = null
+                                            ) { viewModel.hideSetWallpaperOptions() }
+                                    )
+
+                                    WallpaperSetOptions(
+                                        onSetHomeScreen = {
+                                            viewModel.setWallpaper(activity, WallpaperTarget.HOME)
+                                        },
+                                        onSetLockScreen = {
+                                            viewModel.setWallpaper(activity, WallpaperTarget.LOCK)
+                                        },
+                                        onSetBoth = {
+                                            viewModel.setWallpaper(activity, WallpaperTarget.BOTH)
+                                        },
+                                        onDismiss = {
+                                            viewModel.hideSetWallpaperOptions()
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
+
                     is UiState.Error -> {
                         ErrorState(
                             message = targetState.message,
@@ -295,7 +337,9 @@ fun WallpaperPreviewScreen(
             dismissButton = {
                 Button(onClick = {
                     Toast.makeText(
-                        context, R.string.preview_download_failed_permission_required, Toast.LENGTH_SHORT
+                        context,
+                        R.string.preview_download_failed_permission_required,
+                        Toast.LENGTH_SHORT
                     ).show()
                     viewModel.resetPermissionRequest()
                 }) {
@@ -314,9 +358,9 @@ fun WallpaperPreviewScreen(
 
         LoginPromptDialog(
             onDismiss = { viewModel.clearNeedLoginAction() }, onConfirm = {
-            viewModel.clearNeedLoginAction()
-            onNavigateToLogin()
-        }, message = message
+                viewModel.clearNeedLoginAction()
+                onNavigateToLogin()
+            }, message = message
         )
     }
 }

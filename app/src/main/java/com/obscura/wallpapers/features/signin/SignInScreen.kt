@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -12,6 +13,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,24 +21,26 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -49,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -58,51 +63,32 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import com.obscura.wallpapers.ui.theme.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.ui.theme.ObscuraTheme
-import androidx.compose.ui.graphics.Brush.Companion.verticalGradient
-import androidx.compose.ui.graphics.Brush.Companion.radialGradient
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
-import androidx.compose.material3.Surface
+import com.obscura.wallpapers.ui.theme.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInScreen(
-    onLoginSuccess: () -> Unit, onSkipLogin: () -> Unit, viewModel: SignInViewModel = hiltViewModel()
+    onLoginSuccess: () -> Unit,
+    onSkipLogin: () -> Unit,
+    viewModel: SignInViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
     val loginResult by viewModel.loginResult.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    var isLogoVisible by remember { mutableStateOf(false) }
-    var isContentVisible by remember { mutableStateOf(false) }
-    var isButtonsVisible by remember { mutableStateOf(false) }
-
-    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 1f, targetValue = 1.05f, animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = FastOutSlowInEasing), repeatMode = RepeatMode.Reverse
-        ), label = "scale"
-    )
+    var isVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        isLogoVisible = true
-        kotlinx.coroutines.delay(300)
-        isContentVisible = true
-        kotlinx.coroutines.delay(300)
-        isButtonsVisible = true
+        isVisible = true
     }
 
     LaunchedEffect(isLoggedIn) {
@@ -135,268 +121,291 @@ fun SignInScreen(
     }
 
     fun launchGoogleSignIn() {
-        val gso =
-            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build()
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
         val googleSignInClient = GoogleSignIn.getClient(context, gso)
         val signInIntent = googleSignInClient.signInIntent
         googleSignInLauncher.launch(signInIntent)
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color.Transparent, // Make Scaffold transparent to show full-screen background
+        contentWindowInsets = WindowInsets(0, 0, 0, 0) // Disable default insets consumption
+    ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier = Modifier.fillMaxSize()
         ) {
-            val bgAnim = rememberInfiniteTransition(label = "bgAnim")
-            val bgShiftX by bgAnim.animateFloat(
-                initialValue = -200f,
-                targetValue = 200f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 6000, easing = FastOutSlowInEasing),
-                    repeatMode = RepeatMode.Reverse
-                ),
-                label = "bgShiftX"
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.surface,
-                                MaterialTheme.colorScheme.secondary.copy(alpha = 0.10f),
-                                MaterialTheme.colorScheme.surfaceVariant
-                            ),
-                            start = Offset(bgShiftX, 0f),
-                            end = Offset(bgShiftX + 900f, 1200f)
-                        )
-                    )
-            )
-
-            val glowAnim = rememberInfiniteTransition(label = "glowAnim")
-            val glowShiftA by glowAnim.animateFloat(
-                initialValue = -40f,
-                targetValue = 40f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 7000, easing = FastOutSlowInEasing),
-                    repeatMode = RepeatMode.Reverse
-                ),
-                label = "glowShiftA"
-            )
-            val glowShiftB by glowAnim.animateFloat(
-                initialValue = -30f,
-                targetValue = 30f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 8000, easing = FastOutSlowInEasing),
-                    repeatMode = RepeatMode.Reverse
-                ),
-                label = "glowShiftB"
-            )
-            Box(
-                modifier = Modifier
-                    .size(300.dp)
-                    .offset(((-50) + glowShiftA).dp, ((-50) + glowShiftB).dp)
-                    .alpha(0.10f)
-                    .background(
-                        brush = radialGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0f)
-                            )
-                        ), shape = RoundedCornerShape(100)
-                    )
-            )
-
-            Box(
-                modifier = Modifier
-                    .size(200.dp)
-                    .align(Alignment.BottomEnd)
-                    .offset((50 + glowShiftB).dp, (50 - glowShiftA).dp)
-                    .alpha(0.10f)
-                    .background(
-                        brush = radialGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.45f),
-                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0f)
-                            )
-                        ), shape = CircleShape
-                    )
-            )
+            // 1. Premium Dynamic Background (Fills the entire screen)
+            PremiumBackground()
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(24.dp),
+                    .statusBarsPadding()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+                // 2. Logo Section
                 AnimatedVisibility(
-                    visible = isLogoVisible,
-                    enter = fadeIn(tween(500)) + slideInVertically(tween(500)) { it / 2 }) {
-                    Box(
-                        modifier = Modifier
-                            .size(120.dp)
-                            .graphicsLayer {
-                                scaleX = scale
-                                scaleY = scale
-                            }
-                            .shadow(8.dp, RoundedCornerShape(100))
-                            .clip(RoundedCornerShape(100))
-                            .background(
-                                brush = radialGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        Color.Transparent
-                                    )
-                                )
-                            ),
-                        contentAlignment = Alignment.Center) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_launcher_round),
-                            contentDescription = "App Logo",
-                            modifier = Modifier
-                                .size(120.dp)
-                                .alpha(0.9f)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .clip(RoundedCornerShape(100))
-                                .border(
-                                    width = 1.dp,
-                                    brush = Brush.linearGradient(
-                                        colors = listOf(
-                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
-                                            Color.Transparent
-                                        )
-                                    ),
-                                    shape = RoundedCornerShape(100)
-                                )
-                        )
-                    }
+                    visible = isVisible,
+                    enter = fadeIn(tween(1000)) + slideInVertically(tween(1000)) { -60 }
+                ) {
+                    LogoSection()
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(0.dp))
 
+                // 3. Content Card
                 AnimatedVisibility(
-                    visible = isContentVisible, enter = fadeIn(tween(500))
+                    visible = isVisible,
+                    enter = fadeIn(tween(1000, 300)) + slideInVertically(tween(1000, 300)) { 60 }
                 ) {
-                    Surface(
-                        shape = RoundedCornerShape(24.dp),
-//                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
-                        tonalElevation = 2.dp,
-                        shadowElevation = 6.dp,
-                        border = BorderStroke(
-                            1.dp,
-                            Brush.linearGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(20.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.app_title), style = TextStyle(
-                                    fontSize = 32.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    letterSpacing = 2.sp,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                    shadow = Shadow(
-                                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                                        offset = Offset(0f, 2f),
-                                        blurRadius = 4f
-                                    )
-                                )
-                            )
-
-                            Spacer(modifier = Modifier.height(4.dp))
-
-                            Text(
-                                text = stringResource(R.string.app_tagline),
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Medium, letterSpacing = 4.sp
-                                ),
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
-                            )
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            Text(
-                                text = stringResource(R.string.auth_description),
-                                style = MaterialTheme.typography.bodyMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                            )
-                        }
-                    }
+                    GlassContentCard()
                 }
 
                 Spacer(modifier = Modifier.height(64.dp))
 
+                // 4. Action Buttons
                 AnimatedVisibility(
-                    visible = isButtonsVisible, enter = fadeIn(tween(500))
+                    visible = isVisible,
+                    enter = fadeIn(tween(1000, 600))
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.fillMaxWidth(0.8f)
-                    ) {
-                        ElevatedButton(
-                            onClick = { launchGoogleSignIn() },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            shape = RoundedCornerShape(28.dp),
-                            colors = ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color.White, contentColor = Color.Black
-                            ),
-                            elevation = ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 4.dp, pressedElevation = 8.dp
-                            )
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.mipmap.ic_google_login),
-                                    contentDescription = "Google",
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .alpha(0.8f)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = stringResource(R.string.auth_google_sign_in),
-                                    color = Color.Black,
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                )
-                            }
-                        }
-
-                        OutlinedButton(
-                            onClick = { onSkipLogin() },
-                            shape = RoundedCornerShape(28.dp),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                            modifier = Modifier.height(48.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.auth_skip),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
+                    ActionButtons(
+                        onGoogleSignIn = { launchGoogleSignIn() },
+                        onSkip = onSkipLogin
+                    )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun PremiumBackground() {
+    val infiniteTransition = rememberInfiniteTransition(label = "bg")
+    
+    val animX1 by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 150f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(10000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "x1"
+    )
+
+    val animY1 by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 200f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(12000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "y1"
+    )
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Base gradient
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        MaterialTheme.colorScheme.surface,
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)
+                    )
+                )
+            ))
+
+        // Dynamic Blobs
+        Box(
+            modifier = Modifier
+                .size(450.dp)
+                .offset(animX1.dp - 100.dp, animY1.dp - 100.dp)
+                .blur(120.dp)
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f), CircleShape)
+        )
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .size(350.dp)
+                .offset(x = 50.dp, y = 50.dp)
+                .blur(100.dp)
+                .background(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.12f), CircleShape)
+        )
+    }
+}
+
+@Composable
+private fun LogoSection() {
+    val infiniteTransition = rememberInfiniteTransition(label = "logo")
+    val floatAnim by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 12f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "float"
+    )
+
+    Box(contentAlignment = Alignment.Center) {
+        // Outer glow
+        Box(
+            modifier = Modifier
+                .size(150.dp)
+                .graphicsLayer { translationY = floatAnim }
+                .background(
+                    Brush.radialGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                            Color.Transparent
+                        )
+                    ),
+                    CircleShape
+                )
+        )
+        
+        // Glass container for logo - removed solid white background
+        Surface(
+            modifier = Modifier
+                .size(110.dp)
+                .graphicsLayer { translationY = floatAnim },
+            shape = CircleShape,
+            color = Color.Transparent, // Completely transparent container
+            shadowElevation = 0.dp
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_round),
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape)
+            )
+        }
+    }
+}
+
+@Composable
+private fun GlassContentCard() {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = Color.Transparent
+//        shape = RoundedCornerShape(32.dp),
+//        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.45f),
+//        border = BorderStroke(
+//            1.dp,
+//            Brush.linearGradient(
+//                listOf(Color.White.copy(alpha = 0.4f), Color.Transparent)
+//            )
+//        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(R.string.app_title),
+                style = TextStyle(
+                    fontSize = 34.sp,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 2.sp,
+                    shadow = Shadow(
+                        color = Color.Black.copy(alpha = 0.15f),
+                        offset = Offset(0f, 4f),
+                        blurRadius = 10f
+                    )
+                ),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            
+            Spacer(modifier = Modifier.height(10.dp))
+            
+//            Text(
+//                text = stringResource(R.string.app_tagline).uppercase(),
+//                style = MaterialTheme.typography.labelLarge.copy(
+//                    letterSpacing = 6.sp,
+//                    fontWeight = FontWeight.Bold
+//                ),
+//                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.85f)
+//            )
+//
+//            Spacer(modifier = Modifier.height(28.dp))
+//
+//            Text(
+//                text = stringResource(R.string.auth_description),
+//                style = MaterialTheme.typography.bodyMedium.copy(
+//                    lineHeight = 24.sp
+//                ),
+//                textAlign = TextAlign.Center,
+//                color = MaterialTheme.colorScheme.onSurfaceVariant
+//            )
+        }
+    }
+}
+
+@Composable
+private fun ActionButtons(onGoogleSignIn: () -> Unit, onSkip: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        Button(
+            onClick = onGoogleSignIn,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .shadow(
+                    elevation = 16.dp, 
+                    shape = RoundedCornerShape(30.dp),
+                    spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                ),
+            shape = RoundedCornerShape(30.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            ),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = R.mipmap.ic_google_login),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(modifier = Modifier.width(14.dp))
+                Text(
+                    text = stringResource(R.string.auth_google_sign_in),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.5.sp
+                    )
+                )
+            }
+        }
+
+        TextButton(
+            onClick = onSkip,
+            modifier = Modifier.alpha(0.8f)
+        ) {
+            Text(
+                text = stringResource(R.string.auth_skip),
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.5.sp
+                ),
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }

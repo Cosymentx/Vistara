@@ -1,9 +1,7 @@
 package com.obscura.wallpapers.ui.components
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -73,24 +71,21 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
 
     Box(
         modifier = Modifier
-            .fillMaxSize().navigationBarsPadding()
-            .then(
-                navigationBarSize?.let { size ->
-                    if(isMainScreen){
-                        Modifier.liquidGlass(
-                            lensCenter = navigationBarOffset,
-                            lensSize = size,
-                            cornerRadius = 100f,
-                            edge = 0.6f,
-                            refraction = 0.5f,
-                            curve = 0.5f,
-                        )
-                    }else{
-                        null
-                    }
-                } ?: Modifier
-            )
-    ) {
+            .fillMaxSize()
+            .then(navigationBarSize?.let { size ->
+                if (isMainScreen) {
+                    Modifier.liquidGlass(
+                        lensCenter = navigationBarOffset,
+                        lensSize = size,
+                        cornerRadius = 100f,
+                        edge = 0.6f,
+                        refraction = 0.5f,
+                        curve = 0.5f,
+                    )
+                } else {
+                    null
+                }
+            } ?: Modifier)) {
         SharedTransitionLayout {
             NavHost(
                 navController = navController,
@@ -101,8 +96,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 },
                 exitTransition = {
                     fadeOut(animationSpec = tween(300))
-                }
-            ) {
+                }) {
                 composable("auth") {
                     SignInScreen(onLoginSuccess = {
                         navController.popBackStack()
@@ -113,8 +107,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 composable(NavDestination.Discover.route) {
                     DiscoverScreen(
                         onWallpaperClick = { wallpaper ->
-                            navController.navigate("preview/${wallpaper.id}")
-                        },
+                        navController.navigate("preview/${wallpaper.id}")
+                    },
                         onSearch = { query ->
                             navController.navigate("search?query=$query")
                         },
@@ -125,9 +119,11 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                                         navController.navigate("preview/$wallpaperId")
                                     }
                                 }
+
                                 BannerActionType.PREMIUM -> {
                                     navController.navigate("premium")
                                 }
+
                                 BannerActionType.URL -> {
                                 }
                             }
@@ -139,8 +135,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 composable(NavDestination.PhotoWallpapers.route) {
                     PhotoLibraryScreen(
                         onWallpaperClick = { wallpaper ->
-                            navController.navigate("preview/${wallpaper.id}")
-                        },
+                        navController.navigate("preview/${wallpaper.id}")
+                    },
                         onSearchClick = {
                             navController.navigate("search")
                         },
@@ -151,8 +147,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 composable(NavDestination.VideoWallpapers.route) {
                     VideoLibraryScreen(
                         onWallpaperClick = { wallpaper ->
-                            navController.navigate("preview/${wallpaper.id}")
-                        },
+                        navController.navigate("preview/${wallpaper.id}")
+                    },
                         onSearchClick = {
                             navController.navigate("search")
                         },
@@ -180,8 +176,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     val query = backStackEntry.arguments?.getString("query") ?: ""
                     SearchScreen(
                         onWallpaperClick = { wallpaper ->
-                            navController.navigate("preview/${wallpaper.id}")
-                        },
+                        navController.navigate("preview/${wallpaper.id}")
+                    },
                         onBackClick = { navController.navigateUp() },
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this@composable
@@ -245,7 +241,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 }
                 composable("about") {
                     InfoScreen(
-                        onBackPressed = { navController.navigateUp() }, navController = navController
+                        onBackPressed = { navController.navigateUp() },
+                        navController = navController
                     )
                 }
                 composable(
@@ -277,12 +274,13 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
         if (isMainScreen) {
             BottomNavBar(
                 navController = navController,
-                modifier = Modifier.align(Alignment.BottomCenter).padding(start = 18.dp, end = 18.dp, bottom = 8.dp),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(start = 18.dp, end = 18.dp, bottom = 8.dp),
                 onSizeChange = { size, offset ->
                     navigationBarSize = size
                     navigationBarOffset = offset
-                }
-            )
+                })
         }
     }
 }
@@ -297,6 +295,7 @@ fun BottomNavBar(
     val currentDestination = navBackStackEntry?.destination
     NavigationBar(
         modifier = modifier
+            .navigationBarsPadding()
             .onGloballyPositioned { layoutCoordinates ->
                 if (layoutCoordinates.size.width > 10) {
                     val bounds = layoutCoordinates.boundsInRoot()

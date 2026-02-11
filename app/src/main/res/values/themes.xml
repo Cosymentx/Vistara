@@ -2,9 +2,12 @@
 <resources>
 
     <!-- 基础应用主题 -->
-    <style name="Theme.Obscura" parent="android:Theme.Material.Light.NoActionBar">
-        <!-- 主窗口背景色，防止启动时白屏 -->
+    <style name="Theme.Obscura" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/splash_background</item>
+        <!-- 启用沉浸式关键配置 -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
     <!-- 启动画面主题 -->
