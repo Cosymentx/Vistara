@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +27,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.CachePolicy
@@ -41,13 +43,15 @@ import com.obscura.wallpapers.ui.theme.stringResource
  * @param contentDescription 图片描述
  * @param modifier 修饰符
  * @param onTap 点击回调
+ * @param thumbnailUrl 可选的缩略图URL，用于在高清图加载时显示
  */
 @Composable
 fun ZoomableImage(
     imageUrl: String,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    onTap: () -> Unit = {}
+    onTap: () -> Unit = {},
+    thumbnailUrl: String? = null
 ) {
     val context = LocalContext.current
 
@@ -112,16 +116,26 @@ fun ZoomableImage(
             contentScale = ContentScale.Fit,
             modifier = Modifier.fillMaxSize(),
             loading = {
-                // 显示加载动画
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    // 简单的加载动画，不显示具体进度
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(48.dp),
-                        color = Color(0xFF3F51B5)
+                // 如果有缩略图，显示缩略图作为占位
+                if (thumbnailUrl != null) {
+                    AsyncImage(
+                        model = thumbnailUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.fillMaxSize()
                     )
+                } else {
+                    // 显示加载动画
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(40.dp),
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                            strokeWidth = 3.dp
+                        )
+                    }
                 }
             },
             error = {

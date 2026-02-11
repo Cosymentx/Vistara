@@ -136,7 +136,8 @@ fun WallpaperPreview(
                 imageUrl = wallpaper.url ?: "",
                 contentDescription = wallpaper.title ?: "",
                 modifier = contentModifier,
-                onTap = { showControls = !showControls })
+                onTap = { showControls = !showControls },
+                thumbnailUrl = wallpaper.thumbnailUrl)
         }
 
         // Top Control Bar

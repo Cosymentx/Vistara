@@ -1,5 +1,6 @@
 package com.obscura.wallpapers.features.profile
 
+import android.graphics.Shader
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -7,6 +8,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,9 +28,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,21 +44,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import android.graphics.RenderEffect as AndroidRenderEffect
-import android.graphics.Shader
 import androidx.compose.ui.graphics.asComposeRenderEffect
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -66,6 +67,7 @@ import com.obscura.wallpapers.ui.components.HomeTabScaffold
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import com.obscura.wallpapers.ui.theme.stringResource
+import android.graphics.RenderEffect as AndroidRenderEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -114,13 +116,14 @@ fun ProfileScreen(
     }
 
     HomeTabScaffold(
-        title = null,
-        showTopBar = false
+        title = null, showTopBar = false
     ) { paddingValues, contentModifier ->
         Column(
             modifier = contentModifier
+                .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
+                .background(MaterialTheme.colorScheme.background)
         ) {
             ProfileHeader(
                 username = username,
@@ -130,41 +133,37 @@ fun ProfileScreen(
                 onLoginClick = onLoginClick,
             )
 
-            if (!isPremiumUser && isLoggedIn) {
-//                PremiumBanner(
-//                    onClick = { onUpgradeClick() },
-//                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-//                )
-            }
+            // Section Title
+            SectionHeader(title = "MY GALLERY", modifier = Modifier.padding(top = 30.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            FeatureList(
+            FeatureGrid(
                 items = listOf(
                     FeatureEntry(
                         icon = ObscuraIcons.Favorite,
                         titleRes = R.string.my_favorites,
                         subtitleRes = R.string.my_favorites_desc,
+                        accentColor = Color(0xFFFF4081),
                         onClick = { viewModel.checkLoginAndExecute(ProfileViewModel.LoginAction.FAVORITES) { onFavoritesClick() } }),
                     FeatureEntry(
                         icon = ObscuraIcons.Download,
                         titleRes = R.string.my_downloads,
                         subtitleRes = R.string.my_downloads_desc,
+                        accentColor = Color(0xFF00E5FF),
                         onClick = { viewModel.checkLoginAndExecute(ProfileViewModel.LoginAction.DOWNLOADS) { onDownloadsClick() } }),
                     FeatureEntry(
                         icon = ObscuraIcons.Refresh,
                         titleRes = R.string.cycler_auto_change_wallpaper,
                         subtitleRes = R.string.cycler_auto_change_wallpaper_desc,
+                        accentColor = Color(0xFF7C4DFF),
                         onClick = { viewModel.checkLoginAndExecute(ProfileViewModel.LoginAction.AUTO_WALLPAPER) { onAutoChangeClick() } })
                 )
             )
 
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-            )
+            Spacer(modifier = Modifier.height(24.dp))
 
-            FeatureList(
+            SectionHeader(title = stringResource(R.string.settings_title))
+
+            FeatureCardList(
                 items = listOf(
                     FeatureEntry(
                         icon = ObscuraIcons.Settings,
@@ -172,7 +171,7 @@ fun ProfileScreen(
                         subtitleRes = R.string.settings_desc,
                         onClick = onSettingsClick
                     ), FeatureEntry(
-                        icon = ObscuraIcons.Star,
+                        icon = Icons.Default.Star,
                         titleRes = R.string.feedback_title,
                         subtitleRes = R.string.feedback_desc,
                         onClick = onFeedbackClick
@@ -186,11 +185,9 @@ fun ProfileScreen(
             )
 
             if (isDebugMode) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                )
-                FeatureList(
+                Spacer(modifier = Modifier.height(24.dp))
+                SectionHeader(title = "DEVELOPER OPTIONS")
+                FeatureCardList(
                     items = listOf(
                         FeatureEntry(
                             icon = Icons.Default.Build,
@@ -202,7 +199,7 @@ fun ProfileScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(88.dp))
+            Spacer(modifier = Modifier.height(100.dp))
         }
     }
 }
@@ -211,102 +208,142 @@ data class FeatureEntry(
     val icon: ImageVector,
     @StringRes val titleRes: Int,
     @StringRes val subtitleRes: Int? = null,
+    val accentColor: Color = Color.Unspecified,
     val onClick: () -> Unit
 )
 
 @Composable
-private fun FeatureList(
-    items: List<FeatureEntry>, modifier: Modifier = Modifier
+private fun SectionHeader(title: String, modifier: Modifier = Modifier) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.labelMedium.copy(
+            fontWeight = FontWeight.Black, letterSpacing = 1.5.sp
+        ),
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+        modifier = modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+    )
+}
+
+@Composable
+private fun FeatureGrid(
+    items: List<FeatureEntry>
 ) {
-    Column(modifier = modifier.padding(horizontal = 16.dp)) {
-        items.chunked(3).forEach { rowItems ->
-            Row(
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items.forEach { item ->
+            Surface(
+                onClick = item.onClick,
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(24.dp),
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    .weight(1f)
+                    .height(120.dp)
             ) {
-                rowItems.forEach { item ->
-                    Surface(
-                        onClick = item.onClick,
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
-                        tonalElevation = 2.dp,
-                        shadowElevation = 6.dp,
-                        shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.weight(1f)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(
+                                color = if (item.accentColor != Color.Unspecified) item.accentColor.copy(
+                                    alpha = 0.15f
+                                )
+                                else MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                shape = CircleShape
+                            )
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 12.dp, vertical = 12.dp)
-                        ) {
-                            val shimmer = rememberInfiniteTransition(label = "cardShimmer")
-                            val shimmerX by shimmer.animateFloat(
-                                initialValue = -120f,
-                                targetValue = 360f,
-                                animationSpec = infiniteRepeatable(
-                                    animation = tween(
-                                        durationMillis = 1800,
-                                        easing = LinearOutSlowInEasing
-                                    ),
-                                    repeatMode = RepeatMode.Restart
-                                ),
-                                label = "cardShimmerX"
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = null,
+                            tint = if (item.accentColor != Color.Unspecified) item.accentColor
+                            else MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(item.titleRes),
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeatureCardList(
+    items: List<FeatureEntry>
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items.forEach { item ->
+            Surface(
+                onClick = item.onClick,
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(20.dp),
+                tonalElevation = 2.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(44.dp)
+                            .background(
+                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+                                CircleShape
                             )
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.White.copy(alpha = 0.12f))
-                                    .border(1.dp, Color.White.copy(alpha = 0.18f), CircleShape)
-                            ) {
-                                Icon(
-                                    imageVector = item.icon,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .background(
-                                            Brush.linearGradient(
-                                                colors = listOf(
-                                                    Color.Transparent,
-                                                    Color.White.copy(alpha = 0.18f),
-                                                    Color.Transparent
-                                                ),
-                                                start = Offset(shimmerX, 0f),
-                                                end = Offset(shimmerX + 140f, 0f)
-                                            )
-                                        )
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
+                    ) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(item.titleRes),
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        item.subtitleRes?.let {
                             Text(
-                                text = stringResource(item.titleRes),
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                text = stringResource(it),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
-                            item.subtitleRes?.let {
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = stringResource(it),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
                         }
                     }
-                }
-                repeat(3 - rowItems.size) {
-                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
             }
         }
@@ -323,135 +360,165 @@ private fun ProfileHeader(
 ) {
     val glowTransition = rememberInfiniteTransition(label = "premiumGlow")
     val glowAlpha by glowTransition.animateFloat(
-        initialValue = 0.2f,
-        targetValue = 0.7f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1800, easing = LinearOutSlowInEasing),
+        initialValue = 0.3f, targetValue = 0.8f, animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000, easing = LinearOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
-        ),
-        label = "glowAlpha"
+        ), label = "glowAlpha"
     )
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(240.dp)
+            .height(260.dp)
     ) {
+        // Blurred Background
         if (!userPhotoUrl.isNullOrEmpty()) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(userPhotoUrl)
-                    .crossfade(true)
-                    .build(),
+                model = ImageRequest.Builder(LocalContext.current).data(userPhotoUrl)
+                    .crossfade(true).build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                            val effect = AndroidRenderEffect.createBlurEffect(40f, 40f, Shader.TileMode.CLAMP)
+                            val effect = AndroidRenderEffect.createBlurEffect(
+                                60f, 60f, Shader.TileMode.CLAMP
+                            )
                             renderEffect = effect.asComposeRenderEffect()
                         }
-                        alpha = 0.6f
-                    }
-            )
+                        alpha = 0.5f
+                    })
         }
+
+        // Gradient Scrim
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.30f),
-                            Color.Transparent
-                        )
-                    )
-                )
+//                .background(
+//                    Brush.verticalGradient(
+//                        colors = listOf(
+//                            Color.Transparent,
+//                            MaterialTheme.colorScheme.background.copy(alpha = 0.8f),
+//                            MaterialTheme.colorScheme.background
+//                        )
+//                    )
+//                )
         )
 
-        Row(
+        // Content
+        Column(
             modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(horizontal = 16.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .padding(bottom = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
         ) {
             Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.size(72.dp)
+                contentAlignment = Alignment.Center, modifier = Modifier.size(100.dp)
             ) {
                 if (isPremiumUser) {
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .graphicsLayer {
-                                shadowElevation = 12f
-                                shape = CircleShape
-                                clip = true
-                            }
-                            .background(
-                                Brush.radialGradient(
-                                    colors = listOf(
-                                        MaterialTheme.colorScheme.primary.copy(alpha = glowAlpha * 0.6f),
-                                        Color.Transparent
-                                    )
+                    Box(modifier = Modifier
+                        .size(94.dp)
+                        .graphicsLayer {
+                            shadowElevation = 20f
+                            shape = CircleShape
+                            clip = true
+                        }
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary.copy(alpha = glowAlpha * 0.7f),
+                                    Color.Transparent
                                 )
                             )
-                    )
+                        ))
                 }
-                Surface(shape = CircleShape, tonalElevation = 2.dp) {
+
+                Surface(
+                    shape = CircleShape,
+                    tonalElevation = 4.dp,
+                    shadowElevation = 8.dp,
+                    border = if (isPremiumUser) BorderStroke(
+                        2.dp, MaterialTheme.colorScheme.primary
+                    ) else null
+                ) {
                     if (userPhotoUrl.isNullOrEmpty()) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_launcher_foreground),
                             contentDescription = null,
-                            modifier = Modifier.size(72.dp),
+                            modifier = Modifier
+                                .size(80.dp)
+                                .background(MaterialTheme.colorScheme.surfaceVariant),
                             contentScale = ContentScale.Crop
                         )
                     } else {
                         AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(userPhotoUrl)
-                                .crossfade(true)
-                                .build(),
+                            model = ImageRequest.Builder(LocalContext.current).data(userPhotoUrl)
+                                .crossfade(true).build(),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.size(72.dp)
+                            modifier = Modifier.size(80.dp)
+                        )
+                    }
+                }
+
+                if (isPremiumUser) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(28.dp)
+                            .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(4.dp)
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.width(14.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = username,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+            Text(
+                text = username,
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.ExtraBold, letterSpacing = 0.sp
+                ),
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
 
-                Spacer(modifier = Modifier.height(6.dp))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (!isLoggedIn) {
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Surface(
-                            onClick = onLoginClick,
-                            shape = RoundedCornerShape(12.dp),
-                            color = MaterialTheme.colorScheme.primary
-                        ) {
-                            Box(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
-                                Text(
-                                    text = stringResource(R.string.login),
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    style = MaterialTheme.typography.labelMedium
-                                )
-                            }
-                        }
-                    }
+            if (!isLoggedIn) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Surface(
+                    onClick = onLoginClick,
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    shadowElevation = 4.dp
+                ) {
+                    Text(
+                        text = stringResource(R.string.login),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                    )
                 }
+            } else if (isPremiumUser) {
+                Text(
+                    text = "PREMIUM MEMBER",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Black, letterSpacing = 1.sp
+                    ),
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
             }
         }
     }
 }
-

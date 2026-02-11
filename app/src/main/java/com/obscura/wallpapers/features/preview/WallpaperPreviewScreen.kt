@@ -58,19 +58,6 @@ import kotlinx.coroutines.launch
 /**
  * Screen that displays a preview of a wallpaper and provides options to set it as home/lock screen,
  * download it, share it, or edit it.
- *
- * This screen handles:
- * - Displaying the wallpaper (static or blurred background for live).
- * - Toggling favorite status.
- * - Downloading wallpapers with permission handling.
- * - Navigating to the editor.
- * - Showing wallpaper metadata.
- * - Handling login-restricted actions.
- *
- * @param onBackPressed Callback to navigate back to the previous screen.
- * @param onNavigateToEdit Callback to navigate to the wallpaper editor screen with the given wallpaper ID.
- * @param onNavigateToLogin Callback to navigate to the login screen.
- * @param viewModel The [WallpaperPreviewViewModel] that manages the state for this screen.
  */
 @OptIn(ExperimentalAnimationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
@@ -168,13 +155,14 @@ fun WallpaperPreviewScreen(
             SnackbarHost(hostState = snackbarHostState)
         },
         contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
-        containerColor = Color.Black // Set background to black for better transition
+        containerColor = Color.Black
     ) { paddingValues ->
         AnimatedContent(
             targetState = wallpaperState,
             transitionSpec = {
-                (fadeIn(animationSpec = tween(500)) + scaleIn(initialScale = 1.05f, animationSpec = tween(500)))
-                    .togetherWith(fadeOut(animationSpec = tween(400)) + scaleOut(targetScale = 0.95f, animationSpec = tween(400)))
+                // Faster transition for smoother feel
+                (fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = 1.02f, animationSpec = tween(300)))
+                    .togetherWith(fadeOut(animationSpec = tween(250)) + scaleOut(targetScale = 0.98f, animationSpec = tween(250)))
             },
             label = "WallpaperStateTransition",
             modifier = Modifier
@@ -184,6 +172,7 @@ fun WallpaperPreviewScreen(
             Box(modifier = Modifier.fillMaxSize()) {
                 when (targetState) {
                     is UiState.Loading -> {
+                        // Keep loading indicator very simple to avoid clashing with next loading
                         LoadingState()
                     }
                     is UiState.Success -> {
@@ -200,7 +189,6 @@ fun WallpaperPreviewScreen(
                                     contentScale = ContentScale.FillBounds,
                                     modifier = Modifier.fillMaxSize()
                                 )
-                                // Dark overlay for better text readability
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
