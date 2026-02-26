@@ -174,6 +174,7 @@ private fun TwoColumnSection(
             Text(
                 text = it,
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(titlePadding)
             )
         }
