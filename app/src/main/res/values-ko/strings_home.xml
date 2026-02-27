@@ -3,7 +3,7 @@
     <string name="home_title">홈</string>
     <string name="home_search_hint">고품질 배경화면을 찾아보세요…</string>
     <string name="home_partial_data_loading_failed">일부 콘텐츠 로딩 실패, 새로고침 후 다시 시도</string>
-    <string name="home_hot_static">인기 정적</string>
+    <string name="home_hot_static">인기</string>
     <string name="home_cool_dynamic">멋진 라이브</string>
     <string name="home_latest_uploads">최신 업로드</string>
     <string name="home_search_icon">검색 아이콘</string>

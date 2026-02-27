@@ -3,7 +3,7 @@
     <string name="home_title">ホーム</string>
     <string name="home_search_hint">高品質な壁紙を見つける…</string>
     <string name="home_partial_data_loading_failed">一部のコンテンツの読み込みに失敗しました。更新して再試行してください</string>
-    <string name="home_hot_static">人気の静止画</string>
+    <string name="home_hot_static">人気の</string>
     <string name="home_cool_dynamic">クールなライブ</string>
     <string name="home_latest_uploads">最新のアップロード</string>
     <string name="home_search_icon">検索アイコン</string>

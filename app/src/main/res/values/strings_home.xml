@@ -8,7 +8,7 @@
     <string name="home_refresh">Refresh</string>
     <string name="home_partial_data_loading_failed">Some data failed to load, refresh to try again</string>
     <string name="home_explore_categories">Explore Categories</string>
-    <string name="home_hot_static">Hot Static</string>
+    <string name="home_hot_static">Hot</string>
     <string name="home_cool_dynamic">Cool Dynamic</string>
     <string name="home_latest_uploads">Latest Uploads</string>
     <string name="home_nature_scenery">Nature Scenery</string>
