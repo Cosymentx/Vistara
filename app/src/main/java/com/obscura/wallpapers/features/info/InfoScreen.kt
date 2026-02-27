@@ -74,6 +74,7 @@ fun InfoScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
                 .applyVerticalInnerPadding(paddingValues)
                 .padding(
@@ -145,7 +146,8 @@ private fun AppInfoSection(
         Text(
             text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(modifier = Modifier.height(4.dp))

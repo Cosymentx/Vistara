@@ -103,6 +103,7 @@ fun WallpaperCyclerScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
         ) {
@@ -125,6 +126,7 @@ fun WallpaperCyclerScreen(
                         Text(
                             text = stringResource(R.string.cycler_auto_change_wallpaper),
                             style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
@@ -311,6 +313,7 @@ private fun SectionTitle(text: String) {
         text = text,
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.SemiBold,
+        color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .padding(bottom = 8.dp)
             .padding(horizontal = 16.dp)
