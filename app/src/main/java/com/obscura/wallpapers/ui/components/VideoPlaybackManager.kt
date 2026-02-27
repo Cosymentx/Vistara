@@ -1,18 +1,10 @@
 package com.obscura.wallpapers.ui.components
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * 视频播放调度管理器。
@@ -148,93 +140,6 @@ class VideoPlaybackManager {
     }
 
     /**
-     * 判断指定视频当前是否应当播放。
-     *
-     * @param id 视频唯一标识
-     * @return true 表示应播放，false 表示应暂停
-     */
-    fun shouldPlayVideo(id: String): Boolean = id in playingVideoIds
-
-    /**
-     * 设置是否启用顺序播放模式。
-     *
-     * @param useSequential true 表示一次只播放一个视频
-     */
-    fun setSequentialPlayback(useSequential: Boolean) {
-        if (useSequentialPlayback != useSequential) {
-            useSequentialPlayback = useSequential
-            updatePlayingVideos()
-        }
-    }
-
-    /**
-     * 设置视频播放完成监听器。
-     *
-     * @param listener 回调，参数为完成播放的视频 ID
-     */
-    fun setVideoCompleteListener(listener: (String) -> Unit) {
-        onVideoCompleteListener = listener
-    }
-
-    /**
-     * 通知管理器某个视频已播放完成。
-     *
-     * 在顺序播放模式下，会自动切换到下一个可见视频。
-     *
-     * @param videoId 已完成的视频 ID
-     */
-    fun notifyVideoComplete(videoId: String) {
-        if (videoId != currentPlayingId) return
-
-        scope.launch {
-            currentPlayingId = null
-            playingVideoIds.clear()
-            onVideoCompleteListener?.invoke(videoId)
-
-            if (useSequentialPlayback && visibleVideoIds.isNotEmpty()) {
-                val currentIndex = visibleVideoIds.indexOf(videoId)
-                currentPlayingId = when {
-                    currentIndex != -1 && currentIndex < visibleVideoIds.size - 1 ->
-                        visibleVideoIds.elementAt(currentIndex + 1)
-                    else -> visibleVideoIds.firstOrNull()
-                }
-                currentPlayingId?.let { playingVideoIds.add(it) }
-            } else {
-                updatePlayingVideos()
-            }
-        }
-    }
-
-    /**
-     * 设置滚动状态。
-     *
-     * - 滚动中：立即停止所有播放
-     * - 停止滚动：延迟恢复播放，避免抖动
-     *
-     * @param scrolling true 表示正在滚动
-     */
-    fun setScrolling(scrolling: Boolean) {
-        if (isScrolling == scrolling) return
-
-        scope.launch {
-            isScrolling = scrolling
-            scrollStopTimer?.cancel()
-
-            if (scrolling) {
-                playingVideoIds.clear()
-            } else {
-                scrollStopTimer = scope.launch {
-                    delay(300)
-                    updatePlayingVideos()
-                }
-            }
-        }
-    }
-
-    /** @return 当前是否处于滚动状态 */
-    fun isScrolling(): Boolean = isScrolling
-
-    /**
      * 释放资源，取消所有协程并清空状态。
      *
      * 必须在页面销毁时调用。
@@ -243,38 +148,4 @@ class VideoPlaybackManager {
         scope.cancel()
         clearVisibleVideos()
     }
-}
-
-/**
- * 创建并记住一个 [VideoPlaybackManager] 实例，
- * 并与当前生命周期绑定。
- *
- * 行为：
- * - ON_PAUSE：清空播放状态
- * - ON_DESTROY：自动释放资源
- *
- * @return 与生命周期绑定的视频播放管理器
- */
-@Composable
-fun rememberVideoPlaybackManager(): VideoPlaybackManager {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val manager = remember { VideoPlaybackManager() }
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_PAUSE -> manager.clearVisibleVideos()
-                Lifecycle.Event.ON_DESTROY -> manager.dispose()
-                else -> {}
-            }
-        }
-
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-            manager.dispose()
-        }
-    }
-
-    return manager
 }

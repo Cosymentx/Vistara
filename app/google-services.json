@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "677640523590",
-    "project_id": "vistara-efe57",
-    "storage_bucket": "vistara-efe57.firebasestorage.app"
+    "project_number": "135748707860",
+    "project_id": "obscura-460dc",
+    "storage_bucket": "obscura-460dc.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:677640523590:android:90e7b718aeae17e39edf47",
+        "mobilesdk_app_id": "1:135748707860:android:f5cee6afb509a732c2a901",
         "android_client_info": {
           "package_name": "com.obscura.wallpapers"
         }
       },
       "oauth_client": [
         {
-          "client_id": "677640523590-91m93ireq8vgjrvg80vnl7evtin2uefa.apps.googleusercontent.com",
+          "client_id": "135748707860-acqa5f3vm0himd90na1tsknrorvi8lgk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.obscura.wallpapers",
-            "certificate_hash": "b521dea182d36f2d424531e841a3f3a100b4f00a"
+            "certificate_hash": "9560aa7bfb67b27bc54775bf0dcc2a39744cf280"
           }
         },
         {
-          "client_id": "677640523590-jjqa7drnhbgi6q3edt46ljp8q3ehnaud.apps.googleusercontent.com",
+          "client_id": "135748707860-lget0vgsu7sek2l9n6fh77r3kkp6b6s8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCpuv8q-mF7hC0Z6WJFGCZjgzF_yPs-c84"
+          "current_key": "AIzaSyA7uzSn6WqPim6cqWypGMZgdibzj8LgVfU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "677640523590-jjqa7drnhbgi6q3edt46ljp8q3ehnaud.apps.googleusercontent.com",
+              "client_id": "135748707860-lget0vgsu7sek2l9n6fh77r3kkp6b6s8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -8,9 +8,7 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.LazyGridItemInfo
 import androidx.compose.foundation.lazy.grid.LazyGridLayoutInfo
@@ -54,7 +52,7 @@ import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.components.CategorySelector
 import com.obscura.wallpapers.ui.components.ErrorState
 import com.obscura.wallpapers.ui.components.HomeTabScaffold
-import com.obscura.wallpapers.ui.components.LiveVideoGrid
+import com.obscura.wallpapers.ui.components.WallpaperVideoGrid
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.theme.stringResource
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -296,7 +294,7 @@ private fun LiveGridContent(
             )
         }
     } else {
-        LiveVideoGrid(
+        WallpaperVideoGrid(
             wallpapers = wallpapers,
             onWallpaperClick = onWallpaperClick,
             gridState = gridState,

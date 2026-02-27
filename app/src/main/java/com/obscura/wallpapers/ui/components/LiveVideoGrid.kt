@@ -43,7 +43,7 @@ private const val LOAD_MORE_THRESHOLD = GRID_COLUMNS * 2
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun LiveVideoGrid(
+fun WallpaperVideoGrid(
     wallpapers: List<Wallpaper>,
     onWallpaperClick: (Wallpaper) -> Unit,
     gridState: LazyGridState,
