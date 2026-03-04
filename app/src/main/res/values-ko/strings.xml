@@ -60,7 +60,6 @@
     <string name="settings_sign_out_desc">현재 계정에서 로그아웃</string>
     <string name="settings_language">언어</string>
     <string name="clear">지우기</string>
-    <string name="cancel">취소</string>
 
     <!-- 내 화면 -->
     <string name="my_favorites">내 즐겨찾기</string>
@@ -252,14 +251,14 @@
     <string name="subscription_terms">구독함으로써 당사의 서비스 약관 및 개인정보 보호정책에 동의하게 됩니다. 현재 기간이 끝나기 적어도 24시간 전에 취소하지 않는 한 구독은 자동으로 갱신됩니다. Google Play 스토어에서 구독을 관리하거나 취소할 수 있습니다.</string>
     <string name="manage_subscription">구독 관리</string>
     <string name="cancel_subscription">구독 취소</string>
-    
+
     <!-- 프로필 프리미엄 및 다이아몬드 섹션 -->
     <string name="profile_premium_member">프리미엄 회원</string>
     <string name="profile_upgrade_membership">업그레이드</string>
     <string name="profile_unlock_all_features">모든 기능 잠금 해제</string>
     <string name="profile_purchase_diamonds">코인 구매</string>
     <string name="profile_get_more_diamonds">더 많은 코인 획득</string>
-    
+
     <!-- 다이아몬드 구매 화면 -->
     <string name="diamond_purchase_title">코인 구매</string>
     <string name="diamond_get_more_coins">더 많은 코인 획득</string>
@@ -269,7 +268,7 @@
     <string name="diamond_coins">코인</string>
     <string name="diamond_bonus">보너스 %d 코인</string>
     <string name="diamond_popular">인기</string>
-    
+
     <!-- 구독 화면 -->
     <string name="subscription_title">프리미엄 구독</string>
     <string name="subscription_unlock_all_features">모든 기능 잠금 해제</string>
@@ -279,20 +278,20 @@
     <string name="subscription_auto_renew_notice">구독은 자동 갱신되며 언제든지 취소할 수 있습니다</string>
     <string name="subscription_already_premium">이미 프리미엄 회원입니다</string>
     <string name="subscription_thank_you">지원해 주셔서 감사합니다! 모든 프리미엄 기능을 즐기세요</string>
-    
+
     <!-- 구독 기능 -->
     <string name="feature_wallpaper_edit">✨ 배경화면 편집</string>
     <string name="feature_video_wallpaper">🎬 동적 비디오 배경화면</string>
     <string name="feature_premium_wallpapers">🎨 모든 프리미엄 배경화면 잠금 해제</string>
     <string name="feature_no_ads">🚫 광고 없는 경험</string>
     <string name="feature_cloud_sync">☁️ 클라우드 동기화 즐겨찾기</string>
-    
+
     <!-- 페이월 화면 -->
     <string name="paywall_upgrade_to_premium">프리미엄으로 업그레이드</string>
     <string name="paywall_later">나중에</string>
     <string name="close">닫기</string>
     <string name="selected">선택됨</string>
-    
+
     <!-- 배경화면 구매 및 프리미엄 -->
     <string name="wallpaper_requires_purchase">구매 필요</string>
     <string name="wallpaper_purchase_with_coins">%d 코인으로 구매</string>
@@ -329,7 +328,7 @@
     <string name="go_back">뒤로 가기</string>
     <string name="add_to_favorites">즐겨찾기에 추가</string>
     <string name="remove_from_favorites">즐겨찾기에서 제거</string>
-<string name="loading_failed">로딩 실패</string>
+    <string name="loading_failed">로딩 실패</string>
     <string name="nav_discover">탐색</string>
     <string name="nav_photo">사진</string>
     <string name="nav_video">동영상</string>
@@ -351,7 +350,6 @@
     <string name="login_status">로그인 상태</string>
     <string name="current_status_logged_in">현재 상태: 로그인됨</string>
     <string name="current_status_not_logged_in">현재 상태: 로그인되지 않음</string>
-    <string name="wallpaper_set_failed">배경화면 설정 실패</string>
     <string name="wallpaper_invalid_video_url">잘못된 비디오 URL</string>
     <string name="wallpaper_video_download_failed">비디오 다운로드 실패</string>
     <string name="wallpaper_set_home_success">홈 화면 배경화면으로 설정</string>

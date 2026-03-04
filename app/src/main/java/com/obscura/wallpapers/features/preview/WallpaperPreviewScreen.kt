@@ -307,7 +307,8 @@ fun WallpaperPreviewScreen(
                                         },
                                         onDismiss = {
                                             viewModel.hideSetWallpaperOptions()
-                                        }
+                                        },
+                                        isProcessing = isProcessingWallpaper
                                     )
                                 }
                             }

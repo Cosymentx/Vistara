@@ -60,7 +60,6 @@
     <string name="settings_sign_out_desc">現在のアカウントからログアウト</string>
     <string name="settings_language">言語</string>
     <string name="clear">消去</string>
-    <string name="cancel">キャンセル</string>
 
     <!-- マイページ -->
     <string name="my_favorites">お気に入り</string>
@@ -352,7 +351,6 @@
     <string name="login_status">ログインステータス</string>
     <string name="current_status_logged_in">現在のステータス: ログイン済み</string>
     <string name="current_status_not_logged_in">現在のステータス: ログインしていません</string>
-    <string name="wallpaper_set_failed">壁紙の設定に失敗しました</string>
     <string name="wallpaper_invalid_video_url">無効なビデオ URL</string>
     <string name="wallpaper_video_download_failed">ビデオのダウンロードに失敗しました</string>
     <string name="wallpaper_set_home_success">ホーム画面の壁紙として設定されました</string>

@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @HiltViewModel
@@ -171,18 +172,27 @@ class WallpaperPreviewViewModel @Inject constructor(
             if (s is UiState.Success) {
                 val w = s.data
                 _isProcessingWallpaper.value = true
-                wallpaperManager.setWallpaper(w, target, _editedBitmap.value) { success ->
-                    _isProcessingWallpaper.value = false
-                    _showSetWallpaperOptions.value = false
-                    if (success) {
-                        _wallpaperSetSuccess.value = when (target) {
-                            WallpaperTarget.HOME -> context.getString(com.obscura.wallpapers.R.string.wallpaper_set_home_success)
-                            WallpaperTarget.LOCK -> context.getString(com.obscura.wallpapers.R.string.wallpaper_set_lock_success)
-                            WallpaperTarget.BOTH -> context.getString(com.obscura.wallpapers.R.string.wallpaper_set_both_success)
+                try {
+                    wallpaperManager.setWallpaper(w, target, _editedBitmap.value) { success ->
+                        _isProcessingWallpaper.value = false
+                        if (success) {
+                            _wallpaperSetSuccess.value = when (target) {
+                                WallpaperTarget.HOME -> context.getString(com.obscura.wallpapers.R.string.wallpaper_set_home_success)
+                                WallpaperTarget.LOCK -> context.getString(com.obscura.wallpapers.R.string.wallpaper_set_lock_success)
+                                WallpaperTarget.BOTH -> context.getString(com.obscura.wallpapers.R.string.wallpaper_set_both_success)
+                            }
+                            // 延迟关闭对话框，让用户看到成功提示
+                            viewModelScope.launch {
+                                kotlinx.coroutines.delay(1500)
+                                _showSetWallpaperOptions.value = false
+                            }
+                        } else {
+                            _wallpaperSetSuccess.value = context.getString(com.obscura.wallpapers.R.string.wallpaper_set_failed)
                         }
-                    } else {
-                        _wallpaperSetSuccess.value = null
                     }
+                } catch (e: Exception) {
+                    _isProcessingWallpaper.value = false
+                    _wallpaperSetSuccess.value = context.getString(com.obscura.wallpapers.R.string.wallpaper_set_failed)
                 }
             }
         }

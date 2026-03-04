@@ -65,7 +65,6 @@
     <string name="settings_sign_out_desc">Sign out from current account</string>
     <string name="settings_language">Language</string>
     <string name="clear">Clear</string>
-    <string name="cancel">Cancel</string>
 
     <!-- Mine screen -->
     <string name="my_favorites">My Favorites</string>
@@ -378,7 +377,6 @@ Enjoy a new look every day</string>
     <string name="test_mode_disabled" translatable="false">Test mode disabled</string>
 
     <!-- Wallpaper management related -->
-    <string name="wallpaper_set_failed">Failed to set wallpaper</string>
     <string name="wallpaper_invalid_video_url">Invalid video URL</string>
     <string name="wallpaper_video_download_failed">Failed to download video</string>
     <string name="wallpaper_set_home_success">Set as home screen wallpaper</string>

@@ -62,6 +62,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -498,6 +499,7 @@ fun WallpaperSetOptions(
     onSetLockScreen: () -> Unit,
     onSetBoth: () -> Unit,
     onDismiss: () -> Unit,
+    isProcessing: Boolean = false
 ) {
     Surface(
         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
@@ -539,7 +541,8 @@ fun WallpaperSetOptions(
                 icon = Icons.Default.Home,
                 onClick = onSetHomeScreen,
                 containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                enabled = !isProcessing
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -550,7 +553,8 @@ fun WallpaperSetOptions(
                 icon = Icons.Default.Lock,
                 onClick = onSetLockScreen,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f),
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                enabled = !isProcessing
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -562,21 +566,40 @@ fun WallpaperSetOptions(
                 onClick = onSetBoth,
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f),
                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                isPremium = true
+                isPremium = true,
+                enabled = !isProcessing
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            TextButton(
-                onClick = onDismiss,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.cancel),
-                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.outline
-                )
+            if (isProcessing) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(40.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(R.string.wallpaper_setting),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            } else {
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.cancel),
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
             }
         }
     }
@@ -590,14 +613,18 @@ private fun SetOptionItem(
     onClick: () -> Unit,
     containerColor: Color,
     contentColor: Color,
-    isPremium: Boolean = false
+    isPremium: Boolean = false,
+    enabled: Boolean = true
 ) {
     Surface(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .alpha(if (enabled) 1f else 0.5f),
         shape = RoundedCornerShape(20.dp),
         color = containerColor,
-        border = BorderStroke(1.dp, contentColor.copy(alpha = 0.1f))
+        border = BorderStroke(1.dp, contentColor.copy(alpha = 0.1f)),
+        enabled = enabled
     ) {
         Row(
             modifier = Modifier
