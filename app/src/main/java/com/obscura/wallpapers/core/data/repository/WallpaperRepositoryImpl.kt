@@ -32,6 +32,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 
 /**
  * 壁纸仓库实现类
@@ -84,7 +85,12 @@ class WallpaperRepositoryImpl @Inject constructor(
             }
 
             // 直接使用壁纸API适配器获取精选壁纸
-            return@withContext wallpaperApiAdapter.getFeaturedWallpapers(page, pageSize)
+            return@withContext wallpaperApiAdapter.getFeaturedWallpapers(page, pageSize).let { result ->
+                when (result) {
+                    is ApiResult.Success -> ApiResult.Success(markRandomWallpapersForPurchase(result.data))
+                    else -> result
+                }
+            }
         } catch (e: Exception) {
             ApiResult.Error(
                 message = e.message
@@ -129,7 +135,7 @@ class WallpaperRepositoryImpl @Inject constructor(
                         else -> emptyList()
                     }
 
-                    unsplashWallpapers + pexelsWallpapers
+                    (unsplashWallpapers + pexelsWallpapers).let { markRandomWallpapersForPurchase(it) }
                 }
 
                 "live", "video" -> {
@@ -150,7 +156,7 @@ class WallpaperRepositoryImpl @Inject constructor(
                         is ApiResult.Success -> pexelsResponse.data
                         else -> emptyList()
                     }
-                    pexelsVideos
+                    markRandomWallpapersForPurchase(pexelsVideos)
                 }
 
                 else -> emptyList()
@@ -1107,6 +1113,25 @@ class WallpaperRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e(TAG, "检查壁纸是否已购买失败", e)
             return@withContext false
+        }
+    }
+
+    /**
+     * 随机标记壁纸为需要购买
+     * 30%的壁纸会被标记为需要购买，价格范围10-50金币
+     */
+    private fun markRandomWallpapersForPurchase(wallpapers: List<Wallpaper>): List<Wallpaper> {
+        return wallpapers.map { wallpaper ->
+            // 只对非高级壁纸进行标记
+            if (!wallpaper.isPremium && Random.nextFloat() < 0.3f) {
+                val purchasePrice = Random.nextInt(10, 51) // 10-50金币
+                wallpaper.copy(
+                    requiresPurchase = true,
+                    purchasePrice = purchasePrice
+                )
+            } else {
+                wallpaper
+            }
         }
     }
 }
