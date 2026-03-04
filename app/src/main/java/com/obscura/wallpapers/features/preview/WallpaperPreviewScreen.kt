@@ -67,6 +67,7 @@ fun WallpaperPreviewScreen(
     onBackPressed: () -> Unit,
     onNavigateToEdit: (String) -> Unit,
     onNavigateToLogin: () -> Unit = {},
+    onNavigateToSubscription: () -> Unit = {},
     viewModel: WallpaperPreviewViewModel = hiltViewModel(),
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null

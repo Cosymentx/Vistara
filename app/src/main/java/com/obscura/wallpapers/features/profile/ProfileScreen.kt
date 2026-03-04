@@ -81,6 +81,8 @@ fun ProfileScreen(
     onAboutClick: () -> Unit = {},
     onTestToolsClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
+    onSubscriptionClick: () -> Unit = {},
+    onDiamondPurchaseClick: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val username by viewModel.username.collectAsState()
@@ -132,6 +134,16 @@ fun ProfileScreen(
                 isLoggedIn = isLoggedIn,
                 onLoginClick = onLoginClick,
             )
+
+            // Premium & Diamond Section
+            if (isLoggedIn) {
+                Spacer(modifier = Modifier.height(20.dp))
+                PremiumDiamondSection(
+                    isPremiumUser = isPremiumUser,
+                    onSubscriptionClick = onSubscriptionClick,
+                    onDiamondPurchaseClick = onDiamondPurchaseClick
+                )
+            }
 
             // Section Title
             SectionHeader(title = "MY GALLERY", modifier = Modifier.padding(top = 20.dp))
@@ -518,6 +530,102 @@ private fun ProfileHeader(
                     ),
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PremiumDiamondSection(
+    isPremiumUser: Boolean,
+    onSubscriptionClick: () -> Unit,
+    onDiamondPurchaseClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // Subscription Card
+        Surface(
+            onClick = onSubscriptionClick,
+            color = if (isPremiumUser) Color(0xFFFFD700).copy(alpha = 0.15f)
+            else MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+            shape = RoundedCornerShape(24.dp),
+            border = BorderStroke(
+                1.5.dp,
+                if (isPremiumUser) Color(0xFFFFD700).copy(alpha = 0.5f)
+                else MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+            ),
+            modifier = Modifier
+                .weight(1f)
+                .height(100.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = null,
+                    tint = if (isPremiumUser) Color(0xFFFFD700) else MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(32.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = if (isPremiumUser) stringResource(R.string.profile_premium_member) 
+                           else stringResource(R.string.profile_upgrade_membership),
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                    color = if (isPremiumUser) Color(0xFFFFD700) else MaterialTheme.colorScheme.primary,
+                    maxLines = 1
+                )
+                if (!isPremiumUser) {
+                    Text(
+                        text = stringResource(R.string.profile_unlock_all_features),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        maxLines = 1
+                    )
+                }
+            }
+        }
+
+        // Diamond Purchase Card
+        Surface(
+            onClick = onDiamondPurchaseClick,
+            color = Color(0xFF00E5FF).copy(alpha = 0.15f),
+            shape = RoundedCornerShape(24.dp),
+            border = BorderStroke(1.5.dp, Color(0xFF00E5FF).copy(alpha = 0.3f)),
+            modifier = Modifier
+                .weight(1f)
+                .height(100.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Icon(
+                    imageVector = ObscuraIcons.Diamond,
+                    contentDescription = null,
+                    tint = Color(0xFF00E5FF),
+                    modifier = Modifier.size(32.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.profile_purchase_diamonds),
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                    color = Color(0xFF00E5FF),
+                    maxLines = 1
+                )
+                Text(
+                    text = stringResource(R.string.profile_get_more_diamonds),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    maxLines = 1
                 )
             }
         }

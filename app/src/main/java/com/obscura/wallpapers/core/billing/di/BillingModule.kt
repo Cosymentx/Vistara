@@ -13,12 +13,12 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * 计费模块的依赖注入配置
+ * 计费模块依赖注入
  */
 @Module
 @InstallIn(SingletonComponent::class)
 object BillingModule {
-
+    
     @Provides
     @Singleton
     fun provideBillingManager(
@@ -26,7 +26,7 @@ object BillingModule {
     ): BillingManager {
         return BillingManager(context)
     }
-
+    
     @Provides
     @Singleton
     fun provideBillingRepository(
@@ -35,7 +35,7 @@ object BillingModule {
     ): BillingRepository {
         return BillingRepository(billingManager, subscriptionDao)
     }
-
+    
     @Provides
     @Singleton
     fun provideFeatureAccessManager(

@@ -23,9 +23,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.obscura.wallpapers" />
-                  <option name="mobileSdkAppId" value="1:677640523590:android:90e7b718aeae17e39edf47" />
-                  <option name="projectId" value="vistara-efe57" />
-                  <option name="projectNumber" value="677640523590" />
+                  <option name="mobileSdkAppId" value="1:135748707860:android:f5cee6afb509a732c2a901" />
+                  <option name="projectId" value="obscura-460dc" />
+                  <option name="projectNumber" value="135748707860" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

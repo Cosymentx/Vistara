@@ -23,8 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.billingclient.api.ProductDetails
+import com.obscura.wallpapers.R
 
 /**
  * 订阅页面
@@ -50,12 +52,12 @@ fun SubscriptionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("订阅高级版") },
+                title = { Text(stringResource(R.string.subscription_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "返回"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -119,7 +121,7 @@ private fun PremiumActiveContent(
         Spacer(modifier = Modifier.height(24.dp))
         
         Text(
-            text = "你已是高级会员",
+            text = stringResource(R.string.subscription_already_premium),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White
@@ -128,7 +130,7 @@ private fun PremiumActiveContent(
         Spacer(modifier = Modifier.height(16.dp))
         
         Text(
-            text = "感谢你的支持！享受所有高级功能",
+            text = stringResource(R.string.subscription_thank_you),
             fontSize = 16.sp,
             color = Color.White.copy(alpha = 0.8f),
             textAlign = TextAlign.Center
@@ -138,7 +140,7 @@ private fun PremiumActiveContent(
         
         TextButton(onClick = onRestorePurchases) {
             Text(
-                text = "恢复购买",
+                text = stringResource(R.string.restore_purchases),
                 color = Color(0xFFFFD700)
             )
         }
@@ -163,7 +165,7 @@ private fun SubscriptionContent(
     ) {
         // 标题
         Text(
-            text = "解锁全部功能",
+            text = stringResource(R.string.subscription_unlock_all_features),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -173,7 +175,7 @@ private fun SubscriptionContent(
         Spacer(modifier = Modifier.height(8.dp))
         
         Text(
-            text = "享受完整的壁纸体验",
+            text = stringResource(R.string.subscription_enjoy_full_experience),
             fontSize = 16.sp,
             color = Color.White.copy(alpha = 0.8f),
             textAlign = TextAlign.Center
@@ -189,7 +191,7 @@ private fun SubscriptionContent(
         // 订阅方案
         if (availableProducts.isNotEmpty()) {
             Text(
-                text = "选择订阅方案",
+                text = stringResource(R.string.subscription_choose_plan),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.White,
@@ -229,7 +231,7 @@ private fun SubscriptionContent(
                 )
             } else {
                 Text(
-                    text = "开始订阅",
+                    text = stringResource(R.string.subscription_start),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -242,7 +244,7 @@ private fun SubscriptionContent(
         // 恢复购买
         TextButton(onClick = onRestorePurchases) {
             Text(
-                text = "恢复购买",
+                text = stringResource(R.string.restore_purchases),
                 color = Color.White.copy(alpha = 0.7f)
             )
         }
@@ -251,7 +253,7 @@ private fun SubscriptionContent(
         
         // 说明文字
         Text(
-            text = "订阅将自动续订，可随时取消",
+            text = stringResource(R.string.subscription_auto_renew_notice),
             fontSize = 12.sp,
             color = Color.White.copy(alpha = 0.5f),
             textAlign = TextAlign.Center
@@ -261,19 +263,17 @@ private fun SubscriptionContent(
 
 @Composable
 private fun FeaturesList() {
-    val features = listOf(
-        "✨ 壁纸编辑功能",
-        "🎬 动态视频壁纸",
-        "🎨 解锁所有高级壁纸",
-        "🚫 无广告体验",
-        "☁️ 云端同步收藏"
-    )
-    
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        features.forEach { feature ->
+        listOf(
+            R.string.feature_wallpaper_edit,
+            R.string.feature_video_wallpaper,
+            R.string.feature_premium_wallpapers,
+            R.string.feature_no_ads,
+            R.string.feature_cloud_sync
+        ).forEach { featureRes ->
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -285,7 +285,7 @@ private fun FeaturesList() {
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = feature,
+                    text = stringResource(featureRes),
                     fontSize = 16.sp,
                     color = Color.White
                 )
@@ -341,7 +341,7 @@ private fun PlanCard(
             if (isSelected) {
                 Icon(
                     imageVector = Icons.Default.Check,
-                    contentDescription = "已选择",
+                    contentDescription = stringResource(R.string.selected),
                     tint = Color(0xFFFFD700),
                     modifier = Modifier.size(24.dp)
                 )

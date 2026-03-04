@@ -13,18 +13,33 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SubscriptionDao {
     
+    /**
+     * 获取订阅状态（Flow）
+     */
     @Query("SELECT * FROM user_subscription WHERE id = 1")
     fun getSubscriptionStatus(): Flow<UserSubscriptionEntity?>
     
+    /**
+     * 获取订阅状态（一次性）
+     */
     @Query("SELECT * FROM user_subscription WHERE id = 1")
     suspend fun getSubscriptionStatusOnce(): UserSubscriptionEntity?
     
+    /**
+     * 更新订阅状态
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateSubscription(subscription: UserSubscriptionEntity)
     
-    @Query("UPDATE user_subscription SET isPremium = :isPremium WHERE id = 1")
-    suspend fun updatePremiumStatus(isPremium: Boolean)
+    /**
+     * 更新 Premium 状态
+     */
+    @Query("UPDATE user_subscription SET isPremium = :isPremium, lastVerified = :timestamp WHERE id = 1")
+    suspend fun updatePremiumStatus(isPremium: Boolean, timestamp: Long = System.currentTimeMillis())
     
+    /**
+     * 清除订阅数据
+     */
     @Query("DELETE FROM user_subscription")
     suspend fun clearSubscription()
 }

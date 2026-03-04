@@ -60,7 +60,11 @@ class BillingManager @Inject constructor(
 
         billingClient = BillingClient.newBuilder(context)
             .setListener(this)
-            .enablePendingPurchases()
+            .enablePendingPurchases(
+                PendingPurchasesParams.newBuilder()
+                    .enableOneTimeProducts()
+                    .build()
+            )
             .build()
 
         billingClient?.startConnection(object : BillingClientStateListener {
@@ -104,13 +108,16 @@ class BillingManager @Inject constructor(
             .setProductList(productList)
             .build()
 
-        billingClient?.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                _availableProducts.value = productDetailsList
-                Log.d(tag, "Found ${productDetailsList.size} products")
+        try {
+            val result = billingClient?.queryProductDetails(params)
+            if (result?.billingResult?.responseCode == BillingClient.BillingResponseCode.OK) {
+                _availableProducts.value = result.productDetailsList ?: emptyList()
+                Log.d(tag, "Found ${result.productDetailsList?.size ?: 0} products")
             } else {
-                Log.e(tag, "Failed to query products: ${billingResult.debugMessage}")
+                Log.e(tag, "Failed to query products: ${result?.billingResult?.debugMessage}")
             }
+        } catch (e: Exception) {
+            Log.e(tag, "Error querying products", e)
         }
     }
 
@@ -124,12 +131,15 @@ class BillingManager @Inject constructor(
             .setProductType(BillingClient.ProductType.SUBS)
             .build()
 
-        billingClient?.queryPurchasesAsync(params) { billingResult, purchases ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                handlePurchases(purchases)
+        try {
+            val result = billingClient?.queryPurchasesAsync(params)
+            if (result?.billingResult?.responseCode == BillingClient.BillingResponseCode.OK) {
+                handlePurchases(result.purchasesList)
             } else {
-                Log.e(tag, "Failed to query purchases: ${billingResult.debugMessage}")
+                Log.e(tag, "Failed to query purchases: ${result?.billingResult?.debugMessage}")
             }
+        } catch (e: Exception) {
+            Log.e(tag, "Error querying purchases", e)
         }
     }
 
@@ -137,34 +147,36 @@ class BillingManager @Inject constructor(
      * 发起购买流程
      */
     fun launchBillingFlow(activity: Activity, productDetails: ProductDetails) {
-        if (!ensureConnected()) {
-            _purchaseState.value = PurchaseState.Error("Billing service not connected")
-            return
-        }
+        scope.launch {
+            if (!ensureConnected()) {
+                _purchaseState.value = PurchaseState.Error("Billing service not connected")
+                return@launch
+            }
 
-        val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken
-        if (offerToken == null) {
-            _purchaseState.value = PurchaseState.Error("No offer available")
-            return
-        }
+            val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken
+            if (offerToken == null) {
+                _purchaseState.value = PurchaseState.Error("No offer available")
+                return@launch
+            }
 
-        val productDetailsParamsList = listOf(
-            BillingFlowParams.ProductDetailsParams.newBuilder()
-                .setProductDetails(productDetails)
-                .setOfferToken(offerToken)
-                .build()
-        )
-
-        val billingFlowParams = BillingFlowParams.newBuilder()
-            .setProductDetailsParamsList(productDetailsParamsList)
-            .build()
-
-        val billingResult = billingClient?.launchBillingFlow(activity, billingFlowParams)
-        
-        if (billingResult?.responseCode != BillingClient.BillingResponseCode.OK) {
-            _purchaseState.value = PurchaseState.Error(
-                billingResult?.debugMessage ?: "Failed to launch billing flow"
+            val productDetailsParamsList = listOf(
+                BillingFlowParams.ProductDetailsParams.newBuilder()
+                    .setProductDetails(productDetails)
+                    .setOfferToken(offerToken)
+                    .build()
             )
+
+            val billingFlowParams = BillingFlowParams.newBuilder()
+                .setProductDetailsParamsList(productDetailsParamsList)
+                .build()
+
+            val billingResult = billingClient?.launchBillingFlow(activity, billingFlowParams)
+            
+            if (billingResult?.responseCode != BillingClient.BillingResponseCode.OK) {
+                _purchaseState.value = PurchaseState.Error(
+                    billingResult?.debugMessage ?: "Failed to launch billing flow"
+                )
+            }
         }
     }
 
@@ -228,12 +240,15 @@ class BillingManager @Inject constructor(
             .setPurchaseToken(purchase.purchaseToken)
             .build()
 
-        billingClient?.acknowledgePurchase(params) { billingResult ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+        try {
+            val result = billingClient?.acknowledgePurchase(params)
+            if (result?.responseCode == BillingClient.BillingResponseCode.OK) {
                 Log.d(tag, "Purchase acknowledged successfully")
             } else {
-                Log.e(tag, "Failed to acknowledge purchase: ${billingResult.debugMessage}")
+                Log.e(tag, "Failed to acknowledge purchase: ${result?.debugMessage}")
             }
+        } catch (e: Exception) {
+            Log.e(tag, "Error acknowledging purchase", e)
         }
     }
 

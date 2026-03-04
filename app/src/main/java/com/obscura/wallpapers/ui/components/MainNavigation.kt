@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -41,6 +42,7 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.BannerActionType
 import com.obscura.wallpapers.features.browser.BrowserScreen
 import com.obscura.wallpapers.features.cycler.WallpaperCyclerScreen
+import com.obscura.wallpapers.features.diamond.DiamondPurchaseScreen
 import com.obscura.wallpapers.features.discover.DiscoverScreen
 import com.obscura.wallpapers.features.editor.WallpaperEditScreen
 import com.obscura.wallpapers.features.info.InfoScreen
@@ -52,6 +54,7 @@ import com.obscura.wallpapers.features.preview.WallpaperPreviewScreen
 import com.obscura.wallpapers.features.profile.ProfileScreen
 import com.obscura.wallpapers.features.search.SearchScreen
 import com.obscura.wallpapers.features.signin.SignInScreen
+import com.obscura.wallpapers.features.subscription.SubscriptionScreen
 import com.obscura.wallpapers.features.support.SupportScreen
 import com.obscura.wallpapers.features.test.ApiTestScreen
 import com.obscura.wallpapers.features.test.TestScreen
@@ -69,23 +72,22 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
     var navigationBarSize: Size? by remember { mutableStateOf(null) }
     var navigationBarOffset: Offset by remember { mutableStateOf(Offset.Zero) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .then(navigationBarSize?.let { size ->
-                if (isMainScreen) {
-                    Modifier.liquidGlass(
-                        lensCenter = navigationBarOffset,
-                        lensSize = size,
-                        cornerRadius = 100f,
-                        edge = 0.6f,
-                        refraction = 0.3f,
-                        curve = 0.5f,
-                    )
-                } else {
-                    null
-                }
-            } ?: Modifier)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .then(navigationBarSize?.let { size ->
+            if (isMainScreen) {
+                Modifier.liquidGlass(
+                    lensCenter = navigationBarOffset,
+                    lensSize = size,
+                    cornerRadius = 100f,
+                    edge = 0.6f,
+                    refraction = 0.3f,
+                    curve = 0.5f,
+                )
+            } else {
+                null
+            }
+        } ?: Modifier)) {
         SharedTransitionLayout {
             NavHost(
                 navController = navController,
@@ -165,6 +167,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                         onFeedbackClick = { navController.navigate("feedback") },
                         onAboutClick = { navController.navigate("about") },
                         onLoginClick = { navController.navigate("auth") },
+                        onSubscriptionClick = { navController.navigate("subscription") },
+                        onDiamondPurchaseClick = { navController.navigate("diamond_purchase") },
                         onTestToolsClick = { navController.navigate("test") })
                 }
                 composable(
@@ -202,6 +206,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                             navController.navigate("edit/$wallpaperId")
                         },
                         onNavigateToLogin = { navController.navigate("auth") },
+                        onNavigateToSubscription = { navController.navigate("subscription") },
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this@composable
                     )
@@ -229,7 +234,17 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     )
                 }
                 composable("settings") {
-                    PreferencesScreen(onBackPressed = { navController.navigateUp() })
+                    PreferencesScreen(
+                        onBackPressed = { navController.navigateUp() },
+                        onNavigateToSubscription = { navController.navigate("subscription") })
+                }
+                composable("subscription") {
+                    SubscriptionScreen(
+                        onNavigateBack = { navController.navigateUp() })
+                }
+                composable("diamond_purchase") {
+                    DiamondPurchaseScreen(
+                        onNavigateBack = { navController.navigateUp() })
                 }
                 composable("cycler") {
                     WallpaperCyclerScreen(
@@ -276,7 +291,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                 navController = navController,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(start = 18.dp, end = 18.dp, bottom = 8.dp),
+                    .padding(start = 18.dp, end = 18.dp, bottom = 20.dp),
                 onSizeChange = { size, offset ->
                     navigationBarSize = size
                     navigationBarOffset = offset
@@ -339,7 +354,7 @@ fun BottomNavBar(
                         )
                     }
                 }
-            }, label = { }, selected = selected, onClick = {
+            }, label = { }, alwaysShowLabel = false, selected = selected, onClick = {
                 navController.navigate(destination.route) {
                     popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                     launchSingleTop = true

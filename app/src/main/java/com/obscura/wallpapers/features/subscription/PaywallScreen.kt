@@ -2,9 +2,7 @@ package com.obscura.wallpapers.features.subscription
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
@@ -17,154 +15,118 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.res.stringResource
+import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.billing.model.PremiumFeature
 
 /**
- * 付费墙屏幕
+ * 付费墙弹窗
  * 当用户尝试访问高级功能时显示
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaywallScreen(
     feature: PremiumFeature,
     onDismiss: () -> Unit,
-    onSubscribe: () -> Unit,
-    modifier: Modifier = Modifier
+    onSubscribe: () -> Unit
 ) {
-    val gradientColors = listOf(
-        Color(0xFF1A1A2E),
-        Color(0xFF16213E)
-    )
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(brush = Brush.verticalGradient(gradientColors))
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+            usePlatformDefaultWidth = false
+        )
     ) {
-        // 关闭按钮
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF1A1A2E),
+                            Color(0xFF16213E)
+                        )
+                    ),
+                    shape = RoundedCornerShape(24.dp)
+                )
+                .padding(24.dp)
         ) {
-            IconButton(onClick = onDismiss) {
+            // 关闭按钮
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier.align(Alignment.TopEnd)
+            ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "关闭",
-                    tint = Color.White
+                    contentDescription = stringResource(R.string.close),
+                    tint = Color.White.copy(alpha = 0.7f)
                 )
             }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // 标题
-        Text(
-            text = "🌟 解锁高级功能",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 功能描述
-        Text(
-            text = feature.getDescription(),
-            fontSize = 16.sp,
-            color = Color.White.copy(alpha = 0.8f),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 24.dp)
-        )
-
-        Spacer(modifier = Modifier.height(48.dp))
-
-        // 功能列表
-        FeatureList()
-
-        Spacer(modifier = Modifier.height(48.dp))
-
-        // 订阅按钮
-        Button(
-            onClick = onSubscribe,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFFFD700)
-            ),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text(
-                text = "立即订阅",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 说明文字
-        Text(
-            text = "3天免费试用 • 随时取消",
-            fontSize = 12.sp,
-            color = Color.White.copy(alpha = 0.6f),
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun FeatureList() {
-    val features = listOf(
-        "✨ 壁纸编辑功能" to "裁剪、滤镜、调色等强大工具",
-        "🎬 动态视频壁纸" to "让你的屏幕动起来",
-        "🎨 高级壁纸" to "解锁所有精选壁纸",
-        "🚫 无广告体验" to "享受纯净的使用体验",
-        "☁️ 云端同步" to "多设备同步收藏"
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        features.forEach { (title, description) ->
-            FeatureItem(title = title, description = description)
-        }
-    }
-}
-
-@Composable
-private fun FeatureItem(
-    title: String,
-    description: String
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.Top
-    ) {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = title,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = description,
-                fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.7f)
-            )
+            
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(top = 32.dp)
+            ) {
+                // 图标
+                Text(
+                    text = "👑",
+                    fontSize = 64.sp
+                )
+                
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                // 标题
+                Text(
+                    text = feature.title,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+                
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                // 描述
+                Text(
+                    text = feature.description,
+                    fontSize = 16.sp,
+                    color = Color.White.copy(alpha = 0.8f),
+                    textAlign = TextAlign.Center
+                )
+                
+                Spacer(modifier = Modifier.height(32.dp))
+                
+                // 升级按钮
+                Button(
+                    onClick = onSubscribe,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFFD700)
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.paywall_upgrade_to_premium),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // 稍后再说
+                TextButton(onClick = onDismiss) {
+                    Text(
+                        text = stringResource(R.string.paywall_later),
+                        color = Color.White.copy(alpha = 0.7f)
+                    )
+                }
+            }
         }
     }
 }

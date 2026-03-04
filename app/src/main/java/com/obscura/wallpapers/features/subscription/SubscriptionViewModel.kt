@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.ProductDetails
 import com.obscura.wallpapers.core.billing.BillingRepository
-import com.obscura.wallpapers.core.billing.model.PurchaseState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,7 +21,7 @@ import javax.inject.Inject
 class SubscriptionViewModel @Inject constructor(
     private val billingRepository: BillingRepository
 ) : ViewModel() {
-
+    
     // 是否为高级用户
     val isPremium: StateFlow<Boolean> = billingRepository.isPremiumUser
         .stateIn(
@@ -26,7 +29,7 @@ class SubscriptionViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = false
         )
-
+    
     // 可用产品列表
     val availableProducts: StateFlow<List<ProductDetails>> = billingRepository.availableProducts
         .stateIn(
@@ -34,23 +37,15 @@ class SubscriptionViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
-
-    // 购买状态
-    val purchaseState: StateFlow<PurchaseState> = billingRepository.purchaseState
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = PurchaseState.NotPurchased
-        )
-
+    
     // UI 状态
-    private val _uiState = MutableStateFlow<SubscriptionUiState>(SubscriptionUiState.Loading)
+    private val _uiState = MutableStateFlow<SubscriptionUiState>(SubscriptionUiState.Idle)
     val uiState: StateFlow<SubscriptionUiState> = _uiState.asStateFlow()
-
+    
     init {
         refreshSubscriptionStatus()
     }
-
+    
     /**
      * 刷新订阅状态
      */
@@ -65,20 +60,23 @@ class SubscriptionViewModel @Inject constructor(
             }
         }
     }
-
+    
     /**
-     * 购买产品
+     * 发起购买
      */
     fun purchaseProduct(activity: Activity, productDetails: ProductDetails) {
         viewModelScope.launch {
+            _uiState.value = SubscriptionUiState.Loading
             try {
                 billingRepository.purchaseProduct(activity, productDetails)
+                // 购买结果会通过 BillingManager 的回调处理
+                _uiState.value = SubscriptionUiState.Success
             } catch (e: Exception) {
                 _uiState.value = SubscriptionUiState.Error(e.message ?: "Purchase failed")
             }
         }
     }
-
+    
     /**
      * 恢复购买
      */
@@ -100,9 +98,10 @@ class SubscriptionViewModel @Inject constructor(
 }
 
 /**
- * 订阅页面 UI 状态
+ * 订阅 UI 状态
  */
 sealed class SubscriptionUiState {
+    object Idle : SubscriptionUiState()
     object Loading : SubscriptionUiState()
     object Success : SubscriptionUiState()
     data class Error(val message: String) : SubscriptionUiState()

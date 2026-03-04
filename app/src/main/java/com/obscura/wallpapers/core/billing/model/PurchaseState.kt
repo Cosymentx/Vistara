@@ -4,24 +4,28 @@ package com.obscura.wallpapers.core.billing.model
  * 购买状态
  */
 sealed class PurchaseState {
+    /**
+     * 未购买
+     */
     object NotPurchased : PurchaseState()
-    object Pending : PurchaseState()
+    
+    /**
+     * 已购买
+     */
     data class Purchased(
         val productId: String,
         val purchaseToken: String,
-        val isAutoRenewing: Boolean = false,
+        val isAutoRenewing: Boolean,
         val expiryTimeMillis: Long? = null
     ) : PurchaseState()
+    
+    /**
+     * 购买中
+     */
+    object Purchasing : PurchaseState()
+    
+    /**
+     * 错误
+     */
     data class Error(val message: String) : PurchaseState()
 }
-
-/**
- * 订阅状态
- */
-data class SubscriptionStatus(
-    val isPremium: Boolean = false,
-    val subscriptionType: String? = null,
-    val expiryDate: Long? = null,
-    val isAutoRenewing: Boolean = false,
-    val lastVerified: Long = System.currentTimeMillis()
-)

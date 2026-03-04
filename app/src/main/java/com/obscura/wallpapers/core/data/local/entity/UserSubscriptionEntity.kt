@@ -8,7 +8,8 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "user_subscription")
 data class UserSubscriptionEntity(
-    @PrimaryKey val id: Int = 1,
+    @PrimaryKey
+    val id: Int = 1, // 单例，只有一条记录
     val isPremium: Boolean = false,
     val subscriptionType: String? = null, // monthly, yearly, lifetime
     val purchaseToken: String? = null,

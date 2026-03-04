@@ -22,6 +22,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -64,7 +66,10 @@ import com.obscura.wallpapers.ui.theme.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreferencesScreen(
-    onBackPressed: () -> Unit, viewModel: PreferencesViewModel = hiltViewModel()
+    onBackPressed: () -> Unit,
+    onNavigateToSubscription: () -> Unit = {},
+    viewModel: PreferencesViewModel = hiltViewModel(),
+    subscriptionViewModel: SubscriptionStatusViewModel = hiltViewModel()
 ) {
     val darkTheme by viewModel.darkTheme.collectAsState()
     val dynamicColors by viewModel.dynamicColors.collectAsState()
@@ -79,6 +84,7 @@ fun PreferencesScreen(
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
     val isLoggingOut by viewModel.isLoggingOut.collectAsState()
     val operationResult by viewModel.operationResult.collectAsState()
+    val isPremium by subscriptionViewModel.isPremiumUser.collectAsState(false)
     val snackbarHostState = remember { SnackbarHostState() }
 
     var currentNotificationType by remember { mutableStateOf<NotificationType?>(null) }
@@ -150,6 +156,17 @@ fun PreferencesScreen(
                 LanguageSelector(
                     currentLanguage = appLanguage,
                     onLanguageSelected = { viewModel.updateAppLanguage(it) })
+            }
+
+            // 订阅状态卡片
+            SettingsGroup(title = "会员订阅") {
+                SettingsActionItem(
+                    icon = Icons.Default.Star,
+                    title = if (isPremium) "高级会员" else "升级到高级版",
+                    subtitle = if (isPremium) "感谢你的支持！享受所有高级功能" else "解锁所有高级功能，享受完整体验",
+                    onClick = onNavigateToSubscription,
+                    iconTint = if (isPremium) Color(0xFFFFD700) else MaterialTheme.colorScheme.primary
+                )
             }
 
             SettingsGroup(title = stringResource(R.string.settings_notification_settings)) {

@@ -230,7 +230,6 @@ object DatabaseMigrations {
             }
         }
     }
-}
 
     /**
      * 从版本6迁移到版本7
@@ -255,3 +254,4 @@ object DatabaseMigrations {
             )
         }
     }
+}

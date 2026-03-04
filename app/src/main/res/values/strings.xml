@@ -277,6 +277,46 @@ Enjoy a new look every day</string>
     <string name="subscription_terms">By subscribing, you agree to our Terms of Service and Privacy Policy. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. You can manage or cancel your subscriptions in Google Play Store.</string>
     <string name="manage_subscription">Manage Subscription</string>
     <string name="cancel_subscription">Cancel Subscription</string>
+    
+    <!-- Profile premium and diamond section -->
+    <string name="profile_premium_member">Premium Member</string>
+    <string name="profile_upgrade_membership">Upgrade</string>
+    <string name="profile_unlock_all_features">Unlock all features</string>
+    <string name="profile_purchase_diamonds">Buy Coins</string>
+    <string name="profile_get_more_diamonds">Get more coins</string>
+    
+    <!-- Diamond purchase screen -->
+    <string name="diamond_purchase_title">Buy Coins</string>
+    <string name="diamond_get_more_coins">Get More Coins</string>
+    <string name="diamond_description">Coins can be used to unlock premium wallpapers and special features</string>
+    <string name="diamond_buy_now">Buy Now</string>
+    <string name="diamond_instant_delivery">Coins will be credited immediately after purchase</string>
+    <string name="diamond_coins">coins</string>
+    <string name="diamond_bonus">Bonus %d coins</string>
+    <string name="diamond_popular">Popular</string>
+    
+    <!-- Subscription screen -->
+    <string name="subscription_title">Subscribe to Premium</string>
+    <string name="subscription_unlock_all_features">Unlock All Features</string>
+    <string name="subscription_enjoy_full_experience">Enjoy the complete wallpaper experience</string>
+    <string name="subscription_choose_plan">Choose a Plan</string>
+    <string name="subscription_start">Start Subscription</string>
+    <string name="subscription_auto_renew_notice">Subscription will auto-renew, can be canceled anytime</string>
+    <string name="subscription_already_premium">You are already a premium member</string>
+    <string name="subscription_thank_you">Thank you for your support! Enjoy all premium features</string>
+    
+    <!-- Subscription features -->
+    <string name="feature_wallpaper_edit">✨ Wallpaper editing</string>
+    <string name="feature_video_wallpaper">🎬 Dynamic video wallpapers</string>
+    <string name="feature_premium_wallpapers">🎨 Unlock all premium wallpapers</string>
+    <string name="feature_no_ads">🚫 Ad-free experience</string>
+    <string name="feature_cloud_sync">☁️ Cloud sync favorites</string>
+    
+    <!-- Paywall screen -->
+    <string name="paywall_upgrade_to_premium">Upgrade to Premium</string>
+    <string name="paywall_later">Maybe Later</string>
+    <string name="close">Close</string>
+    <string name="selected">Selected</string>
 
     <!-- Auth screen related -->
 
