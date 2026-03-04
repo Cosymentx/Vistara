@@ -231,3 +231,27 @@ object DatabaseMigrations {
         }
     }
 }
+
+    /**
+     * 从版本6迁移到版本7
+     * 添加用户订阅状态表
+     */
+    val MIGRATION_6_7 = object : Migration(6, 7) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            // 创建用户订阅表
+            database.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `user_subscription` (
+                    `id` INTEGER NOT NULL,
+                    `isPremium` INTEGER NOT NULL,
+                    `subscriptionType` TEXT,
+                    `purchaseToken` TEXT,
+                    `expiryDate` INTEGER,
+                    `autoRenewing` INTEGER NOT NULL,
+                    `lastVerified` INTEGER NOT NULL,
+                    PRIMARY KEY(`id`)
+                )
+                """
+            )
+        }
+    }

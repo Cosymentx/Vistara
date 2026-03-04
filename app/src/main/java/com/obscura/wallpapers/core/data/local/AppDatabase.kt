@@ -22,9 +22,10 @@ import androidx.room.TypeConverters
 @Database(
     entities = [
         com.obscura.wallpapers.core.data.model.Wallpaper::class,
-        com.obscura.wallpapers.core.data.model.AutoChangeHistory::class
+        com.obscura.wallpapers.core.data.model.AutoChangeHistory::class,
+        com.obscura.wallpapers.core.data.local.entity.UserSubscriptionEntity::class
     ],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -36,6 +37,13 @@ abstract class AppDatabase : RoomDatabase() {
      * @return WallpaperDao 用于访问 Wallpaper 表的数据库操作接口
      */
     abstract fun wallpaperDao(): WallpaperDao
+    
+    /**
+     * 订阅表 DAO
+     *
+     * @return SubscriptionDao 用于访问用户订阅状态的数据库操作接口
+     */
+    abstract fun subscriptionDao(): SubscriptionDao
 
     companion object {
 
@@ -78,7 +86,8 @@ abstract class AppDatabase : RoomDatabase() {
             )
                 // 数据库版本升级迁移策略（例如 1 -> 2）
                 .addMigrations(
-                    DatabaseMigrations.MIGRATION_1_2
+                    DatabaseMigrations.MIGRATION_1_2,
+                    DatabaseMigrations.MIGRATION_6_7
                 )
                 /**
                  * 如果找不到对应的迁移路径，则执行破坏性迁移：

@@ -153,6 +153,7 @@ dependencies {
     implementation(libs.imagecropper)
 
     // Google Play Billing
+    implementation(libs.google.play.billing.ktx)
 
     // Google Auth
     implementation(libs.google.auth)
