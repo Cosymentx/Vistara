@@ -317,6 +317,23 @@ Enjoy a new look every day</string>
     <string name="paywall_later">Maybe Later</string>
     <string name="close">Close</string>
     <string name="selected">Selected</string>
+    
+    <!-- Wallpaper purchase and premium -->
+    <string name="wallpaper_requires_purchase">Requires Purchase</string>
+    <string name="wallpaper_purchase_with_coins">Buy with %d coins</string>
+    <string name="wallpaper_purchased">Purchased</string>
+    <string name="wallpaper_premium_only">Premium Only</string>
+    <string name="wallpaper_setting">Setting wallpaper...</string>
+    <string name="wallpaper_set_success">Wallpaper set successfully</string>
+    <string name="wallpaper_set_failed">Failed to set wallpaper</string>
+    <string name="purchase_confirm_title">Purchase Wallpaper</string>
+    <string name="purchase_confirm_message">Spend %d coins to purchase this wallpaper?</string>
+    <string name="purchase_insufficient_coins">Insufficient coins</string>
+    <string name="purchase_success">Purchase successful</string>
+    <string name="purchase_failed">Purchase failed</string>
+    <string name="feature_requires_subscription">This feature requires a subscription</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 
     <!-- Auth screen related -->
 

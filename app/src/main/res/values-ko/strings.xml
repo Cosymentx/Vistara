@@ -292,6 +292,23 @@
     <string name="paywall_later">나중에</string>
     <string name="close">닫기</string>
     <string name="selected">선택됨</string>
+    
+    <!-- 배경화면 구매 및 프리미엄 -->
+    <string name="wallpaper_requires_purchase">구매 필요</string>
+    <string name="wallpaper_purchase_with_coins">%d 코인으로 구매</string>
+    <string name="wallpaper_purchased">구매 완료</string>
+    <string name="wallpaper_premium_only">프리미엄 전용</string>
+    <string name="wallpaper_setting">배경화면 설정 중...</string>
+    <string name="wallpaper_set_success">배경화면 설정 성공</string>
+    <string name="wallpaper_set_failed">배경화면 설정 실패</string>
+    <string name="purchase_confirm_title">배경화면 구매</string>
+    <string name="purchase_confirm_message">%d 코인을 사용하여 이 배경화면을 구매하시겠습니까?</string>
+    <string name="purchase_insufficient_coins">코인이 부족합니다</string>
+    <string name="purchase_success">구매 성공</string>
+    <string name="purchase_failed">구매 실패</string>
+    <string name="feature_requires_subscription">이 기능은 구독이 필요합니다</string>
+    <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
 
     <!-- 테스트 도구 관련 -->
     <string name="check_login_status_failed">로그인 상태 확인 실패: %1$s</string>

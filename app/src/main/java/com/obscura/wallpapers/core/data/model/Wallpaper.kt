@@ -32,7 +32,9 @@ data class Wallpaper(
     val height: Int = 0,
     val color: String? = null, // 主色调
     val blurHash: String? = null, // 用于生成模糊预览
-    val isPremium: Boolean = false,
+    val isPremium: Boolean = false, // 是否为高级壁纸（需要订阅）
+    val requiresPurchase: Boolean = false, // 是否需要金币购买
+    val purchasePrice: Int = 0, // 金币价格（如果需要购买）
     val isLive: Boolean = false,
     val isFavorite: Boolean = false,
     val isDownloaded: Boolean = false,

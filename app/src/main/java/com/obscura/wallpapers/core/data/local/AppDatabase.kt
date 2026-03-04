@@ -25,7 +25,7 @@ import androidx.room.TypeConverters
         com.obscura.wallpapers.core.data.model.AutoChangeHistory::class,
         com.obscura.wallpapers.core.data.local.entity.UserSubscriptionEntity::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -87,7 +87,8 @@ abstract class AppDatabase : RoomDatabase() {
                 // 数据库版本升级迁移策略（例如 1 -> 2）
                 .addMigrations(
                     DatabaseMigrations.MIGRATION_1_2,
-                    DatabaseMigrations.MIGRATION_6_7
+                    DatabaseMigrations.MIGRATION_6_7,
+                    DatabaseMigrations.MIGRATION_7_8
                 )
                 /**
                  * 如果找不到对应的迁移路径，则执行破坏性迁移：

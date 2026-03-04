@@ -254,4 +254,16 @@ object DatabaseMigrations {
             )
         }
     }
+    
+    /**
+     * 从版本7迁移到版本8
+     * 为wallpapers表添加购买相关字段
+     */
+    val MIGRATION_7_8 = object : Migration(7, 8) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            // 添加购买相关字段
+            database.execSQL("ALTER TABLE wallpapers ADD COLUMN requiresPurchase INTEGER NOT NULL DEFAULT 0")
+            database.execSQL("ALTER TABLE wallpapers ADD COLUMN purchasePrice INTEGER NOT NULL DEFAULT 0")
+        }
+    }
 }
