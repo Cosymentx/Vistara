@@ -9,6 +9,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
@@ -210,87 +212,83 @@ fun WallpaperPreview(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     // Premium/Purchase Badge
-                    when {
-                        wallpaper.isPremium && !isPremiumUser -> {
-                            Surface(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(6.dp)),
-                                color = Color(0xFFFFD700).copy(alpha = 0.9f),
-                                shadowElevation = 4.dp
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "👑",
-                                        fontSize = 12.sp
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text = stringResource(R.string.premium),
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = Color.Black.copy(alpha = 0.8f),
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
+                    AnimatedVisibility(
+                        visible = (wallpaper.isPremium && !isPremiumUser) || 
+                                 (wallpaper.requiresPurchase && !isWallpaperPurchased) || 
+                                 isOwned,
+                        enter = fadeIn(animationSpec = tween(600)) + expandHorizontally(),
+                        exit = fadeOut(animationSpec = tween(600)) + shrinkHorizontally()
+                    ) {
+                        val accentColor = when {
+                            wallpaper.isPremium && !isPremiumUser -> Color(0xFFFFD700)
+                            wallpaper.requiresPurchase && !isWallpaperPurchased -> Color(0xFF00E5FF)
+                            else -> Color(0xFF4CAF50)
                         }
 
-                        wallpaper.requiresPurchase && !isWallpaperPurchased -> {
-                            Surface(
+                        Surface(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .border(
+                                    width = 0.5.dp,
+                                    brush = Brush.linearGradient(
+                                        listOf(
+                                            Color.White.copy(alpha = 0.5f),
+                                            Color.White.copy(alpha = 0.05f)
+                                        )
+                                    ),
+                                    shape = CircleShape
+                                ),
+                            color = Color.Black.copy(alpha = 0.45f),
+                            shadowElevation = 12.dp
+                        ) {
+                            Row(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(6.dp)),
-                                color = Color(0xFF00BCD4).copy(alpha = 0.9f),
-                                shadowElevation = 4.dp
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = "💎",
-                                        fontSize = 11.sp
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            listOf(
+                                                accentColor.copy(alpha = 0.15f),
+                                                Color.Transparent,
+                                                accentColor.copy(alpha = 0.1f)
+                                            )
+                                        )
                                     )
-                                    Spacer(modifier = Modifier.width(2.dp))
-                                    Text(
-                                        text = wallpaper.purchasePrice.toString(),
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = Color.White,
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
-                        }
-
-                        isOwned -> {
-                            // 已拥有/已订阅状态
-                            Surface(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(6.dp)),
-                                color = Color(0xFF4CAF50).copy(alpha = 0.9f),
-                                shadowElevation = 4.dp
+                                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    // Subtle glow behind icon
+                                    Surface(
+                                        modifier = Modifier.size(18.dp),
+                                        color = accentColor.copy(alpha = 0.2f),
+                                        shape = CircleShape
+                                    ) {}
                                     Icon(
-                                        imageVector = Icons.Default.CheckCircle,
+                                        imageVector = when {
+                                            wallpaper.isPremium && !isPremiumUser -> ObscuraIcons.Crown
+                                            wallpaper.requiresPurchase && !isWallpaperPurchased -> ObscuraIcons.Diamond
+                                            else -> Icons.Default.CheckCircle
+                                        },
                                         contentDescription = null,
-                                        tint = Color.White,
-                                        modifier = Modifier.size(12.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text = stringResource(R.string.wallpaper_purchased),
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = Color.White,
-                                        fontWeight = FontWeight.Bold
+                                        tint = accentColor,
+                                        modifier = Modifier.size(14.dp)
                                     )
                                 }
+                                
+                                Spacer(modifier = Modifier.width(8.dp))
+                                
+                                Text(
+                                    text = when {
+                                        wallpaper.isPremium && !isPremiumUser -> stringResource(R.string.premium)
+                                        wallpaper.requiresPurchase && !isWallpaperPurchased -> wallpaper.purchasePrice.toString()
+                                        else -> stringResource(R.string.wallpaper_purchased)
+                                    }.uppercase(),
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontWeight = FontWeight.ExtraBold,
+                                        letterSpacing = 1.5.sp
+                                    ),
+                                    color = Color.White
+                                )
                             }
                         }
                     }

@@ -3,8 +3,19 @@ package com.obscura.wallpapers.ui.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Surface
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CircleShape
+import com.obscura.wallpapers.ui.icons.ObscuraIcons
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Icon
@@ -69,11 +80,44 @@ fun CategoryChip(
         },
         trailingIcon = if (category.isPremium && !isPremiumUser) {
             {
-                Text(
-                    text = "👑",
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(end = 4.dp)
-                )
+                Surface(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 0.5.dp,
+                            brush = Brush.linearGradient(
+                                listOf(
+                                    Color.White.copy(alpha = 0.5f),
+                                    Color.White.copy(alpha = 0.05f)
+                                )
+                            ),
+                            shape = CircleShape
+                        ),
+                    color = Color.Black.copy(alpha = 0.45f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    listOf(
+                                        Color(0xFFFFD700).copy(alpha = 0.15f),
+                                        Color.Transparent,
+                                        Color(0xFFFFD700).copy(alpha = 0.1f)
+                                    )
+                                )
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = ObscuraIcons.Crown,
+                            contentDescription = null,
+                            tint = Color(0xFFFFD700),
+                            modifier = Modifier.size(10.dp)
+                        )
+                    }
+                }
             }
         } else null,
         border = BorderStroke(

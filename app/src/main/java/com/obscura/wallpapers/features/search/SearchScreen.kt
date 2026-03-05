@@ -168,6 +168,8 @@ fun SearchScreen(
                 SearchResultList(
                     results = searchResults,
                     onWallpaperClick = onWallpaperClick,
+                    isPremiumUser = false, // TODO: Get from ViewModel
+                    purchasedIds = emptySet(), // TODO: Get from ViewModel
                     sharedTransitionScope = sharedTransitionScope,
                     animatedVisibilityScope = animatedVisibilityScope
                 )
@@ -206,6 +208,8 @@ private fun EmptyResultBox() {
 private fun SearchResultList(
     results: List<Wallpaper>,
     onWallpaperClick: (Wallpaper) -> Unit,
+    isPremiumUser: Boolean = false,
+    purchasedIds: Set<String> = emptySet(),
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
@@ -234,6 +238,8 @@ private fun SearchResultList(
                     WallpaperItem(
                         wallpaper = wallpaper,
                         onClick = { onWallpaperClick(wallpaper) },
+                        isPremiumUser = isPremiumUser,
+                        isWallpaperPurchased = purchasedIds.contains(wallpaper.id),
                         modifier = Modifier
                             .weight(1f)
                             .height(240.dp),

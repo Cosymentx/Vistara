@@ -1024,7 +1024,38 @@ class WallpaperRepositoryImpl @Inject constructor(
     }
 
     /**
-     * 标记壁纸为已购买状态
+     * 将指定壁纸标记为“已购买”状态。
+     *
+     * 该方法会在数据库中检查目标壁纸是否存在：
+     *
+     * - 如果壁纸已存在，则直接更新其购买状态（`requiresPurchase = false`）。
+     * - 如果壁纸不存在，则先通过 [getWallpaperById] 获取壁纸详情，
+     *   然后插入数据库并标记为已购买。
+     *
+     * 所有数据库操作均在 [Dispatchers.IO] 线程中执行，以避免阻塞主线程。
+     *
+     * ### 执行流程
+     * 1. 查询数据库中是否存在该壁纸
+     * 2. 如果存在 → 直接更新购买状态
+     * 3. 如果不存在 → 从远程/数据源获取壁纸详情
+     * 4. 插入数据库并标记为已购买
+     *
+     * ### 副作用
+     * - 更新本地数据库中的壁纸购买状态
+     * - 若壁纸不存在，会插入一条新的壁纸记录
+     *
+     * ### 线程
+     * 此方法内部使用 `withContext(Dispatchers.IO)`，保证所有 I/O 操作在后台线程执行。
+     *
+     * @param wallpaperId 壁纸唯一 ID
+     *
+     * @return
+     * `true` 表示成功标记为已购买（包括更新或插入成功）
+     * `false` 表示操作失败，例如：
+     * - 无法获取壁纸详情
+     * - 数据库操作异常
+     *
+     * @throws Exception 内部异常会被捕获并记录日志，不会向外抛出
      */
     override suspend fun markWallpaperAsPurchased(wallpaperId: String): Boolean =
         withContext(Dispatchers.IO) {
@@ -1033,20 +1064,17 @@ class WallpaperRepositoryImpl @Inject constructor(
                 val existingWallpaper = wallpaperDao.getWallpaperById(wallpaperId)
 
                 if (existingWallpaper != null) {
-                    // 如果壁纸已存在，直接标记为已购买（将requiresPurchase设置为false）
+                    // 如果壁纸已存在，直接标记为已购买
                     wallpaperDao.markWallpaperAsPurchased(wallpaperId)
                     Log.d(TAG, "标记壁纸为已购买状态: $wallpaperId")
                     return@withContext true
                 } else {
-                    // 如果壁纸不存在，需要先获取壁纸详情并插入到数据库
+                    // 如果壁纸不存在，需要先获取壁纸详情并插入数据库
                     try {
-                        // 获取壁纸详情
                         val wallpaper = getWallpaperById(wallpaperId)
 
                         if (wallpaper != null) {
-                            // 创建一个新的壁纸对象，将requiresPurchase设置为false
                             val purchasedWallpaper = wallpaper.copy(requiresPurchase = false)
-                            // 插入到数据库（使用insertFavorite，因为它是REPLACE策略）
                             wallpaperDao.insertFavorite(purchasedWallpaper)
                             Log.d(TAG, "插入新壁纸并标记为已购买: $wallpaperId")
                             return@withContext true

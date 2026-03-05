@@ -31,6 +31,8 @@ fun WallpaperGrid(
     wallpapers: List<Wallpaper>,
     onWallpaperClick: (Wallpaper) -> Unit,
     columns: Int = 2,
+    isPremiumUser: Boolean = false,
+    purchasedIds: Set<String> = emptySet(),
     contentPadding: PaddingValues = PaddingValues(8.dp),
     modifier: Modifier = Modifier,
     sharedTransitionScope: SharedTransitionScope? = null,
@@ -47,6 +49,8 @@ fun WallpaperGrid(
             WallpaperItem(
                 wallpaper = wallpaper,
                 onClick = { onWallpaperClick(wallpaper) },
+                isPremiumUser = isPremiumUser,
+                isWallpaperPurchased = purchasedIds.contains(wallpaper.id),
                 modifier = Modifier.aspectRatio(0.75f), // 设置宽高比为3:4
                 sharedTransitionScope = sharedTransitionScope,
                 animatedVisibilityScope = animatedVisibilityScope

@@ -135,6 +135,8 @@ fun DiscoverScreen(
                         },
                         wallpapers = s.items,
                         onWallpaperClick = onWallpaperClick,
+                        isPremiumUser = false, // TODO: Get from ViewModel
+                        purchasedIds = emptySet(), // TODO: Get from ViewModel
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope
                     )
@@ -165,6 +167,8 @@ private fun TwoColumnSection(
     title: String?,
     wallpapers: List<Wallpaper>,
     onWallpaperClick: (Wallpaper) -> Unit,
+    isPremiumUser: Boolean = false,
+    purchasedIds: Set<String> = emptySet(),
     titlePadding: PaddingValues = PaddingValues(horizontal = 16.dp),
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null
@@ -192,6 +196,8 @@ private fun TwoColumnSection(
                         WallpaperItem(
                             wallpaper = wallpaper,
                             onClick = { onWallpaperClick(wallpaper) },
+                            isPremiumUser = isPremiumUser,
+                            isWallpaperPurchased = purchasedIds.contains(wallpaper.id),
                             modifier = Modifier
                                 .weight(1f)
                                 .height(220.dp),

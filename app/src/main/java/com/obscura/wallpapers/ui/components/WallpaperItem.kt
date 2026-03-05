@@ -4,17 +4,22 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -54,9 +59,13 @@ fun WallpaperItem(
     wallpaper: Wallpaper,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isPremiumUser: Boolean = false,
+    isWallpaperPurchased: Boolean = false,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
+    val isOwned = isWallpaperPurchased || (wallpaper.isPremium && isPremiumUser)
+
     Card(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
@@ -103,52 +112,84 @@ fun WallpaperItem(
                 }
             }
 
-            // 顶部右角徽章 - 显示购买/订阅状态
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-            ) {
-                when {
-                    wallpaper.isPremium -> {
-                        // 订阅专属壁纸 - 简洁的徽章设计
-                        Surface(
+            // 顶部右角徽章 - 显示购买/订阅状态 (Glassmorphism Style)
+            if ((wallpaper.isPremium && !isPremiumUser) || (wallpaper.requiresPurchase && !isWallpaperPurchased) || isOwned) {
+                val accentColor = when {
+                    wallpaper.isPremium && !isPremiumUser -> Color(0xFFFFD700)
+                    wallpaper.requiresPurchase && !isWallpaperPurchased -> Color(0xFF00E5FF)
+                    else -> Color(0xFF4CAF50)
+                }
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                ) {
+                    Surface(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .border(
+                                width = 0.5.dp,
+                                brush = Brush.linearGradient(
+                                    listOf(
+                                        Color.White.copy(alpha = 0.5f),
+                                        Color.White.copy(alpha = 0.05f)
+                                    )
+                                ),
+                                shape = CircleShape
+                            ),
+                        color = Color.Black.copy(alpha = 0.45f)
+                    ) {
+                        Row(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(6.dp)),
-                            color = Color(0xFFFFD700).copy(alpha = 0.9f),
-                            shadowElevation = 4.dp
-                        ) {
-                            Text(
-                                text = "👑",
-                                modifier = Modifier.padding(4.dp),
-                                fontSize = 12.sp
-                            )
-                        }
-                    }
-                    wallpaper.requiresPurchase -> {
-                        // 需要购买的壁纸 - 简洁的价格徽章
-                        Surface(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(6.dp)),
-                            color = Color(0xFF00BCD4).copy(alpha = 0.9f),
-                            shadowElevation = 4.dp
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = "💎",
-                                    fontSize = 10.sp
+                                .background(
+                                    brush = Brush.horizontalGradient(
+                                        listOf(
+                                            accentColor.copy(alpha = 0.15f),
+                                            Color.Transparent,
+                                            accentColor.copy(alpha = 0.1f)
+                                        )
+                                    )
                                 )
-                                Spacer(modifier = Modifier.width(2.dp))
+                                .padding(horizontal = 8.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                // Subtle glow behind icon
+                                Surface(
+                                    modifier = Modifier.size(14.dp),
+                                    color = accentColor.copy(alpha = 0.2f),
+                                    shape = CircleShape
+                                ) {}
+                                Icon(
+                                    imageVector = when {
+                                        wallpaper.isPremium && !isPremiumUser -> ObscuraIcons.Crown
+                                        wallpaper.requiresPurchase && !isWallpaperPurchased -> ObscuraIcons.Diamond
+                                        else -> Icons.Default.CheckCircle
+                                    },
+                                    contentDescription = null,
+                                    tint = accentColor,
+                                    modifier = Modifier.size(10.dp)
+                                )
+                            }
+
+                            val badgeText = when {
+                                wallpaper.isPremium && !isPremiumUser -> stringResource(R.string.premium)
+                                wallpaper.requiresPurchase && !isWallpaperPurchased -> wallpaper.purchasePrice.toString()
+                                else -> stringResource(R.string.wallpaper_purchased)
+                            }
+
+                            if (badgeText.isNotEmpty()) {
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = wallpaper.purchasePrice.toString(),
-                                    style = MaterialTheme.typography.labelSmall,
+                                    text = badgeText.uppercase(),
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontWeight = FontWeight.ExtraBold,
+                                        letterSpacing = 1.sp
+                                    ),
                                     color = Color.White,
-                                    fontSize = 9.sp,
-                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                                    fontSize = 8.sp
                                 )
                             }
                         }

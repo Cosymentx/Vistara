@@ -48,6 +48,8 @@ fun WallpaperStaggeredGrid(
     isLoadingMore: Boolean = false,
     canLoadMore: Boolean = true,
     showEndMessage: Boolean = false,
+    isPremiumUser: Boolean = false,
+    purchasedIds: Set<String> = emptySet(),
     columns: Int = 2,
     contentPadding: PaddingValues = PaddingValues(16.dp),
     videoPlaybackManager: VideoPlaybackManager? = null,
@@ -116,6 +118,8 @@ fun WallpaperStaggeredGrid(
             WallpaperItem(
                 wallpaper = wallpaper,
                 onClick = { onWallpaperClick(wallpaper) },
+                isPremiumUser = isPremiumUser,
+                isWallpaperPurchased = purchasedIds.contains(wallpaper.id),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(itemHeight),
