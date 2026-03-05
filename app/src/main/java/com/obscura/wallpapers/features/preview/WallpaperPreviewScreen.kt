@@ -68,6 +68,7 @@ fun WallpaperPreviewScreen(
     onNavigateToEdit: (String) -> Unit,
     onNavigateToLogin: () -> Unit = {},
     onNavigateToSubscription: () -> Unit = {},
+    onNavigateToDiamondPurchase: () -> Unit = {},
     viewModel: WallpaperPreviewViewModel = hiltViewModel(),
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null
@@ -75,6 +76,7 @@ fun WallpaperPreviewScreen(
     val wallpaperState by viewModel.wallpaperState.collectAsState()
     val isFavorite by viewModel.isFavorite
     val isPremiumUser by viewModel.isPremiumUser
+    val isWallpaperPurchased by viewModel.isWallpaperPurchased
     val showSetWallpaperOptions by viewModel.showSetWallpaperOptions
     val navigateToUpgrade by viewModel.navigateToUpgrade
     val isDownloading by viewModel.isDownloading
@@ -87,6 +89,9 @@ fun WallpaperPreviewScreen(
 
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
     val needLoginAction by viewModel.needLoginAction.collectAsState()
+    val showPurchasePrompt by viewModel.showPurchasePrompt
+    val purchasePromptMessage by viewModel.purchasePromptMessage
+    val purchaseType by viewModel.purchaseType
 
     val context = LocalContext.current
     val activity = LocalActivity.current
@@ -141,6 +146,7 @@ fun WallpaperPreviewScreen(
 
     LaunchedEffect(Unit) {
         viewModel.refreshEditedImage()
+        viewModel.refreshPurchaseState()
     }
 
     LaunchedEffect(navigateToUpgrade) {
@@ -196,6 +202,7 @@ fun WallpaperPreviewScreen(
                     is UiState.Success -> {
                         val wallpaper = targetState.data
                         val editedBitmap by viewModel.editedBitmap
+                        val isLocked = (wallpaper.isPremium && !isPremiumUser) || (wallpaper.requiresPurchase && !isWallpaperPurchased)
 
                         // Background Layer
                         if (!wallpaper.isLive) {
@@ -236,6 +243,10 @@ fun WallpaperPreviewScreen(
                             onToggleFavorite = { viewModel.toggleFavorite() },
                             onToggleInfo = { viewModel.toggleInfoExpanded() },
                             onSetWallpaper = {
+                                if (isLocked) {
+                                    viewModel.showPurchasePromptForEdit(wallpaper)
+                                    return@WallpaperPreview
+                                }
                                 if (!isLoggedIn) {
                                     viewModel.setNeedLoginAction(WallpaperPreviewViewModel.LoginAction.SET_WALLPAPER)
                                     return@WallpaperPreview
@@ -243,10 +254,18 @@ fun WallpaperPreviewScreen(
                                 viewModel.showSetWallpaperOptions(activity)
                             },
                             onDownload = {
+                                if (isLocked) {
+                                    viewModel.showPurchasePromptForEdit(wallpaper)
+                                    return@WallpaperPreview
+                                }
                                 viewModel.download()
                             },
                             onShare = { viewModel.share() },
                             onEdit = {
+                                if (isLocked) {
+                                    viewModel.showPurchasePromptForEdit(wallpaper)
+                                    return@WallpaperPreview
+                                }
                                 if (!isLoggedIn) {
                                     viewModel.setNeedLoginAction(WallpaperPreviewViewModel.LoginAction.EDIT)
                                     return@WallpaperPreview
@@ -266,6 +285,7 @@ fun WallpaperPreviewScreen(
                                 viewModel.preview(activity)
                             },
                             isPremiumUser = isPremiumUser,
+                            isWallpaperPurchased = isWallpaperPurchased,
                             editedBitmap = editedBitmap,
                             isProcessingWallpaper = isProcessingWallpaper,
                             sharedTransitionScope = sharedTransitionScope,
@@ -363,6 +383,41 @@ fun WallpaperPreviewScreen(
                 viewModel.clearNeedLoginAction()
                 onNavigateToLogin()
             }, message = message
+        )
+    }
+
+    if (showPurchasePrompt) {
+        AlertDialog(
+            onDismissRequest = { viewModel.closePurchasePrompt() },
+            title = { 
+                Text(
+                    text = if (purchaseType == WallpaperPreviewViewModel.PurchaseType.SUBSCRIPTION) 
+                        stringResource(R.string.subscription_title) 
+                    else stringResource(R.string.purchase_confirm_title)
+                ) 
+            },
+            text = { Text(purchasePromptMessage) },
+            confirmButton = {
+                Button(onClick = {
+                    if (purchaseType == WallpaperPreviewViewModel.PurchaseType.SUBSCRIPTION) {
+                        onNavigateToSubscription()
+                    } else if (purchaseType == WallpaperPreviewViewModel.PurchaseType.DIAMOND) {
+                        onNavigateToDiamondPurchase()
+                    }
+                    viewModel.closePurchasePrompt()
+                }) {
+                    Text(
+                        text = if (purchaseType == WallpaperPreviewViewModel.PurchaseType.SUBSCRIPTION)
+                            stringResource(R.string.subscription_start)
+                        else stringResource(R.string.diamond_buy_now)
+                    )
+                }
+            },
+            dismissButton = {
+                Button(onClick = { viewModel.closePurchasePrompt() }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
         )
     }
 }

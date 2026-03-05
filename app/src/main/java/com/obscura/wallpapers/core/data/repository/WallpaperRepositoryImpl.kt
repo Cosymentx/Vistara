@@ -3,6 +3,8 @@ package com.obscura.wallpapers.core.data.repository
 import android.content.Context
 import android.util.Log
 import com.obscura.wallpapers.R
+import com.obscura.wallpapers.core.common.NetworkMonitor
+import com.obscura.wallpapers.core.common.StringProvider
 import com.obscura.wallpapers.core.data.local.WallpaperDao
 import com.obscura.wallpapers.core.data.mapper.PexelsMapper
 import com.obscura.wallpapers.core.data.mapper.PixabayMapper
@@ -17,14 +19,12 @@ import com.obscura.wallpapers.core.data.remote.ApiResult
 import com.obscura.wallpapers.core.data.remote.ApiSource
 import com.obscura.wallpapers.core.data.remote.ApiUsageTracker
 import com.obscura.wallpapers.core.data.remote.adapter.PexelsApiAdapter
+import com.obscura.wallpapers.core.data.remote.adapter.WallpaperApiAdapter
+import com.obscura.wallpapers.core.data.remote.safeApiCall
 import com.obscura.wallpapers.core.data.remote.service.PexelsApiService
 import com.obscura.wallpapers.core.data.remote.service.PixabayApiService
 import com.obscura.wallpapers.core.data.remote.service.UnsplashApiService
 import com.obscura.wallpapers.core.data.remote.service.WallhavenApiService
-import com.obscura.wallpapers.core.data.remote.adapter.WallpaperApiAdapter
-import com.obscura.wallpapers.core.data.remote.safeApiCall
-import com.obscura.wallpapers.core.common.NetworkMonitor
-import com.obscura.wallpapers.core.common.StringProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +32,6 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.random.Random
 
 /**
  * 壁纸仓库实现类
@@ -85,12 +84,18 @@ class WallpaperRepositoryImpl @Inject constructor(
             }
 
             // 直接使用壁纸API适配器获取精选壁纸
-            return@withContext wallpaperApiAdapter.getFeaturedWallpapers(page, pageSize).let { result ->
-                when (result) {
-                    is ApiResult.Success -> ApiResult.Success(markRandomWallpapersForPurchase(result.data))
-                    else -> result
+            return@withContext wallpaperApiAdapter.getFeaturedWallpapers(page, pageSize)
+                .let { result ->
+                    when (result) {
+                        is ApiResult.Success -> ApiResult.Success(
+                            markRandomWallpapersForPurchase(
+                                result.data
+                            )
+                        )
+
+                        else -> result
+                    }
                 }
-            }
         } catch (e: Exception) {
             ApiResult.Error(
                 message = e.message
@@ -135,7 +140,7 @@ class WallpaperRepositoryImpl @Inject constructor(
                         else -> emptyList()
                     }
 
-                    (unsplashWallpapers + pexelsWallpapers).let { markRandomWallpapersForPurchase(it) }
+                    markRandomWallpapersForPurchase(unsplashWallpapers + pexelsWallpapers)
                 }
 
                 "live", "video" -> {
@@ -162,10 +167,11 @@ class WallpaperRepositoryImpl @Inject constructor(
                 else -> emptyList()
             }
 
-            ApiResult.Success(wallpapers)
+            ApiResult.Success(markRandomWallpapersForPurchase(wallpapers))
         } catch (e: Exception) {
             ApiResult.Error(
-                message = e.message ?: stringProvider.getString(R.string.home_failed_to_get_wallpapers),
+                message = e.message
+                    ?: stringProvider.getString(R.string.home_failed_to_get_wallpapers),
                 source = ApiSource.UNSPLASH
             )
         }
@@ -406,7 +412,7 @@ class WallpaperRepositoryImpl @Inject constructor(
                 // 如果发生异常，返回缓存或本地收藏的壁纸
                 cachedWallpapers ?: wallpaperDao.getFavoritesList()
             }
-            ApiResult.Success(wallpapers)
+            ApiResult.Success(markRandomWallpapersForPurchase(wallpapers))
         } catch (e: Exception) {
             Log.e(TAG, "按分类获取壁纸失败", e)
             ApiResult.Error(
@@ -473,7 +479,7 @@ class WallpaperRepositoryImpl @Inject constructor(
         // 使用壁纸API适配器搜索壁纸
         val result = wallpaperApiAdapter.searchWallpapers(query, page, pageSize)
         return when (result) {
-            is ApiResult.Success -> result.data
+            is ApiResult.Success -> markRandomWallpapersForPurchase(result.data)
             else -> emptyList()
         }
     }
@@ -486,7 +492,8 @@ class WallpaperRepositoryImpl @Inject constructor(
         // 从本地数据库先查询
         val localWallpaper = wallpaperDao.getWallpaperById(id)
         if (localWallpaper != null) {
-            return localWallpaper
+            // 应用购买标记
+            return markRandomWallpapersForPurchase(listOf(localWallpaper)).firstOrNull()
         }
 
         // 检查网络连接
@@ -497,7 +504,8 @@ class WallpaperRepositoryImpl @Inject constructor(
         // 特殊处理动态壁纸ID
         if (id.startsWith("live_")) {
             Log.d(TAG, "处理模拟动态壁纸ID: $id")
-            return recreateLiveWallpaper(id)
+            val liveWallpaper = recreateLiveWallpaper(id)
+            return liveWallpaper?.let { markRandomWallpapersForPurchase(listOf(it)).firstOrNull() }
         }
 
         // 从ID解析来源和原始ID
@@ -514,16 +522,16 @@ class WallpaperRepositoryImpl @Inject constructor(
             try {
                 // 使用PexelsApiService获取视频详情
                 val video = pexelsApiService.getVideo(videoId)
-                return pexelsMapper.toWallpaper(video)
+                val wallpaper = pexelsMapper.toWallpaper(video)
+                return markRandomWallpapersForPurchase(listOf(wallpaper)).firstOrNull()
             } catch (e: Exception) {
                 Log.e(TAG, "获取Pexels视频详情失败: ${e.message}")
 
                 // 如果获取失败，尝试从本地缓存中获取
-                // 直接使用getWallpaperById方法再次尝试获取
                 val cachedWallpaper = wallpaperDao.getWallpaperById(id)
                 if (cachedWallpaper != null) {
                     Log.d(TAG, "从缓存中找到壁纸: $id")
-                    return cachedWallpaper
+                    return markRandomWallpapersForPurchase(listOf(cachedWallpaper)).firstOrNull()
                 }
 
                 return null
@@ -538,7 +546,8 @@ class WallpaperRepositoryImpl @Inject constructor(
             try {
                 // 使用PexelsApiService获取照片详情
                 val photo = pexelsApiService.getPhoto(photoId)
-                return pexelsMapper.toWallpaper(photo)
+                val wallpaper = pexelsMapper.toWallpaper(photo)
+                return markRandomWallpapersForPurchase(listOf(wallpaper)).firstOrNull()
             } catch (e: Exception) {
                 Log.e(TAG, "获取Pexels照片详情失败: ${e.message}")
 
@@ -546,7 +555,7 @@ class WallpaperRepositoryImpl @Inject constructor(
                 val cachedWallpaper = wallpaperDao.getWallpaperById(id)
                 if (cachedWallpaper != null) {
                     Log.d(TAG, "从缓存中找到壁纸: $id")
-                    return cachedWallpaper
+                    return markRandomWallpapersForPurchase(listOf(cachedWallpaper)).firstOrNull()
                 }
                 return null
             }
@@ -556,17 +565,22 @@ class WallpaperRepositoryImpl @Inject constructor(
         val originalId = parts[1]
         if (source == "pexels") {
             try {
-                val result = wallpaperApiAdapter.getWallpaperById(originalId)
-                return when (result) {
-                    is ApiResult.Success -> result.data
+                return when (val result = wallpaperApiAdapter.getWallpaperById(originalId)) {
+                    is ApiResult.Success -> {
+                        result.data?.let {
+                            markRandomWallpapersForPurchase(listOf(it)).firstOrNull()
+                        }
+                    }
+
                     else -> {
                         // 如果API调用失败，尝试从缓存中获取
                         val cachedWallpaper = wallpaperDao.getWallpaperById(id)
                         if (cachedWallpaper != null) {
                             Log.d(TAG, "从缓存中找到Pexels壁纸: $id")
-                            return cachedWallpaper
+                            markRandomWallpapersForPurchase(listOf(cachedWallpaper)).firstOrNull()
+                        } else {
+                            null
                         }
-                        null
                     }
                 }
             } catch (e: Exception) {
@@ -574,14 +588,15 @@ class WallpaperRepositoryImpl @Inject constructor(
                 // 尝试从缓存中获取
                 val cachedWallpaper = wallpaperDao.getWallpaperById(id)
                 if (cachedWallpaper != null) {
-                    return cachedWallpaper
+                    markRandomWallpapersForPurchase(listOf(cachedWallpaper)).firstOrNull()
+                } else {
+                    null
                 }
-                return null
             }
         }
 
         // 其他来源使用原来的方式，但增强错误处理
-        return when (source) {
+        val wallpaper = when (source) {
             "unsplash" -> {
                 try {
                     val response = safeApiCall(ApiSource.UNSPLASH) {
@@ -595,22 +610,14 @@ class WallpaperRepositoryImpl @Inject constructor(
                             val cachedWallpaper = wallpaperDao.getWallpaperById(id)
                             if (cachedWallpaper != null) {
                                 Log.d(TAG, "从缓存中找到Unsplash壁纸: $id")
-                                return cachedWallpaper
-                            }
-                            // 如果缓存中也没有，返回null
-                            Log.d(TAG, "无法获取Unsplash壁纸: $id")
-                            return null
+                                cachedWallpaper
+                            } else null
                         }
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "获取Unsplash壁纸详情失败: ${e.message}")
                     // 尝试从缓存中获取
-                    val cachedWallpaper = wallpaperDao.getWallpaperById(id)
-                    if (cachedWallpaper != null) {
-                        return cachedWallpaper
-                    }
-                    // 创建模拟壁纸
-                    return null
+                    wallpaperDao.getWallpaperById(id)
                 }
             }
 
@@ -626,36 +633,19 @@ class WallpaperRepositoryImpl @Inject constructor(
                                 pixabayMapper.toWallpaper(response.data.images[0])
                             } else {
                                 // 如果没有结果，尝试从缓存中获取
-                                val cachedWallpaper = wallpaperDao.getWallpaperById(id)
-                                if (cachedWallpaper != null) {
-                                    Log.d(TAG, "从缓存中找到Pixabay壁纸: $id")
-                                    return cachedWallpaper
-                                }
-                                // 创建模拟壁纸
-                                return null
+                                wallpaperDao.getWallpaperById(id)
                             }
                         }
 
                         else -> {
                             // 如果API调用失败，尝试从缓存中获取
-                            val cachedWallpaper = wallpaperDao.getWallpaperById(id)
-                            if (cachedWallpaper != null) {
-                                Log.d(TAG, "从缓存中找到Pixabay壁纸: $id")
-                                return cachedWallpaper
-                            }
-                            // 创建模拟壁纸
-                            return null
+                            wallpaperDao.getWallpaperById(id)
                         }
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "获取Pixabay壁纸详情失败: ${e.message}")
                     // 尝试从缓存中获取
-                    val cachedWallpaper = wallpaperDao.getWallpaperById(id)
-                    if (cachedWallpaper != null) {
-                        return cachedWallpaper
-                    }
-                    // 创建模拟壁纸
-                    return null
+                    wallpaperDao.getWallpaperById(id)
                 }
             }
 
@@ -669,39 +659,23 @@ class WallpaperRepositoryImpl @Inject constructor(
                         is ApiResult.Success -> wallhavenMapper.toWallpaper(response.data)
                         else -> {
                             // 如果API调用失败，尝试从缓存中获取
-                            val cachedWallpaper = wallpaperDao.getWallpaperById(id)
-                            if (cachedWallpaper != null) {
-                                Log.d(TAG, "从缓存中找到Wallhaven壁纸: $id")
-                                return cachedWallpaper
-                            }
-                            // 创建模拟壁纸
-                            return null
+                            wallpaperDao.getWallpaperById(id)
                         }
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "获取Wallhaven壁纸详情失败: ${e.message}")
                     // 尝试从缓存中获取
-                    val cachedWallpaper = wallpaperDao.getWallpaperById(id)
-                    if (cachedWallpaper != null) {
-                        return cachedWallpaper
-                    }
-                    // 创建模拟壁纸
-                    return null
+                    wallpaperDao.getWallpaperById(id)
                 }
             }
 
             else -> {
                 // 对于未知来源，尝试从缓存中获取
-                val cachedWallpaper = wallpaperDao.getWallpaperById(id)
-                if (cachedWallpaper != null) {
-                    Log.d(TAG, "从缓存中找到未知来源壁纸: $id")
-                    return cachedWallpaper
-                }
-                // 如果缓存中也没有，创建一个通用的模拟壁纸对象
-                Log.d(TAG, "创建通用模拟壁纸: $id")
-                return null
+                wallpaperDao.getWallpaperById(id)
             }
         }
+
+        return wallpaper?.let { markRandomWallpapersForPurchase(listOf(it)).firstOrNull() }
     }
 
     /**
@@ -1051,87 +1025,99 @@ class WallpaperRepositoryImpl @Inject constructor(
 
     /**
      * 标记壁纸为已购买状态
-     * 将壁纸的isPremium属性设置为false，表示用户已购买此壁纸，不再需要高级权限
      */
-    override suspend fun markWallpaperAsPurchased(wallpaperId: String): Boolean = withContext(Dispatchers.IO) {
-        try {
-            // 检查壁纸是否存在于数据库中
-            val existingWallpaper = wallpaperDao.getWallpaperById(wallpaperId)
+    override suspend fun markWallpaperAsPurchased(wallpaperId: String): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                // 检查壁纸是否存在于数据库中
+                val existingWallpaper = wallpaperDao.getWallpaperById(wallpaperId)
 
-            if (existingWallpaper != null) {
-                // 如果壁纸已存在，直接标记为已购买（将isPremium设置为false）
-                wallpaperDao.markWallpaperAsPurchased(wallpaperId)
-                Log.d(TAG, "标记壁纸为已购买状态: $wallpaperId")
-                return@withContext true
-            } else {
-                // 如果壁纸不存在，需要先获取壁纸详情并插入到数据库
-                try {
-                    // 获取壁纸详情
-                    val wallpaper = getWallpaperById(wallpaperId)
+                if (existingWallpaper != null) {
+                    // 如果壁纸已存在，直接标记为已购买（将requiresPurchase设置为false）
+                    wallpaperDao.markWallpaperAsPurchased(wallpaperId)
+                    Log.d(TAG, "标记壁纸为已购买状态: $wallpaperId")
+                    return@withContext true
+                } else {
+                    // 如果壁纸不存在，需要先获取壁纸详情并插入到数据库
+                    try {
+                        // 获取壁纸详情
+                        val wallpaper = getWallpaperById(wallpaperId)
 
-                    if (wallpaper != null) {
-                        // 创建一个新的壁纸对象，将isPremium设置为false
-                        val purchasedWallpaper = wallpaper.copy(isPremium = false)
-                        // 插入到数据库
-                        wallpaperDao.insertFavorite(purchasedWallpaper)
-                        Log.d(TAG, "插入新壁纸并标记为已购买: $wallpaperId")
-                        return@withContext true
-                    } else {
-                        Log.e(TAG, "无法获取壁纸详情，无法标记为已购买: $wallpaperId")
+                        if (wallpaper != null) {
+                            // 创建一个新的壁纸对象，将requiresPurchase设置为false
+                            val purchasedWallpaper = wallpaper.copy(requiresPurchase = false)
+                            // 插入到数据库（使用insertFavorite，因为它是REPLACE策略）
+                            wallpaperDao.insertFavorite(purchasedWallpaper)
+                            Log.d(TAG, "插入新壁纸并标记为已购买: $wallpaperId")
+                            return@withContext true
+                        } else {
+                            Log.e(TAG, "无法获取壁纸详情，无法标记为已购买: $wallpaperId")
+                            return@withContext false
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "插入新壁纸并标记为已购买失败", e)
                         return@withContext false
                     }
-                } catch (e: Exception) {
-                    Log.e(TAG, "插入新壁纸并标记为已购买失败", e)
-                    return@withContext false
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "标记壁纸为已购买状态失败", e)
+                return@withContext false
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "标记壁纸为已购买状态失败", e)
-            return@withContext false
         }
-    }
 
     /**
      * 检查壁纸是否已购买
-     * 通过查询数据库中的壁纸记录，检查isPremium属性是否为false
      */
-    override suspend fun isWallpaperPurchased(wallpaperId: String): Boolean = withContext(Dispatchers.IO) {
-        try {
-            // 检查壁纸是否存在于数据库中
-            val existingWallpaper = wallpaperDao.getWallpaperById(wallpaperId)
+    override suspend fun isWallpaperPurchased(wallpaperId: String): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                // 检查壁纸是否存在于数据库中
+                val existingWallpaper = wallpaperDao.getWallpaperById(wallpaperId)
 
-            if (existingWallpaper != null) {
-                // 如果壁纸存在且isPremium为false，表示已购买
-                val isPurchased = !existingWallpaper.isPremium
-                Log.d(TAG, "检查壁纸是否已购买: $wallpaperId, 结果: $isPurchased")
-                return@withContext isPurchased
-            } else {
-                // 如果壁纸不存在于数据库中，表示未购买
-                Log.d(TAG, "壁纸不存在于数据库中，未购买: $wallpaperId")
+                if (existingWallpaper != null) {
+                    // 如果壁纸在数据库中，且 requiresPurchase 为 false，则视为已购买
+                    // 注意：这里可能需要一个额外的字段专门记录购买，但目前复用 requiresPurchase
+                    val isPurchased = !existingWallpaper.requiresPurchase
+                    Log.d(TAG, "检查壁纸是否已购买: $wallpaperId, 结果: $isPurchased")
+                    return@withContext isPurchased
+                } else {
+                    // 如果壁纸不存在于数据库中，表示未购买
+                    Log.d(TAG, "壁纸不存在于数据库中，未购买: $wallpaperId")
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "检查壁纸是否已购买失败", e)
                 return@withContext false
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "检查壁纸是否已购买失败", e)
-            return@withContext false
         }
-    }
 
     /**
      * 随机标记壁纸为需要购买
      * 30%的壁纸会被标记为需要购买，价格范围10-50金币
+     * 使用壁纸ID的哈希值作为种子，确保同一壁纸每次都有相同的标记
      */
-    private fun markRandomWallpapersForPurchase(wallpapers: List<Wallpaper>): List<Wallpaper> {
-        return wallpapers.map { wallpaper ->
-            // 只对非高级壁纸进行标记
-            if (!wallpaper.isPremium && Random.nextFloat() < 0.3f) {
-                val purchasePrice = Random.nextInt(10, 51) // 10-50金币
-                wallpaper.copy(
-                    requiresPurchase = true,
-                    purchasePrice = purchasePrice
-                )
-            } else {
-                wallpaper
+    private suspend fun markRandomWallpapersForPurchase(wallpapers: List<Wallpaper>): List<Wallpaper> =
+        withContext(Dispatchers.IO) {
+            wallpapers.map { wallpaper ->
+                // 首先检查数据库中是否已购买
+                val isPurchased = isWallpaperPurchased(wallpaper.id)
+                if (isPurchased) {
+                    return@map wallpaper.copy(requiresPurchase = false)
+                }
+
+                // 只对非高级壁纸进行标记
+                // 使用壁纸ID的哈希值作为种子，确保一致性
+                val seed = wallpaper.id.hashCode().toLong()
+                val random = kotlin.random.Random(seed)
+
+                if (!wallpaper.isPremium && random.nextFloat() < 0.3f) {
+                    val purchasePrice = random.nextInt(10, 51) // 10-50金币
+                    wallpaper.copy(
+                        requiresPurchase = true, purchasePrice = purchasePrice
+                    )
+                } else {
+                    wallpaper
+                }
             }
         }
-    }
 }

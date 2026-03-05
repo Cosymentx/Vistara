@@ -304,6 +304,7 @@
     <string name="purchase_insufficient_coins">コインが不足しています</string>
     <string name="purchase_success">購入に成功しました</string>
     <string name="purchase_failed">購入に失敗しました</string>
+    <string name="purchase_required_for_action">この壁紙を購入するには %s コインが必要です。コインを購入しますか？</string>
     <string name="feature_requires_subscription">この機能にはサブスクリプションが必要です</string>
     <string name="confirm">確認</string>
     <string name="cancel">キャンセル</string>

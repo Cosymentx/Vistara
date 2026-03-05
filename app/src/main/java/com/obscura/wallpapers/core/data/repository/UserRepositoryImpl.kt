@@ -68,6 +68,10 @@ class UserRepositoryImpl @Inject constructor(
         preferences[USER_EMAIL]
     }
 
+    override val diamondBalance: Flow<Int> = dataStore.data.map { preferences ->
+        preferences[USER_DIAMOND_BALANCE] ?: 0
+    }
+
     override suspend fun checkPremiumStatus(): Boolean {
         return dataStore.data.map { preferences ->
             val isPremium = preferences[IS_PREMIUM_USER] == true
@@ -226,25 +230,17 @@ class UserRepositoryImpl @Inject constructor(
     /**
      * 更新用户钻石余额
      */
-    private suspend fun updateUserDiamondBalance(amount: Int) {
+    override suspend fun updateDiamondBalance(amount: Int) {
         dataStore.edit { preferences ->
             preferences[USER_DIAMOND_BALANCE] = amount
         }
+    }
 
-        // 同步更新DiamondRepository中的钻石余额
-//        try {
-//            val currentBalance = diamondRepository.get().getDiamondBalanceValue()
-//            if (currentBalance != amount) {
-//                Log.d(TAG, "同步钻石余额: 从 $currentBalance 到 $amount")
-//                diamondRepository.get().updateDiamondBalance(
-//                    amount = amount - currentBalance,
-//                    type = com.obscura.wallpapers.core.data.model.DiamondTransactionType.RECHARGE,
-//                    description = "同步服务器钻石余额"
-//                )
-//            }
-//        } catch (e: Exception) {
-//            Log.e(TAG, "同步钻石余额失败: ${e.message}", e)
-//        }
+    /**
+     * 更新用户钻石余额 (内部使用)
+     */
+    private suspend fun updateUserDiamondBalance(amount: Int) {
+        updateDiamondBalance(amount)
     }
 
     /**

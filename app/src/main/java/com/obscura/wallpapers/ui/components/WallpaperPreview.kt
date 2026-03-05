@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -97,12 +98,15 @@ fun WallpaperPreview(
     onToggleInfo: () -> Unit = {},
     onPreview: () -> Unit = {},
     isPremiumUser: Boolean = false,
+    isWallpaperPurchased: Boolean = false,
     editedBitmap: Bitmap? = null,
     isProcessingWallpaper: Boolean = false,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     var showControls by remember { mutableStateOf(true) }
+    val isLocked = (wallpaper.isPremium && !isPremiumUser) || (wallpaper.requiresPurchase && !isWallpaperPurchased)
+    val isOwned = (wallpaper.isPremium && isPremiumUser) || (wallpaper.requiresPurchase && isWallpaperPurchased)
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -183,19 +187,113 @@ fun WallpaperPreview(
                     )
                 }
 
-                wallpaper.title?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp
-                        ),
-                        color = Color.White,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(horizontal = 72.dp)
-                    )
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 72.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    wallpaper.title?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp
+                            ),
+                            color = Color.White,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    // Premium/Purchase Badge
+                    when {
+                        wallpaper.isPremium && !isPremiumUser -> {
+                            Surface(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp)),
+                                color = Color(0xFFFFD700).copy(alpha = 0.9f),
+                                shadowElevation = 4.dp
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "👑",
+                                        fontSize = 12.sp
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = stringResource(R.string.premium),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = Color.Black.copy(alpha = 0.8f),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+
+                        wallpaper.requiresPurchase && !isWallpaperPurchased -> {
+                            Surface(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp)),
+                                color = Color(0xFF00BCD4).copy(alpha = 0.9f),
+                                shadowElevation = 4.dp
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "💎",
+                                        fontSize = 11.sp
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        text = wallpaper.purchasePrice.toString(),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = Color.White,
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+
+                        isOwned -> {
+                            // 已拥有/已订阅状态
+                            Surface(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp)),
+                                color = Color(0xFF4CAF50).copy(alpha = 0.9f),
+                                shadowElevation = 4.dp
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.CheckCircle,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(12.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = stringResource(R.string.wallpaper_purchased),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
 
                 if (!wallpaper.isLive) {
@@ -330,13 +428,12 @@ fun WallpaperPreview(
                     )
 
                     if (!wallpaper.isLive) {
-                        val canEdit = !wallpaper.isPremium || isPremiumUser
                         GlassIconButton(
                             onClick = onEdit,
-                            enabled = canEdit,
                             imageVector = Icons.Default.Edit,
                             contentDescription = stringResource(R.string.edit),
-                            tint = if (canEdit) Color.White else Color.White.copy(alpha = 0.4f)
+                            isLocked = isLocked,
+                            tint = if (isLocked) Color.White.copy(alpha = 0.6f) else Color.White
                         )
                     }
 
@@ -353,7 +450,8 @@ fun WallpaperPreview(
                             onClick = onDownload,
                             enabled = !isDownloading,
                             painter = painterResource(id = R.drawable.ic_download),
-                            contentDescription = "Download"
+                            contentDescription = "Download",
+                            isLocked = isLocked
                         )
                     }
 
@@ -375,9 +473,11 @@ fun WallpaperPreview(
 
                 // Modern Primary Set Wallpaper Button
                 val buttonBrush = Brush.linearGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary
-                    )
+                    colors = if (isLocked) {
+                        listOf(Color(0xFF607D8B), Color(0xFF455A64)) // 灰色调表示未解锁
+                    } else {
+                        listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
+                    }
                 )
 
                 Box(
@@ -408,7 +508,7 @@ fun WallpaperPreview(
                             Spacer(modifier = Modifier.width(16.dp))
                         } else {
                             Icon(
-                                imageVector = Icons.Default.CheckCircle,
+                                imageVector = if (isLocked) Icons.Default.Lock else Icons.Default.CheckCircle,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.size(22.dp)
@@ -417,6 +517,8 @@ fun WallpaperPreview(
                         }
                         Text(
                             text = if (isProcessingWallpaper) stringResource(R.string.preview_setting_wallpaper)
+                            else if (isLocked)
+                                stringResource(R.string.preview_upgrade_to_unlock)
                             else stringResource(R.string.preview_set_as_wallpaper),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp
@@ -459,7 +561,8 @@ private fun GlassIconButton(
     imageVector: ImageVector? = null,
     contentDescription: String? = null,
     tint: Color = Color.White,
-    active: Boolean = false
+    active: Boolean = false,
+    isLocked: Boolean = false
 ) {
     val scale by animateFloatAsState(if (active) 1.15f else 1f, label = "scale")
 
@@ -482,12 +585,40 @@ private fun GlassIconButton(
         IconButton(
             onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxSize()
         ) {
-            if (painter != null) {
-                Icon(painter = painter, contentDescription = contentDescription, tint = tint)
-            } else if (imageVector != null) {
-                Icon(
-                    imageVector = imageVector, contentDescription = contentDescription, tint = tint
-                )
+            Box(contentAlignment = Alignment.Center) {
+                if (painter != null) {
+                    Icon(
+                        painter = painter,
+                        contentDescription = contentDescription,
+                        tint = if (isLocked) tint.copy(alpha = 0.5f) else tint
+                    )
+                } else if (imageVector != null) {
+                    Icon(
+                        imageVector = imageVector,
+                        contentDescription = contentDescription,
+                        tint = if (isLocked) tint.copy(alpha = 0.5f) else tint
+                    )
+                }
+
+                if (isLocked) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .offset(x = 2.dp, y = 2.dp)
+                            .size(16.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.6f))
+                            .padding(2.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(10.dp)
+                        )
+                    }
+                }
             }
         }
     }

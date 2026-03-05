@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 
@@ -30,9 +31,12 @@ import com.obscura.wallpapers.ui.icons.ObscuraIcons
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiamondPurchaseScreen(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    viewModel: DiamondPurchaseViewModel = hiltViewModel()
 ) {
     var selectedPackageIndex by remember { mutableStateOf(1) } // 默认选中中等套餐
+    val isPurchasing by viewModel.isPurchasing.collectAsState()
+    val purchaseSuccess by viewModel.purchaseSuccess.collectAsState()
 
     val gradientColors = listOf(
         Color(0xFF0F2027),
@@ -40,13 +44,22 @@ fun DiamondPurchaseScreen(
         Color(0xFF2C5364)
     )
 
-    val diamondPackages = listOf(
-        DiamondPackage(amount = 100, price = "$0.99", bonus = 0),
-        DiamondPackage(amount = 500, price = "$4.99", bonus = 50),
-        DiamondPackage(amount = 1200, price = "$9.99", bonus = 200),
-        DiamondPackage(amount = 3000, price = "$19.99", bonus = 600),
-        DiamondPackage(amount = 6500, price = "$49.99", bonus = 1500)
-    )
+    val diamondPackages = remember {
+        listOf(
+            DiamondPackage(amount = 100, price = "$0.99", bonus = 0),
+            DiamondPackage(amount = 500, price = "$4.99", bonus = 50),
+            DiamondPackage(amount = 1200, price = "$9.99", bonus = 200),
+            DiamondPackage(amount = 3000, price = "$19.99", bonus = 600),
+            DiamondPackage(amount = 6500, price = "$49.99", bonus = 1500)
+        )
+    }
+
+    LaunchedEffect(purchaseSuccess) {
+        if (purchaseSuccess) {
+            onNavigateBack()
+            viewModel.resetPurchaseStatus()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -61,7 +74,9 @@ fun DiamondPurchaseScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
                 )
             )
         },
@@ -125,22 +140,32 @@ fun DiamondPurchaseScreen(
                 // Purchase Button
                 Button(
                     onClick = {
-                        // TODO: 实现金币购买逻辑
+                        viewModel.purchasePackage(diamondPackages[selectedPackageIndex])
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF00E5FF)
+                        containerColor = Color(0xFF00E5FF),
+                        disabledContainerColor = Color(0xFF00E5FF).copy(alpha = 0.5f)
                     ),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    enabled = !isPurchasing
                 ) {
-                    Text(
-                        text = stringResource(R.string.diamond_buy_now),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
+                    if (isPurchasing) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = Color.Black,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.diamond_buy_now),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

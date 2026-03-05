@@ -207,6 +207,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                         },
                         onNavigateToLogin = { navController.navigate("auth") },
                         onNavigateToSubscription = { navController.navigate("subscription") },
+                        onNavigateToDiamondPurchase = { navController.navigate("diamond_purchase") },
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this@composable
                     )

@@ -56,4 +56,16 @@ interface UserRepository {
      * @return 用户邮箱的Flow
      */
     val userEmail: Flow<String?>
+
+    /**
+     * 获取用户钻石余额
+     * @return 用户钻石余额的Flow
+     */
+    val diamondBalance: Flow<Int>
+
+    /**
+     * 更新用户钻石余额
+     * @param amount 新的余额
+     */
+    suspend fun updateDiamondBalance(amount: Int)
 }

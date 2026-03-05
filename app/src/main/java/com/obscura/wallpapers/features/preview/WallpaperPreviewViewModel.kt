@@ -75,6 +75,22 @@ class WallpaperPreviewViewModel @Inject constructor(
     private val _showDiamondPurchaseDialog = mutableStateOf(false)
     val showDiamondPurchaseDialog: State<Boolean> = _showDiamondPurchaseDialog
 
+    private val _isWallpaperPurchased = mutableStateOf(false)
+    val isWallpaperPurchased: State<Boolean> = _isWallpaperPurchased
+
+    private val _showPurchasePrompt = mutableStateOf(false)
+    val showPurchasePrompt: State<Boolean> = _showPurchasePrompt
+
+    private val _purchasePromptMessage = mutableStateOf("")
+    val purchasePromptMessage: State<String> = _purchasePromptMessage
+
+    private val _purchaseType = mutableStateOf(PurchaseType.NONE)
+    val purchaseType: State<PurchaseType> = _purchaseType
+
+    enum class PurchaseType {
+        NONE, SUBSCRIPTION, DIAMOND
+    }
+
 
     private val _needStoragePermission = mutableStateOf(false)
     val needStoragePermission: State<Boolean> = _needStoragePermission
@@ -122,6 +138,7 @@ class WallpaperPreviewViewModel @Inject constructor(
                     currentWallpaperId = wallpaper.id
                     _isFavorite.value = wallpaperRepository.isWallpaperFavorited(wallpaper.id)
                     _isPremiumUser.value = userRepository.checkPremiumStatus()
+                    _isWallpaperPurchased.value = wallpaperRepository.isWallpaperPurchased(wallpaper.id)
                     _wallpaperState.value = UiState.Success(wallpaper)
                 } else {
                     _wallpaperState.value =
@@ -171,6 +188,26 @@ class WallpaperPreviewViewModel @Inject constructor(
             val s = _wallpaperState.value
             if (s is UiState.Success) {
                 val w = s.data
+
+                // Check if premium and not a premium user
+                if (w.isPremium && !_isPremiumUser.value) {
+                    _purchasePromptMessage.value = context.getString(R.string.feature_requires_subscription)
+                    _purchaseType.value = PurchaseType.SUBSCRIPTION
+                    _showPurchasePrompt.value = true
+                    return@launch
+                }
+                
+                // Check if wallpaper requires purchase
+                if (w.requiresPurchase && !_isWallpaperPurchased.value) {
+                    _purchasePromptMessage.value = context.getString(
+                        R.string.purchase_required_for_action,
+                        w.purchasePrice.toString()
+                    )
+                    _purchaseType.value = PurchaseType.DIAMOND
+                    _showPurchasePrompt.value = true
+                    return@launch
+                }
+                
                 _isProcessingWallpaper.value = true
                 try {
                     wallpaperManager.setWallpaper(w, target, _editedBitmap.value) { success ->
@@ -223,6 +260,27 @@ class WallpaperPreviewViewModel @Inject constructor(
         viewModelScope.launch {
             val s = _wallpaperState.value
             if (s is UiState.Success) {
+                val w = s.data
+
+                // Check if premium and not a premium user
+                if (w.isPremium && !_isPremiumUser.value) {
+                    _purchasePromptMessage.value = context.getString(R.string.feature_requires_subscription)
+                    _purchaseType.value = PurchaseType.SUBSCRIPTION
+                    _showPurchasePrompt.value = true
+                    return@launch
+                }
+                
+                // Check if wallpaper requires purchase
+                if (w.requiresPurchase && !_isWallpaperPurchased.value) {
+                    _purchasePromptMessage.value = context.getString(
+                        R.string.purchase_required_for_action,
+                        w.purchasePrice.toString()
+                    )
+                    _purchaseType.value = PurchaseType.DIAMOND
+                    _showPurchasePrompt.value = true
+                    return@launch
+                }
+                
                 if (!_isLoggedIn.value) {
                     _needLoginAction.value = LoginAction.DOWNLOAD
                     return@launch
@@ -288,6 +346,16 @@ class WallpaperPreviewViewModel @Inject constructor(
         _editedBitmap.value = EditedImageCache.getEditedImage(currentWallpaperId)
     }
 
+    fun refreshPurchaseState() {
+        viewModelScope.launch {
+            try {
+                _isWallpaperPurchased.value = wallpaperRepository.isWallpaperPurchased(currentWallpaperId)
+            } catch (_: Exception) {
+                _isWallpaperPurchased.value = false
+            }
+        }
+    }
+
     fun loadBlurredBackground() {
         viewModelScope.launch {
             val s = _wallpaperState.value
@@ -326,6 +394,64 @@ class WallpaperPreviewViewModel @Inject constructor(
 
     fun clearWallpaperSetSuccess() {
         _wallpaperSetSuccess.value = null
+    }
+
+    fun closePurchasePrompt() {
+        _showPurchasePrompt.value = false
+    }
+
+    fun onPurchaseConfirmed() {
+        _showPurchasePrompt.value = false
+        // The navigation is handled in the UI (WallpaperPreviewScreen)
+    }
+
+    fun onDiamondPurchaseClick() {
+        _showPurchasePrompt.value = false
+        // The navigation is handled in the UI (WallpaperPreviewScreen)
+    }
+
+    fun refreshPurchaseStatus() {
+        viewModelScope.launch {
+            val s = _wallpaperState.value
+            if (s is UiState.Success) {
+                _isWallpaperPurchased.value = wallpaperRepository.isWallpaperPurchased(s.data.id)
+            }
+        }
+    }
+
+    fun onPurchaseSuccess(wallpaperId: String) {
+        viewModelScope.launch {
+            try {
+                wallpaperRepository.markWallpaperAsPurchased(wallpaperId)
+                _isWallpaperPurchased.value = true
+                _showPurchasePrompt.value = false
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.purchase_success),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } catch (e: Exception) {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.purchase_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    fun showPurchasePromptForEdit(wallpaper: Wallpaper) {
+        if (wallpaper.isPremium && !_isPremiumUser.value) {
+            _purchasePromptMessage.value = context.getString(R.string.feature_requires_subscription)
+            _purchaseType.value = PurchaseType.SUBSCRIPTION
+        } else {
+            _purchasePromptMessage.value = context.getString(
+                R.string.purchase_required_for_action,
+                wallpaper.purchasePrice.toString()
+            )
+            _purchaseType.value = PurchaseType.DIAMOND
+        }
+        _showPurchasePrompt.value = true
     }
 
     init {

@@ -330,6 +330,7 @@ Enjoy a new look every day</string>
     <string name="purchase_insufficient_coins">Insufficient coins</string>
     <string name="purchase_success">Purchase successful</string>
     <string name="purchase_failed">Purchase failed</string>
+    <string name="purchase_required_for_action">This wallpaper requires %s coins to purchase. Would you like to buy coins?</string>
     <string name="feature_requires_subscription">This feature requires a subscription</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>

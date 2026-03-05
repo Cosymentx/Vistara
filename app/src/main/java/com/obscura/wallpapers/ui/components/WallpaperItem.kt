@@ -5,17 +5,22 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,13 +29,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.Resolution
 import com.obscura.wallpapers.core.data.model.Wallpaper
+import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
 
@@ -92,6 +100,59 @@ fun WallpaperItem(
                         contentDescription = "Live Wallpaper",
                         tint = Color.White
                     )
+                }
+            }
+
+            // 顶部右角徽章 - 显示购买/订阅状态
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            ) {
+                when {
+                    wallpaper.isPremium -> {
+                        // 订阅专属壁纸 - 简洁的徽章设计
+                        Surface(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp)),
+                            color = Color(0xFFFFD700).copy(alpha = 0.9f),
+                            shadowElevation = 4.dp
+                        ) {
+                            Text(
+                                text = "👑",
+                                modifier = Modifier.padding(4.dp),
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                    wallpaper.requiresPurchase -> {
+                        // 需要购买的壁纸 - 简洁的价格徽章
+                        Surface(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp)),
+                            color = Color(0xFF00BCD4).copy(alpha = 0.9f),
+                            shadowElevation = 4.dp
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "💎",
+                                    fontSize = 10.sp
+                                )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                Text(
+                                    text = wallpaper.purchasePrice.toString(),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color.White,
+                                    fontSize = 9.sp,
+                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
                 }
             }
 
