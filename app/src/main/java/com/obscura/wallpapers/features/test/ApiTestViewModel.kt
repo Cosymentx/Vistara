@@ -180,7 +180,7 @@ class ApiTestViewModel @Inject constructor(
             val mockSub = UserSubscriptionEntity(
                 id = 1,
                 isPremium = !current,
-                subscriptionType = if (!current) ProductType.PREMIUM_MONTHLY else null,
+                subscriptionType = if (!current) ProductType.VIP_GOLD else null,
                 purchaseToken = if (!current) "mock_token_${System.currentTimeMillis()}" else null,
                 expiryDate = if (!current) System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000 else null,
                 autoRenewing = !current,

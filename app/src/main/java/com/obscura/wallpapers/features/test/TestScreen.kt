@@ -1,6 +1,7 @@
 package com.obscura.wallpapers.features.test
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,9 +21,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
+import com.obscura.wallpapers.ui.components.LocalHazeState
 import com.obscura.wallpapers.ui.components.TextInputDialog
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import com.obscura.wallpapers.ui.theme.stringResource
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,14 +59,17 @@ fun TestScreen(
         onBackPressed = onBackPressed
     )
 
+    val hazeState = LocalHazeState.current ?: remember { HazeState() }
+
     Scaffold(
         topBar = { topBar() },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = Color.Transparent
     ) { paddingValues ->
         LazyColumn(
             modifier = contentModifier
                 .fillMaxSize()
+                .hazeSource(state = hazeState)
                 .padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -196,56 +206,81 @@ fun TestScreen(
 
 @Composable
 private fun TestStatusPanel(isLoggedIn: Boolean, isPremium: Boolean, coins: Int) {
-    val primaryBrush = Brush.linearGradient(
-        colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
-    )
-
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        tonalElevation = 8.dp,
-        shadowElevation = 2.dp
+    val hazeState = LocalHazeState.current ?: remember { HazeState() }
+    
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .hazeEffect(
+                state = hazeState,
+                style = HazeStyle(
+                    tint = HazeTint(if (isPremium) Color(0xFFD4AF37).copy(alpha = 0.15f) else Color.White.copy(alpha = 0.15f)),
+                    blurRadius = 30.dp,
+                    noiseFactor = 0.15f
+                )
+            )
+            .background(
+                if (isPremium) {
+                    Brush.linearGradient(listOf(Color(0xFFD4AF37).copy(alpha = 0.1f), Color(0xFF9A7B1D).copy(alpha = 0.05f)))
+                } else {
+                    Brush.linearGradient(listOf(Color.White.copy(alpha = 0.1f), Color.White.copy(alpha = 0.05f)))
+                }
+                , shape = RoundedCornerShape(24.dp)
+            )
+            .border(
+                1.dp,
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.2f),
+                        Color.White.copy(alpha = 0.05f)
+                    )
+                ),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .padding(20.dp)
     ) {
-        Box(modifier = Modifier.background(primaryBrush).padding(20.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = if (isLoggedIn) "LOGGED IN" else "GUEST",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Color.White.copy(alpha = 0.7f),
-                        letterSpacing = 1.sp
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = if (isLoggedIn) "LOGGED IN" else "GUEST",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = (if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface).copy(alpha = 0.7f),
+                    letterSpacing = 1.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = if (isPremium) ObscuraIcons.Crown else ObscuraIcons.Person,
+                        contentDescription = null,
+                        tint = if (isPremium) Color(0xFFFFD700) else MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = if (isPremium) ObscuraIcons.Crown else ObscuraIcons.Person,
-                            contentDescription = null,
-                            tint = if (isPremium) Color(0xFFFFD700) else Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = if (isPremium) "Premium Member" else "Standard User",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = if (isPremium) "Premium Member" else "Standard User",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface
+                    )
                 }
+            }
 
-                Column(horizontalAlignment = Alignment.End) {
-                    Text("COINS", style = MaterialTheme.typography.labelLarge, color = Color.White.copy(alpha = 0.7f))
-                    Text(
-                        text = "$coins",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Black,
-                        color = Color.White
-                    )
-                }
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    "COINS", 
+                    style = MaterialTheme.typography.labelLarge, 
+                    color = (if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface).copy(alpha = 0.7f)
+                )
+                Text(
+                    text = "$coins",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Black,
+                    color = if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface
+                )
             }
         }
     }
@@ -278,14 +313,26 @@ private fun TestSectionCard(
             )
         }
 
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-            border = androidx.compose.foundation.BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .hazeEffect(
+                    state = LocalHazeState.current ?: remember { HazeState() },
+                    style = HazeStyle(
+                        tint = HazeTint(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)),
+                        blurRadius = 30.dp,
+                        noiseFactor = 0.15f
+                    )
+                )
+                .background(
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.03f),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+                    shape = RoundedCornerShape(16.dp)
+                )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),

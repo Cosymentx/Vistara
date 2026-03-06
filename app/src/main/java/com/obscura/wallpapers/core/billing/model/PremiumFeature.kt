@@ -23,14 +23,6 @@ enum class PremiumFeature(
         title = "自动换壁纸",
         description = "定时自动更换壁纸"
     ),
-    CLOUD_SYNC(
-        title = "云端同步",
-        description = "在多设备间同步收藏"
-    ),
-    NO_ADS(
-        title = "无广告",
-        description = "享受无广告的纯净体验"
-    ),
     UNLIMITED_FAVORITES(
         title = "无限收藏",
         description = "收藏任意数量的壁纸"

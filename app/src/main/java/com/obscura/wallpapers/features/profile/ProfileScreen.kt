@@ -622,7 +622,7 @@ private fun PremiumCoinSection(
         // Subscription Card - Gold/Premium Theme
         Surface(
             onClick = onSubscriptionClick,
-            color = cardBackground,
+//            color = cardBackground,
             shape = RoundedCornerShape(28.dp),
             border = BorderStroke(
                 1.5.dp,
@@ -695,7 +695,7 @@ private fun PremiumCoinSection(
         // Coin Purchase Card - Cyan/Vibrant Theme
         Surface(
             onClick = onCoinPurchaseClick,
-            color = cardBackground,
+//            color = cardBackground,
             shape = RoundedCornerShape(28.dp),
             border = BorderStroke(1.5.dp, borderColor),
             modifier = Modifier

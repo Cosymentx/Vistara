@@ -308,7 +308,8 @@ Enjoy a new look every day</string>
     <string name="subscription_auto_renew_notice">Subscription will auto-renew, can be canceled anytime</string>
     <string name="subscription_already_premium">You are already a premium member</string>
     <string name="subscription_thank_you">Thank you for your support! Enjoy all premium features</string>
-    
+    <string name="subscription_weekly">Weekly</string>
+
     <!-- Subscription features -->
     <string name="feature_wallpaper_edit">✨ Wallpaper editing</string>
     <string name="feature_video_wallpaper">🎬 Dynamic video wallpapers</string>

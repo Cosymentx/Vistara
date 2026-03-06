@@ -101,12 +101,8 @@ class BillingViewModel @Inject constructor(
                 // 1. 调用 BillingManager 消耗商品
                 val consumed = billingRepository.consumePurchase(purchase.purchaseToken)
                 if (consumed) {
-                    // 2. 根据 ID 发放金币 (这里需要匹配 Google Play Console 配置的 ProductID)
-                    val amount = when (purchase.productId) {
-                        ProductType.FILTER_PACK_01 -> 100 // 假设对应100金币
-                        ProductType.WALLPAPER_PACK_EXCLUSIVE -> 500
-                        else -> 0
-                    }
+                    // 2. 根据 ID 发放金币
+                    val amount = ProductType.getCoinAmount(purchase.productId)
                     if (amount > 0) {
                         userRepository.addCoins(amount)
                         _coinPurchaseSuccess.value = true

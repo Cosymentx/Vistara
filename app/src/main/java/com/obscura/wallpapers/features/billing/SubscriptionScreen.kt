@@ -450,7 +450,7 @@ private fun PlanCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = productDetails.name,
                     fontSize = 18.sp,
@@ -458,14 +458,29 @@ private fun PlanCard(
                     color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                val price = productDetails.subscriptionOfferDetails?.firstOrNull()
-                    ?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice ?: ""
-                Text(
-                    text = price,
-                    fontSize = 16.sp,
-                    color = if (isSelected) accentColor else if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.SemiBold
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    val price = productDetails.subscriptionOfferDetails?.firstOrNull()
+                        ?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice ?: ""
+                    Text(
+                        text = price,
+                        fontSize = 16.sp,
+                        color = if (isSelected) accentColor else if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Surface(
+                        color = accentColor.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.subscription_weekly),
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = accentColor
+                        )
+                    }
+                }
             }
             
             RadioButton(

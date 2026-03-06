@@ -283,7 +283,8 @@
     <string name="subscription_auto_renew_notice">サブスクリプションは自動更新されますが、いつでもキャンセルできます</string>
     <string name="subscription_already_premium">すでにプレミアム会員です</string>
     <string name="subscription_thank_you">ご支援ありがとうございます！すべてのプレミアム機能をお楽しみください</string>
-    
+    <string name="subscription_weekly">週間</string>
+
     <!-- サブスクリプション機能 -->
     <string name="feature_wallpaper_edit">✨ 壁紙編集機能</string>
     <string name="feature_video_wallpaper">🎬 動的ビデオ壁紙</string>
