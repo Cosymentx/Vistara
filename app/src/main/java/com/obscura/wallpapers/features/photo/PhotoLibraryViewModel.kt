@@ -15,6 +15,7 @@ import com.obscura.wallpapers.core.common.RefreshUtil
 import com.obscura.wallpapers.core.data.remote.ApiResult.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,6 +32,8 @@ class PhotoLibraryViewModel @Inject constructor(
     companion object {
         private const val PAGE_SIZE = 20
     }
+
+    private var loadJob: Job? = null
 
     private val _wallpapersState = MutableStateFlow<UiState<List<Wallpaper>>>(UiState.Loading)
     val wallpapersState: StateFlow<UiState<List<Wallpaper>>> = _wallpapersState.asStateFlow()
@@ -53,18 +56,32 @@ class PhotoLibraryViewModel @Inject constructor(
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     private val _wallpapers = MutableStateFlow<List<Wallpaper>>(emptyList())
+    val wallpapers: StateFlow<List<Wallpaper>> = _wallpapers.asStateFlow()
+
+    // 缓存各分类的状态
+    private val categoryCache = mutableMapOf<WallpaperCategory, CategoryState>()
+
+    private data class CategoryState(
+        val wallpapers: List<Wallpaper>,
+        val currentPage: Int,
+        val canLoadMore: Boolean
+    )
 
     init {
         loadWallpapers()
     }
 
     fun loadWallpapers(isRefresh: Boolean = false, categoryFilter: String? = null) {
-        if (_isLoadingMore.value || _isRefreshing.value) {
+        if (!isRefresh && (_isLoadingMore.value || _isRefreshing.value)) {
             Log.d("PhotoLibraryViewModel", "正在加载中，跳过请求")
             return
         }
 
-        viewModelScope.launch {
+        if (isRefresh || _currentPage.value == 1) {
+            loadJob?.cancel()
+        }
+
+        loadJob = viewModelScope.launch {
             if (isRefresh) {
                 _isRefreshing.value = true
                 _currentPage.value = 1
@@ -126,15 +143,15 @@ class PhotoLibraryViewModel @Inject constructor(
 
                 when (result) {
                     is Success -> {
-                        _canLoadMore.value = result.data.size >= PAGE_SIZE
+                        // 允许加载更多，只要本次返回了数据（考虑到组合数据源可能由于单方受限导致总量不足PAGE_SIZE）
+                        _canLoadMore.value = result.data.isNotEmpty()
 
                         val newWallpapers = if (isRefresh || _currentPage.value == 1) {
                             Log.d("PhotoLibraryViewModel", "刷新或首次加载，设置 ${result.data.size} 个壁纸")
-                            _wallpapers.value = emptyList()
-                            result.data
+                            result.data.distinctBy { it.id }
                         } else {
                             Log.d("PhotoLibraryViewModel", "加载更多，添加 ${result.data.size} 个壁纸，总计 ${_wallpapers.value.size + result.data.size} 个")
-                            _wallpapers.value + result.data
+                            (_wallpapers.value + result.data).distinctBy { it.id }
                         }
 
                         _wallpapers.value = newWallpapers
@@ -142,7 +159,7 @@ class PhotoLibraryViewModel @Inject constructor(
 
                         Log.d("PhotoLibraryViewModel", "更新壁纸列表和状态，当前页码: ${_currentPage.value}, 壁纸数量: ${newWallpapers.size}")
 
-                        if (!isRefresh && result.data.isNotEmpty()) {
+                        if (result.data.isNotEmpty()) {
                             val nextPage = _currentPage.value + 1
                             Log.d("PhotoLibraryViewModel", "增加页码从 ${_currentPage.value} 到 $nextPage")
                             _currentPage.value = nextPage
@@ -150,14 +167,25 @@ class PhotoLibraryViewModel @Inject constructor(
                     }
 
                     is ApiResult.Error -> {
-                        _wallpapersState.value = UiState.Error(result.message)
+                        if (_wallpapers.value.isEmpty()) {
+                            _wallpapersState.value = UiState.Error(result.message)
+                        } else {
+                            // 如果已经有数据，不进入全局错误状态，仅在日志记录
+                            Log.e("PhotoLibraryViewModel", "加载更多失败: ${result.message}")
+                            _wallpapersState.value = UiState.Success(_wallpapers.value)
+                        }
                     }
 
                     is ApiResult.Loading -> {
                     }
                 }
             } catch (e: Exception) {
-                _wallpapersState.value = UiState.Error(e.message ?: context.getString(R.string.errors_loading_wallpapers))
+                if (_wallpapers.value.isEmpty()) {
+                    _wallpapersState.value = UiState.Error(e.message ?: context.getString(R.string.errors_loading_wallpapers))
+                } else {
+                    Log.e("PhotoLibraryViewModel", "加载更多异常: ${e.message}")
+                    _wallpapersState.value = UiState.Success(_wallpapers.value)
+                }
             } finally {
                 if (isRefresh) {
                     RefreshUtil.delayedEndRefreshing(_isRefreshing, viewModelScope)
@@ -190,7 +218,26 @@ class PhotoLibraryViewModel @Inject constructor(
     fun filterByCategory(category: WallpaperCategory) {
         if (_selectedCategory.value == category) return
 
+        // 切换前保存当前分类的状态
+        val oldCategory = _selectedCategory.value
+        categoryCache[oldCategory] = CategoryState(
+            wallpapers = _wallpapers.value,
+            currentPage = _currentPage.value,
+            canLoadMore = _canLoadMore.value
+        )
+
         _selectedCategory.value = category
+
+        // 检查是否有缓存
+        val cached = categoryCache[category]
+        if (cached != null && cached.wallpapers.isNotEmpty()) {
+            Log.d("PhotoLibraryViewModel", "从缓存恢复分类: ${category.name}, 壁纸数量: ${cached.wallpapers.size}")
+            _wallpapers.value = cached.wallpapers
+            _currentPage.value = cached.currentPage
+            _canLoadMore.value = cached.canLoadMore
+            _wallpapersState.value = UiState.Success(cached.wallpapers)
+            return
+        }
 
         _currentPage.value = 1
         _canLoadMore.value = true
@@ -238,6 +285,9 @@ class PhotoLibraryViewModel @Inject constructor(
 
         apiUsageTracker.resetAllStats()
         Log.d("PhotoLibraryViewModel", "已重置所有API统计数据")
+
+        // 刷新时清空所有缓存，强制重新加载
+        categoryCache.clear()
 
         _currentPage.value = 1
         _canLoadMore.value = true

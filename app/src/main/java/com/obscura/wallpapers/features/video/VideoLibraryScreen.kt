@@ -84,7 +84,8 @@ fun VideoLibraryScreen(
     val exoPlayer = rememberExoPlayerInstance(context)
     var playingIndex by remember { mutableIntStateOf(-1) }
     var wasPausedForLifecycle by remember { mutableStateOf(false) }
-    val gridState = rememberLazyGridState()
+    val gridStates = categories.associateWith { rememberLazyGridState() }
+    val gridState = gridStates[selectedCategory] ?: rememberLazyGridState()
 
     val currentWallpapers = remember(wallpapersUiState) {
         when (val state = wallpapersUiState) {

@@ -281,18 +281,18 @@ Enjoy a new look every day</string>
     <string name="profile_premium_member">Premium Member</string>
     <string name="profile_upgrade_membership">Upgrade</string>
     <string name="profile_unlock_all_features">Unlock all features</string>
-    <string name="profile_purchase_diamonds">Buy Coins</string>
-    <string name="profile_get_more_diamonds">Get more coins</string>
+    <string name="profile_purchase_coins">Buy Coins</string>
+    <string name="profile_get_more_coins">Get more coins</string>
     
-    <!-- Diamond purchase screen -->
-    <string name="diamond_purchase_title">Buy Coins</string>
-    <string name="diamond_get_more_coins">Get More Coins</string>
-    <string name="diamond_description">Coins can be used to unlock premium wallpapers and special features</string>
-    <string name="diamond_buy_now">Buy Now</string>
-    <string name="diamond_instant_delivery">Coins will be credited immediately after purchase</string>
-    <string name="diamond_coins">coins</string>
-    <string name="diamond_bonus">Bonus %d coins</string>
-    <string name="diamond_popular">Popular</string>
+    <!-- Coin purchase screen -->
+    <string name="coin_purchase_title">Buy Coins</string>
+    <string name="coin_get_more_coins">Get More Coins</string>
+    <string name="coin_description">Coins can be used to unlock premium wallpapers and special features</string>
+    <string name="coin_buy_now">Buy Now</string>
+    <string name="coin_instant_delivery">Coins will be credited immediately after purchase</string>
+    <string name="coin_coins">coins</string>
+    <string name="coin_bonus">Bonus %d coins</string>
+    <string name="coin_popular">Popular</string>
     
     <!-- Subscription screen -->
     <string name="subscription_title">Subscribe to Premium</string>
@@ -313,6 +313,11 @@ Enjoy a new look every day</string>
     
     <!-- Paywall screen -->
     <string name="paywall_upgrade_to_premium">Upgrade to Premium</string>
+    <string name="paywall_unlock_premium_content">Unlock Premium Content</string>
+    <string name="paywall_description">Subscribe to unlock all premium wallpapers, dynamic backgrounds and exclusive editing tools.</string>
+    <string name="paywall_get_premium_access">Get Premium Access</string>
+    <string name="paywall_unlock_with_coins">Unlock with Coins</string>
+    <string name="paywall_maybe_later">Maybe Later</string>
     <string name="paywall_later">Maybe Later</string>
     <string name="close">Close</string>
     <string name="selected">Selected</string>

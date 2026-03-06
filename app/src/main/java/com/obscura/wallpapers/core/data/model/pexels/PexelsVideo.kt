@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class PexelsVideo(
-    val id: Int,
+    val id: Long,
     val width: Int,
     val height: Int,
     val url: String, // 视频页面URL
@@ -41,15 +41,15 @@ data class PexelsVideo(
  */
 @Serializable
 data class PexelsVideoFile(
-    val id: Int,
-    val quality: String, // 视频质量，如"hd", "sd"
+    val id: Long,
+    val quality: String? = null, // 视频质量，如"hd", "sd"，可能为null
     @SerialName("file_type")
     val fileType: String, // 文件类型，如"video/mp4"
     val width: Int,
     val height: Int,
     val link: String // 视频文件URL
 ) {
-    fun apiIsHd(): Boolean = quality.equals("hd", ignoreCase = true)
+    fun apiIsHd(): Boolean = quality?.equals("hd", ignoreCase = true) == true
 }
 
 /**
@@ -57,7 +57,7 @@ data class PexelsVideoFile(
  */
 @Serializable
 data class PexelsVideoPicture(
-    val id: Int,
+    val id: Long,
     val picture: String, // 预览图URL
     val nr: Int // 预览图序号
 ) {
@@ -69,7 +69,7 @@ data class PexelsVideoPicture(
  */
 @Serializable
 data class PexelsVideoUser(
-    val id: Int,
+    val id: Long,
     val name: String, // 作者名称
     val url: String // 作者主页URL
 ) {

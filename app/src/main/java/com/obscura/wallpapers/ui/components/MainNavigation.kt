@@ -40,9 +40,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.BannerActionType
+import com.obscura.wallpapers.features.billing.CoinStoreScreen
+import com.obscura.wallpapers.features.billing.SubscriptionScreen
 import com.obscura.wallpapers.features.browser.BrowserScreen
 import com.obscura.wallpapers.features.cycler.WallpaperCyclerScreen
-import com.obscura.wallpapers.features.diamond.DiamondPurchaseScreen
 import com.obscura.wallpapers.features.discover.DiscoverScreen
 import com.obscura.wallpapers.features.editor.WallpaperEditScreen
 import com.obscura.wallpapers.features.info.InfoScreen
@@ -54,7 +55,6 @@ import com.obscura.wallpapers.features.preview.WallpaperPreviewScreen
 import com.obscura.wallpapers.features.profile.ProfileScreen
 import com.obscura.wallpapers.features.search.SearchScreen
 import com.obscura.wallpapers.features.signin.SignInScreen
-import com.obscura.wallpapers.features.subscription.SubscriptionScreen
 import com.obscura.wallpapers.features.support.SupportScreen
 import com.obscura.wallpapers.features.test.ApiTestScreen
 import com.obscura.wallpapers.features.test.TestScreen
@@ -168,7 +168,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                         onAboutClick = { navController.navigate("about") },
                         onLoginClick = { navController.navigate("auth") },
                         onSubscriptionClick = { navController.navigate("subscription") },
-                        onDiamondPurchaseClick = { navController.navigate("diamond_purchase") },
+                        onCoinPurchaseClick = { navController.navigate("coin_store") },
                         onTestToolsClick = { navController.navigate("test") })
                 }
                 composable(
@@ -207,7 +207,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                         },
                         onNavigateToLogin = { navController.navigate("auth") },
                         onNavigateToSubscription = { navController.navigate("subscription") },
-                        onNavigateToDiamondPurchase = { navController.navigate("diamond_purchase") },
+                        onNavigateToCoinStore = { navController.navigate("coin_store") },
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this@composable
                     )
@@ -243,8 +243,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     SubscriptionScreen(
                         onNavigateBack = { navController.navigateUp() })
                 }
-                composable("diamond_purchase") {
-                    DiamondPurchaseScreen(
+                composable("coin_store") {
+                    CoinStoreScreen(
                         onNavigateBack = { navController.navigateUp() })
                 }
                 composable("cycler") {

@@ -82,7 +82,7 @@ fun ProfileScreen(
     onTestToolsClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
     onSubscriptionClick: () -> Unit = {},
-    onDiamondPurchaseClick: () -> Unit = {},
+    onCoinPurchaseClick: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val username by viewModel.username.collectAsState()
@@ -135,13 +135,13 @@ fun ProfileScreen(
                 onLoginClick = onLoginClick,
             )
 
-            // Premium & Diamond Section
+            // Premium & Coin Section
             if (isLoggedIn) {
                 Spacer(modifier = Modifier.height(20.dp))
-                PremiumDiamondSection(
+                PremiumCoinSection(
                     isPremiumUser = isPremiumUser,
                     onSubscriptionClick = onSubscriptionClick,
-                    onDiamondPurchaseClick = onDiamondPurchaseClick
+                    onCoinPurchaseClick = onCoinPurchaseClick
                 )
             }
 
@@ -537,10 +537,10 @@ private fun ProfileHeader(
 }
 
 @Composable
-private fun PremiumDiamondSection(
+private fun PremiumCoinSection(
     isPremiumUser: Boolean,
     onSubscriptionClick: () -> Unit,
-    onDiamondPurchaseClick: () -> Unit
+    onCoinPurchaseClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -593,9 +593,9 @@ private fun PremiumDiamondSection(
             }
         }
 
-        // Diamond Purchase Card
+        // Coin Purchase Card
         Surface(
-            onClick = onDiamondPurchaseClick,
+            onClick = onCoinPurchaseClick,
             color = Color(0xFF00E5FF).copy(alpha = 0.15f),
             shape = RoundedCornerShape(24.dp),
             border = BorderStroke(1.5.dp, Color(0xFF00E5FF).copy(alpha = 0.3f)),
@@ -616,13 +616,13 @@ private fun PremiumDiamondSection(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = stringResource(R.string.profile_purchase_diamonds),
+                    text = stringResource(R.string.profile_purchase_coins),
                     style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                     color = Color(0xFF00E5FF),
                     maxLines = 1
                 )
                 Text(
-                    text = stringResource(R.string.profile_get_more_diamonds),
+                    text = stringResource(R.string.profile_get_more_coins),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     maxLines = 1

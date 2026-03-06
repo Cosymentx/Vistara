@@ -33,8 +33,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +44,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,7 +57,8 @@ import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.components.WallpaperPreview
 import com.obscura.wallpapers.ui.components.WallpaperSetOptions
-import com.obscura.wallpapers.ui.theme.stringResource
+import com.obscura.wallpapers.features.billing.PaywallScreen
+import com.obscura.wallpapers.features.billing.BillingViewModel
 import kotlinx.coroutines.launch
 
 /**
@@ -68,8 +72,9 @@ fun WallpaperPreviewScreen(
     onNavigateToEdit: (String) -> Unit,
     onNavigateToLogin: () -> Unit = {},
     onNavigateToSubscription: () -> Unit = {},
-    onNavigateToDiamondPurchase: () -> Unit = {},
+    onNavigateToCoinStore: () -> Unit = {},
     viewModel: WallpaperPreviewViewModel = hiltViewModel(),
+    billingViewModel: BillingViewModel = hiltViewModel(),
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
@@ -89,9 +94,6 @@ fun WallpaperPreviewScreen(
 
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
     val needLoginAction by viewModel.needLoginAction.collectAsState()
-    val showPurchasePrompt by viewModel.showPurchasePrompt
-    val purchasePromptMessage by viewModel.purchasePromptMessage
-    val purchaseType by viewModel.purchaseType
 
     val context = LocalContext.current
     val activity = LocalActivity.current
@@ -156,6 +158,8 @@ fun WallpaperPreviewScreen(
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
+    var showPaywall by remember { mutableStateOf(false) }
+
     DisposableEffect(lifecycleOwner) {
         val lifecycleObserver = LifecycleEventObserver { _, event ->
         }
@@ -244,7 +248,7 @@ fun WallpaperPreviewScreen(
                             onToggleInfo = { viewModel.toggleInfoExpanded() },
                             onSetWallpaper = {
                                 if (isLocked) {
-                                    viewModel.showPurchasePromptForEdit(wallpaper)
+                                    showPaywall = true
                                     return@WallpaperPreview
                                 }
                                 if (!isLoggedIn) {
@@ -255,7 +259,7 @@ fun WallpaperPreviewScreen(
                             },
                             onDownload = {
                                 if (isLocked) {
-                                    viewModel.showPurchasePromptForEdit(wallpaper)
+                                    showPaywall = true
                                     return@WallpaperPreview
                                 }
                                 viewModel.download()
@@ -263,7 +267,7 @@ fun WallpaperPreviewScreen(
                             onShare = { viewModel.share() },
                             onEdit = {
                                 if (isLocked) {
-                                    viewModel.showPurchasePromptForEdit(wallpaper)
+                                    showPaywall = true
                                     return@WallpaperPreview
                                 }
                                 if (!isLoggedIn) {
@@ -386,37 +390,16 @@ fun WallpaperPreviewScreen(
         )
     }
 
-    if (showPurchasePrompt) {
-        AlertDialog(
-            onDismissRequest = { viewModel.closePurchasePrompt() },
-            title = { 
-                Text(
-                    text = if (purchaseType == WallpaperPreviewViewModel.PurchaseType.SUBSCRIPTION) 
-                        stringResource(R.string.subscription_title) 
-                    else stringResource(R.string.purchase_confirm_title)
-                ) 
+    if (showPaywall) {
+        PaywallScreen(
+            onDismiss = { showPaywall = false },
+            onNavigateToSubscription = {
+                showPaywall = false
+                onNavigateToSubscription()
             },
-            text = { Text(purchasePromptMessage) },
-            confirmButton = {
-                Button(onClick = {
-                    if (purchaseType == WallpaperPreviewViewModel.PurchaseType.SUBSCRIPTION) {
-                        onNavigateToSubscription()
-                    } else if (purchaseType == WallpaperPreviewViewModel.PurchaseType.DIAMOND) {
-                        onNavigateToDiamondPurchase()
-                    }
-                    viewModel.closePurchasePrompt()
-                }) {
-                    Text(
-                        text = if (purchaseType == WallpaperPreviewViewModel.PurchaseType.SUBSCRIPTION)
-                            stringResource(R.string.subscription_start)
-                        else stringResource(R.string.diamond_buy_now)
-                    )
-                }
-            },
-            dismissButton = {
-                Button(onClick = { viewModel.closePurchasePrompt() }) {
-                    Text(stringResource(R.string.cancel))
-                }
+            onNavigateToCoinStore = {
+                showPaywall = false
+                onNavigateToCoinStore()
             }
         )
     }

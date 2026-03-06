@@ -59,6 +59,9 @@ fun PhotoLibraryScreen(
     val isLoadingMore by viewModel.isLoadingMore.collectAsState()
     val canLoadMore by viewModel.canLoadMore.collectAsState()
 
+    val gridStates = categories.associateWith { rememberLazyStaggeredGridState() }
+    val gridState = gridStates[selectedCategory] ?: rememberLazyStaggeredGridState()
+
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing, onRefresh = { viewModel.refresh() })
 
@@ -100,6 +103,7 @@ fun PhotoLibraryScreen(
                         canLoadMore = canLoadMore,
                         onLoadMore = { viewModel.loadMore() },
                         onWallpaperClick = onWallpaperClick,
+                        gridState = gridState,
                         // Content padding unified: 16dp horizontal
                         contentPadding = PaddingValues(
                             start = 16.dp,
@@ -140,6 +144,7 @@ private fun StaticGridContent(
     canLoadMore: Boolean,
     onLoadMore: () -> Unit,
     onWallpaperClick: (Wallpaper) -> Unit,
+    gridState: androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null
@@ -153,7 +158,6 @@ private fun StaticGridContent(
             )
         }
     } else {
-        val gridState = rememberLazyStaggeredGridState()
         WallpaperStaggeredGrid(
             wallpapers = wallpapers,
             onWallpaperClick = onWallpaperClick,

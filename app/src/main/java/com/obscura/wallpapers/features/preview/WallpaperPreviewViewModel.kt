@@ -69,11 +69,11 @@ class WallpaperPreviewViewModel @Inject constructor(
     private val _isPremiumUser = mutableStateOf(false)
     val isPremiumUser: State<Boolean> = _isPremiumUser
 
-    private val _diamondBalance = MutableStateFlow(0)
-    val diamondBalance: StateFlow<Int> = _diamondBalance.asStateFlow()
+    private val _coinBalance = MutableStateFlow(0)
+    val coinBalance: StateFlow<Int> = _coinBalance.asStateFlow()
 
-    private val _showDiamondPurchaseDialog = mutableStateOf(false)
-    val showDiamondPurchaseDialog: State<Boolean> = _showDiamondPurchaseDialog
+    private val _showCoinPurchaseDialog = mutableStateOf(false)
+    val showCoinPurchaseDialog: State<Boolean> = _showCoinPurchaseDialog
 
     private val _isWallpaperPurchased = mutableStateOf(false)
     val isWallpaperPurchased: State<Boolean> = _isWallpaperPurchased
@@ -88,7 +88,7 @@ class WallpaperPreviewViewModel @Inject constructor(
     val purchaseType: State<PurchaseType> = _purchaseType
 
     enum class PurchaseType {
-        NONE, SUBSCRIPTION, DIAMOND
+        NONE, SUBSCRIPTION, COIN
     }
 
 
@@ -203,7 +203,7 @@ class WallpaperPreviewViewModel @Inject constructor(
                         R.string.purchase_required_for_action,
                         w.purchasePrice.toString()
                     )
-                    _purchaseType.value = PurchaseType.DIAMOND
+                    _purchaseType.value = PurchaseType.COIN
                     _showPurchasePrompt.value = true
                     return@launch
                 }
@@ -276,7 +276,7 @@ class WallpaperPreviewViewModel @Inject constructor(
                         R.string.purchase_required_for_action,
                         w.purchasePrice.toString()
                     )
-                    _purchaseType.value = PurchaseType.DIAMOND
+                    _purchaseType.value = PurchaseType.COIN
                     _showPurchasePrompt.value = true
                     return@launch
                 }
@@ -405,7 +405,7 @@ class WallpaperPreviewViewModel @Inject constructor(
         // The navigation is handled in the UI (WallpaperPreviewScreen)
     }
 
-    fun onDiamondPurchaseClick() {
+    fun onCoinPurchaseClick() {
         _showPurchasePrompt.value = false
         // The navigation is handled in the UI (WallpaperPreviewScreen)
     }
@@ -449,7 +449,7 @@ class WallpaperPreviewViewModel @Inject constructor(
                 R.string.purchase_required_for_action,
                 wallpaper.purchasePrice.toString()
             )
-            _purchaseType.value = PurchaseType.DIAMOND
+            _purchaseType.value = PurchaseType.COIN
         }
         _showPurchasePrompt.value = true
     }
