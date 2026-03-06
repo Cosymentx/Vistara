@@ -93,7 +93,7 @@ fun SearchScreen(
         Box(
             modifier = contentModifier
         ) {
-            val topPadding = 120.dp
+            val topPadding = 110.dp
 
             if (query.isNotEmpty() && searchSuggestions.isNotEmpty() && searchResults.isEmpty()) {
                 // Suggestions overlay
