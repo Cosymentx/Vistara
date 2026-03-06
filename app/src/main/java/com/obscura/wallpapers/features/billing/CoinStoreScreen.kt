@@ -35,7 +35,7 @@ fun CoinStoreScreen(
     onNavigateBack: () -> Unit,
     viewModel: BillingViewModel = hiltViewModel()
 ) {
-    var selectedPackageIndex by remember { mutableStateOf(1) }
+    var selectedPackageIndex by remember { mutableIntStateOf(1) }
     val isPurchasing by viewModel.isPurchasingCoins.collectAsState()
     val purchaseSuccess by viewModel.coinPurchaseSuccess.collectAsState()
 

@@ -361,14 +361,33 @@ class WallpaperPreviewViewModel @Inject constructor(
             val s = _wallpaperState.value
             if (s is UiState.Success && !s.data.isLive) {
                 try {
-                    val file = wallpaperRepository.getLocalFile(s.data.id)
+                    val wallpaper = s.data
+                    // 优先尝试从本地文件加载
+                    val file = wallpaperRepository.getLocalFile(wallpaper.id)
+                    var bitmap: Bitmap? = null
+                    
                     if (file != null && file.exists()) {
-                        val bmp = BitmapFactory.decodeFile(file.absolutePath)
-                        _blurredBackgroundBitmap.value = ImageProcessor.blurGaussian(context, bmp)
-                    } else {
-                        _blurredBackgroundBitmap.value = null
+                        bitmap = BitmapFactory.decodeFile(file.absolutePath)
                     }
-                } catch (_: Exception) {
+                    
+                    // 如果本地没有，或者加载失败，尝试通过 Coil 加载缩略图来做背景模糊
+                    if (bitmap == null) {
+                        val loader = coil.ImageLoader(context)
+                        val request = coil.request.ImageRequest.Builder(context)
+                            .data(wallpaper.thumbnailUrl ?: wallpaper.url)
+                            .allowHardware(false) // 模糊处理需要非硬件位图
+                            .build()
+                        val result = loader.execute(request)
+                        if (result is coil.request.SuccessResult) {
+                            bitmap = (result.drawable as? android.graphics.drawable.BitmapDrawable)?.bitmap
+                        }
+                    }
+
+                    if (bitmap != null) {
+                        _blurredBackgroundBitmap.value = ImageProcessor.blurGaussian(context, bitmap)
+                    }
+                } catch (e: Exception) {
+                    android.util.Log.e(TAG, "Failed to load blurred background", e)
                     _blurredBackgroundBitmap.value = null
                 }
             }
