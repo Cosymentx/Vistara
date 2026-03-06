@@ -266,7 +266,7 @@ fun WallpaperPreview(
                                     Icon(
                                         imageVector = when {
                                             wallpaper.isPremium && !isPremiumUser -> ObscuraIcons.Crown
-                                            wallpaper.requiresPurchase && !isWallpaperPurchased -> ObscuraIcons.Diamond
+                                            wallpaper.requiresPurchase && !isWallpaperPurchased -> ObscuraIcons.Coin
                                             else -> Icons.Default.CheckCircle
                                         },
                                         contentDescription = null,
@@ -332,13 +332,15 @@ fun WallpaperPreview(
                         brush = Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                Color.Black.copy(alpha = 0.6f),
-                                Color.Black.copy(alpha = 0.9f)
+                                Color.Black.copy(alpha = 0.4f),
+                                Color.Black.copy(alpha = 0.7f),
+                                Color.Black.copy(alpha = 0.95f)
                             )
                         )
                     )
-                    .navigationBarsPadding()
-                    .padding(horizontal = 20.dp, vertical = 24.dp)
+                    .navigationBarsPadding() // This adds padding *inside* the background
+                    .padding(horizontal = 20.dp)
+                    .padding(top = 24.dp, bottom = 12.dp) // Fine-tuned padding
             ) {
                 // Author and Source
                 Row(
@@ -632,15 +634,16 @@ fun WallpaperSetOptions(
 ) {
     Surface(
         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
-        tonalElevation = 16.dp,
+        color = Color.Transparent, // Parent handles background/blur
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(top = 24.dp)
                 .navigationBarsPadding()
-                .padding(horizontal = 24.dp, vertical = 24.dp),
+                .padding(bottom = 16.dp), // Add space at the bottom for navigation bar icons
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Drag Handle for aesthetics

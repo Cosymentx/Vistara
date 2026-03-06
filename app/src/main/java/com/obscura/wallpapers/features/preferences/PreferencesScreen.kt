@@ -51,17 +51,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.features.preferences.PreferencesViewModel.NotificationType
 import com.obscura.wallpapers.ui.components.ConfirmDialog
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
 import com.obscura.wallpapers.ui.components.LanguageSelector
+import com.obscura.wallpapers.ui.components.LocalHazeState
 import com.obscura.wallpapers.ui.components.applyVerticalInnerPadding
 import com.obscura.wallpapers.ui.components.safeVerticalContentPadding
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import com.obscura.wallpapers.ui.theme.ObscuraTheme
 import com.obscura.wallpapers.ui.theme.stringResource
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeSource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,6 +90,8 @@ fun PreferencesScreen(
     val operationResult by viewModel.operationResult.collectAsState()
     val isPremium by subscriptionViewModel.isPremiumUser.collectAsState(false)
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val hazeState = remember { HazeState() }
 
     var currentNotificationType by remember { mutableStateOf<NotificationType?>(null) }
 
@@ -125,162 +131,165 @@ fun PreferencesScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = { topBar() }) { innerPadding ->
         val safe = innerPadding.safeVerticalContentPadding(64.dp, 80.dp)
-        Column(
-            modifier = contentModifier
-                .applyVerticalInnerPadding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(
-                    top = safe.calculateTopPadding(), bottom = safe.calculateBottomPadding()
-                )
-        ) {
-            SettingsGroup(title = stringResource(R.string.settings_theme_settings)) {
-                SettingsToggleList(
-                    items = listOf(
-                        SettingsToggleEntry(
-                            icon = ObscuraIcons.DarkMode,
-                            title = stringResource(R.string.settings_dark_theme),
-                            subtitle = stringResource(R.string.settings_dark_theme_desc),
-                            checked = darkTheme,
-                            onCheckedChange = { viewModel.updateDarkTheme(it) }),
-                        SettingsToggleEntry(
-                            icon = ObscuraIcons.Palette,
-                            title = stringResource(R.string.settings_dynamic_colors),
-                            subtitle = stringResource(R.string.settings_dynamic_colors_desc),
-                            checked = dynamicColors,
-                            onCheckedChange = { viewModel.updateDynamicColors(it) })
+        androidx.compose.runtime.CompositionLocalProvider(LocalHazeState provides hazeState) {
+            Column(
+                modifier = contentModifier
+                    .applyVerticalInnerPadding(innerPadding)
+                    .hazeSource(state = hazeState)
+                    .verticalScroll(rememberScrollState())
+                    .padding(
+                        top = safe.calculateTopPadding(), bottom = safe.calculateBottomPadding()
                     )
-                )
-            }
-
-            SettingsGroup(title = stringResource(R.string.settings_language_settings)) {
-                LanguageSelector(
-                    currentLanguage = appLanguage,
-                    onLanguageSelected = { viewModel.updateAppLanguage(it) })
-            }
-
-            // 订阅状态卡片
-            SettingsGroup(title = "会员订阅") {
-                SettingsActionItem(
-                    icon = Icons.Default.Star,
-                    title = if (isPremium) "高级会员" else "升级到高级版",
-                    subtitle = if (isPremium) "感谢你的支持！享受所有高级功能" else "解锁所有高级功能，享受完整体验",
-                    onClick = onNavigateToSubscription,
-                    iconTint = if (isPremium) Color(0xFFFFD700) else MaterialTheme.colorScheme.primary
-                )
-            }
-
-            SettingsGroup(title = stringResource(R.string.settings_notification_settings)) {
-                SettingsToggleList(
-                    items = listOf(
-                        SettingsToggleEntry(
-                            icon = ObscuraIcons.Notifications,
-                            title = stringResource(R.string.settings_download_notification),
-                            subtitle = stringResource(R.string.settings_download_notification_desc),
-                            checked = showDownloadNotification,
-                            onCheckedChange = {
-                                currentNotificationType = NotificationType.DOWNLOAD
-                                viewModel.updateShowDownloadNotification(it)
-                            }), SettingsToggleEntry(
-                            icon = ObscuraIcons.Notifications,
-                            title = stringResource(R.string.settings_wallpaper_change_notification),
-                            subtitle = stringResource(R.string.settings_wallpaper_change_notification_desc),
-                            checked = showWallpaperChangeNotification,
-                            onCheckedChange = {
-                                currentNotificationType = NotificationType.WALLPAPER_CHANGE
-                                viewModel.updateShowWallpaperChangeNotification(it)
-                            })
+            ) {
+                SettingsGroup(title = stringResource(R.string.settings_theme_settings)) {
+                    SettingsToggleList(
+                        items = listOf(
+                            SettingsToggleEntry(
+                                icon = ObscuraIcons.DarkMode,
+                                title = stringResource(R.string.settings_dark_theme),
+                                subtitle = stringResource(R.string.settings_dark_theme_desc),
+                                checked = darkTheme,
+                                onCheckedChange = { viewModel.updateDarkTheme(it) }),
+                            SettingsToggleEntry(
+                                icon = ObscuraIcons.Palette,
+                                title = stringResource(R.string.settings_dynamic_colors),
+                                subtitle = stringResource(R.string.settings_dynamic_colors_desc),
+                                checked = dynamicColors,
+                                onCheckedChange = { viewModel.updateDynamicColors(it) })
+                        )
                     )
-                )
-            }
+                }
 
-            SettingsGroup(title = stringResource(R.string.settings_download_settings)) {
-                SettingsToggleItem(
-                    icon = ObscuraIcons.HighQuality,
-                    title = stringResource(R.string.settings_original_quality),
-                    subtitle = stringResource(R.string.settings_original_quality_desc),
-                    checked = downloadOriginalQuality,
-                    onCheckedChange = {
-                        viewModel.updateDownloadOriginalQuality(it)
-                    })
-                Spacer(Modifier.height(10.dp))
+                SettingsGroup(title = stringResource(R.string.settings_language_settings)) {
+                    LanguageSelector(
+                        currentLanguage = appLanguage,
+                        onLanguageSelected = { viewModel.updateAppLanguage(it) })
+                }
+
+                // 订阅状态卡片
+                SettingsGroup(title = stringResource(R.string.settings_premium_subscription)) {
+                    SettingsActionItem(
+                        icon = Icons.Default.Star,
+                        title = if (isPremium) stringResource(R.string.settings_premium_member) else stringResource(R.string.settings_upgrade_to_premium),
+                        subtitle = if (isPremium) stringResource(R.string.settings_premium_member_desc) else stringResource(R.string.settings_upgrade_to_premium_desc),
+                        onClick = onNavigateToSubscription,
+                        iconTint = if (isPremium) Color(0xFFFFD700) else MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                SettingsGroup(title = stringResource(R.string.settings_notification_settings)) {
+                    SettingsToggleList(
+                        items = listOf(
+                            SettingsToggleEntry(
+                                icon = ObscuraIcons.Notifications,
+                                title = stringResource(R.string.settings_download_notification),
+                                subtitle = stringResource(R.string.settings_download_notification_desc),
+                                checked = showDownloadNotification,
+                                onCheckedChange = {
+                                    currentNotificationType = NotificationType.DOWNLOAD
+                                    viewModel.updateShowDownloadNotification(it)
+                                }), SettingsToggleEntry(
+                                icon = ObscuraIcons.Notifications,
+                                title = stringResource(R.string.settings_wallpaper_change_notification),
+                                subtitle = stringResource(R.string.settings_wallpaper_change_notification_desc),
+                                checked = showWallpaperChangeNotification,
+                                onCheckedChange = {
+                                    currentNotificationType = NotificationType.WALLPAPER_CHANGE
+                                    viewModel.updateShowWallpaperChangeNotification(it)
+                                })
+                        )
+                    )
+                }
+
+                SettingsGroup(title = stringResource(R.string.settings_download_settings)) {
+                    SettingsToggleItem(
+                        icon = ObscuraIcons.HighQuality,
+                        title = stringResource(R.string.settings_original_quality),
+                        subtitle = stringResource(R.string.settings_original_quality_desc),
+                        checked = downloadOriginalQuality,
+                        onCheckedChange = {
+                            viewModel.updateDownloadOriginalQuality(it)
+                        })
+                    Spacer(Modifier.height(10.dp))
+                    SettingsActionItem(
+                        icon = ObscuraIcons.Delete,
+                        title = stringResource(R.string.settings_clear_cache),
+                        subtitle = stringResource(R.string.settings_current_cache_size, cacheSize),
+                        onClick = { showClearCacheDialog = true },
+                        trailingContent = if (isClearingCache) {
+                            {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .width(24.dp)
+                                        .height(24.dp)
+                                )
+                            }
+                        } else null)
+                }
+
+                SettingsCategory(title = stringResource(R.string.settings_about_app))
                 SettingsActionItem(
-                    icon = ObscuraIcons.Delete,
-                    title = stringResource(R.string.settings_clear_cache),
-                    subtitle = stringResource(R.string.settings_current_cache_size, cacheSize),
-                    onClick = { showClearCacheDialog = true },
-                    trailingContent = if (isClearingCache) {
-                        {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .width(24.dp)
-                                    .height(24.dp)
-                            )
-                        }
-                    } else null)
-            }
+                    icon = ObscuraIcons.Version,
+                    title = stringResource(R.string.settings_app_version),
+                    subtitle = appVersion,
+                    onClick = {})
 
-            SettingsCategory(title = stringResource(R.string.settings_about_app))
-            SettingsActionItem(
-                icon = ObscuraIcons.Version,
-                title = stringResource(R.string.settings_app_version),
-                subtitle = appVersion,
-                onClick = {})
+                if (isLoggedIn) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        thickness = DividerDefaults.Thickness,
+                        color = DividerDefaults.color
+                    )
 
-            if (isLoggedIn) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    thickness = DividerDefaults.Thickness,
-                    color = DividerDefaults.color
-                )
+                    SettingsCategory(title = stringResource(R.string.settings_account_settings))
+                    SettingsActionItem(
+                        icon = ObscuraIcons.ExitToApp,
+                        title = stringResource(R.string.settings_sign_out),
+                        subtitle = stringResource(R.string.settings_sign_out_desc),
+                        onClick = { showLogoutConfirmDialog = true },
+                        iconTint = MaterialTheme.colorScheme.error,
+                        trailingContent = if (isLoggingOut) {
+                            {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .width(24.dp)
+                                        .height(24.dp)
+                                )
+                            }
+                        } else null)
+                }
 
-                SettingsCategory(title = stringResource(R.string.settings_account_settings))
-                SettingsActionItem(
-                    icon = ObscuraIcons.ExitToApp,
-                    title = stringResource(R.string.settings_sign_out),
-                    subtitle = stringResource(R.string.settings_sign_out_desc),
-                    onClick = { showLogoutConfirmDialog = true },
-                    iconTint = MaterialTheme.colorScheme.error,
-                    trailingContent = if (isLoggingOut) {
-                        {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .width(24.dp)
-                                    .height(24.dp)
-                            )
-                        }
-                    } else null)
-            }
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                if (showClearCacheDialog) {
+                    ConfirmDialog(
+                        onDismiss = { showClearCacheDialog = false },
+                        onConfirm = {
+                            viewModel.clearCache()
+                            showClearCacheDialog = false
+                        },
+                        title = stringResource(R.string.settings_clear_cache_title),
+                        message = stringResource(R.string.settings_clear_cache_message),
+                        confirmText = stringResource(R.string.clear),
+                        dismissText = stringResource(R.string.cancel),
+                        isLoading = isClearingCache
+                    )
+                }
 
-            if (showClearCacheDialog) {
-                ConfirmDialog(
-                    onDismiss = { showClearCacheDialog = false },
-                    onConfirm = {
-                        viewModel.clearCache()
-                        showClearCacheDialog = false
-                    },
-                    title = stringResource(R.string.settings_clear_cache_title),
-                    message = stringResource(R.string.settings_clear_cache_message),
-                    confirmText = stringResource(R.string.clear),
-                    dismissText = stringResource(R.string.cancel),
-                    isLoading = isClearingCache
-                )
-            }
-
-            if (showLogoutConfirmDialog) {
-                ConfirmDialog(
-                    onDismiss = { showLogoutConfirmDialog = false },
-                    onConfirm = {
-                        viewModel.signOut()
-                        showLogoutConfirmDialog = false
-                    },
-                    title = stringResource(R.string.settings_sign_out_confirm_title),
-                    message = stringResource(R.string.settings_sign_out_confirm_message),
-                    confirmText = stringResource(R.string.settings_sign_out),
-                    dismissText = stringResource(R.string.cancel),
-                    isLoading = isLoggingOut
-                )
+                if (showLogoutConfirmDialog) {
+                    ConfirmDialog(
+                        onDismiss = { showLogoutConfirmDialog = false },
+                        onConfirm = {
+                            viewModel.signOut()
+                            showLogoutConfirmDialog = false
+                        },
+                        title = stringResource(R.string.settings_sign_out_confirm_title),
+                        message = stringResource(R.string.settings_sign_out_confirm_message),
+                        confirmText = stringResource(R.string.settings_sign_out),
+                        dismissText = stringResource(R.string.cancel),
+                        isLoading = isLoggingOut
+                    )
+                }
             }
         }
     }

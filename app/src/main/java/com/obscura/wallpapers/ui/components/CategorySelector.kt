@@ -91,31 +91,11 @@ private fun CategoryChip(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    var size by remember { mutableStateOf(Size.Zero) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
-
     val shape = RoundedCornerShape(20.dp)
     
     Box(
         modifier = Modifier
             .padding(horizontal = 6.dp)
-            .onGloballyPositioned {
-                val bounds = it.boundsInRoot()
-                size = bounds.size
-                offset = bounds.center
-            }
-            .then(
-                if (isSelected && size.width > 0) {
-                    Modifier.liquidGlass(
-                        lensCenter = offset,
-                        lensSize = size,
-                        cornerRadius = 60f,
-                        edge = 0.4f,
-                        refraction = 0.2f,
-                        curve = 0.25f,
-                    )
-                } else Modifier
-            )
             .clip(shape)
             .background(
                 if (isSelected) {
@@ -135,13 +115,6 @@ private fun CategoryChip(
                 }
             )
             .clickable(onClick = onClick)
-            .then(
-                if (isSelected) {
-                    Modifier.background(
-                        Color.White.copy(alpha = 0.05f)
-                    )
-                } else Modifier
-            )
             .padding(horizontal = 18.dp, vertical = 10.dp)
     ) {
         Text(

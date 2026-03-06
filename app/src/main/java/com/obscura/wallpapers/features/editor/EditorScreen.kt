@@ -16,12 +16,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
@@ -47,7 +50,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -56,6 +61,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -70,6 +76,11 @@ import com.obscura.wallpapers.ui.components.GlassTopAppBar
 import com.obscura.wallpapers.ui.components.LoadingState
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import com.obscura.wallpapers.ui.theme.stringResource
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,6 +93,7 @@ fun WallpaperEditScreen(
     val editState by viewModel.editState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
     val context = LocalContext.current
+    val hazeState = remember { HazeState() }
 
     var selectedTool by remember { mutableStateOf(EditTool.BRIGHTNESS) }
 
@@ -96,24 +108,31 @@ fun WallpaperEditScreen(
                     viewModel.saveEditedWallpaper(onComplete = {
                         onSaveComplete()
                     })
-                }, enabled = !isSaving
+                }, enabled = !isSaving,
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .background(
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f),
+                        CircleShape
+                    )
             ) {
                 Icon(
                     imageVector = Icons.Default.Done,
                     contentDescription = stringResource(R.string.save),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         })
 
     Scaffold(
         topBar = { topBar() },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .hazeSource(state = hazeState)
         ) {
             when (wallpaperState) {
                 is UiState.Loading -> LoadingState()
@@ -125,15 +144,22 @@ fun WallpaperEditScreen(
                 is UiState.Success -> {
                     val wallpaper = (wallpaperState as UiState.Success).data
 
-                    Column(modifier = Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                top = innerPadding.calculateTopPadding(),
+                                bottom = 0.dp // We'll handle bottom padding in the glass panel
+                            )
+                    ) {
                         // Immersive Preview Area
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
-                                .padding(16.dp)
-                                .shadow(24.dp, RoundedCornerShape(24.dp))
-                                .clip(RoundedCornerShape(24.dp))
+                                .padding(20.dp)
+                                .shadow(32.dp, RoundedCornerShape(28.dp), clip = false)
+                                .clip(RoundedCornerShape(28.dp))
                                 .background(Color.Black),
                             contentAlignment = Alignment.Center
                         ) {
@@ -181,31 +207,45 @@ fun WallpaperEditScreen(
                                         .background(Color.Black.copy(alpha = 0.6f)),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                                    CircularProgressIndicator(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        strokeWidth = 3.dp
+                                    )
                                 }
                             }
                         }
 
-                        // Premium Control Panel
-                        Surface(
+                        // Premium Glass Control Panel
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .navigationBarsPadding(),
-                            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-                            color = MaterialTheme.colorScheme.surface,
-                            tonalElevation = 8.dp,
-                            shadowElevation = 16.dp
+                                .hazeEffect(
+                                    state = hazeState,
+                                    style = HazeStyle(
+                                        tint = HazeTint(MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)),
+                                        blurRadius = 30.dp,
+                                        noiseFactor = 0.15f
+                                    )
+                                )
+                                .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(
+                                            MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+                                            MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
+                                        )
+                                    )
+                                )
+                                .navigationBarsPadding()
+                                .padding(vertical = 24.dp)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .padding(vertical = 24.dp)
-                            ) {
+                            Column {
                                 // Tool Content Area
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 24.dp)
-                                        .height(100.dp),
+                                        .height(110.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     when (selectedTool) {
@@ -252,45 +292,30 @@ fun WallpaperEditScreen(
                                     }
                                 }
 
-                                Spacer(modifier = Modifier.height(24.dp))
+                                Spacer(modifier = Modifier.height(20.dp))
 
                                 // Tool Selector Row
                                 LazyRow(
                                     modifier = Modifier.fillMaxWidth(),
                                     contentPadding = PaddingValues(horizontal = 24.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                                 ) {
-                                    item {
-                                        EditToolButton(
-                                            tool = EditTool.BRIGHTNESS,
-                                            icon = ObscuraIcons.Brightness,
-                                            isSelected = selectedTool == EditTool.BRIGHTNESS,
-                                            onClick = { selectedTool = EditTool.BRIGHTNESS }
-                                        )
-                                    }
-                                    item {
-                                        EditToolButton(
-                                            tool = EditTool.CONTRAST,
-                                            icon = ObscuraIcons.Contrast,
-                                            isSelected = selectedTool == EditTool.CONTRAST,
-                                            onClick = { selectedTool = EditTool.CONTRAST }
-                                        )
-                                    }
-                                    item {
-                                        EditToolButton(
-                                            tool = EditTool.SATURATION,
-                                            icon = ObscuraIcons.Saturation,
-                                            isSelected = selectedTool == EditTool.SATURATION,
-                                            onClick = { selectedTool = EditTool.SATURATION }
-                                        )
-                                    }
-                                    item {
-                                        EditToolButton(
-                                            tool = EditTool.FILTER,
-                                            icon = ObscuraIcons.Filter,
-                                            isSelected = selectedTool == EditTool.FILTER,
-                                            onClick = { selectedTool = EditTool.FILTER }
-                                        )
+                                    items(EditTool.values()) { tool ->
+                                        if (tool != EditTool.CROP) {
+                                            val icon = when (tool) {
+                                                EditTool.BRIGHTNESS -> ObscuraIcons.Brightness
+                                                EditTool.CONTRAST -> ObscuraIcons.Contrast
+                                                EditTool.SATURATION -> ObscuraIcons.Saturation
+                                                EditTool.FILTER -> ObscuraIcons.Filter
+                                                else -> ObscuraIcons.Filter
+                                            }
+                                            EditToolButton(
+                                                tool = tool,
+                                                icon = icon,
+                                                isSelected = selectedTool == tool,
+                                                onClick = { selectedTool = tool }
+                                            )
+                                        }
                                     }
                                 }
 
@@ -306,8 +331,9 @@ fun WallpaperEditScreen(
                                     TextButton(
                                         onClick = { viewModel.resetEdits() },
                                         colors = ButtonDefaults.textButtonColors(
-                                            contentColor = MaterialTheme.colorScheme.outline
-                                        )
+                                            contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                        ),
+                                        shape = RoundedCornerShape(12.dp)
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.Refresh,
@@ -317,7 +343,8 @@ fun WallpaperEditScreen(
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
                                             text = stringResource(R.string.editor_reset_edits),
-                                            style = MaterialTheme.typography.labelLarge
+                                            style = MaterialTheme.typography.labelLarge,
+                                            fontWeight = FontWeight.SemiBold
                                         )
                                     }
                                 }
@@ -338,16 +365,16 @@ fun EditToolButton(
     onClick: () -> Unit
 ) {
     val backgroundColor by animateColorAsState(
-        if (isSelected) MaterialTheme.colorScheme.primaryContainer
+        if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
         else Color.Transparent,
         label = "bg"
     )
     val contentColor by animateColorAsState(
-        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+        if (isSelected) MaterialTheme.colorScheme.primary
         else MaterialTheme.colorScheme.onSurfaceVariant,
         label = "content"
     )
-    val iconSize by animateDpAsState(if (isSelected) 28.dp else 24.dp, label = "size")
+    val iconSize by animateDpAsState(if (isSelected) 26.dp else 24.dp, label = "size")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -355,20 +382,34 @@ fun EditToolButton(
             .clip(RoundedCornerShape(16.dp))
             .background(backgroundColor)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = 12.dp, vertical = 10.dp)
+            .width(64.dp)
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = stringResource(tool.titleRes),
-            modifier = Modifier.size(iconSize),
-            tint = contentColor
-        )
-        Spacer(modifier = Modifier.height(4.dp))
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(
+                    if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    else Color.Transparent,
+                    CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = stringResource(tool.titleRes),
+                modifier = Modifier.size(iconSize),
+                tint = contentColor
+            )
+        }
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = stringResource(tool.titleRes),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-            color = contentColor
+            color = contentColor,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
@@ -388,36 +429,45 @@ fun SliderControl(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+                Surface(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                    shape = CircleShape,
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
             Surface(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(8.dp)
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
                     text = String.format("%.1f", value),
                     style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.sp
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 0.5.sp
                     ),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Slider(
             value = value,
@@ -427,7 +477,7 @@ fun SliderControl(
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.primary,
                 activeTrackColor = MaterialTheme.colorScheme.primary,
-                inactiveTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                inactiveTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
             )
         )
     }
@@ -460,31 +510,32 @@ fun FilterOptionItem(
     onClick: () -> Unit
 ) {
     val borderSize by animateDpAsState(if (isSelected) 3.dp else 0.dp, label = "border")
-    val scale by animateFloatAsState(if (isSelected) 1.05f else 1f, label = "scale")
+    val scale by animateFloatAsState(if (isSelected) 1.1f else 1f, label = "scale")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .width(72.dp)
+            .width(76.dp)
             .clickable(onClick = onClick)
     ) {
         Box(
             modifier = Modifier
-                .size(64.dp)
+                .size(68.dp)
                 .graphicsLayer(scaleX = scale, scaleY = scale)
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .background(filter.previewColor)
                 .border(
                     width = borderSize,
                     color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(16.dp)
                 )
+                .shadow(if (isSelected) 8.dp else 0.dp, RoundedCornerShape(16.dp))
         )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(filter.titleRes),
             style = MaterialTheme.typography.labelSmall,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
             color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

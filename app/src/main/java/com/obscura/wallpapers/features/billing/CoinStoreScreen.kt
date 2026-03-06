@@ -1,6 +1,7 @@
 package com.obscura.wallpapers.features.billing
 
 import android.app.Activity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -44,12 +45,21 @@ fun CoinStoreScreen(
     val purchaseSuccess by viewModel.coinPurchaseSuccess.collectAsState()
     val availableInAppProducts by viewModel.availableInAppProducts.collectAsState()
 
+    val isDark = isSystemInDarkTheme()
     val cyanAccent = Color(0xFF00E5FF)
-    val backgroundGradient = listOf(
-        Color(0xFF000000),
-        Color(0xFF00151A),
-        Color(0xFF000000)
-    )
+    val backgroundGradient = if (isDark) {
+        listOf(
+            Color(0xFF000000),
+            Color(0xFF00151A),
+            Color(0xFF000000)
+        )
+    } else {
+        listOf(
+            cyanAccent.copy(alpha = 0.15f),
+            MaterialTheme.colorScheme.surface,
+            MaterialTheme.colorScheme.surface
+        )
+    }
 
     val coinPackages = remember {
         listOf(
@@ -77,23 +87,24 @@ fun CoinStoreScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back),
-                            tint = Color.White
+                            tint = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
-                    titleContentColor = Color.White
+                    titleContentColor = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
                 )
             )
         },
-        containerColor = Color.Black
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(brush = Brush.verticalGradient(backgroundGradient))
                 .padding(paddingValues)
+                .navigationBarsPadding()
         ) {
             // Background Glow
             Box(
@@ -137,7 +148,7 @@ fun CoinStoreScreen(
                     text = stringResource(R.string.coin_get_more_coins),
                     fontSize = 32.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color.White,
+                    color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface,
                     letterSpacing = (-0.5).sp
                 )
 
@@ -146,7 +157,7 @@ fun CoinStoreScreen(
                 Text(
                     text = stringResource(R.string.coin_description),
                     fontSize = 15.sp,
-                    color = Color.White.copy(alpha = 0.6f),
+                    color = if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     lineHeight = 22.sp
                 )
@@ -246,12 +257,13 @@ private fun CoinProductCard(
     onClick: () -> Unit
 ) {
     val cyanAccent = Color(0xFF00E5FF)
+    val isDark = isSystemInDarkTheme()
     
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
-            .background(Color.White.copy(alpha = if (isSelected) 0.12f else 0.05f))
+            .background(if (isDark) Color.White.copy(alpha = if (isSelected) 0.12f else 0.05f) else MaterialTheme.colorScheme.surface)
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
                 brush = if (isSelected) {
@@ -260,7 +272,7 @@ private fun CoinProductCard(
                     )
                 } else {
                     Brush.linearGradient(
-                        listOf(Color.White.copy(alpha = 0.2f), Color.White.copy(alpha = 0.05f))
+                        listOf(if (isDark) Color.White.copy(alpha = 0.2f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f), if (isDark) Color.White.copy(alpha = 0.05f) else Color.Transparent)
                     )
                 },
                 shape = RoundedCornerShape(24.dp)
@@ -290,7 +302,7 @@ private fun CoinProductCard(
                     Icon(
                         imageVector = ObscuraIcons.Coin,
                         contentDescription = null,
-                        tint = if (isSelected) cyanAccent else Color.White.copy(alpha = 0.7f),
+                        tint = if (isSelected) cyanAccent else if (isDark) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -300,13 +312,13 @@ private fun CoinProductCard(
                         text = productDetails.name,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color.White
+                        color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
                     )
                     
                     Text(
                         text = productDetails.description,
                         fontSize = 12.sp,
-                        color = Color.White.copy(alpha = 0.5f)
+                        color = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
                 }
             }
@@ -315,7 +327,7 @@ private fun CoinProductCard(
                 text = productDetails.oneTimePurchaseOfferDetails?.formattedPrice ?: "",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = if (isSelected) cyanAccent else Color.White
+                color = if (isSelected) cyanAccent else if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -328,12 +340,13 @@ private fun CoinPackageCard(
     onClick: () -> Unit
 ) {
     val cyanAccent = Color(0xFF00E5FF)
+    val isDark = isSystemInDarkTheme()
     
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
-            .background(Color.White.copy(alpha = if (isSelected) 0.12f else 0.05f))
+            .background(if (isDark) Color.White.copy(alpha = if (isSelected) 0.12f else 0.05f) else MaterialTheme.colorScheme.surface)
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
                 brush = if (isSelected) {
@@ -342,7 +355,7 @@ private fun CoinPackageCard(
                     )
                 } else {
                     Brush.linearGradient(
-                        listOf(Color.White.copy(alpha = 0.2f), Color.White.copy(alpha = 0.05f))
+                        listOf(if (isDark) Color.White.copy(alpha = 0.2f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f), if (isDark) Color.White.copy(alpha = 0.05f) else Color.Transparent)
                     )
                 },
                 shape = RoundedCornerShape(24.dp)
@@ -372,7 +385,7 @@ private fun CoinPackageCard(
                     Icon(
                         imageVector = ObscuraIcons.Coin,
                         contentDescription = null,
-                        tint = if (isSelected) cyanAccent else Color.White.copy(alpha = 0.7f),
+                        tint = if (isSelected) cyanAccent else if (isDark) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -386,13 +399,13 @@ private fun CoinPackageCard(
                             text = "${coinPackage.amount}",
                             fontSize = 26.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            color = Color.White
+                            color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = stringResource(R.string.coin_coins).uppercase(),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White.copy(alpha = 0.5f),
+                            color = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                             letterSpacing = 1.sp,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
@@ -413,7 +426,7 @@ private fun CoinPackageCard(
                 text = coinPackage.price,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = if (isSelected) cyanAccent else Color.White
+                color = if (isSelected) cyanAccent else if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
             )
         }
 

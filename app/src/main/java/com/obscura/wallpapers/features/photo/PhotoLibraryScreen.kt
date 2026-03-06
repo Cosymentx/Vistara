@@ -108,7 +108,7 @@ fun PhotoLibraryScreen(
                         contentPadding = PaddingValues(
                             start = 16.dp,
                             end = 16.dp,
-                            top = 150.dp,
+                            top = 160.dp,
                             bottom = 100.dp
                         ),
                         sharedTransitionScope = sharedTransitionScope,

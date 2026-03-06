@@ -1,51 +1,45 @@
 package com.obscura.wallpapers.ui.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 
 /**
- * 文本输入对话框
- * 用于需要用户输入文本的场景，如登录、注册等
- *
- * @param onDismiss 取消回调
- * @param onConfirm 确认回调，传入用户输入的文本
- * @param title 对话框标题
- * @param label 输入框标签
- * @param placeholder 输入框占位文本
- * @param initialValue 初始值
- * @param confirmText 确认按钮文本
- * @param dismissText 取消按钮文本
- * @param isPassword 是否为密码输入
- * @param isLoading 是否正在加载中
- * @param keyboardType 键盘类型
- * @param properties 对话框属性
+ * 文本输入对话框 - 升级为全屏沉浸式毛玻璃效果
  */
 @Composable
 fun TextInputDialog(
@@ -60,77 +54,184 @@ fun TextInputDialog(
     isPassword: Boolean = false,
     isLoading: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
-    properties: DialogProperties = DialogProperties()
+    properties: DialogProperties = DialogProperties(
+        usePlatformDefaultWidth = false
+    ),
+    hazeState: HazeState? = null
 ) {
     var inputText by remember { mutableStateOf(initialValue) }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+    val localHazeState = hazeState ?: remember { HazeState() }
+    val view = LocalView.current
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { 
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge
-            ) 
-        },
-        text = { 
-            Column {
-                OutlinedTextField(
-                    value = inputText,
-                    onValueChange = { inputText = it },
-                    label = { Text(label) },
-                    placeholder = { Text(placeholder) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    singleLine = true,
-                    visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = keyboardType,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                            if (inputText.isNotEmpty()) {
-                                onConfirm(inputText)
-                            }
-                        }
-                    )
+    Dialog(onDismissRequest = onDismiss, properties = properties) {
+        LaunchedEffect(Unit) {
+            val window = (view.parent as? DialogWindowProvider)?.window
+            if (window != null) {
+                WindowCompat.setDecorFitsSystemWindows(window, false)
+                window.statusBarColor = Color.Transparent.toArgb()
+                window.navigationBarColor = Color.Transparent.toArgb()
+                window.setDimAmount(0f)
+                window.setLayout(
+                    android.view.WindowManager.LayoutParams.MATCH_PARENT,
+                    android.view.WindowManager.LayoutParams.MATCH_PARENT
                 )
-                
-                Spacer(modifier = Modifier.height(8.dp))
             }
-        },
-        confirmButton = {
-            Button(
-                onClick = { 
-                    focusManager.clearFocus()
-                    onConfirm(inputText) 
-                },
-                enabled = !isLoading && inputText.isNotEmpty(),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.padding(horizontal = 8.dp)
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .run {
+                    if (hazeState == null) hazeSource(state = localHazeState) else this
+                }
+                .background(Color.Black.copy(alpha = 0.3f))
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {
+                        focusManager.clearFocus()
+                        onDismiss()
+                    }
+                )
+                .systemBarsPadding(),
+            contentAlignment = Alignment.Center
+        ) {
+            Surface(
+                shape = RoundedCornerShape(28.dp),
+                color = Color.Transparent,
+                modifier = Modifier
+                    .fillMaxWidth(0.85f)
+                    .clip(RoundedCornerShape(28.dp))
+                    .hazeEffect(
+                        state = localHazeState,
+                        style = HazeStyle(
+                            tint = HazeTint(Color.White.copy(alpha = 0.12f)),
+                            blurRadius = 30.dp,
+                            noiseFactor = 0.15f
+                        )
+                    )
+                    .background(Color.White.copy(alpha = 0.05f))
+                    .border(
+                        BorderStroke(
+                            1.dp,
+                            Brush.linearGradient(
+                                colors = listOf(
+                                    Color.White.copy(alpha = 0.2f),
+                                    Color.White.copy(alpha = 0.05f)
+                                )
+                            )
+                        ),
+                        shape = RoundedCornerShape(28.dp)
+                    )
+                    .clickable(enabled = false) { }
             ) {
-                Text(confirmText)
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp, vertical = 24.dp)
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    HorizontalDivider(
+                        thickness = 0.5.dp,
+                        color = Color.White.copy(alpha = 0.1f)
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    OutlinedTextField(
+                        value = inputText,
+                        onValueChange = { inputText = it },
+                        label = { Text(label, color = Color.White.copy(alpha = 0.6f)) },
+                        placeholder = { Text(placeholder, color = Color.White.copy(alpha = 0.3f)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = Color.White.copy(alpha = 0.2f),
+                            cursorColor = MaterialTheme.colorScheme.primary
+                        ),
+                        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = keyboardType,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                                if (inputText.isNotEmpty()) {
+                                    onConfirm(inputText)
+                                }
+                            }
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        OutlinedButton(
+                            onClick = {
+                                focusManager.clearFocus()
+                                onDismiss()
+                            },
+                            shape = RoundedCornerShape(16.dp),
+                            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = Color.White
+                            ),
+                            modifier = Modifier
+                                .height(50.dp)
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = dismissText,
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+
+                        Button(
+                            onClick = {
+                                focusManager.clearFocus()
+                                onConfirm(inputText)
+                            },
+                            enabled = !isLoading && inputText.isNotEmpty(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                            ),
+                            modifier = Modifier
+                                .height(50.dp)
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = confirmText,
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+                    }
+                }
             }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = { 
-                    focusManager.clearFocus()
-                    onDismiss() 
-                },
-                modifier = Modifier.padding(horizontal = 8.dp)
-            ) {
-                Text(dismissText)
-            }
-        },
-        shape = RoundedCornerShape(16.dp),
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 6.dp,
-        properties = properties,
-        modifier = Modifier.fillMaxWidth()
-    )
+        }
+    }
+    
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 }

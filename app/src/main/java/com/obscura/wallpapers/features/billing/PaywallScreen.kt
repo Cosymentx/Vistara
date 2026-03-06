@@ -1,5 +1,6 @@
 package com.obscura.wallpapers.features.billing
 
+import android.view.WindowManager
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -26,12 +28,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,12 +44,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 
 /**
  * 通用付费墙弹窗 - 优化为毛玻璃效果
@@ -53,11 +61,13 @@ import dev.chrisbanes.haze.hazeEffect
 fun PaywallScreen(
     onDismiss: () -> Unit,
     onNavigateToSubscription: () -> Unit,
-    onNavigateToCoinStore: () -> Unit
+    onNavigateToCoinStore: () -> Unit,
+    hazeState: HazeState? = null
 ) {
     val goldAccent = Color(0xFFFFD700)
     val cyanAccent = Color(0xFF00E5FF)
-    val hazeState = remember { HazeState() }
+    val localHazeState = hazeState ?: remember { HazeState() }
+    val view = LocalView.current
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -67,9 +77,23 @@ fun PaywallScreen(
             usePlatformDefaultWidth = false
         )
     ) {
+        LaunchedEffect(Unit) {
+            val window = (view.parent as? DialogWindowProvider)?.window
+            if (window != null) {
+                WindowCompat.setDecorFitsSystemWindows(window, false)
+                window.statusBarColor = Color.Transparent.toArgb()
+                window.navigationBarColor = Color.Transparent.toArgb()
+                window.setDimAmount(0f) // Remove default dialog dim to let haze handle it
+            }
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .run {
+                    if (hazeState == null) hazeSource(state = localHazeState) else this
+                }
+                .background(Color.Black.copy(alpha = 0.3f)) // Custom scrim
                 .clickable(
                     interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
                     indication = null,
@@ -82,13 +106,14 @@ fun PaywallScreen(
                     .fillMaxWidth(0.9f)
                     .clip(RoundedCornerShape(32.dp))
                     .hazeEffect(
-                        state = hazeState,
+                        state = localHazeState,
                         style = HazeStyle(
-                            tint = HazeTint(Color.Black.copy(alpha = 0.9f)),
-                            blurRadius = 24.dp,
-                            noiseFactor = 0.1f
+                            tint = HazeTint(Color.White.copy(alpha = 0.15f)),
+                            blurRadius = 30.dp,
+                            noiseFactor = 0.15f
                         )
                     )
+                    .background(Color.White.copy(alpha = 0.05f))
                     .border(
                         width = 1.dp,
                         brush = Brush.linearGradient(

@@ -103,7 +103,7 @@ fun DiscoverScreen(
         ) {
             LazyColumn(
                 state = rememberLazyListState(),
-                contentPadding = PaddingValues(top = 110.dp, bottom = 100.dp),
+                contentPadding = PaddingValues(top = 120.dp, bottom = 100.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 modifier = Modifier.fillMaxSize()
             ) {

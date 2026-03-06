@@ -21,6 +21,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -40,13 +41,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleEventObserver
 import com.obscura.wallpapers.R
@@ -59,6 +64,16 @@ import com.obscura.wallpapers.ui.components.WallpaperPreview
 import com.obscura.wallpapers.ui.components.WallpaperSetOptions
 import com.obscura.wallpapers.features.billing.PaywallScreen
 import com.obscura.wallpapers.features.billing.BillingViewModel
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
 import kotlinx.coroutines.launch
 
 /**
@@ -159,6 +174,7 @@ fun WallpaperPreviewScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     var showPaywall by remember { mutableStateOf(false) }
+    val hazeState = remember { HazeState() }
 
     DisposableEffect(lifecycleOwner) {
         val lifecycleObserver = LifecycleEventObserver { _, event ->
@@ -169,33 +185,38 @@ fun WallpaperPreviewScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
-        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
-        containerColor = Color.Black
-    ) { paddingValues ->
-        AnimatedContent(
-            targetState = wallpaperState,
-            transitionSpec = {
-                // Faster transition for smoother feel
-                (fadeIn(animationSpec = tween(300)) + scaleIn(
-                    initialScale = 1.02f,
-                    animationSpec = tween(300)
-                ))
-                    .togetherWith(
-                        fadeOut(animationSpec = tween(250)) + scaleOut(
-                            targetScale = 0.98f,
-                            animationSpec = tween(250)
-                        )
-                    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .hazeSource(state = hazeState)
+    ) {
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
             },
-            label = "WallpaperStateTransition",
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) { targetState ->
+            contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
+            containerColor = Color.Transparent
+        ) { paddingValues ->
+            AnimatedContent(
+                targetState = wallpaperState,
+                transitionSpec = {
+                    // Faster transition for smoother feel
+                    (fadeIn(animationSpec = tween(300)) + scaleIn(
+                        initialScale = 1.02f,
+                        animationSpec = tween(300)
+                    ))
+                        .togetherWith(
+                            fadeOut(animationSpec = tween(250)) + scaleOut(
+                                targetScale = 0.98f,
+                                animationSpec = tween(250)
+                            )
+                        )
+                },
+                label = "WallpaperStateTransition",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) { targetState ->
             Box(modifier = Modifier.fillMaxSize()) {
                 when (targetState) {
                     is UiState.Loading -> {
@@ -297,6 +318,7 @@ fun WallpaperPreviewScreen(
                         )
 
                         if (showSetWallpaperOptions) {
+                            val view = LocalView.current
                             Dialog(
                                 onDismissRequest = { viewModel.hideSetWallpaperOptions() },
                                 properties = DialogProperties(
@@ -305,35 +327,65 @@ fun WallpaperPreviewScreen(
                                     usePlatformDefaultWidth = false
                                 )
                             ) {
+                                LaunchedEffect(Unit) {
+                                    val window = (view.parent as? DialogWindowProvider)?.window
+                                    if (window != null) {
+                                        WindowCompat.setDecorFitsSystemWindows(window, false)
+                                        window.statusBarColor = android.graphics.Color.TRANSPARENT
+                                        window.navigationBarColor = android.graphics.Color.TRANSPARENT
+                                        window.setBackgroundDrawableResource(android.R.color.transparent)
+                                        window.setDimAmount(0f)
+                                        window.setLayout(
+                                            android.view.WindowManager.LayoutParams.MATCH_PARENT,
+                                            android.view.WindowManager.LayoutParams.MATCH_PARENT
+                                        )
+                                    }
+                                }
+
                                 Box(
-                                    modifier = Modifier.fillMaxSize(),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(Color.Black.copy(alpha = 0.3f))
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) { viewModel.hideSetWallpaperOptions() },
                                     contentAlignment = Alignment.BottomCenter
                                 ) {
-                                    // Clickable area to dismiss
                                     Box(
                                         modifier = Modifier
-                                            .fillMaxSize()
-                                            .clickable(
-                                                interactionSource = remember { MutableInteractionSource() },
-                                                indication = null
-                                            ) { viewModel.hideSetWallpaperOptions() }
-                                    )
-
-                                    WallpaperSetOptions(
-                                        onSetHomeScreen = {
-                                            viewModel.setWallpaper(activity, WallpaperTarget.HOME)
-                                        },
-                                        onSetLockScreen = {
-                                            viewModel.setWallpaper(activity, WallpaperTarget.LOCK)
-                                        },
-                                        onSetBoth = {
-                                            viewModel.setWallpaper(activity, WallpaperTarget.BOTH)
-                                        },
-                                        onDismiss = {
-                                            viewModel.hideSetWallpaperOptions()
-                                        },
-                                        isProcessing = isProcessingWallpaper
-                                    )
+                                            .fillMaxWidth()
+                                            .navigationBarsPadding()
+                                            .padding(bottom = 16.dp)
+                                            .padding(horizontal = 16.dp)
+                                            .clip(RoundedCornerShape(32.dp))
+                                            .hazeEffect(
+                                                state = hazeState,
+                                                style = HazeStyle(
+                                                    tint = HazeTint(Color.White.copy(alpha = 0.15f)),
+                                                    blurRadius = 30.dp,
+                                                    noiseFactor = 0.15f
+                                                )
+                                            )
+                                            .background(Color.White.copy(alpha = 0.05f))
+                                            .clickable(enabled = false) {} // Prevent clicks from leaking to background
+                                    ) {
+                                        WallpaperSetOptions(
+                                            onSetHomeScreen = {
+                                                viewModel.setWallpaper(activity, WallpaperTarget.HOME)
+                                            },
+                                            onSetLockScreen = {
+                                                viewModel.setWallpaper(activity, WallpaperTarget.LOCK)
+                                            },
+                                            onSetBoth = {
+                                                viewModel.setWallpaper(activity, WallpaperTarget.BOTH)
+                                            },
+                                            onDismiss = {
+                                                viewModel.hideSetWallpaperOptions()
+                                            },
+                                            isProcessing = isProcessingWallpaper
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -400,7 +452,9 @@ fun WallpaperPreviewScreen(
             onNavigateToCoinStore = {
                 showPaywall = false
                 onNavigateToCoinStore()
-            }
+            },
+            hazeState = hazeState
         )
     }
+}
 }

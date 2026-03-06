@@ -22,6 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -34,6 +35,11 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
+
+/**
+ * 提供全局 HazeState 的 CompositionLocal，用于在 Dialog 中实现跨窗口毛玻璃效果
+ */
+val LocalHazeState = compositionLocalOf<HazeState?> { null }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -193,7 +199,6 @@ fun GlassScaffold(
                     actions = { actions?.invoke() },
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                     modifier = Modifier
-                        .statusBarsPadding()
                         .hazeEffect(
                             state = hazeState,
                             style = HazeStyle(

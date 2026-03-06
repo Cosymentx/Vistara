@@ -7,8 +7,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -314,7 +318,8 @@ fun BottomNavBar(
                 )
             ),
         containerColor = Color.Transparent,
-        tonalElevation = 0.dp
+        tonalElevation = 0.dp,
+        windowInsets = WindowInsets(0, 0, 0, 0)
     ) {
         NavDestination.entries.forEach { destination ->
             val selected =
@@ -329,24 +334,23 @@ fun BottomNavBar(
                     }
                     Box(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        if (selected) {
-                            Box(
-                                modifier = Modifier
-                                    .size(4.dp)
-                                    .align(Alignment.BottomCenter)
-                                    .padding(bottom = 2.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.primary)
-                            )
-                        }
                         Icon(
                             imageVector = icon,
                             contentDescription = destination.getTitle(),
                             modifier = Modifier.size(24.dp),
                             tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
+                        if (selected) {
+                            Box(
+                                modifier = Modifier
+                                    .size(4.dp)
+                                    .offset(y = 18.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.primary)
+                            )
+                        }
                     }
                 },
                 label = { },

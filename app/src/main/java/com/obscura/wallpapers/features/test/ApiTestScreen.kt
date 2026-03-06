@@ -3,6 +3,8 @@ package com.obscura.wallpapers.features.test
 import android.app.Activity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,9 +25,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.billingclient.api.ProductDetails
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
+import com.obscura.wallpapers.ui.components.LocalHazeState
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 import com.obscura.wallpapers.ui.theme.stringResource
 import com.obscura.wallpapers.R
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,14 +66,17 @@ fun ApiTestScreen(
         onBackPressed = onBackPressed
     )
 
+    val hazeState = LocalHazeState.current ?: remember { HazeState() }
+
     Scaffold(
         topBar = { topBar() },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = Color.Transparent
     ) { paddingValues ->
         LazyColumn(
             modifier = contentModifier
                 .fillMaxSize()
+                .hazeSource(state = hazeState)
                 .padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -81,21 +92,15 @@ fun ApiTestScreen(
             }
 
             item {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(20.dp),
-                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-                ) {
-                    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                GlassSurface(modifier = Modifier.fillMaxWidth()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             SimulatorButton(
                                 text = if (isPremium) "Revoke Premium" else "Grant Premium",
-                                icon = Icons.Default.CheckCircle,
+                                icon = if (isPremium) Icons.Default.Close else Icons.Default.CheckCircle,
                                 onClick = { viewModel.toggleMockPremium() },
                                 modifier = Modifier.weight(1f),
-                                containerColor = if (isPremium) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = if (isPremium) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onPrimaryContainer
+                                contentColor = if (isPremium) Color.Red.copy(alpha = 0.8f) else Color.Green.copy(alpha = 0.8f)
                             )
                         }
                         
@@ -110,9 +115,7 @@ fun ApiTestScreen(
                                 text = "Spend -50",
                                 icon = Icons.Default.KeyboardArrowDown,
                                 onClick = { viewModel.consumeMockCoins(50) },
-                                modifier = Modifier.weight(1f),
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                modifier = Modifier.weight(1f)
                             )
                         }
                     }
@@ -189,54 +192,87 @@ fun ApiTestScreen(
 
 @Composable
 fun StatusPanel(isPremium: Boolean, coinBalance: Int) {
-    val brush = Brush.linearGradient(
-        colors = if (isPremium) {
-            listOf(Color(0xFFD4AF37), Color(0xFF9A7B1D))
-        } else {
-            listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
-        }
-    )
-
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        tonalElevation = 8.dp,
-        shadowElevation = 4.dp
-    ) {
-        Box(modifier = Modifier.background(brush).padding(24.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(stringResource(R.string.premium_user_status), style = MaterialTheme.typography.labelLarge, color = Color.White.copy(alpha = 0.8f))
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = if (isPremium) ObscuraIcons.Crown else ObscuraIcons.Person,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(28.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = if (isPremium) "PREMIUM" else "STANDARD",
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Black,
-                            color = Color.White,
-                            letterSpacing = 1.sp
-                        )
-                    }
+    val hazeState = LocalHazeState.current ?: remember { HazeState() }
+    
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .hazeEffect(
+                state = hazeState,
+                style = HazeStyle(
+                    tint = HazeTint(if (isPremium) Color(0xFFD4AF37).copy(alpha = 0.15f) else Color.White.copy(alpha = 0.15f)),
+                    blurRadius = 30.dp,
+                    noiseFactor = 0.15f
+                )
+            )
+            .background(
+                if (isPremium) {
+                    Brush.linearGradient(listOf(Color(0xFFD4AF37).copy(alpha = 0.1f), Color(0xFF9A7B1D).copy(alpha = 0.05f)))
+                } else {
+                    Brush.linearGradient(listOf(Color.White.copy(alpha = 0.1f), Color.White.copy(alpha = 0.05f)))
                 }
+            )
+            .border(
+                1.dp,
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.2f),
+                        Color.White.copy(alpha = 0.05f)
+                    )
+                ),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .padding(24.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = stringResource(R.string.premium_user_status),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.White.copy(alpha = 0.6f)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = if (isPremium) ObscuraIcons.Crown else ObscuraIcons.Person,
+                        contentDescription = null,
+                        tint = if (isPremium) Color(0xFFD4AF37) else Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = if (isPremium) "PREMIUM" else "STANDARD",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        letterSpacing = 1.sp
+                    )
+                }
+            }
 
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(stringResource(R.string.login_status), style = MaterialTheme.typography.labelLarge, color = Color.White.copy(alpha = 0.8f))
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = "V-COINS",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.White.copy(alpha = 0.6f)
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = "$coinBalance",
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Black,
                         color = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = ObscuraIcons.Coin,
+                        contentDescription = null,
+                        tint = Color(0xFFFFD700),
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
@@ -245,19 +281,55 @@ fun StatusPanel(isPremium: Boolean, coinBalance: Int) {
 }
 
 @Composable
+fun GlassSurface(
+    modifier: Modifier = Modifier,
+    shape: RoundedCornerShape = RoundedCornerShape(20.dp),
+    content: @Composable ColumnScope.() -> Unit
+) {
+    val hazeState = LocalHazeState.current ?: remember { HazeState() }
+    
+    Box(
+        modifier = modifier
+            .hazeEffect(
+                state = hazeState,
+                style = HazeStyle(
+                    tint = HazeTint(Color.White.copy(alpha = 0.12f)),
+                    blurRadius = 30.dp,
+                    noiseFactor = 0.15f
+                )
+            )
+            .background(Color.White.copy(alpha = 0.05f), shape = shape)
+            .border(
+                1.dp,
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.2f),
+                        Color.White.copy(alpha = 0.05f)
+                    )
+                ),
+                shape = shape
+            )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            content()
+        }
+    }
+}
+
+@Composable
 fun TestSectionHeader(title: String, icon: ImageVector) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(bottom = 4.dp)
+        modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
     ) {
-        Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp), tint = MaterialTheme.colorScheme.primary)
-        Spacer(modifier = Modifier.width(12.dp))
+        Icon(icon, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.White.copy(alpha = 0.6f))
+        Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = title.uppercase(),
             style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.outline,
-            letterSpacing = 1.sp
+            fontWeight = FontWeight.ExtraBold,
+            color = Color.White.copy(alpha = 0.6f),
+            letterSpacing = 1.5.sp
         )
     }
 }
@@ -268,56 +340,100 @@ fun SimulatorButton(
     icon: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-    contentColor: Color = MaterialTheme.colorScheme.onSurface
+    containerColor: Color = Color.Transparent, // 不再需要实心色
+    contentColor: Color = Color.White
 ) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(52.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = containerColor, contentColor = contentColor),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp, pressedElevation = 2.dp)
+    val hazeState = LocalHazeState.current ?: remember { HazeState() }
+
+    Box(
+        modifier = modifier
+            .height(52.dp)
+            .hazeEffect(
+                state = hazeState,
+                style = HazeStyle(
+                    tint = HazeTint(Color.White.copy(alpha = 0.15f)),
+                    blurRadius = 30.dp,
+                    noiseFactor = 0.15f
+                )
+            )
+            .background(Color.White.copy(alpha = 0.08f), shape = RoundedCornerShape(16.dp))
+            .border(
+                1.dp,
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.25f),
+                        Color.White.copy(alpha = 0.05f)
+                    )
+                ),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
     ) {
-        Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp))
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp), tint = contentColor)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = contentColor)
+        }
     }
 }
 
 @Composable
 fun RealProductCard(product: ProductDetails, isSub: Boolean, onClick: () -> Unit) {
-    OutlinedCard(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surface)
+    val hazeState = LocalHazeState.current ?: remember { HazeState() }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .hazeEffect(
+                state = hazeState,
+                style = HazeStyle(
+                    tint = HazeTint(Color.White.copy(alpha = 0.12f)),
+                    blurRadius = 30.dp,
+                    noiseFactor = 0.15f
+                )
+            )
+            .background(Color.White.copy(alpha = 0.05f), shape = RoundedCornerShape(20.dp))
+            .border(
+                1.dp,
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.2f),
+                        Color.White.copy(alpha = 0.05f)
+                    )
+                ),
+                shape = RoundedCornerShape(20.dp)
+            )
+            .clickable(onClick = onClick)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = if (isSub) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
-                modifier = Modifier.size(48.dp)
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(
+                        if (isSub) Color(0xFFD4AF37).copy(alpha = 0.2f) else Color.White.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(12.dp)
+                    ),
+                contentAlignment = Alignment.Center
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = if (isSub) Icons.Default.Refresh else Icons.Default.ShoppingCart,
-                        contentDescription = null,
-                        tint = if (isSub) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                }
+                Icon(
+                    imageVector = if (isSub) ObscuraIcons.Crown else ObscuraIcons.Coin,
+                    contentDescription = null,
+                    tint = if (isSub) Color(0xFFD4AF37) else Color(0xFFFFD700)
+                )
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(product.name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
-                Text(product.description, style = MaterialTheme.typography.bodySmall, maxLines = 1, color = MaterialTheme.colorScheme.outline)
+                Text(product.name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, color = Color.White)
+                Text(product.description, style = MaterialTheme.typography.bodySmall, maxLines = 1, color = Color.White.copy(alpha = 0.5f))
             }
             Text(
                 text = product.oneTimePurchaseOfferDetails?.formattedPrice ?: "Detail",
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontWeight = FontWeight.Black,
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -326,21 +442,40 @@ fun RealProductCard(product: ProductDetails, isSub: Boolean, onClick: () -> Unit
 
 @Composable
 fun ApiTestCard(name: String, isLoading: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    ElevatedCard(
-        onClick = onClick,
-        modifier = modifier.height(80.dp),
-        enabled = !isLoading,
-        shape = RoundedCornerShape(16.dp)
+    val hazeState = LocalHazeState.current ?: remember { HazeState() }
+
+    Box(
+        modifier = modifier
+            .height(80.dp)
+            .hazeEffect(
+                state = hazeState,
+                style = HazeStyle(
+                    tint = HazeTint(Color.White.copy(alpha = 0.12f)),
+                    blurRadius = 30.dp,
+                    noiseFactor = 0.15f
+                )
+            )
+            .background(Color.White.copy(alpha = 0.05f), shape = RoundedCornerShape(20.dp))
+            .border(
+                1.dp,
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.2f),
+                        Color.White.copy(alpha = 0.05f)
+                    )
+                ),
+                shape = RoundedCornerShape(20.dp)
+            )
+            .clickable(enabled = !isLoading, onClick = onClick),
+        contentAlignment = Alignment.Center
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 3.dp)
-            } else {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(Icons.Default.Build, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(name, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                }
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 3.dp, color = Color.White)
+        } else {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(Icons.Default.Build, contentDescription = null, tint = Color.White.copy(alpha = 0.7f))
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(name, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.White)
             }
         }
     }
@@ -350,30 +485,51 @@ fun ApiTestCard(name: String, isLoading: Boolean, onClick: () -> Unit, modifier:
 fun LogCard(result: String) {
     val isError = result.contains("❌")
     val isSuccess = result.contains("✅")
-    
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = when {
-            isError -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f)
-            isSuccess -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
-            else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-        },
-        shape = RoundedCornerShape(12.dp),
-        border = androidx.compose.foundation.BorderStroke(
-            0.5.dp, 
-            when {
-                isError -> MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
-                isSuccess -> MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-            }
-        )
+    val hazeState = LocalHazeState.current ?: remember { HazeState() }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .hazeEffect(
+                state = hazeState,
+                style = HazeStyle(
+                    tint = HazeTint(
+                        when {
+                            isError -> Color.Red.copy(alpha = 0.1f)
+                            isSuccess -> Color.Green.copy(alpha = 0.1f)
+                            else -> Color.White.copy(alpha = 0.12f)
+                        }
+                    ),
+                    blurRadius = 30.dp,
+                    noiseFactor = 0.15f
+                )
+            )
+            .background(
+                color = when {
+                    isError -> Color.Red.copy(alpha = 0.05f)
+                    isSuccess -> Color.Green.copy(alpha = 0.05f)
+                    else -> Color.White.copy(alpha = 0.05f)
+                },
+                shape = RoundedCornerShape(12.dp)
+            )
+            .border(
+                0.5.dp,
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.2f),
+                        Color.White.copy(alpha = 0.05f)
+                    )
+                ),
+                shape = RoundedCornerShape(12.dp)
+            )
     ) {
         Text(
             text = result,
             modifier = Modifier.padding(14.dp),
             style = MaterialTheme.typography.bodySmall,
             fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
-            lineHeight = 18.sp
+            lineHeight = 18.sp,
+            color = Color.White
         )
     }
 }

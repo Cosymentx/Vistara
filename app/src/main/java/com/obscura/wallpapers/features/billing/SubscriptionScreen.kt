@@ -1,6 +1,7 @@
 package com.obscura.wallpapers.features.billing
 
 import android.app.Activity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -46,11 +47,20 @@ fun SubscriptionScreen(
     
     var selectedProductIndex by remember { mutableStateOf(1) } // 默认选中年度订阅
 
-    val gradientColors = listOf(
-        Color(0xFF0F0F1A),
-        Color(0xFF16213E),
-        Color(0xFF0F0F1A)
-    )
+    val isDark = isSystemInDarkTheme()
+    val gradientColors = if (isDark) {
+        listOf(
+            Color(0xFF0F0F1A),
+            Color(0xFF16213E),
+            Color(0xFF0F0F1A)
+        )
+    } else {
+        listOf(
+            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+            MaterialTheme.colorScheme.surface,
+            MaterialTheme.colorScheme.surface
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -72,8 +82,8 @@ fun SubscriptionScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    titleContentColor = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
                 )
             )
         },
@@ -84,6 +94,7 @@ fun SubscriptionScreen(
                 .fillMaxSize()
                 .background(brush = Brush.verticalGradient(gradientColors))
                 .padding(paddingValues)
+                .navigationBarsPadding()
         ) {
             if (isPremium) {
                 // 已订阅状态
@@ -117,6 +128,7 @@ private fun PremiumActiveContent(
     onRestorePurchases: () -> Unit
 ) {
     val accentColor = Color(0xFFFFD700)
+    val isDark = isSystemInDarkTheme()
     
     Column(
         modifier = Modifier
@@ -147,7 +159,7 @@ private fun PremiumActiveContent(
             text = stringResource(R.string.subscription_already_premium).uppercase(),
             fontSize = 28.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = Color.White,
+            color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface,
             letterSpacing = 2.sp,
             textAlign = TextAlign.Center
         )
@@ -157,7 +169,7 @@ private fun PremiumActiveContent(
         Text(
             text = stringResource(R.string.subscription_thank_you),
             fontSize = 16.sp,
-            color = Color.White.copy(alpha = 0.7f),
+            color = if (isDark) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
             lineHeight = 24.sp
         )
@@ -167,14 +179,14 @@ private fun PremiumActiveContent(
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.White.copy(alpha = 0.05f))
-                .border(0.5.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                .background(if (isDark) Color.White.copy(alpha = 0.05f) else MaterialTheme.colorScheme.surfaceVariant)
+                .border(0.5.dp, if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f), RoundedCornerShape(12.dp))
                 .clickable(onClick = onRestorePurchases)
                 .padding(horizontal = 24.dp, vertical = 12.dp)
         ) {
             Text(
                 text = stringResource(R.string.restore_purchases),
-                color = accentColor,
+                color = if (isDark) accentColor else MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
@@ -192,6 +204,7 @@ private fun SubscriptionContent(
     isLoading: Boolean
 ) {
     val accentColor = Color(0xFFFFD700)
+    val isDark = isSystemInDarkTheme()
 
     Column(
         modifier = Modifier
@@ -224,7 +237,7 @@ private fun SubscriptionContent(
             text = stringResource(R.string.subscription_unlock_all_features).uppercase(),
             fontSize = 32.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = Color.White,
+            color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
             letterSpacing = 1.sp,
             lineHeight = 38.sp
@@ -235,7 +248,7 @@ private fun SubscriptionContent(
         Text(
             text = stringResource(R.string.subscription_enjoy_full_experience),
             fontSize = 15.sp,
-            color = Color.White.copy(alpha = 0.6f),
+            color = if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
         
@@ -263,10 +276,10 @@ private fun SubscriptionContent(
                     .fillMaxWidth()
                     .height(100.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .background(Color.White.copy(alpha = 0.05f)),
+                    .background(if (isDark) Color.White.copy(alpha = 0.05f) else MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Loading plans...", color = Color.White.copy(alpha = 0.4f))
+                Text(text = "Loading plans...", color = if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         
@@ -281,7 +294,7 @@ private fun SubscriptionContent(
                 .border(
                     width = 1.dp,
                     brush = Brush.linearGradient(
-                        listOf(Color.White.copy(alpha = 0.5f), Color.Transparent)
+                        listOf(if (isDark) Color.White.copy(alpha = 0.5f) else Color.Transparent, Color.Transparent)
                     ),
                     shape = RoundedCornerShape(18.dp)
                 ),
@@ -315,7 +328,7 @@ private fun SubscriptionContent(
         // 恢复购买
         Text(
             text = stringResource(R.string.restore_purchases),
-            color = Color.White.copy(alpha = 0.5f),
+            color = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.primary,
             fontSize = 13.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.clickable(onClick = onRestorePurchases)
@@ -327,7 +340,7 @@ private fun SubscriptionContent(
         Text(
             text = stringResource(R.string.subscription_auto_renew_notice),
             fontSize = 11.sp,
-            color = Color.White.copy(alpha = 0.4f),
+            color = if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,
             lineHeight = 16.sp
         )
@@ -339,15 +352,16 @@ private fun SubscriptionContent(
 @Composable
 private fun FeaturesList() {
     val accentColor = Color(0xFFFFD700)
+    val isDark = isSystemInDarkTheme()
     
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
-            .background(Color.Black.copy(alpha = 0.3f))
+            .background(if (isDark) Color.Black.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
             .border(
                 0.5.dp, 
-                Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.1f), Color.Transparent)),
+                Brush.verticalGradient(listOf(if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f), Color.Transparent)),
                 RoundedCornerShape(24.dp)
             )
             .padding(20.dp),
@@ -380,7 +394,7 @@ private fun FeaturesList() {
                 Text(
                     text = stringResource(featureRes),
                     fontSize = 16.sp,
-                    color = Color.White.copy(alpha = 0.9f),
+                    color = if (isDark) Color.White.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -395,12 +409,13 @@ private fun PlanCard(
     onClick: () -> Unit
 ) {
     val accentColor = Color(0xFFFFD700)
+    val isDark = isSystemInDarkTheme()
     
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            .background(Color.Black.copy(alpha = 0.45f))
+            .background(if (isDark) Color.Black.copy(alpha = 0.45f) else MaterialTheme.colorScheme.surface)
             .border(
                 width = if (isSelected) 2.dp else 0.5.dp,
                 brush = if (isSelected) {
@@ -409,7 +424,7 @@ private fun PlanCard(
                     )
                 } else {
                     Brush.linearGradient(
-                        listOf(Color.White.copy(alpha = 0.4f), Color.White.copy(alpha = 0.05f))
+                        listOf(if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f), if (isDark) Color.White.copy(alpha = 0.05f) else Color.Transparent)
                     )
                 },
                 shape = RoundedCornerShape(20.dp)
@@ -440,7 +455,7 @@ private fun PlanCard(
                     text = productDetails.name,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 val price = productDetails.subscriptionOfferDetails?.firstOrNull()
@@ -448,7 +463,7 @@ private fun PlanCard(
                 Text(
                     text = price,
                     fontSize = 16.sp,
-                    color = if (isSelected) accentColor else Color.White.copy(alpha = 0.6f),
+                    color = if (isSelected) accentColor else if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.SemiBold
                 )
             }
@@ -458,7 +473,7 @@ private fun PlanCard(
                 onClick = null,
                 colors = RadioButtonDefaults.colors(
                     selectedColor = accentColor,
-                    unselectedColor = Color.White.copy(alpha = 0.3f)
+                    unselectedColor = if (isDark) Color.White.copy(alpha = 0.3f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                 )
             )
         }

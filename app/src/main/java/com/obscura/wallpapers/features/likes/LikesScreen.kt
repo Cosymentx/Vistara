@@ -11,9 +11,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,11 +52,19 @@ fun LikesScreen(
 ) {
     val favoritesState by viewModel.favoritesState.collectAsState()
 
-    GlassScaffold(
-        title = stringResource(R.string.my_favorites),
-        onBackPressed = onBackPressed
-    ) { paddingValues ->
-        val safe = paddingValues.safeVerticalContentPadding(64.dp, 80.dp)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.my_favorites)) },
+                navigationIcon = {
+                    IconButton(onClick = onBackPressed) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
+                    }
+                })
+        }) { paddingValues ->
         FavoritesBody(
             state = favoritesState,
             onWallpaperClick = onWallpaperClick,
@@ -59,11 +73,8 @@ fun LikesScreen(
             onBackPressed = onBackPressed,
             modifier = Modifier
                 .fillMaxSize()
-                .applyVerticalInnerPadding(paddingValues)
-                .padding(
-                    top = safe.calculateTopPadding(),
-                    bottom = safe.calculateBottomPadding()
-                ),
+                .padding(paddingValues)
+                .padding(16.dp),
             sharedTransitionScope = sharedTransitionScope,
             animatedVisibilityScope = animatedVisibilityScope
         )
@@ -112,7 +123,6 @@ private fun FavoritesBody(
                     WallpaperGrid(
                         wallpapers = wallpapers,
                         onWallpaperClick = onWallpaperClick,
-                        contentPadding = PaddingValues(16.dp),
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope
                     )
