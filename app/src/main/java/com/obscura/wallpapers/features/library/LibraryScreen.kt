@@ -64,7 +64,7 @@ fun LibraryScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
+                .padding(10.dp)
         ) {
             when (val state = downloadsState) {
                 is UiState.Loading -> {

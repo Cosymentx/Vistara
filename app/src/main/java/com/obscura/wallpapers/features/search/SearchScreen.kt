@@ -91,7 +91,7 @@ fun SearchScreen(
             }
         }) { _, contentModifier ->
         Box(
-            modifier = contentModifier
+            modifier = contentModifier.background(MaterialTheme.colorScheme.background)
         ) {
             val topPadding = 110.dp
 
