@@ -120,7 +120,7 @@ fun TestScreen(
 
             // --- Section: Economy System ---
             item {
-                TestSectionCard(title = "Economy System", icon = ObscuraIcons.Diamond) {
+                TestSectionCard(title = "Economy System", icon = ObscuraIcons.Coin) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,

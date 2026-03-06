@@ -23,6 +23,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.billingclient.api.ProductDetails
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
+import com.obscura.wallpapers.ui.icons.ObscuraIcons
+import com.obscura.wallpapers.ui.theme.stringResource
+import com.obscura.wallpapers.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -207,11 +210,11 @@ fun StatusPanel(isPremium: Boolean, coinBalance: Int) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("Account Tier", style = MaterialTheme.typography.labelLarge, color = Color.White.copy(alpha = 0.8f))
+                    Text(stringResource(R.string.premium_user_status), style = MaterialTheme.typography.labelLarge, color = Color.White.copy(alpha = 0.8f))
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = if (isPremium) Icons.Default.Star else Icons.Default.AccountCircle,
+                            imageVector = if (isPremium) ObscuraIcons.Crown else ObscuraIcons.Person,
                             contentDescription = null,
                             tint = Color.White,
                             modifier = Modifier.size(28.dp)
@@ -228,7 +231,7 @@ fun StatusPanel(isPremium: Boolean, coinBalance: Int) {
                 }
 
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Coin Balance", style = MaterialTheme.typography.labelLarge, color = Color.White.copy(alpha = 0.8f))
+                    Text(stringResource(R.string.login_status), style = MaterialTheme.typography.labelLarge, color = Color.White.copy(alpha = 0.8f))
                     Text(
                         text = "$coinBalance",
                         style = MaterialTheme.typography.displaySmall,

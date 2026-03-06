@@ -153,7 +153,7 @@ class TestViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error checking coin balance: ${e.message}")
-                _operationResult.value = "检查金币余额失败: ${e.message}"
+                _operationResult.value = context.getString(R.string.common_unknown_error)
             }
         }
     }
@@ -167,14 +167,14 @@ class TestViewModel @Inject constructor(
                 if (newState) {
                     val currentBalance = _currentCoinBalance.value
                     userRepository.updateCoinBalance(currentBalance + 200)
-                    _operationResult.value = "测试模式已开启，已增加200金币"
+                    _operationResult.value = context.getString(R.string.test_mode_enabled)
                 } else {
                     userRepository.updateCoinBalance(0)
-                    _operationResult.value = "测试模式已关闭，金币已清空"
+                    _operationResult.value = context.getString(R.string.test_mode_disabled)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error toggling coin test: ${e.message}")
-                _operationResult.value = "切换金币测试模式失败: ${e.message}"
+                _operationResult.value = context.getString(R.string.test_failed, e.message)
             }
         }
     }

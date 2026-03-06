@@ -213,7 +213,7 @@ fun VideoLibraryScreen(
                         contentPadding = PaddingValues(
                             start = 16.dp,
                             end = 16.dp,
-                            top = 160.dp,
+                            top = 150.dp,
                             bottom = 100.dp
                         ),
                         sharedTransitionScope = sharedTransitionScope,

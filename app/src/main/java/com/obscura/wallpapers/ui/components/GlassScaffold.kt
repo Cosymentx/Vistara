@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,8 +23,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -71,9 +77,15 @@ fun HomeTabScaffold(
     actions: @Composable (() -> Unit)? = null,
     snackbarHost: (@Composable () -> Unit)? = null,
     headerExtra: @Composable (ColumnScope.() -> Unit)? = null,
+    gridState: LazyGridState? = null,
     content: @Composable (PaddingValues, Modifier) -> Unit
 ) {
     val hazeState = remember { HazeState() }
+
+    // 标题不再随滚动隐藏，保持可见以改善 UX
+    val titleAlpha = 1f
+    val titleScale = 1f
+    val topBarHeight = 64.dp
 
     Scaffold(
         snackbarHost = { snackbarHost?.invoke() },
@@ -98,8 +110,8 @@ fun HomeTabScaffold(
                         .hazeEffect(
                             state = hazeState,
                             style = HazeStyle(
-                                tint = HazeTint(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)),
-                                blurRadius = 20.dp,
+                                tint = HazeTint(MaterialTheme.colorScheme.surface.copy(alpha = 0.15f)),
+                                blurRadius = 25.dp,
                                 noiseFactor = 0.1f
                             )
                         )
@@ -110,8 +122,18 @@ fun HomeTabScaffold(
                                 title = {
                                     Text(
                                         text = title,
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = MaterialTheme.colorScheme.onSurface
+                                        style = MaterialTheme.typography.headlineMedium.copy(
+                                            fontWeight = FontWeight.ExtraBold,
+                                            letterSpacing = (-0.5).sp
+                                        ),
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier
+                                            .graphicsLayer {
+                                                scaleX = titleScale
+                                                scaleY = titleScale
+                                                alpha = titleAlpha
+                                                translationY = (1f - titleAlpha) * -20f
+                                            }
                                     )
                                 },
                                 navigationIcon = {
@@ -126,20 +148,19 @@ fun HomeTabScaffold(
                                 },
                                 actions = { actions?.invoke() },
                                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                                modifier = Modifier.statusBarsPadding()
+                                modifier = Modifier
+                                    .statusBarsPadding()
+                                    .height(topBarHeight)
+                                    .alpha(titleAlpha)
                             )
                         } else {
                             Box(modifier = Modifier.statusBarsPadding())
                         }
-                        headerExtra?.invoke(this)
 
-                        // Elegant bottom line
-//                        Box(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .height(0.5.dp)
-//                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-//                        )
+                        // 让 headerExtra (如 CategorySelector) 在滚动时依然可见或带有微弱位移
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            headerExtra?.invoke(this@Column)
+                        }
                     }
                 }
             }

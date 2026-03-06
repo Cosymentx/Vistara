@@ -376,10 +376,10 @@ Enjoy a new look every day</string>
     <string name="simulate_login_failed">Simulated login failed: %1$s</string>
     <string name="simulate_logout_success">Simulated logout successful</string>
     <string name="simulate_logout_failed">Simulated logout failed: %1$s</string>
-    <string name="diamond_test" translatable="false">Diamond Test</string>
-    <string name="diamond_test_mode" translatable="false">Diamond Test Mode</string>
-    <string name="current_diamond_balance" translatable="false">Current diamond balance: %d</string>
-    <string name="test_mode_enabled" translatable="false">Test mode enabled, 200 diamonds added when enabled, cleared when disabled</string>
+    <string name="coin_test" translatable="false">Coin Test</string>
+    <string name="coin_test_mode" translatable="false">Coin Test Mode</string>
+    <string name="current_coin_balance" translatable="false">Current coin balance: %d</string>
+    <string name="test_mode_enabled" translatable="false">Test mode enabled, 200 coins added when enabled, cleared when disabled</string>
     <string name="test_mode_disabled" translatable="false">Test mode disabled</string>
 
     <!-- Wallpaper management related -->

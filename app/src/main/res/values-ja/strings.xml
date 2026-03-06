@@ -255,18 +255,18 @@
     <string name="profile_premium_member">プレミアム会員</string>
     <string name="profile_upgrade_membership">アップグレード</string>
     <string name="profile_unlock_all_features">すべての機能を解除</string>
-    <string name="profile_purchase_diamonds">コインを購入</string>
-    <string name="profile_get_more_diamonds">もっとコインを獲得</string>
+    <string name="profile_purchase_coins">コインを購入</string>
+    <string name="profile_get_more_coins">もっとコインを獲得</string>
     
     <!-- ダイヤモンド購入画面 -->
-    <string name="diamond_purchase_title">コインを購入</string>
-    <string name="diamond_get_more_coins">もっとコインを獲得</string>
-    <string name="diamond_description">コインはプレミアム壁紙や特別機能のロック解除に使用できます</string>
-    <string name="diamond_buy_now">今すぐ購入</string>
-    <string name="diamond_instant_delivery">購入後すぐにコインが付与されます</string>
-    <string name="diamond_coins">コイン</string>
-    <string name="diamond_bonus">ボーナス %d コイン</string>
-    <string name="diamond_popular">人気</string>
+    <string name="coin_purchase_title">コインを購入</string>
+    <string name="coin_get_more_coins">もっとコインを獲得</string>
+    <string name="coin_description">コインはプレミアム壁紙や特別機能のロック解除に使用できます</string>
+    <string name="coin_buy_now">今すぐ購入</string>
+    <string name="coin_instant_delivery">購入後すぐにコインが付与されます</string>
+    <string name="coin_coins">コイン</string>
+    <string name="coin_bonus">ボーナス %d コイン</string>
+    <string name="coin_popular">人気</string>
     
     <!-- サブスクリプション画面 -->
     <string name="subscription_title">プレミアムに登録</string>

@@ -110,9 +110,12 @@ fun WallpaperStaggeredGrid(
         modifier = modifier.fillMaxWidth()
     ) {
         items(items = wallpapers, key = { wallpaper -> wallpaper.id }) { wallpaper ->
-            val aspectRatio = calculateAspectRatio(wallpaper)
-            val itemHeight = remember(aspectRatio) {
-                (180 + (wallpaper.id.hashCode() % 120)).dp
+            val itemHeight = remember(wallpaper.id) {
+                val baseHeight = 180
+                val randomVariation = (wallpaper.id.hashCode() % 120).let { if (it < 0) -it else it }
+                val calculatedHeight = baseHeight + randomVariation
+                // 确保高度至少为 220dp 以获得更好的视觉效果
+                maxOf(calculatedHeight, 220).dp
             }
 
             WallpaperItem(
