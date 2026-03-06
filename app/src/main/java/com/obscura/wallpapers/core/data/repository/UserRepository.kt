@@ -58,14 +58,27 @@ interface UserRepository {
     val userEmail: Flow<String?>
 
     /**
-     * 获取用户钻石余额
-     * @return 用户钻石余额的Flow
+     * 获取用户金币余额
+     * @return 用户金币余额的Flow
      */
-    val diamondBalance: Flow<Int>
+    val coinBalance: Flow<Int>
 
     /**
-     * 更新用户钻石余额
+     * 更新用户金币余额
      * @param amount 新的余额
      */
-    suspend fun updateDiamondBalance(amount: Int)
+    suspend fun updateCoinBalance(amount: Int)
+
+    /**
+     * 增加用户金币余额
+     * @param amount 增加的数量
+     */
+    suspend fun addCoins(amount: Int)
+
+    /**
+     * 减少用户金币余额
+     * @param amount 减少的数量
+     * @return 是否扣费成功（余额不足返回false）
+     */
+    suspend fun consumeCoins(amount: Int): Boolean
 }

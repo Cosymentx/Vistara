@@ -37,9 +37,13 @@ class BillingManager @Inject constructor(
     private val _purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.NotPurchased)
     val purchaseState: StateFlow<PurchaseState> = _purchaseState.asStateFlow()
 
-    // 可用产品列表
-    private val _availableProducts = MutableStateFlow<List<ProductDetails>>(emptyList())
-    val availableProducts: StateFlow<List<ProductDetails>> = _availableProducts.asStateFlow()
+    // 可用订阅产品列表
+    private val _availableSubscriptions = MutableStateFlow<List<ProductDetails>>(emptyList())
+    val availableSubscriptions: StateFlow<List<ProductDetails>> = _availableSubscriptions.asStateFlow()
+
+    // 可用一次性内购产品列表
+    private val _availableInAppProducts = MutableStateFlow<List<ProductDetails>>(emptyList())
+    val availableInAppProducts: StateFlow<List<ProductDetails>> = _availableInAppProducts.asStateFlow()
 
     // 是否为高级用户
     private val _isPremium = MutableStateFlow(false)
@@ -75,7 +79,7 @@ class BillingManager @Inject constructor(
                     
                     // 连接成功后查询产品和购买记录
                     scope.launch {
-                        queryProducts()
+                        queryAllProducts()
                         queryPurchases()
                     }
                 } else {
@@ -92,29 +96,50 @@ class BillingManager @Inject constructor(
     }
 
     /**
-     * 查询可用的订阅产品
+     * 查询所有可用的产品（订阅和内购）
      */
-    suspend fun queryProducts() {
+    suspend fun queryAllProducts() {
         if (!ensureConnected()) return
 
-        val productList = ProductType.getAllSubscriptionIds().map { productId ->
+        // 1. 查询订阅产品
+        val subProductList = ProductType.getAllSubscriptionIds().map { productId ->
             QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(productId)
                 .setProductType(BillingClient.ProductType.SUBS)
                 .build()
         }
 
-        val params = QueryProductDetailsParams.newBuilder()
-            .setProductList(productList)
+        val subParams = QueryProductDetailsParams.newBuilder()
+            .setProductList(subProductList)
+            .build()
+
+        // 2. 查询一次性内购产品
+        val inAppProductList = ProductType.getAllInAppProductIds().map { productId ->
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(productId)
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        }
+
+        val inAppParams = QueryProductDetailsParams.newBuilder()
+            .setProductList(inAppProductList)
             .build()
 
         try {
-            val result = billingClient?.queryProductDetails(params)
-            if (result?.billingResult?.responseCode == BillingClient.BillingResponseCode.OK) {
-                _availableProducts.value = result.productDetailsList ?: emptyList()
-                Log.d(tag, "Found ${result.productDetailsList?.size ?: 0} products")
-            } else {
-                Log.e(tag, "Failed to query products: ${result?.billingResult?.debugMessage}")
+            // 执行订阅查询
+            billingClient?.queryProductDetails(subParams)?.let { result ->
+                if (result.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    _availableSubscriptions.value = result.productDetailsList ?: emptyList()
+                    Log.d(tag, "Found ${result.productDetailsList?.size ?: 0} subscriptions")
+                }
+            }
+
+            // 执行内购查询
+            billingClient?.queryProductDetails(inAppParams)?.let { result ->
+                if (result.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    _availableInAppProducts.value = result.productDetailsList ?: emptyList()
+                    Log.d(tag, "Found ${result.productDetailsList?.size ?: 0} in-app products")
+                }
             }
         } catch (e: Exception) {
             Log.e(tag, "Error querying products", e)
@@ -127,16 +152,25 @@ class BillingManager @Inject constructor(
     suspend fun queryPurchases() {
         if (!ensureConnected()) return
 
-        val params = QueryPurchasesParams.newBuilder()
+        // 查询订阅
+        val subParams = QueryPurchasesParams.newBuilder()
             .setProductType(BillingClient.ProductType.SUBS)
             .build()
 
+        // 查询内购 (用于恢复非消耗性产品)
+        val inAppParams = QueryPurchasesParams.newBuilder()
+            .setProductType(BillingClient.ProductType.INAPP)
+            .build()
+
         try {
-            val result = billingClient?.queryPurchasesAsync(params)
-            if (result?.billingResult?.responseCode == BillingClient.BillingResponseCode.OK) {
-                handlePurchases(result.purchasesList)
-            } else {
-                Log.e(tag, "Failed to query purchases: ${result?.billingResult?.debugMessage}")
+            val subResult = billingClient?.queryPurchasesAsync(subParams)
+            if (subResult?.billingResult?.responseCode == BillingClient.BillingResponseCode.OK) {
+                handlePurchases(subResult.purchasesList, isSubscription = true)
+            }
+
+            val inAppResult = billingClient?.queryPurchasesAsync(inAppParams)
+            if (inAppResult?.billingResult?.responseCode == BillingClient.BillingResponseCode.OK) {
+                handlePurchases(inAppResult.purchasesList, isSubscription = false)
             }
         } catch (e: Exception) {
             Log.e(tag, "Error querying purchases", e)
@@ -153,21 +187,22 @@ class BillingManager @Inject constructor(
                 return@launch
             }
 
-            val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken
-            if (offerToken == null) {
-                _purchaseState.value = PurchaseState.Error("No offer available")
-                return@launch
+            val builder = BillingFlowParams.ProductDetailsParams.newBuilder()
+                .setProductDetails(productDetails)
+
+            // 如果是订阅，需要设置 OfferToken
+            if (productDetails.productType == BillingClient.ProductType.SUBS) {
+                val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken
+                if (offerToken != null) {
+                    builder.setOfferToken(offerToken)
+                } else {
+                    _purchaseState.value = PurchaseState.Error("No subscription offer available")
+                    return@launch
+                }
             }
 
-            val productDetailsParamsList = listOf(
-                BillingFlowParams.ProductDetailsParams.newBuilder()
-                    .setProductDetails(productDetails)
-                    .setOfferToken(offerToken)
-                    .build()
-            )
-
             val billingFlowParams = BillingFlowParams.newBuilder()
-                .setProductDetailsParamsList(productDetailsParamsList)
+                .setProductDetailsParamsList(listOf(builder.build()))
                 .build()
 
             val billingResult = billingClient?.launchBillingFlow(activity, billingFlowParams)
@@ -176,6 +211,8 @@ class BillingManager @Inject constructor(
                 _purchaseState.value = PurchaseState.Error(
                     billingResult?.debugMessage ?: "Failed to launch billing flow"
                 )
+            } else {
+                _purchaseState.value = PurchaseState.Purchasing
             }
         }
     }
@@ -186,10 +223,13 @@ class BillingManager @Inject constructor(
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
         when (billingResult.responseCode) {
             BillingClient.BillingResponseCode.OK -> {
-                purchases?.let { handlePurchases(it) }
+                purchases?.let { 
+                    // 这里由于无法直接确定是SUBS还是INAPP，通过商品ID列表判断
+                    handlePurchases(it) 
+                }
             }
             BillingClient.BillingResponseCode.USER_CANCELED -> {
-                _purchaseState.value = PurchaseState.Error("Purchase cancelled")
+                _purchaseState.value = PurchaseState.NotPurchased
             }
             else -> {
                 _purchaseState.value = PurchaseState.Error(
@@ -202,32 +242,60 @@ class BillingManager @Inject constructor(
     /**
      * 处理购买记录
      */
-    private fun handlePurchases(purchases: List<Purchase>) {
-        if (purchases.isEmpty()) {
+    private fun handlePurchases(purchases: List<Purchase>, isSubscription: Boolean? = null) {
+        if (purchases.isEmpty() && isSubscription == true) {
             _isPremium.value = false
-            _purchaseState.value = PurchaseState.NotPurchased
             return
         }
 
         for (purchase in purchases) {
             if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                // 验证购买
-                if (!purchase.isAcknowledged) {
-                    scope.launch {
-                        acknowledgePurchase(purchase)
+                val productId = purchase.products.firstOrNull() ?: continue
+                
+                // 判断是否为订阅产品
+                val isSub = isSubscription ?: ProductType.getAllSubscriptionIds().contains(productId)
+
+                if (isSub) {
+                    // 确认订阅购买
+                    if (!purchase.isAcknowledged) {
+                        scope.launch { acknowledgePurchase(purchase) }
                     }
+                    _isPremium.value = true
+                } else {
+                    // 对于金币等消耗性产品，不在这里自动 Acknowledge 或 Consume
+                    // 由业务方调用 consumePurchase 并在成功后发放奖励
                 }
 
-                // 更新订阅状态
-                val productId = purchase.products.firstOrNull() ?: continue
-                _isPremium.value = true
                 _purchaseState.value = PurchaseState.Purchased(
                     productId = productId,
                     purchaseToken = purchase.purchaseToken,
                     isAutoRenewing = purchase.isAutoRenewing
                 )
                 
-                Log.d(tag, "User has active subscription: $productId")
+                Log.d(tag, "Purchase handled: $productId, isSub=$isSub")
+            }
+        }
+    }
+
+    /**
+     * 消耗购买（用于金币等商品）
+     */
+    suspend fun consumePurchase(purchaseToken: String): Boolean {
+        if (!ensureConnected()) return false
+
+        val params = ConsumeParams.newBuilder()
+            .setPurchaseToken(purchaseToken)
+            .build()
+
+        return suspendCancellableCoroutine { continuation ->
+            billingClient?.consumeAsync(params) { result, _ ->
+                if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                    Log.d(tag, "Purchase consumed successfully")
+                    continuation.resume(true)
+                } else {
+                    Log.e(tag, "Failed to consume purchase: ${result.debugMessage}")
+                    continuation.resume(false)
+                }
             }
         }
     }
@@ -279,6 +347,13 @@ class BillingManager @Inject constructor(
                 continuation.resume(isConnected)
             }
         }
+    }
+
+    /**
+     * 重置购买状态
+     */
+    fun resetPurchaseState() {
+        _purchaseState.value = PurchaseState.NotPurchased
     }
 
     /**

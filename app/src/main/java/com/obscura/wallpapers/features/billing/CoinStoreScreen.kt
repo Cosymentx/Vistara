@@ -1,5 +1,6 @@
 package com.obscura.wallpapers.features.billing
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,12 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.android.billingclient.api.ProductDetails
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 
@@ -35,9 +38,11 @@ fun CoinStoreScreen(
     onNavigateBack: () -> Unit,
     viewModel: BillingViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     var selectedPackageIndex by remember { mutableIntStateOf(1) }
     val isPurchasing by viewModel.isPurchasingCoins.collectAsState()
     val purchaseSuccess by viewModel.coinPurchaseSuccess.collectAsState()
+    val availableInAppProducts by viewModel.availableInAppProducts.collectAsState()
 
     val cyanAccent = Color(0xFF00E5FF)
     val backgroundGradient = listOf(
@@ -119,7 +124,7 @@ fun CoinStoreScreen(
                             .background(cyanAccent.copy(alpha = 0.1f), RoundedCornerShape(32.dp))
                     )
                     Icon(
-                        imageVector = ObscuraIcons.Diamond,
+                        imageVector = ObscuraIcons.Coin,
                         contentDescription = null,
                         tint = cyanAccent,
                         modifier = Modifier.size(56.dp)
@@ -149,13 +154,25 @@ fun CoinStoreScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 // Coin Packages
-                coinPackages.forEachIndexed { index, pkg ->
-                    CoinPackageCard(
-                        coinPackage = pkg,
-                        isSelected = selectedPackageIndex == index,
-                        onClick = { selectedPackageIndex = index }
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                if (availableInAppProducts.isNotEmpty()) {
+                    availableInAppProducts.forEachIndexed { index, product ->
+                        CoinProductCard(
+                            productDetails = product,
+                            isSelected = selectedPackageIndex == index,
+                            onClick = { selectedPackageIndex = index }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                } else {
+                    // Fallback or Loading
+                    coinPackages.forEachIndexed { index, pkg ->
+                        CoinPackageCard(
+                            coinPackage = pkg,
+                            isSelected = selectedPackageIndex == index,
+                            onClick = { selectedPackageIndex = index }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -163,7 +180,14 @@ fun CoinStoreScreen(
                 // Purchase Button
                 Button(
                     onClick = {
-                        viewModel.purchaseCoins(coinPackages[selectedPackageIndex])
+                        if (availableInAppProducts.isNotEmpty() && selectedPackageIndex < availableInAppProducts.size) {
+                            viewModel.purchaseCoins(
+                                context as Activity,
+                                availableInAppProducts[selectedPackageIndex]
+                            )
+                        } else {
+                            // Demo mode or logic for static packages if needed
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -211,6 +235,88 @@ fun CoinStoreScreen(
 
                 Spacer(modifier = Modifier.height(40.dp))
             }
+        }
+    }
+}
+
+@Composable
+private fun CoinProductCard(
+    productDetails: ProductDetails,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val cyanAccent = Color(0xFF00E5FF)
+    
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .background(Color.White.copy(alpha = if (isSelected) 0.12f else 0.05f))
+            .border(
+                width = if (isSelected) 2.dp else 1.dp,
+                brush = if (isSelected) {
+                    Brush.linearGradient(
+                        listOf(cyanAccent, cyanAccent.copy(alpha = 0.5f))
+                    )
+                } else {
+                    Brush.linearGradient(
+                        listOf(Color.White.copy(alpha = 0.2f), Color.White.copy(alpha = 0.05f))
+                    )
+                },
+                shape = RoundedCornerShape(24.dp)
+            )
+            .clickable(onClick = onClick)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Icon with subtle glow if selected
+                Box(contentAlignment = Alignment.Center) {
+                    if (isSelected) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(cyanAccent.copy(alpha = 0.2f), CircleShape)
+                        )
+                    }
+                    Icon(
+                        imageVector = ObscuraIcons.Coin,
+                        contentDescription = null,
+                        tint = if (isSelected) cyanAccent else Color.White.copy(alpha = 0.7f),
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+                
+                Column {
+                    Text(
+                        text = productDetails.name,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.White
+                    )
+                    
+                    Text(
+                        text = productDetails.description,
+                        fontSize = 12.sp,
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
+                }
+            }
+
+            Text(
+                text = productDetails.oneTimePurchaseOfferDetails?.formattedPrice ?: "",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = if (isSelected) cyanAccent else Color.White
+            )
         }
     }
 }
@@ -264,7 +370,7 @@ private fun CoinPackageCard(
                         )
                     }
                     Icon(
-                        imageVector = ObscuraIcons.Diamond,
+                        imageVector = ObscuraIcons.Coin,
                         contentDescription = null,
                         tint = if (isSelected) cyanAccent else Color.White.copy(alpha = 0.7f),
                         modifier = Modifier.size(32.dp)

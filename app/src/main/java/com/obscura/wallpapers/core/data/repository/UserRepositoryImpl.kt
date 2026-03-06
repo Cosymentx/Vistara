@@ -35,7 +35,7 @@ class UserRepositoryImpl @Inject constructor(
         private val PREMIUM_EXPIRY_DATE = longPreferencesKey("premium_expiry_date")
         private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
         private val SERVER_TOKEN = stringPreferencesKey("server_token")
-        private val USER_DIAMOND_BALANCE = intPreferencesKey("user_diamond_balance")
+        private val USER_COIN_BALANCE = intPreferencesKey("user_coin_balance")
 
         // 用户信息相关的Key
         private val USER_NICKNAME = stringPreferencesKey("user_nickname")
@@ -68,8 +68,8 @@ class UserRepositoryImpl @Inject constructor(
         preferences[USER_EMAIL]
     }
 
-    override val diamondBalance: Flow<Int> = dataStore.data.map { preferences ->
-        preferences[USER_DIAMOND_BALANCE] ?: 0
+    override val coinBalance: Flow<Int> = dataStore.data.map { preferences ->
+        preferences[USER_COIN_BALANCE] ?: 0
     }
 
     override suspend fun checkPremiumStatus(): Boolean {
@@ -115,7 +115,7 @@ class UserRepositoryImpl @Inject constructor(
             preferences.remove(USER_EMAIL)
             preferences.remove(USER_AVATAR)
             preferences.remove(USER_IS_WHITELIST)
-            preferences.remove(USER_DIAMOND_BALANCE)
+            preferences.remove(USER_COIN_BALANCE)
         }
     }
 
@@ -128,14 +128,14 @@ class UserRepositoryImpl @Inject constructor(
             val email = preferences[USER_EMAIL]
             val avatar = preferences[USER_AVATAR]
             val isWhiteList = preferences[USER_IS_WHITELIST]
-            val diamond = preferences[USER_DIAMOND_BALANCE]
+            val coins = preferences[USER_COIN_BALANCE]
 
             if (email != null) {
                 ProfileResponse(
                     nickname = nickname ?: "",
                     email = email,
                     avatar = avatar ?: "",
-                    diamond = diamond,
+                    coins = coins,
                     isWhiteList = isWhiteList ?: "0"
                 )
             } else {
@@ -154,8 +154,8 @@ class UserRepositoryImpl @Inject constructor(
             preferences[USER_EMAIL] = profile.email
             preferences[USER_AVATAR] = profile.avatar
             preferences[USER_IS_WHITELIST] = profile.isWhiteList
-            profile.diamond?.let { diamond ->
-                preferences[USER_DIAMOND_BALANCE] = diamond
+            profile.coins?.let { coins ->
+                preferences[USER_COIN_BALANCE] = coins
             }
         }
     }
@@ -216,9 +216,9 @@ class UserRepositoryImpl @Inject constructor(
                 // 缓存用户信息
                 cacheUserProfile(response.data)
 
-                // 更新本地钻石余额
-                response.data.diamond.let { diamond ->
-                    updateUserDiamondBalance(diamond ?: 0)
+                // 更新本地金币余额
+                response.data.coins.let { coins ->
+                    updateUserCoinBalance(coins ?: 0)
                 }
                 response.data
             } else {
@@ -228,19 +228,38 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     /**
-     * 更新用户钻石余额
+     * 更新用户金币余额
      */
-    override suspend fun updateDiamondBalance(amount: Int) {
+    override suspend fun updateCoinBalance(amount: Int) {
         dataStore.edit { preferences ->
-            preferences[USER_DIAMOND_BALANCE] = amount
+            preferences[USER_COIN_BALANCE] = amount
         }
     }
 
+    override suspend fun addCoins(amount: Int) {
+        dataStore.edit { preferences ->
+            val current = preferences[USER_COIN_BALANCE] ?: 0
+            preferences[USER_COIN_BALANCE] = current + amount
+        }
+    }
+
+    override suspend fun consumeCoins(amount: Int): Boolean {
+        var success = false
+        dataStore.edit { preferences ->
+            val current = preferences[USER_COIN_BALANCE] ?: 0
+            if (current >= amount) {
+                preferences[USER_COIN_BALANCE] = current - amount
+                success = true
+            }
+        }
+        return success
+    }
+
     /**
-     * 更新用户钻石余额 (内部使用)
+     * 更新用户金币余额 (内部使用)
      */
-    private suspend fun updateUserDiamondBalance(amount: Int) {
-        updateDiamondBalance(amount)
+    private suspend fun updateUserCoinBalance(amount: Int) {
+        updateCoinBalance(amount)
     }
 
     /**

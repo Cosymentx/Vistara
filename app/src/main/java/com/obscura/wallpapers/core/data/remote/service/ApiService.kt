@@ -61,7 +61,7 @@ data class ProfileResponse(
     val email: String,
     val avatar: String,
     val expireTime: String? = null,
-    val diamond: Int?,
+    val coins: Int? = null,
     val isWhiteList: String
 ) {
     val isPremium: Boolean get() = isWhitelisted
@@ -81,7 +81,7 @@ data class CreateOrderResponse(
     val status: String,
     val payUrl: String? = null,
     val priceId: String,
-    val diamondNum: Int,
+    val coinsNum: Int,
     val payMethodId: Int
 ) {
     val isGooglePay: Boolean get() = payMethodId == 1

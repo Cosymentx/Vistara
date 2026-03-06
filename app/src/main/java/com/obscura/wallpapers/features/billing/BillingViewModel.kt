@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.ProductDetails
 import com.obscura.wallpapers.core.billing.BillingRepository
+import com.obscura.wallpapers.core.billing.model.ProductType
+import com.obscura.wallpapers.core.billing.model.PurchaseState
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,23 +27,7 @@ class BillingViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
     
-    // 是否为高级用户 (订阅)
-    val isPremium: StateFlow<Boolean> = billingRepository.isPremiumUser
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = false
-        )
-    
-    // 可用产品列表 (订阅/内购)
-    val availableProducts: StateFlow<List<ProductDetails>> = billingRepository.availableProducts
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
-    
-    // UI 状态 (订阅)
+    // UI 状态
     private val _subscriptionUiState = MutableStateFlow<BillingUiState>(BillingUiState.Idle)
     val subscriptionUiState: StateFlow<BillingUiState> = _subscriptionUiState.asStateFlow()
 
@@ -51,9 +37,91 @@ class BillingViewModel @Inject constructor(
 
     private val _coinPurchaseSuccess = MutableStateFlow(false)
     val coinPurchaseSuccess: StateFlow<Boolean> = _coinPurchaseSuccess.asStateFlow()
+
+    // 是否为高级用户 (订阅)
+    val isPremium: StateFlow<Boolean> = billingRepository.isPremiumUser
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false
+        )
     
+    // 可用订阅列表
+    val availableSubscriptions: StateFlow<List<ProductDetails>> = billingRepository.availableSubscriptions
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    // 可用金币包列表
+    val availableInAppProducts: StateFlow<List<ProductDetails>> = billingRepository.availableInAppProducts
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    // 购买状态监听
     init {
+        viewModelScope.launch {
+            billingRepository.purchaseState.collect { state ->
+                handlePurchaseState(state)
+            }
+        }
         refreshSubscriptionStatus()
+    }
+
+    private fun handlePurchaseState(state: PurchaseState) {
+        when (state) {
+            is PurchaseState.Purchased -> {
+                // 如果是订阅，已经在 Repository 处理了本地数据库同步
+                // 如果是金币，需要在这里执行 Consume 并发放奖励
+                if (ProductType.getAllInAppProductIds().contains(state.productId)) {
+                    awardCoins(state)
+                } else {
+                    _subscriptionUiState.value = BillingUiState.Success
+                }
+            }
+            is PurchaseState.Error -> {
+                _subscriptionUiState.value = BillingUiState.Error(state.message)
+                _isPurchasingCoins.value = false
+            }
+            PurchaseState.Purchasing -> {
+                _subscriptionUiState.value = BillingUiState.Loading
+            }
+            else -> {}
+        }
+    }
+
+    private fun awardCoins(purchase: PurchaseState.Purchased) {
+        viewModelScope.launch {
+            _isPurchasingCoins.value = true
+            try {
+                // 1. 调用 BillingManager 消耗商品
+                val consumed = billingRepository.consumePurchase(purchase.purchaseToken)
+                if (consumed) {
+                    // 2. 根据 ID 发放金币 (这里需要匹配 Google Play Console 配置的 ProductID)
+                    val amount = when (purchase.productId) {
+                        ProductType.FILTER_PACK_01 -> 100 // 假设对应100金币
+                        ProductType.WALLPAPER_PACK_EXCLUSIVE -> 500
+                        else -> 0
+                    }
+                    if (amount > 0) {
+                        userRepository.addCoins(amount)
+                        _coinPurchaseSuccess.value = true
+                    }
+                    // 3. 消耗成功后重置状态，防止重复处理
+                    billingRepository.resetPurchaseState()
+                } else {
+                    _subscriptionUiState.value = BillingUiState.Error("Failed to consume purchase")
+                }
+            } catch (e: Exception) {
+                _subscriptionUiState.value = BillingUiState.Error("Reward distribution failed")
+            } finally {
+                _isPurchasingCoins.value = false
+            }
+        }
     }
     
     /**
@@ -79,7 +147,6 @@ class BillingViewModel @Inject constructor(
             _subscriptionUiState.value = BillingUiState.Loading
             try {
                 billingRepository.purchaseProduct(activity, productDetails)
-                _subscriptionUiState.value = BillingUiState.Success
             } catch (e: Exception) {
                 _subscriptionUiState.value = BillingUiState.Error(e.message ?: "Purchase failed")
             }
@@ -89,22 +156,14 @@ class BillingViewModel @Inject constructor(
     /**
      * 发起金币购买 (内购)
      */
-    fun purchaseCoins(diamondPackage: CoinPackage) {
+    fun purchaseCoins(activity: Activity, productDetails: ProductDetails) {
         viewModelScope.launch {
             _isPurchasingCoins.value = true
             try {
-                // TODO: 替换为实际的 Google Play Billing 逻辑
-                // 这里暂时模拟
-                kotlinx.coroutines.delay(2000)
-                
-                val currentBalance = userRepository.diamondBalance.first()
-                userRepository.updateDiamondBalance(currentBalance + diamondPackage.amount + diamondPackage.bonus)
-                
-                _coinPurchaseSuccess.value = true
+                billingRepository.purchaseProduct(activity, productDetails)
             } catch (e: Exception) {
-                // 处理错误
-            } finally {
                 _isPurchasingCoins.value = false
+                _subscriptionUiState.value = BillingUiState.Error(e.message ?: "Purchase failed")
             }
         }
     }

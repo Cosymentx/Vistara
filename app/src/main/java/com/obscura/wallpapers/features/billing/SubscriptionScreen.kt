@@ -41,7 +41,7 @@ fun SubscriptionScreen(
 ) {
     val context = LocalContext.current
     val isPremium by viewModel.isPremium.collectAsState()
-    val availableProducts by viewModel.availableProducts.collectAsState()
+    val availableSubscriptions by viewModel.availableSubscriptions.collectAsState()
     val uiState by viewModel.subscriptionUiState.collectAsState()
     
     var selectedProductIndex by remember { mutableStateOf(1) } // 默认选中年度订阅
@@ -93,14 +93,14 @@ fun SubscriptionScreen(
             } else {
                 // 未订阅状态
                 SubscriptionContent(
-                    availableProducts = availableProducts,
+                    availableProducts = availableSubscriptions,
                     selectedProductIndex = selectedProductIndex,
                     onProductSelected = { selectedProductIndex = it },
                     onSubscribe = {
-                        if (availableProducts.isNotEmpty() && selectedProductIndex < availableProducts.size) {
+                        if (availableSubscriptions.isNotEmpty() && selectedProductIndex < availableSubscriptions.size) {
                             viewModel.purchaseSubscription(
                                 context as Activity,
-                                availableProducts[selectedProductIndex]
+                                availableSubscriptions[selectedProductIndex]
                             )
                         }
                     },

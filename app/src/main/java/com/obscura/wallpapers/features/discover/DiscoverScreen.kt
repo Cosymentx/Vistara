@@ -3,7 +3,6 @@ package com.obscura.wallpapers.features.discover
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,7 +31,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -65,10 +63,11 @@ fun DiscoverScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .height(50.dp),
                 shape = RoundedCornerShape(28.dp),
-                color = Color.White.copy(alpha = 0.1f), // Very subtle background, Haze handles the rest
-                border = BorderStroke(0.5.dp, Color.White.copy(alpha = 0.2f)),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), // Very subtle background, Haze handles the rest
+//                border = BorderStroke(0.5.dp, Color.White.copy(alpha = 0.2f)),
                 onClick = { onSearch("") }) {
                 Row(
                     modifier = Modifier

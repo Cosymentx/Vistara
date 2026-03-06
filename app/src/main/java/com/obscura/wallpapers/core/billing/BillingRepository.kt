@@ -3,6 +3,8 @@ package com.obscura.wallpapers.core.billing
 import android.app.Activity
 import android.util.Log
 import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
+import com.obscura.wallpapers.core.billing.model.ProductType
 import com.obscura.wallpapers.core.billing.model.PurchaseState
 import com.obscura.wallpapers.core.data.local.SubscriptionDao
 import com.obscura.wallpapers.core.data.local.entity.UserSubscriptionEntity
@@ -42,9 +44,14 @@ class BillingRepository @Inject constructor(
     val purchaseState: Flow<PurchaseState> = billingManager.purchaseState
 
     /**
-     * 可用产品列表
+     * 可用订阅产品列表
      */
-    val availableProducts: Flow<List<ProductDetails>> = billingManager.availableProducts
+    val availableSubscriptions: Flow<List<ProductDetails>> = billingManager.availableSubscriptions
+
+    /**
+     * 可用内购产品列表
+     */
+    val availableInAppProducts: Flow<List<ProductDetails>> = billingManager.availableInAppProducts
 
     /**
      * 刷新订阅状态
@@ -53,18 +60,18 @@ class BillingRepository @Inject constructor(
         try {
             billingManager.queryPurchases()
             
-            // 更新本地数据库
+            // 更新本地数据库 (如果是订阅)
             val isPremium = billingManager.isPremium.value
-            val purchaseState = billingManager.purchaseState.value
+            val state = billingManager.purchaseState.value
             
-            if (purchaseState is PurchaseState.Purchased) {
+            if (state is PurchaseState.Purchased && ProductType.getAllSubscriptionIds().contains(state.productId)) {
                 val subscription = UserSubscriptionEntity(
                     id = 1,
                     isPremium = isPremium,
-                    subscriptionType = purchaseState.productId,
-                    purchaseToken = purchaseState.purchaseToken,
-                    expiryDate = purchaseState.expiryTimeMillis,
-                    autoRenewing = purchaseState.isAutoRenewing,
+                    subscriptionType = state.productId,
+                    purchaseToken = state.purchaseToken,
+                    expiryDate = state.expiryTimeMillis,
+                    autoRenewing = state.isAutoRenewing,
                     lastVerified = System.currentTimeMillis()
                 )
                 subscriptionDao.updateSubscription(subscription)
@@ -84,6 +91,20 @@ class BillingRepository @Inject constructor(
      */
     suspend fun purchaseProduct(activity: Activity, productDetails: ProductDetails) {
         billingManager.launchBillingFlow(activity, productDetails)
+    }
+
+    /**
+     * 消耗购买 (针对金币等)
+     */
+    suspend fun consumePurchase(purchaseToken: String): Boolean {
+        return billingManager.consumePurchase(purchaseToken)
+    }
+
+    /**
+     * 重置购买状态
+     */
+    fun resetPurchaseState() {
+        billingManager.resetPurchaseState()
     }
 
     /**

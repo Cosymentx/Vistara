@@ -36,11 +36,11 @@ class TestViewModel @Inject constructor(
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn.asStateFlow()
 
-    private val _isDiamondTestEnabled = MutableStateFlow(false)
-    val isDiamondTestEnabled: StateFlow<Boolean> = _isDiamondTestEnabled.asStateFlow()
+    private val _isCoinTestEnabled = MutableStateFlow(false)
+    val isCoinTestEnabled: StateFlow<Boolean> = _isCoinTestEnabled.asStateFlow()
 
-    private val _currentDiamondBalance = MutableStateFlow(0)
-    val currentDiamondBalance: StateFlow<Int> = _currentDiamondBalance.asStateFlow()
+    private val _currentCoinBalance = MutableStateFlow(0)
+    val currentCoinBalance: StateFlow<Int> = _currentCoinBalance.asStateFlow()
 
     private val _operationResult = MutableStateFlow<String?>(null)
     val operationResult: StateFlow<String?> = _operationResult.asStateFlow()
@@ -54,7 +54,7 @@ class TestViewModel @Inject constructor(
     init {
         checkPremiumStatus()
         checkLoginStatus()
-        checkDiamondBalance()
+        checkCoinBalance()
     }
 
     private fun checkLoginStatus() {
@@ -144,60 +144,39 @@ class TestViewModel @Inject constructor(
         }
     }
 
-    private fun checkDiamondBalance() {
-//        viewModelScope.launch {
-//            try {
-//                val balance = diamondRepository.getDiamondBalanceValue()
-//                _currentDiamondBalance.value = balance
-//                Log.d(TAG, "Diamond balance: $balance")
-//            } catch (e: Exception) {
-//                Log.e(TAG, "Error checking diamond balance: ${e.message}")
-//                _operationResult.value = "检查钻石余额失败: ${e.message}"
-//            }
-//        }
+    private fun checkCoinBalance() {
+        viewModelScope.launch {
+            try {
+                userRepository.coinBalance.collect { balance ->
+                    _currentCoinBalance.value = balance
+                    Log.d(TAG, "Coin balance: $balance")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error checking coin balance: ${e.message}")
+                _operationResult.value = "检查金币余额失败: ${e.message}"
+            }
+        }
     }
 
-    fun toggleDiamondTest() {
-        val newState = !_isDiamondTestEnabled.value
-        _isDiamondTestEnabled.value = newState
+    fun toggleCoinTest() {
+        val newState = !_isCoinTestEnabled.value
+        _isCoinTestEnabled.value = newState
 
-//        viewModelScope.launch {
-//            try {
-//                if (newState) {
-//                    val success = diamondRepository.updateDiamondBalance(
-//                        amount = 200,
-//                        type = DiamondTransactionType.REWARD,
-//                        description = "测试模式奖励"
-//                    )
-//                    if (success) {
-//                        _operationResult.value = "测试模式已开启，已增加200钻石"
-//                        checkDiamondBalance()
-//                    } else {
-//                        _operationResult.value = "增加钻石失败"
-//                    }
-//                } else {
-//                    val currentBalance = diamondRepository.getDiamondBalanceValue()
-//                    if (currentBalance > 0) {
-//                        val success = diamondRepository.updateDiamondBalance(
-//                            amount = -currentBalance,
-//                            type = DiamondTransactionType.PURCHASE,
-//                            description = "测试模式关闭，清空钻石"
-//                        )
-//                        if (success) {
-//                            _operationResult.value = "测试模式已关闭，钻石已清空"
-//                            checkDiamondBalance()
-//                        } else {
-//                            _operationResult.value = "清空钻石失败"
-//                        }
-//                    } else {
-//                        _operationResult.value = "测试模式已关闭"
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                Log.e(TAG, "Error toggling diamond test: ${e.message}")
-//                _operationResult.value = "切换钻石测试模式失败: ${e.message}"
-//            }
-//        }
+        viewModelScope.launch {
+            try {
+                if (newState) {
+                    val currentBalance = _currentCoinBalance.value
+                    userRepository.updateCoinBalance(currentBalance + 200)
+                    _operationResult.value = "测试模式已开启，已增加200金币"
+                } else {
+                    userRepository.updateCoinBalance(0)
+                    _operationResult.value = "测试模式已关闭，金币已清空"
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error toggling coin test: ${e.message}")
+                _operationResult.value = "切换金币测试模式失败: ${e.message}"
+            }
+        }
     }
 
     fun clearOperationResult() {

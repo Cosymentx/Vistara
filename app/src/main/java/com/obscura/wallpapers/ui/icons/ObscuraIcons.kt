@@ -1160,6 +1160,12 @@ object ObscuraIcons {
         }
 
     /**
+     * 金币图标 - 更现代的硬币/钻石设计
+     */
+    val Coin: ImageVector
+        get() = Diamond
+
+    /**
      * 钻石图标 - 更现代的钻石设计
      */
     val Diamond: ImageVector

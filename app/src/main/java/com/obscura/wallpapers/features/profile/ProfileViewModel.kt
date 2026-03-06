@@ -31,8 +31,8 @@ class ProfileViewModel @Inject constructor(
     private val _isPremiumUser = MutableStateFlow(false)
     val isPremiumUser: StateFlow<Boolean> = _isPremiumUser.asStateFlow()
 
-    private val _diamondBalance = MutableStateFlow(0)
-    val diamondBalance: StateFlow<Int> = _diamondBalance.asStateFlow()
+    private val _coinBalance = MutableStateFlow(0)
+    val coinBalance: StateFlow<Int> = _coinBalance.asStateFlow()
 
     private val _isDebugMode = MutableStateFlow(false)
     val isDebugMode: StateFlow<Boolean> = _isDebugMode.asStateFlow()
@@ -63,6 +63,12 @@ class ProfileViewModel @Inject constructor(
                     if (!name.isNullOrEmpty()) _username.value = name
                     val photoUrl = authRepository.userPhotoUrl.first()
                     _userPhotoUrl.value = photoUrl
+                    
+                    // 获取金币余额
+                    userRepository.coinBalance.collect { balance ->
+                        _coinBalance.value = balance
+                    }
+
                     try {
                         userRepository.refreshUserProfile()
                     } catch (e: Exception) {

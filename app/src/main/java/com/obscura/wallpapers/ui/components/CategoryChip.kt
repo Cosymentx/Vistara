@@ -31,6 +31,52 @@ import com.obscura.wallpapers.core.data.model.Category
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 
+@Composable
+fun CategoryChip(
+    category: String,
+    selected: Boolean = false,
+    onClick: () -> Unit,
+    icon: @Composable (() -> Unit)? = null,
+    isPremiumUser: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    AssistChip(
+        onClick = onClick,
+        label = {
+            Text(
+                text = category,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = if (selected)
+                    MaterialTheme.colorScheme.onPrimary
+                else
+                    MaterialTheme.colorScheme.onSurface
+            )
+        },
+        modifier = modifier,
+        leadingIcon = icon?.let {
+            {
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    icon()
+                }
+            }
+        },
+        border = BorderStroke(
+            width = if (selected) 0.dp else 1.dp,
+            color = if (selected) Color.Transparent else MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+        ),
+        colors = AssistChipDefaults.assistChipColors(
+            containerColor = if (selected)
+                MaterialTheme.colorScheme.primary
+            else
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        )
+    )
+}
+
 /**
  * 分类标签组件，用于标签云或筛选场景
  * 

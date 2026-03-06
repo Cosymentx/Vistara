@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.core.data.model.WallpaperCategory
+import com.obscura.wallpapers.core.data.repository.UserRepository
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val wallpaperRepository: WallpaperRepository,
     private val userPrefsRepository: UserPrefsRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     companion object {
@@ -46,9 +48,24 @@ class SearchViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    val isPremiumUser = userRepository.isPremiumUser
+
+    private val _purchasedIds = MutableStateFlow<Set<String>>(emptySet())
+    val purchasedIds: StateFlow<Set<String>> = _purchasedIds.asStateFlow()
+
     init {
         loadSearchHistory()
         loadHotSearches()
+        loadPurchasedWallpapers()
+    }
+
+    private fun loadPurchasedWallpapers() {
+        viewModelScope.launch {
+            // Check purchased wallpapers from repository
+            // Note: Currently WallpaperRepository doesn't expose a Flow of all purchased IDs, 
+            // but we can mark them as we load results or query specific ones.
+            // For now, we'll initialize it as empty and rely on markWallpaperAsPurchased logic if needed.
+        }
     }
 
     private fun loadHotSearches() {
@@ -101,7 +118,19 @@ class SearchViewModel @Inject constructor(
 
             try {
                 val results = wallpaperRepository.searchWallpapers(query, 1, 20)
-                _searchResults.value = results
+                
+                // For each result, check if it's already purchased
+                val resultsWithPurchaseStatus = results.map { wallpaper ->
+                    if (wallpaper.requiresPurchase) {
+                        val isPurchased = wallpaperRepository.isWallpaperPurchased(wallpaper.id)
+                        if (isPurchased) {
+                            _purchasedIds.value += wallpaper.id
+                        }
+                    }
+                    wallpaper
+                }
+                
+                _searchResults.value = resultsWithPurchaseStatus
                 addToSearchHistory(query)
             } catch (e: Exception) {
                 _error.value = e.message ?: "搜索失败，请重试"
