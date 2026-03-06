@@ -32,8 +32,7 @@ class LocaleManager @Inject constructor(
         val currentLocale = AppCompatDelegate.getApplicationLocales()
         val settings = runBlocking { userPrefsRepository.getUserSettings() }
         val savedLanguage = settings.appLanguage
-        val currentLanguage = savedLanguage
-        Log.d(TAG, "当前语言设置: $currentLanguage")
+        Log.d(TAG, "当前语言设置: $savedLanguage")
         Log.d(TAG, "当前应用语言: $currentLocale")
         try {
             if (language == AppLanguage.SYSTEM) {

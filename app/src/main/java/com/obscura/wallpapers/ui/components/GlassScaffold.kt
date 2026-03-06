@@ -1,15 +1,12 @@
 package com.obscura.wallpapers.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -26,12 +23,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeDefaults
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -136,7 +132,7 @@ fun HomeTabScaffold(
                             Box(modifier = Modifier.statusBarsPadding())
                         }
                         headerExtra?.invoke(this)
-                        
+
                         // Elegant bottom line
 //                        Box(
 //                            modifier = Modifier
@@ -160,7 +156,7 @@ fun GlassScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     val hazeState = remember { HazeState() }
-    
+
     Scaffold(
         topBar = {
             if (title != null) {
@@ -178,8 +174,11 @@ fun GlassScaffold(
                     modifier = Modifier
                         .statusBarsPadding()
                         .hazeEffect(
-                            state = hazeState, 
-                            style = HazeStyle(blurRadius = 15.dp, tint = HazeTint(Color.Transparent))
+                            state = hazeState,
+                            style = HazeStyle(
+                                blurRadius = 15.dp,
+                                tint = HazeTint(Color.Transparent)
+                            )
                         )
                 )
             }

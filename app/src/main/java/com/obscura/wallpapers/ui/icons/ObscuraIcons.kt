@@ -1866,4 +1866,149 @@ object ObscuraIcons {
                 }
             }.build()
         }
+
+    /**
+     * 发现图标 - 现代感透视方块设计
+     */
+    val Discover: ImageVector
+        get() = ImageVector.Builder(
+            name = "discover",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24f,
+            viewportHeight = 24f
+        ).apply {
+            path(
+                fill = SolidColor(Color.Black),
+                strokeLineWidth = 1.5f,
+                stroke = SolidColor(Color.Black),
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round
+            ) {
+                moveTo(3f, 3f)
+                horizontalLineToRelative(7f)
+                verticalLineToRelative(7f)
+                horizontalLineToRelative(-7f)
+                close()
+            }
+            path(
+                fill = SolidColor(Color.Black),
+                strokeLineWidth = 1.5f,
+                stroke = SolidColor(Color.Black),
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round
+            ) {
+                moveTo(14f, 3f)
+                horizontalLineToRelative(7f)
+                verticalLineToRelative(7f)
+                horizontalLineToRelative(-7f)
+                close()
+            }
+            path(
+                fill = SolidColor(Color.Black),
+                strokeLineWidth = 1.5f,
+                stroke = SolidColor(Color.Black),
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round
+            ) {
+                moveTo(14f, 14f)
+                horizontalLineToRelative(7f)
+                verticalLineToRelative(7f)
+                horizontalLineToRelative(-7f)
+                close()
+            }
+            path(
+                fill = SolidColor(Color.Black),
+                strokeLineWidth = 1.5f,
+                stroke = SolidColor(Color.Black),
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round
+            ) {
+                moveTo(3f, 14f)
+                horizontalLineToRelative(7f)
+                verticalLineToRelative(7f)
+                horizontalLineToRelative(-7f)
+                close()
+            }
+        }.build()
+
+    /**
+     * 照片图标 - 极简圆圈层叠设计
+     */
+    val Photo: ImageVector
+        get() = ImageVector.Builder(
+            name = "photo",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24f,
+            viewportHeight = 24f
+        ).apply {
+            path(
+                stroke = SolidColor(Color.Black),
+                strokeLineWidth = 1.5f,
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round
+            ) {
+                moveTo(12f, 12f)
+                moveToRelative(-9f, 0f)
+                arcTo(9f, 9f, 0f, true, true, 21f, 12f)
+                arcTo(9f, 9f, 0f, true, true, 3f, 12f)
+            }
+            path(
+                stroke = SolidColor(Color.Black),
+                strokeLineWidth = 1.5f,
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round
+            ) {
+                moveTo(12f, 12f)
+                moveToRelative(-4f, 0f)
+                arcTo(4f, 4f, 0f, true, true, 16f, 12f)
+                arcTo(4f, 4f, 0f, true, true, 8f, 12f)
+            }
+        }.build()
+
+    /**
+     * 视频图标 - 播放按钮与动感线条
+     */
+    val Video: ImageVector
+        get() = ImageVector.Builder(
+            name = "video",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24f,
+            viewportHeight = 24f
+        ).apply {
+            path(
+                stroke = SolidColor(Color.Black),
+                strokeLineWidth = 1.5f,
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round
+            ) {
+                moveTo(15f, 10f)
+                lineToRelative(4.553f, -2.276f)
+                arcTo(1f, 1f, 0f, false, true, 21f, 8.618f)
+                verticalLineToRelative(6.764f)
+                arcTo(1f, 1f, 0f, false, true, 19.553f, 16.276f)
+                lineTo(15f, 14f)
+                verticalLineTo(10f)
+                close()
+            }
+            path(
+                stroke = SolidColor(Color.Black),
+                strokeLineWidth = 1.5f,
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round
+            ) {
+                moveTo(3f, 7f)
+                arcTo(2f, 2f, 0f, false, true, 5f, 5f)
+                horizontalLineTo(13f)
+                arcTo(2f, 2f, 0f, false, true, 15f, 7f)
+                verticalLineTo(17f)
+                arcTo(2f, 2f, 0f, false, true, 13f, 19f)
+                horizontalLineTo(5f)
+                arcTo(2f, 2f, 0f, false, true, 3f, 17f)
+                verticalLineTo(7f)
+                close()
+            }
+        }.build()
 }
