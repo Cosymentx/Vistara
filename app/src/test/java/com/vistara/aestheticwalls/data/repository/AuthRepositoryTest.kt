@@ -1,4 +1,4 @@
-package com.obscura.wallpapers.core.data.repository
+package com.vistara.aestheticwalls.data.repository
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -10,6 +10,7 @@ import com.obscura.wallpapers.core.data.remote.service.ApiResponse
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.obscura.wallpapers.core.data.repository.AuthRepositoryImpl
+import com.obscura.wallpapers.core.data.repository.UserRepository
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -54,8 +55,9 @@ class AuthRepositoryTest {
             on { getResult(Exception::class.java) } doReturn account
         }
 
-        val loginResponse = LoginResponse("server_token", true)
-        whenever(apiService.login(any())).thenReturn(ApiResponse(code = 200, msg = "Success", data = loginResponse))
+        val testUid = 12345L
+        val loginResponse = LoginResponse(accessToken = "server_token", isPremium = true, uid = testUid)
+        whenever(apiService.login(any())).thenReturn(ApiResponse(code = 0, message = "Success", data = loginResponse))
 
         // 执行测试
         val result = authRepository.handleSignInResult(task)
@@ -63,6 +65,8 @@ class AuthRepositoryTest {
         // 验证结果
         assert(result.isSuccess)
         verify(userRepository).updateLoginStatus(true)
+        verify(userRepository).saveServerToken("server_token")
+        verify(userRepository).saveUserUid(testUid.toString())
         verify(userRepository).updatePremiumStatus(true)
         
         // 验证请求参数
@@ -70,7 +74,11 @@ class AuthRepositoryTest {
             nickname = "Test User",
             email = "test@example.com",
             avatar = "",
-            token = "test_token"
+            googleToken = "test_token",
+            authId = "test_id",
+            authType = 1,
+            authToken = "test_token",
+            skipUpdateInfo = true
         )))
     }
 
@@ -89,7 +97,7 @@ class AuthRepositoryTest {
             on { getResult(Exception::class.java) } doReturn account
         }
 
-        whenever(apiService.login(any())).thenReturn(ApiResponse(code = 400, msg = "Bad Request", data = null))
+        whenever(apiService.login(any())).thenReturn(ApiResponse(code = 400, message = "Bad Request", data = null))
 
         // 执行测试
         val result = authRepository.handleSignInResult(task)
@@ -102,7 +110,11 @@ class AuthRepositoryTest {
             nickname = "Test User",
             email = "test@example.com",
             avatar = "",
-            token = "test_token"
+            googleToken = "test_token",
+            authId = "test_id",
+            authType = 1,
+            authToken = "test_token",
+            skipUpdateInfo = true
         )))
     }
-} 
+}

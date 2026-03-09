@@ -16,6 +16,42 @@ interface UserRepository {
     suspend fun getServerToken(): String?
 
     /**
+     * 保存是否开启三方支付
+     */
+    suspend fun saveOpenThird(openThird: Boolean)
+
+    /**
+     * 获取是否开启三方支付
+     */
+    val openThird: Flow<Boolean>
+
+    /**
+     * 获取金币产品列表
+     * @param productType 1普通商品。2vip 商品 3首充商品
+     */
+    suspend fun getCoinProducts(productType: Int = 1): ApiResult<List<com.obscura.wallpapers.core.data.remote.service.CoinProduct>>
+
+    /**
+     * 创建订单
+     */
+    suspend fun createOrder(priceId: String, paymentMethodId: String): ApiResult<com.obscura.wallpapers.core.data.remote.service.CreateOrderResponse>
+
+    /**
+     * 获取用户UID
+     */
+    val userUid: Flow<String?>
+
+    /**
+     * 获取用户UID (挂起函数)
+     */
+    suspend fun getUserUid(): String?
+
+    /**
+     * 保存用户UID
+     */
+    suspend fun saveUserUid(uid: String)
+
+    /**
      * 获取用户个人资料
      * @return 用户个人资料的API结果
      */

@@ -44,6 +44,7 @@ fun ApiTestScreen(
     val testResults by viewModel.testResults.collectAsState()
     val isTestingPexels by viewModel.isTestingPexels.collectAsState()
     val isTestingUnsplash by viewModel.isTestingUnsplash.collectAsState()
+    val isTestingSystemApi by viewModel.isTestingSystemApi.collectAsState()
     val resultMessage by viewModel.resultMessage.collectAsState()
     
     val isPremium by viewModel.isPremium.collectAsState()
@@ -77,6 +78,7 @@ fun ApiTestScreen(
             modifier = contentModifier
                 .fillMaxSize()
                 .hazeSource(state = hazeState)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -156,6 +158,12 @@ fun ApiTestScreen(
                         onClick = { viewModel.testUnsplashApi() },
                         modifier = Modifier.weight(1f)
                     )
+                    ApiTestCard(
+                        name = "System",
+                        isLoading = isTestingSystemApi,
+                        onClick = { viewModel.testSystemApis() },
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
 
@@ -193,6 +201,7 @@ fun ApiTestScreen(
 @Composable
 fun StatusPanel(isPremium: Boolean, coinBalance: Int) {
     val hazeState = LocalHazeState.current ?: remember { HazeState() }
+    val contentColor = MaterialTheme.colorScheme.onSurface
     
     Box(
         modifier = Modifier
@@ -200,7 +209,10 @@ fun StatusPanel(isPremium: Boolean, coinBalance: Int) {
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    tint = HazeTint(if (isPremium) Color(0xFFD4AF37).copy(alpha = 0.15f) else Color.White.copy(alpha = 0.15f)),
+                    tint = HazeTint(
+                        if (isPremium) Color(0xFFD4AF37).copy(alpha = 0.15f) 
+                        else contentColor.copy(alpha = 0.06f)
+                    ),
                     blurRadius = 30.dp,
                     noiseFactor = 0.15f
                 )
@@ -209,15 +221,15 @@ fun StatusPanel(isPremium: Boolean, coinBalance: Int) {
                 if (isPremium) {
                     Brush.linearGradient(listOf(Color(0xFFD4AF37).copy(alpha = 0.1f), Color(0xFF9A7B1D).copy(alpha = 0.05f)))
                 } else {
-                    Brush.linearGradient(listOf(Color.White.copy(alpha = 0.1f), Color.White.copy(alpha = 0.05f)))
+                    Brush.linearGradient(listOf(contentColor.copy(alpha = 0.03f), contentColor.copy(alpha = 0.01f)))
                 }
             )
             .border(
                 1.dp,
                 Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.2f),
-                        Color.White.copy(alpha = 0.05f)
+                        contentColor.copy(alpha = 0.15f),
+                        contentColor.copy(alpha = 0.05f)
                     )
                 ),
                 shape = RoundedCornerShape(24.dp)
@@ -233,14 +245,14 @@ fun StatusPanel(isPremium: Boolean, coinBalance: Int) {
                 Text(
                     text = stringResource(R.string.premium_user_status),
                     style = MaterialTheme.typography.labelLarge,
-                    color = Color.White.copy(alpha = 0.6f)
+                    color = contentColor.copy(alpha = 0.6f)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = if (isPremium) ObscuraIcons.Crown else ObscuraIcons.Person,
                         contentDescription = null,
-                        tint = if (isPremium) Color(0xFFD4AF37) else Color.White,
+                        tint = if (isPremium) Color(0xFFD4AF37) else contentColor,
                         modifier = Modifier.size(28.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
@@ -248,7 +260,7 @@ fun StatusPanel(isPremium: Boolean, coinBalance: Int) {
                         text = if (isPremium) "PREMIUM" else "STANDARD",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Black,
-                        color = Color.White,
+                        color = contentColor,
                         letterSpacing = 1.sp
                     )
                 }
@@ -258,14 +270,14 @@ fun StatusPanel(isPremium: Boolean, coinBalance: Int) {
                 Text(
                     text = "V-COINS",
                     style = MaterialTheme.typography.labelLarge,
-                    color = Color.White.copy(alpha = 0.6f)
+                    color = contentColor.copy(alpha = 0.6f)
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = "$coinBalance",
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = contentColor
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
@@ -287,24 +299,25 @@ fun GlassSurface(
     content: @Composable ColumnScope.() -> Unit
 ) {
     val hazeState = LocalHazeState.current ?: remember { HazeState() }
+    val contentColor = MaterialTheme.colorScheme.onSurface
     
     Box(
         modifier = modifier
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    tint = HazeTint(Color.White.copy(alpha = 0.12f)),
+                    tint = HazeTint(contentColor.copy(alpha = 0.06f)),
                     blurRadius = 30.dp,
                     noiseFactor = 0.15f
                 )
             )
-            .background(Color.White.copy(alpha = 0.05f), shape = shape)
+            .background(contentColor.copy(alpha = 0.03f), shape = shape)
             .border(
                 1.dp,
                 Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.2f),
-                        Color.White.copy(alpha = 0.05f)
+                        contentColor.copy(alpha = 0.15f),
+                        contentColor.copy(alpha = 0.05f)
                     )
                 ),
                 shape = shape
@@ -322,13 +335,18 @@ fun TestSectionHeader(title: String, icon: ImageVector) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
     ) {
-        Icon(icon, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.White.copy(alpha = 0.6f))
+        Icon(
+            icon, 
+            contentDescription = null, 
+            modifier = Modifier.size(16.dp), 
+            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = title.uppercase(),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.ExtraBold,
-            color = Color.White.copy(alpha = 0.6f),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             letterSpacing = 1.5.sp
         )
     }
@@ -340,8 +358,8 @@ fun SimulatorButton(
     icon: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = Color.Transparent, // 不再需要实心色
-    contentColor: Color = Color.White
+    containerColor: Color = Color.Transparent,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface
 ) {
     val hazeState = LocalHazeState.current ?: remember { HazeState() }
 
@@ -351,18 +369,18 @@ fun SimulatorButton(
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    tint = HazeTint(Color.White.copy(alpha = 0.15f)),
+                    tint = HazeTint(contentColor.copy(alpha = 0.06f)),
                     blurRadius = 30.dp,
                     noiseFactor = 0.15f
                 )
             )
-            .background(Color.White.copy(alpha = 0.08f), shape = RoundedCornerShape(16.dp))
+            .background(contentColor.copy(alpha = 0.04f), shape = RoundedCornerShape(16.dp))
             .border(
                 1.dp,
                 Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.25f),
-                        Color.White.copy(alpha = 0.05f)
+                        contentColor.copy(alpha = 0.2f),
+                        contentColor.copy(alpha = 0.05f)
                     )
                 ),
                 shape = RoundedCornerShape(16.dp)
@@ -381,6 +399,7 @@ fun SimulatorButton(
 @Composable
 fun RealProductCard(product: ProductDetails, isSub: Boolean, onClick: () -> Unit) {
     val hazeState = LocalHazeState.current ?: remember { HazeState() }
+    val contentColor = MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = Modifier
@@ -388,18 +407,18 @@ fun RealProductCard(product: ProductDetails, isSub: Boolean, onClick: () -> Unit
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    tint = HazeTint(Color.White.copy(alpha = 0.12f)),
+                    tint = HazeTint(contentColor.copy(alpha = 0.06f)),
                     blurRadius = 30.dp,
                     noiseFactor = 0.15f
                 )
             )
-            .background(Color.White.copy(alpha = 0.05f), shape = RoundedCornerShape(20.dp))
+            .background(contentColor.copy(alpha = 0.03f), shape = RoundedCornerShape(20.dp))
             .border(
                 1.dp,
                 Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.2f),
-                        Color.White.copy(alpha = 0.05f)
+                        contentColor.copy(alpha = 0.15f),
+                        contentColor.copy(alpha = 0.05f)
                     )
                 ),
                 shape = RoundedCornerShape(20.dp)
@@ -414,7 +433,7 @@ fun RealProductCard(product: ProductDetails, isSub: Boolean, onClick: () -> Unit
                 modifier = Modifier
                     .size(48.dp)
                     .background(
-                        if (isSub) Color(0xFFD4AF37).copy(alpha = 0.2f) else Color.White.copy(alpha = 0.1f),
+                        if (isSub) Color(0xFFD4AF37).copy(alpha = 0.2f) else contentColor.copy(alpha = 0.05f),
                         shape = RoundedCornerShape(12.dp)
                     ),
                 contentAlignment = Alignment.Center
@@ -427,12 +446,12 @@ fun RealProductCard(product: ProductDetails, isSub: Boolean, onClick: () -> Unit
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(product.name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, color = Color.White)
-                Text(product.description, style = MaterialTheme.typography.bodySmall, maxLines = 1, color = Color.White.copy(alpha = 0.5f))
+                Text(product.name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, color = contentColor)
+                Text(product.description, style = MaterialTheme.typography.bodySmall, maxLines = 1, color = contentColor.copy(alpha = 0.5f))
             }
             Text(
                 text = product.oneTimePurchaseOfferDetails?.formattedPrice ?: "Detail",
-                color = Color.White,
+                color = contentColor,
                 fontWeight = FontWeight.Black,
                 style = MaterialTheme.typography.titleMedium
             )
@@ -443,6 +462,7 @@ fun RealProductCard(product: ProductDetails, isSub: Boolean, onClick: () -> Unit
 @Composable
 fun ApiTestCard(name: String, isLoading: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val hazeState = LocalHazeState.current ?: remember { HazeState() }
+    val contentColor = MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = modifier
@@ -450,18 +470,18 @@ fun ApiTestCard(name: String, isLoading: Boolean, onClick: () -> Unit, modifier:
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    tint = HazeTint(Color.White.copy(alpha = 0.12f)),
+                    tint = HazeTint(contentColor.copy(alpha = 0.06f)),
                     blurRadius = 30.dp,
                     noiseFactor = 0.15f
                 )
             )
-            .background(Color.White.copy(alpha = 0.05f), shape = RoundedCornerShape(20.dp))
+            .background(contentColor.copy(alpha = 0.03f), shape = RoundedCornerShape(20.dp))
             .border(
                 1.dp,
                 Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.2f),
-                        Color.White.copy(alpha = 0.05f)
+                        contentColor.copy(alpha = 0.15f),
+                        contentColor.copy(alpha = 0.05f)
                     )
                 ),
                 shape = RoundedCornerShape(20.dp)
@@ -470,12 +490,12 @@ fun ApiTestCard(name: String, isLoading: Boolean, onClick: () -> Unit, modifier:
         contentAlignment = Alignment.Center
     ) {
         if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 3.dp, color = Color.White)
+            CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 3.dp, color = contentColor)
         } else {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(Icons.Default.Build, contentDescription = null, tint = Color.White.copy(alpha = 0.7f))
+                Icon(Icons.Default.Build, contentDescription = null, tint = contentColor.copy(alpha = 0.7f))
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(name, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.White)
+                Text(name, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = contentColor)
             }
         }
     }
@@ -486,6 +506,7 @@ fun LogCard(result: String) {
     val isError = result.contains("❌")
     val isSuccess = result.contains("✅")
     val hazeState = LocalHazeState.current ?: remember { HazeState() }
+    val contentColor = MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = Modifier
@@ -497,7 +518,7 @@ fun LogCard(result: String) {
                         when {
                             isError -> Color.Red.copy(alpha = 0.1f)
                             isSuccess -> Color.Green.copy(alpha = 0.1f)
-                            else -> Color.White.copy(alpha = 0.12f)
+                            else -> contentColor.copy(alpha = 0.06f)
                         }
                     ),
                     blurRadius = 30.dp,
@@ -508,7 +529,7 @@ fun LogCard(result: String) {
                 color = when {
                     isError -> Color.Red.copy(alpha = 0.05f)
                     isSuccess -> Color.Green.copy(alpha = 0.05f)
-                    else -> Color.White.copy(alpha = 0.05f)
+                    else -> contentColor.copy(alpha = 0.03f)
                 },
                 shape = RoundedCornerShape(12.dp)
             )
@@ -516,8 +537,8 @@ fun LogCard(result: String) {
                 0.5.dp,
                 Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.2f),
-                        Color.White.copy(alpha = 0.05f)
+                        contentColor.copy(alpha = 0.15f),
+                        contentColor.copy(alpha = 0.05f)
                     )
                 ),
                 shape = RoundedCornerShape(12.dp)
@@ -529,7 +550,7 @@ fun LogCard(result: String) {
             style = MaterialTheme.typography.bodySmall,
             fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
             lineHeight = 18.sp,
-            color = Color.White
+            color = contentColor
         )
     }
 }

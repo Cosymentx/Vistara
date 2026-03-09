@@ -36,12 +36,25 @@ class UserRepositoryImpl @Inject constructor(
         private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
         private val SERVER_TOKEN = stringPreferencesKey("server_token")
         private val USER_COIN_BALANCE = intPreferencesKey("user_coin_balance")
+        private val USER_UID = stringPreferencesKey("user_uid")
+        private val GOOGLE_ID = stringPreferencesKey("user_id") // 兼容 AuthRepositoryImpl 的 Key
 
         // 用户信息相关的Key
         private val USER_NICKNAME = stringPreferencesKey("user_nickname")
         private val USER_EMAIL = stringPreferencesKey("user_email")
         private val USER_AVATAR = stringPreferencesKey("user_avatar")
         private val USER_IS_WHITELIST = stringPreferencesKey("user_is_whitelist")
+        private val OPEN_THIRD = booleanPreferencesKey("open_third")
+    }
+
+    override val openThird: Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[OPEN_THIRD] ?: false
+    }
+
+    override suspend fun saveOpenThird(openThird: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[OPEN_THIRD] = openThird
+        }
     }
 
     override val isPremiumUser: Flow<Boolean> = dataStore.data.map { preferences ->
@@ -70,6 +83,24 @@ class UserRepositoryImpl @Inject constructor(
 
     override val coinBalance: Flow<Int> = dataStore.data.map { preferences ->
         preferences[USER_COIN_BALANCE] ?: 0
+    }
+
+    override val userUid: Flow<String?> = dataStore.data.map { preferences ->
+        preferences[USER_UID]
+    }
+
+    override suspend fun getUserUid(): String? {
+        val prefs = dataStore.data.first()
+        val uid = prefs[USER_UID]
+        Log.d(TAG, "getUserUid 最终结果: $uid (from USER_UID=${prefs[USER_UID]}, GOOGLE_ID=${prefs[GOOGLE_ID]})")
+        return uid
+    }
+
+    override suspend fun saveUserUid(uid: String) {
+        Log.d(TAG, "保存用户UID: $uid")
+        dataStore.edit { preferences ->
+            preferences[USER_UID] = uid
+        }
     }
 
     override suspend fun checkPremiumStatus(): Boolean {
@@ -116,6 +147,7 @@ class UserRepositoryImpl @Inject constructor(
             preferences.remove(USER_AVATAR)
             preferences.remove(USER_IS_WHITELIST)
             preferences.remove(USER_COIN_BALANCE)
+            preferences.remove(USER_UID)
         }
     }
 
@@ -129,9 +161,11 @@ class UserRepositoryImpl @Inject constructor(
             val avatar = preferences[USER_AVATAR]
             val isWhiteList = preferences[USER_IS_WHITELIST]
             val coins = preferences[USER_COIN_BALANCE]
+            val uidStr = preferences[USER_UID]
 
             if (email != null) {
                 ProfileResponse(
+                    uid = uidStr?.toLongOrNull(),
                     nickname = nickname ?: "",
                     email = email,
                     avatar = avatar ?: "",
@@ -150,6 +184,9 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun cacheUserProfile(profile: ProfileResponse) {
         Log.d(TAG, "缓存用户个人资料: $profile")
         dataStore.edit { preferences ->
+            profile.uid?.let { uid ->
+                preferences[USER_UID] = uid.toString()
+            }
             preferences[USER_NICKNAME] = profile.nickname
             preferences[USER_EMAIL] = profile.email
             preferences[USER_AVATAR] = profile.avatar
@@ -193,6 +230,29 @@ class UserRepositoryImpl @Inject constructor(
             preferences[SERVER_TOKEN]
         }.first()
         return token
+    }
+
+    override suspend fun getCoinProducts(productType: Int): ApiResult<List<com.obscura.wallpapers.core.data.remote.service.CoinProduct>> {
+        return safeApiCall(ApiSource.BACKEND) {
+            val response = apiService.getProducts(productType)
+            if (response.isSuccess) {
+                response.data?.goldGoods ?: emptyList()
+            } else {
+                throw Exception(response.msg)
+            }
+        }
+    }
+
+    override suspend fun createOrder(priceId: String, paymentMethodId: String): ApiResult<com.obscura.wallpapers.core.data.remote.service.CreateOrderResponse> {
+        return safeApiCall(ApiSource.BACKEND) {
+            val request = com.obscura.wallpapers.core.data.remote.service.CreateOrderRequest(priceId, paymentMethodId)
+            val response = apiService.createOrder(request)
+            if (response.isSuccess && response.data != null) {
+                response.data
+            } else {
+                throw Exception(response.msg)
+            }
+        }
     }
 
     /**

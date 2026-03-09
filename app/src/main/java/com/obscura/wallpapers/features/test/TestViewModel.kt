@@ -205,7 +205,10 @@ class TestViewModel @Inject constructor(
                     nickname = randomNickname,
                     email = email,
                     avatar = "https://api.dicebear.com/7.x/micah/png?seed=${email}",
-                    token = randomToken
+                    googleToken = randomToken,
+                    authId = "mock_auth_id_${System.currentTimeMillis()}",
+                    authType = 1,
+                    authToken = randomToken,
                 )
 
                 val result = apiService.login(loginRequest)
@@ -213,11 +216,12 @@ class TestViewModel @Inject constructor(
 
                 if (result.isSuccess) {
                     val loginResponse = result.data
-                    userRepository.saveServerToken(loginResponse?.token ?: "")
+                    userRepository.saveUserUid(loginResponse?.uid.toString())
+                    userRepository.saveServerToken(loginResponse?.accessToken ?: "")
                     userRepository.updateLoginStatus(true)
                     _isLoggedIn.value = true
                     saveUserInfo(
-                        userId = "test_${System.currentTimeMillis()}",
+                        userId = "${loginResponse?.uid}",
                         userName = randomNickname,
                         userEmail = email,
                         userPhotoUrl = "https://api.dicebear.com/7.x/micah/png?seed=${email}"
@@ -244,7 +248,8 @@ class TestViewModel @Inject constructor(
             "快乐的", "聪明的", "勇敢的", "可爱的", "友善的",
             "活泼的", "机智的", "温柔的", "善良的", "幽默的"
         )
-        val nouns = listOf("熊猫", "老虎", "狮子", "猫咪", "狗狗", "兔子", "松鼠", "大象", "长颈鹿", "猴子")
+        val nouns =
+            listOf("熊猫", "老虎", "狮子", "猫咪", "狗狗", "兔子", "松鼠", "大象", "长颈鹿", "猴子")
 
         val randomAdjective = adjectives.random()
         val randomNoun = nouns.random()

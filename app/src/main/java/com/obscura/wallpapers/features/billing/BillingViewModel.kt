@@ -7,13 +7,13 @@ import com.android.billingclient.api.ProductDetails
 import com.obscura.wallpapers.core.billing.BillingRepository
 import com.obscura.wallpapers.core.billing.model.ProductType
 import com.obscura.wallpapers.core.billing.model.PurchaseState
+import com.obscura.wallpapers.core.data.remote.ApiResult
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,10 +23,9 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class BillingViewModel @Inject constructor(
-    private val billingRepository: BillingRepository,
-    private val userRepository: UserRepository
+    private val billingRepository: BillingRepository, private val userRepository: UserRepository
 ) : ViewModel() {
-    
+
     // UI 状态
     private val _subscriptionUiState = MutableStateFlow<BillingUiState>(BillingUiState.Idle)
     val subscriptionUiState: StateFlow<BillingUiState> = _subscriptionUiState.asStateFlow()
@@ -35,32 +34,57 @@ class BillingViewModel @Inject constructor(
     private val _isPurchasingCoins = MutableStateFlow(false)
     val isPurchasingCoins: StateFlow<Boolean> = _isPurchasingCoins.asStateFlow()
 
+    // 是否展示三方支付渠道
+    val openThird: StateFlow<Boolean> = userRepository.openThird.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = false
+    )
+
     private val _coinPurchaseSuccess = MutableStateFlow(false)
     val coinPurchaseSuccess: StateFlow<Boolean> = _coinPurchaseSuccess.asStateFlow()
 
     // 是否为高级用户 (订阅)
-    val isPremium: StateFlow<Boolean> = billingRepository.isPremiumUser
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = false
-        )
-    
+    val isPremium: StateFlow<Boolean> = billingRepository.isPremiumUser.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = false
+    )
+
     // 可用订阅列表
-    val availableSubscriptions: StateFlow<List<ProductDetails>> = billingRepository.availableSubscriptions
-        .stateIn(
+    val availableSubscriptions: StateFlow<List<ProductDetails>> =
+        billingRepository.availableSubscriptions.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
 
     // 可用金币包列表
-    val availableInAppProducts: StateFlow<List<ProductDetails>> = billingRepository.availableInAppProducts
-        .stateIn(
+    val availableInAppProducts: StateFlow<List<ProductDetails>> =
+        billingRepository.availableInAppProducts.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+    // 后端金币产品列表
+    private val _backendProducts =
+        MutableStateFlow<List<com.obscura.wallpapers.core.data.remote.service.CoinProduct>>(
+            emptyList()
+        )
+    val backendProducts: StateFlow<List<com.obscura.wallpapers.core.data.remote.service.CoinProduct>> =
+        _backendProducts.asStateFlow()
+
+    // 后端订阅产品列表
+    private val _subscriptionProducts =
+        MutableStateFlow<List<com.obscura.wallpapers.core.data.remote.service.CoinProduct>>(
+            emptyList()
+        )
+    val subscriptionProducts: StateFlow<List<com.obscura.wallpapers.core.data.remote.service.CoinProduct>> =
+        _subscriptionProducts.asStateFlow()
+
+    private val _isLoadingProducts = MutableStateFlow(false)
+    val isLoadingProducts: StateFlow<Boolean> = _isLoadingProducts.asStateFlow()
 
     // 购买状态监听
     init {
@@ -70,6 +94,50 @@ class BillingViewModel @Inject constructor(
             }
         }
         refreshSubscriptionStatus()
+        fetchBackendProducts()
+        fetchSubscriptionProducts()
+    }
+
+    /**
+     * 从后端获取金币产品列表 (product_type=1)
+     */
+    fun fetchBackendProducts() {
+        viewModelScope.launch {
+            _isLoadingProducts.value = true
+            try {
+                val result = userRepository.getCoinProducts(1)
+                if (result is ApiResult.Success) {
+                    _backendProducts.value = result.data
+                } else if (result is ApiResult.Error) {
+                    _subscriptionUiState.value = BillingUiState.Error(result.message)
+                }
+            } catch (e: Exception) {
+                _subscriptionUiState.value = BillingUiState.Error("Failed to load products")
+            } finally {
+                _isLoadingProducts.value = false
+            }
+        }
+    }
+
+    /**
+     * 从后端获取订阅产品列表 (product_type=2)
+     */
+    fun fetchSubscriptionProducts() {
+        viewModelScope.launch {
+            _isLoadingProducts.value = true
+            try {
+                val result = userRepository.getCoinProducts(2)
+                if (result is ApiResult.Success) {
+                    _subscriptionProducts.value = result.data
+                } else if (result is ApiResult.Error) {
+                    android.util.Log.e("BillingViewModel", "获取订阅产品失败: ${result.message}")
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("BillingViewModel", "获取订阅产品异常", e)
+            } finally {
+                _isLoadingProducts.value = false
+            }
+        }
     }
 
     private fun handlePurchaseState(state: PurchaseState) {
@@ -83,13 +151,16 @@ class BillingViewModel @Inject constructor(
                     _subscriptionUiState.value = BillingUiState.Success
                 }
             }
+
             is PurchaseState.Error -> {
                 _subscriptionUiState.value = BillingUiState.Error(state.message)
                 _isPurchasingCoins.value = false
             }
+
             PurchaseState.Purchasing -> {
                 _subscriptionUiState.value = BillingUiState.Loading
             }
+
             else -> {}
         }
     }
@@ -119,7 +190,7 @@ class BillingViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
      * 刷新订阅状态
      */
@@ -134,7 +205,7 @@ class BillingViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
      * 发起订阅购买
      */
@@ -164,10 +235,81 @@ class BillingViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 发起渠道支付 (带后端下单)
+     */
+    fun purchaseWithChannel(
+        activity: Activity,
+        product: com.obscura.wallpapers.core.data.remote.service.CoinProduct,
+        channel: com.obscura.wallpapers.core.data.remote.service.PayChannel
+    ) {
+        viewModelScope.launch {
+            _subscriptionUiState.value = BillingUiState.Loading
+            try {
+                // 1. 调用后端接口创建订单
+                // channel.channel 是支付方式 ID (字符串)
+                val result = userRepository.createOrder(product.id ?: "", channel.channel ?: "")
+                if (result is ApiResult.Success) {
+                    val orderResponse = result.data
+                    if (orderResponse.apiIsGooglePay()) {
+                        // 如果是 Google Play 渠道，查找对应的 ProductDetails 并发起支付
+                        val playProduct = if (ProductType.getAllInAppProductIds().contains(product.sku)) {
+                             availableInAppProducts.value.find { it.productId == product.sku }
+                        } else {
+                             availableSubscriptions.value.find { it.productId == product.sku }
+                        }
+                        
+                        if (playProduct != null) {
+                            billingRepository.purchaseProduct(activity, playProduct)
+                        } else {
+                            _subscriptionUiState.value = BillingUiState.Error("Play Store product not found")
+                        }
+                    } else if (!orderResponse.payUrl.isNullOrEmpty()) {
+                        // 如果是第三方渠道且有支付链接，跳转到浏览器或 WebView
+                        val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(orderResponse.payUrl))
+                        activity.startActivity(intent)
+                        _subscriptionUiState.value = BillingUiState.Success
+                    } else {
+                        _subscriptionUiState.value = BillingUiState.Error("Invalid payment response")
+                    }
+                } else if (result is ApiResult.Error) {
+                    _subscriptionUiState.value = BillingUiState.Error(result.message)
+                }
+            } catch (e: Exception) {
+                _subscriptionUiState.value = BillingUiState.Error(e.message ?: "Purchase failed")
+            }
+        }
+    }
+
+    /**
+     * 发起 Google Play 支付 (带后端下单)
+     * 用于没有明确渠道列表时的备选方案，默认使用渠道 "1" (Google Play)
+     */
+    fun purchaseCoinsWithOrder(
+        activity: Activity,
+        product: com.obscura.wallpapers.core.data.remote.service.CoinProduct,
+        productDetails: ProductDetails
+    ) {
+        viewModelScope.launch {
+            _subscriptionUiState.value = BillingUiState.Loading
+            try {
+                // 默认使用渠道 "1" 作为 Google Play
+                val result = userRepository.createOrder(product.id ?: "", "1")
+                if (result is ApiResult.Success) {
+                    billingRepository.purchaseProduct(activity, productDetails)
+                } else if (result is ApiResult.Error) {
+                    _subscriptionUiState.value = BillingUiState.Error(result.message)
+                }
+            } catch (e: Exception) {
+                _subscriptionUiState.value = BillingUiState.Error(e.message ?: "Purchase failed")
+            }
+        }
+    }
+
     fun resetCoinPurchaseStatus() {
         _coinPurchaseSuccess.value = false
     }
-    
+
     /**
      * 恢复购买
      */
@@ -199,7 +341,5 @@ sealed class BillingUiState {
 }
 
 data class CoinPackage(
-    val amount: Int,
-    val price: String,
-    val bonus: Int
+    val amount: Int, val price: String, val bonus: Int
 )

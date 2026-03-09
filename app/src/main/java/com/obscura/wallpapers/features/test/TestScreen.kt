@@ -2,13 +2,40 @@ package com.obscura.wallpapers.features.test
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -70,6 +97,7 @@ fun TestScreen(
             modifier = contentModifier
                 .fillMaxSize()
                 .hazeSource(state = hazeState)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -89,7 +117,11 @@ fun TestScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column {
-                            Text("Login Status", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                            Text(
+                                "Login Status", style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.Medium
+                            )
                             Text(
                                 if (isLoggedIn) "Authenticated" else "Guest Mode",
                                 style = MaterialTheme.typography.bodySmall,
@@ -111,7 +143,12 @@ fun TestScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column {
-                            Text("Premium Access", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                            Text(
+                                "Premium Access",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color =MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.Medium
+                            )
                             Text(
                                 if (isPremiumUser) "VIP Active" else "Regular User",
                                 style = MaterialTheme.typography.bodySmall,
@@ -137,7 +174,12 @@ fun TestScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column {
-                            Text("Coin Test Mode", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                            Text(
+                                "Coin Test Mode",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.Medium
+                            )
                             Text(
                                 if (isCoinTestEnabled) "Mocking balance enabled" else "Using real balance",
                                 style = MaterialTheme.typography.bodySmall,
@@ -207,25 +249,38 @@ fun TestScreen(
 @Composable
 private fun TestStatusPanel(isLoggedIn: Boolean, isPremium: Boolean, coins: Int) {
     val hazeState = LocalHazeState.current ?: remember { HazeState() }
-    
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    tint = HazeTint(if (isPremium) Color(0xFFD4AF37).copy(alpha = 0.15f) else Color.White.copy(alpha = 0.15f)),
+                    tint = HazeTint(
+                        if (isPremium) Color(0xFFD4AF37).copy(alpha = 0.15f) else Color.White.copy(
+                            alpha = 0.15f
+                        )
+                    ),
                     blurRadius = 30.dp,
                     noiseFactor = 0.15f
                 )
             )
             .background(
                 if (isPremium) {
-                    Brush.linearGradient(listOf(Color(0xFFD4AF37).copy(alpha = 0.1f), Color(0xFF9A7B1D).copy(alpha = 0.05f)))
+                    Brush.linearGradient(
+                        listOf(
+                            Color(0xFFD4AF37).copy(alpha = 0.1f),
+                            Color(0xFF9A7B1D).copy(alpha = 0.05f)
+                        )
+                    )
                 } else {
-                    Brush.linearGradient(listOf(Color.White.copy(alpha = 0.1f), Color.White.copy(alpha = 0.05f)))
-                }
-                , shape = RoundedCornerShape(24.dp)
+                    Brush.linearGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.1f),
+                            Color.White.copy(alpha = 0.05f)
+                        )
+                    )
+                }, shape = RoundedCornerShape(24.dp)
             )
             .border(
                 1.dp,
@@ -248,7 +303,9 @@ private fun TestStatusPanel(isLoggedIn: Boolean, isPremium: Boolean, coins: Int)
                 Text(
                     text = if (isLoggedIn) "LOGGED IN" else "GUEST",
                     style = MaterialTheme.typography.labelLarge,
-                    color = (if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface).copy(alpha = 0.7f),
+                    color = (if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface).copy(
+                        alpha = 0.7f
+                    ),
                     letterSpacing = 1.sp
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -271,9 +328,11 @@ private fun TestStatusPanel(isLoggedIn: Boolean, isPremium: Boolean, coins: Int)
 
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    "COINS", 
-                    style = MaterialTheme.typography.labelLarge, 
-                    color = (if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface).copy(alpha = 0.7f)
+                    "COINS",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = (if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface).copy(
+                        alpha = 0.7f
+                    )
                 )
                 Text(
                     text = "$coins",

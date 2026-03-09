@@ -19,6 +19,9 @@ import com.obscura.wallpapers.core.data.remote.ApiResult
 import com.obscura.wallpapers.core.data.remote.ApiResult.Success
 import com.obscura.wallpapers.core.data.remote.adapter.PexelsApiAdapter
 import com.obscura.wallpapers.core.data.remote.adapter.UnsplashApiAdapter
+import com.obscura.wallpapers.core.data.remote.service.ApiService
+import com.obscura.wallpapers.core.data.remote.service.CreateOrderRequest
+import com.obscura.wallpapers.core.data.remote.service.LoginRequest
 import com.obscura.wallpapers.core.data.remote.service.PexelsApiService
 import com.obscura.wallpapers.core.data.remote.service.UnsplashApiService
 import com.obscura.wallpapers.core.data.repository.UserRepository
@@ -35,6 +38,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ApiTestViewModel @Inject constructor(
+    private val apiService: ApiService,
     private val pexelsApiService: PexelsApiService,
     private val pexelsMapper: PexelsMapper,
     private val unsplashApiService: UnsplashApiService,
@@ -73,6 +77,108 @@ class ApiTestViewModel @Inject constructor(
 
     val availableCoins = billingRepository.availableInAppProducts
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    private val _isTestingSystemApi = MutableStateFlow(false)
+    val isTestingSystemApi: StateFlow<Boolean> = _isTestingSystemApi.asStateFlow()
+
+    fun testSystemApis() {
+        viewModelScope.launch {
+            _isTestingSystemApi.value = true
+            try {
+                addTestResult("🚀 开始测试系统接口 (含模拟登录)...")
+
+                // 1. 模拟登录获取 Token (如果是基于 Token 的认证)
+                try {
+                    val loginRequest = LoginRequest(
+                        nickname = "TestUser",
+                        email = "test@example.com",
+                        avatar = "https://example.com/avatar.png",
+                        googleToken = "mock_google_token_${System.currentTimeMillis()}",
+                        authId = "mock_auth_id_123456",
+                        authType = 1, // 1表示Google
+                        authToken = "mock_auth_token_${System.currentTimeMillis()}",
+                    )
+                    val loginResponse = apiService.login(loginRequest)
+                    if (loginResponse.isSuccess && loginResponse.data != null) {
+                        val token = loginResponse.data.accessToken
+                        addTestResult("✅ login 成功: Token=${token.take(10)}...")
+                        // 保存 Token 到 UserRepository，触发 AuthInterceptor
+                        userRepository.saveServerToken(token)
+                        userRepository.updateLoginStatus(true)
+                    } else {
+                        addTestResult("❌ login 失败: ${loginResponse.apiMsg}")
+                    }
+                } catch (e: Exception) {
+                    addTestResult("❌ login 抛出异常: ${e.message}")
+                }
+
+                // 2. 获取用户信息
+                try {
+                    val profile = apiService.getProfile()
+                    logSystemResult("getProfile", profile)
+                } catch (e: Exception) {
+                    addTestResult("❌ getProfile 抛出异常: ${e.message}")
+                }
+
+                // 3. 获取商品列表
+                var firstProductId: String? = null
+                try {
+                    val products = apiService.getProducts(1)
+                    logSystemResult("getProducts", products)
+                    firstProductId = products.data?.goldGoods?.firstOrNull()?.id
+                } catch (e: Exception) {
+                    addTestResult("❌ getProducts 抛出异常: ${e.message}")
+                }
+
+                // 4. 获取支付方式 (基于第一个商品)
+                if (firstProductId != null) {
+                    try {
+                        val methods = apiService.getPaymentMethods(firstProductId)
+                        logSystemResult("getPaymentMethods", methods)
+                        
+                        // 5. 尝试下单 (使用第一个支付方式)
+                        val firstMethodId = methods.data?.firstOrNull()?.id
+                        if (firstMethodId != null) {
+                            val orderRequest = CreateOrderRequest(
+                                priceId = firstProductId,
+                                paymentMethodId = firstMethodId
+                            )
+                            val orderResponse = apiService.createOrder(orderRequest)
+                            logSystemResult("createOrder", orderResponse)
+                        }
+                    } catch (e: Exception) {
+                        addTestResult("❌ 支付/下单流程抛出异常: ${e.message}")
+                    }
+                }
+
+                // 6. 获取订单列表
+                try {
+                    val orders = apiService.getOrders()
+                    if (orders.isSuccess) {
+                        addTestResult("✅ getOrders 成功, 数量: ${orders.rows?.size ?: 0}")
+                    } else {
+                        addTestResult("❌ getOrders 失败: ${orders.apiMsg}")
+                    }
+                } catch (e: Exception) {
+                    addTestResult("❌ getOrders 抛出异常: ${e.message}")
+                }
+
+                _resultMessage.value = "系统完整业务流测试完成"
+            } catch (e: Exception) {
+                addTestResult("❌ 系统接口测试发生重大错误: ${e.message}")
+            } finally {
+                _isTestingSystemApi.value = false
+            }
+        }
+    }
+
+    private fun <T> logSystemResult(methodName: String, response: com.obscura.wallpapers.core.data.remote.service.ApiResponse<T>) {
+        if (response.isSuccess) {
+            addTestResult("✅ $methodName 成功: ${response.data}")
+        } else {
+            addTestResult("❌ $methodName 失败: ${response.apiMsg}")
+        }
+    }
 
     fun testPexelsApi() {
         viewModelScope.launch {

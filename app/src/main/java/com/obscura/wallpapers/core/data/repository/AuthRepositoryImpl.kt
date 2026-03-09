@@ -90,26 +90,34 @@ class AuthRepositoryImpl @Inject constructor(
                         nickname = account.displayName ?: "",
                         email = account.email ?: "",
                         avatar = account.photoUrl?.toString() ?: "",
-                        token = account.idToken ?: ""
-                    )                    // 发起后端登录请求
+                        googleToken = account.idToken ?: "",
+                        authId = account.id ?: "",
+                        authType = 1, // 1 for Google
+                        authToken = account.idToken ?: "",
+                    )
+                    // 发起后端登录请求
                     val result = apiService.login(requestBody)
                     Log.d(TAG, "Login API response: $result")
 
                     if (result.isSuccess) {
-                        Log.d(TAG, "Login API response: $result")
                         val loginResponse = result.data
+                        Log.d(TAG, "登录请求成功，准备保存数据: uid=${loginResponse?.uid}, token=${loginResponse?.accessToken?.take(10)}")
                         loginResponse?.let {
-                            Log.d(TAG, "登录成功: ${loginResponse.token}")
-                            userRepository.saveServerToken(loginResponse.token)
+                            userRepository.saveServerToken(loginResponse.accessToken)
+                            userRepository.saveUserUid(loginResponse.uid?.toString() ?: "")
                             userRepository.updateLoginStatus(true)
-                            loginResponse.isPremium?.let { isPremium ->
-                                userRepository.updatePremiumStatus(isPremium)
-                            }
+                            userRepository.saveOpenThird(loginResponse.openThird ?: false)
+                            
+                            // 登录成功后立即获取并缓存最新的用户信息（包括金币、昵称等）
+                            userRepository.refreshUserProfile()
+
+                            val isPremium = loginResponse.apiIsPremium()
+                            userRepository.updatePremiumStatus(isPremium)
                         }
                         ApiResult.Success(result.data!!)
                     } else {
-                        Log.e(TAG, "Backend login failed: ${result.code} ${result.msg}")
-                        ApiResult.Error(result.code, result.msg, ApiSource.BACKEND)
+                        Log.e(TAG, "Backend login failed: ${result.code} ${result.apiMsg}")
+                        ApiResult.Error(result.code, result.apiMsg, ApiSource.BACKEND)
                     }
                     // 处理API结果
                 } catch (e: Exception) {

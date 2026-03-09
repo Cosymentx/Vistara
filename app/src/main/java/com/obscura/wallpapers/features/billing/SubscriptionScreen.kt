@@ -43,9 +43,12 @@ fun SubscriptionScreen(
     val context = LocalContext.current
     val isPremium by viewModel.isPremium.collectAsState()
     val availableSubscriptions by viewModel.availableSubscriptions.collectAsState()
+    val backendSubscriptionProducts by viewModel.subscriptionProducts.collectAsState()
     val uiState by viewModel.subscriptionUiState.collectAsState()
     
-    var selectedProductIndex by remember { mutableStateOf(1) } // 默认选中年度订阅
+    var selectedProductIndex by remember { mutableIntStateOf(1) } // 默认选中年度订阅
+    var showChannelDialog by remember { mutableStateOf(false) }
+    var selectedProductForChannels by remember { mutableStateOf<com.obscura.wallpapers.core.data.remote.service.CoinProduct?>(null) }
 
     val isDark = isSystemInDarkTheme()
     val gradientColors = if (isDark) {
@@ -105,19 +108,59 @@ fun SubscriptionScreen(
                 // 未订阅状态
                 SubscriptionContent(
                     availableProducts = availableSubscriptions,
+                    backendProducts = backendSubscriptionProducts,
                     selectedProductIndex = selectedProductIndex,
                     onProductSelected = { selectedProductIndex = it },
                     onSubscribe = {
-                        if (availableSubscriptions.isNotEmpty() && selectedProductIndex < availableSubscriptions.size) {
-                            viewModel.purchaseSubscription(
-                                context as Activity,
-                                availableSubscriptions[selectedProductIndex]
-                            )
+                        if (backendSubscriptionProducts.isNotEmpty() && selectedProductIndex < backendSubscriptionProducts.size) {
+                            val product = backendSubscriptionProducts[selectedProductIndex]
+                            if (!product.channels.isNullOrEmpty()) {
+                                if (product.channels.size == 1 && product.channels[0].channel == "1") {
+                                    // 只有 Google Play 渠道，直接发起
+                                    viewModel.purchaseWithChannel(context as Activity, product, product.channels[0])
+                                } else {
+                                    selectedProductForChannels = product
+                                    showChannelDialog = true
+                                }
+                            } else {
+                                // 备退方案：如果没有渠道数据，尝试默认 Google Play
+                                val matchingPlayProduct = availableSubscriptions.find { it.productId == product.sku }
+                                if (matchingPlayProduct != null) {
+                                    viewModel.purchaseSubscription(context as Activity, matchingPlayProduct)
+                                } else {
+                                    android.widget.Toast.makeText(context, "Product not available", android.widget.Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     },
                     onRestorePurchases = { viewModel.restorePurchases() },
                     isLoading = uiState is BillingUiState.Loading
                 )
+            }
+        }
+
+        // 渠道选择弹窗
+        if (showChannelDialog && selectedProductForChannels != null) {
+            ChannelSelectionBottomSheet(
+                product = selectedProductForChannels!!,
+                onDismiss = { showChannelDialog = false },
+                onChannelSelected = { channel ->
+                    showChannelDialog = false
+                    viewModel.purchaseWithChannel(context as Activity, selectedProductForChannels!!, channel)
+                }
+            )
+        }
+
+        // 全局加载遮罩
+        if (uiState is BillingUiState.Loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.6f))
+                    .clickable(enabled = false) {},
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color(0xFFFFD700))
             }
         }
     }
@@ -129,6 +172,7 @@ private fun PremiumActiveContent(
 ) {
     val accentColor = Color(0xFFFFD700)
     val isDark = isSystemInDarkTheme()
+    val context = LocalContext.current
     
     Column(
         modifier = Modifier
@@ -176,27 +220,56 @@ private fun PremiumActiveContent(
         
         Spacer(modifier = Modifier.height(48.dp))
         
-        Box(
+        // 管理订阅按钮
+        Button(
+            onClick = {
+                val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
+                    data = android.net.Uri.parse("https://play.google.com/store/account/subscriptions")
+                    setPackage("com.android.vending")
+                }
+                try {
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    // 如果没安装 Play Store，尝试通过浏览器打开
+                    context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://play.google.com/store/account/subscriptions")))
+                }
+            },
             modifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
-                .background(if (isDark) Color.White.copy(alpha = 0.05f) else MaterialTheme.colorScheme.surfaceVariant)
-                .border(0.5.dp, if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f), RoundedCornerShape(12.dp))
-                .clickable(onClick = onRestorePurchases)
-                .padding(horizontal = 24.dp, vertical = 12.dp)
+                .fillMaxWidth()
+                .height(56.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = if (isDark) accentColor else MaterialTheme.colorScheme.primary
+            ),
+            shape = RoundedCornerShape(16.dp)
         ) {
             Text(
-                text = stringResource(R.string.restore_purchases),
-                color = if (isDark) accentColor else MaterialTheme.colorScheme.primary,
+                text = stringResource(R.string.subscription_manage_link),
                 fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
+                fontSize = 16.sp
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        TextButton(onClick = onRestorePurchases) {
+            Text(
+                text = stringResource(R.string.restore_purchases),
+                color = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        // 详细说明
+        SubscriptionDescriptionSection()
     }
 }
 
 @Composable
 private fun SubscriptionContent(
     availableProducts: List<ProductDetails>,
+    backendProducts: List<com.obscura.wallpapers.core.data.remote.service.CoinProduct>,
     selectedProductIndex: Int,
     onProductSelected: (Int) -> Unit,
     onSubscribe: () -> Unit,
@@ -259,17 +332,21 @@ private fun SubscriptionContent(
         
         Spacer(modifier = Modifier.height(40.dp))
         
-        // 订阅方案
-        if (availableProducts.isNotEmpty()) {
-            availableProducts.forEachIndexed { index, product ->
+        // 订阅方案 - 以后端数据为准
+        if (backendProducts.isNotEmpty()) {
+            backendProducts.forEachIndexed { index, backendItem ->
+                // 尝试匹配 Google Play 的实时价格信息
+                val playProduct = availableProducts.find { it.productId == backendItem.sku }
+                
                 PlanCard(
-                    productDetails = product,
+                    productDetails = playProduct,
+                    backendInfo = backendItem,
                     isSelected = index == selectedProductIndex,
                     onClick = { onProductSelected(index) }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
-        } else {
+        } else if (isLoading) {
             // Placeholder for empty products
             Box(
                 modifier = Modifier
@@ -344,8 +421,38 @@ private fun SubscriptionContent(
             textAlign = TextAlign.Center,
             lineHeight = 16.sp
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        SubscriptionDescriptionSection()
         
         Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Composable
+private fun SubscriptionDescriptionSection() {
+    val isDark = isSystemInDarkTheme()
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(if (isDark) Color.White.copy(alpha = 0.03f) else Color.Black.copy(alpha = 0.03f))
+            .padding(16.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.subscription_description_title),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (isDark) Color.White.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = stringResource(R.string.subscription_description_content),
+            fontSize = 12.sp,
+            color = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurfaceVariant,
+            lineHeight = 18.sp
+        )
     }
 }
 
@@ -368,11 +475,11 @@ private fun FeaturesList() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         listOf(
-            R.string.feature_wallpaper_edit,
-            R.string.feature_video_wallpaper,
-            R.string.feature_premium_wallpapers,
             R.string.feature_no_ads,
-            R.string.feature_cloud_sync
+            R.string.feature_premium_wallpapers,
+            R.string.feature_auto_wallpaper,
+            R.string.feature_hd_wallpapers,
+            R.string.feature_exclusive_content
         ).forEach { featureRes ->
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -404,7 +511,8 @@ private fun FeaturesList() {
 
 @Composable
 private fun PlanCard(
-    productDetails: ProductDetails,
+    productDetails: ProductDetails?,
+    backendInfo: com.obscura.wallpapers.core.data.remote.service.CoinProduct,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -431,6 +539,23 @@ private fun PlanCard(
             )
             .clickable(onClick = onClick)
     ) {
+        // 后端配置的额外信息（如赠送金币）
+        if (backendInfo.coins > 0) {
+            Surface(
+                color = accentColor,
+                shape = RoundedCornerShape(bottomStart = 12.dp, topEnd = 0.dp),
+                modifier = Modifier.align(Alignment.TopEnd)
+            ) {
+                Text(
+                    text = "+${backendInfo.coins} COINS",
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+            }
+        }
+
         if (isSelected) {
             Box(
                 modifier = Modifier
@@ -452,33 +577,39 @@ private fun PlanCard(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = productDetails.name,
+                    text = backendInfo.title ?: productDetails?.name ?: "Premium Plan",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    val price = productDetails.subscriptionOfferDetails?.firstOrNull()
-                        ?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice ?: ""
+                    // 优先显示 Google Play 格式化后的本地价格，否则显示后端配置价格
+                    val playPrice = productDetails?.subscriptionOfferDetails?.firstOrNull()
+                        ?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice
+                    val displayPrice = playPrice ?: backendInfo.showPrice ?: ""
+                    
                     Text(
-                        text = price,
+                        text = displayPrice,
                         fontSize = 16.sp,
                         color = if (isSelected) accentColor else if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.SemiBold
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Surface(
-                        color = accentColor.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(4.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.subscription_weekly),
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = accentColor
-                        )
+                    
+                    if (displayPrice.isNotEmpty()) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Surface(
+                            color = accentColor.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(4.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.subscription_weekly),
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = accentColor
+                            )
+                        }
                     }
                 }
             }

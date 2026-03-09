@@ -306,16 +306,20 @@ Enjoy a new look every day</string>
     <string name="subscription_choose_plan">Choose a Plan</string>
     <string name="subscription_start">Start Subscription</string>
     <string name="subscription_auto_renew_notice">Subscription will auto-renew, can be canceled anytime</string>
+    <string name="subscription_cancel_anytime">Cancel anytime in Google Play settings</string>
+    <string name="subscription_manage_link">Manage Subscription</string>
+    <string name="subscription_description_title">Subscription Details</string>
+    <string name="subscription_description_content">1. Premium members enjoy all features: Ad-free experience, 4K high-definition wallpapers, automatic wallpaper changing, and exclusive premium collections.\n2. Payment will be charged to your Google Play account at confirmation of purchase.\n3. Subscription automatically renews unless auto-renew is turned off at least 24 hours before the end of the current period.\n4. Account will be charged for renewal within 24 hours prior to the end of the current period.\n5. You can manage and cancel your subscriptions by going to your account settings on the Google Play Store after purchase.</string>
     <string name="subscription_already_premium">You are already a premium member</string>
     <string name="subscription_thank_you">Thank you for your support! Enjoy all premium features</string>
     <string name="subscription_weekly">Weekly</string>
 
     <!-- Subscription features -->
-    <string name="feature_wallpaper_edit">✨ Wallpaper editing</string>
-    <string name="feature_video_wallpaper">🎬 Dynamic video wallpapers</string>
-    <string name="feature_premium_wallpapers">🎨 Unlock all premium wallpapers</string>
     <string name="feature_no_ads">🚫 Ad-free experience</string>
-    <string name="feature_cloud_sync">☁️ Cloud sync favorites</string>
+    <string name="feature_premium_wallpapers">🎨 Unlock all premium wallpapers</string>
+    <string name="feature_auto_wallpaper">🔄 Auto-change wallpaper</string>
+    <string name="feature_hd_wallpapers">✨ High-definition 4K wallpapers</string>
+    <string name="feature_exclusive_content">💎 Exclusive premium collections</string>
     
     <!-- Paywall screen -->
     <string name="paywall_upgrade_to_premium">Upgrade to Premium</string>
