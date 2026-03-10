@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -271,7 +272,7 @@ fun WallpaperPreviewScreen(
                                     }
                                     viewModel.download()
                                 },
-                                onShare = { viewModel.share() },
+                                onShare = { viewModel.share(activity) },
                                 onEdit = {
                                     if (isLocked) {
                                         showPaywall = true
@@ -309,14 +310,13 @@ fun WallpaperPreviewScreen(
                                 )
 
                             if (showSetWallpaperOptions) {
-                                androidx.compose.material3.ModalBottomSheet(
+                                ModalBottomSheet(
                                     onDismissRequest = { viewModel.hideSetWallpaperOptions() },
                                     sheetState = sheetState,
-                                    containerColor = MaterialTheme.colorScheme.surface,
+                                    containerColor = MaterialTheme.colorScheme.surface.copy(0.8f),
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                     tonalElevation = 0.dp,
                                     dragHandle = null, // 我们在 WallpaperSetOptions 里自定了 Handle
-                                    scrimColor = Color.Black.copy(alpha = 0.6f),
                                     shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
                                 ) {
                                     WallpaperSetOptions(
@@ -371,15 +371,13 @@ fun WallpaperPreviewScreen(
         }
 
         if (showPaywall) {
-            PaywallScreen(
-                onDismiss = { showPaywall = false }, onNavigateToSubscription = {
+            PaywallScreen(onDismiss = { showPaywall = false }, onNavigateToSubscription = {
                 showPaywall = false
                 onNavigateToSubscription()
             }, onNavigateToCoinStore = {
                 showPaywall = false
                 onNavigateToCoinStore()
-            }, hazeState = hazeState
-            )
+            })
         }
     }
 }

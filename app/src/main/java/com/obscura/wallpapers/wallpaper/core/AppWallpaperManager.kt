@@ -42,6 +42,7 @@ import java.net.URL
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.content.FileProvider
 import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
 
@@ -127,6 +128,53 @@ class AppWallpaperManager @Inject constructor(
             val success = com.obscura.wallpapers.core.common.WallpaperPreviewUtil.previewWallpaper(context, bitmap)
             if (!success) { }
         } catch (e: Exception) { Log.e(TAG, "Error previewing wallpaper", e) }
+    }
+
+    suspend fun shareWallpaper(activity: Activity, wallpaper: Wallpaper, editedBitmap: Bitmap? = null) {
+        try {
+            val file = if (wallpaper.isLive) {
+                // 对于动态壁纸，分享下载链接或本地视频文件
+                findCachedVideoByUrl(activity, wallpaper.url ?: "")
+            } else {
+                // 对于静态壁纸，保存并获取文件对象
+                val bitmap = editedBitmap ?: loadBitmapFromFile(wallpaper.id) ?: withContext(Dispatchers.IO) {
+                    val url = URL(wallpaper.url); BitmapFactory.decodeStream(url.openStream())
+                }
+                saveBitmapToFile(bitmap, wallpaper.id)
+            }
+
+            withContext(Dispatchers.Main) {
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    if (file != null && file.exists()) {
+                        val uri = FileProvider.getUriForFile(
+                            activity,
+                            "${activity.packageName}.fileprovider",
+                            file
+                        )
+                        // 设置 ClipData 是为了在 Android 10+ 更好地传递 URI 权限
+                        clipData = android.content.ClipData.newRawUri("", uri)
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        type = if (wallpaper.isLive) "video/*" else "image/*"
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    } else {
+                        // 如果没有文件，分享文本链接
+                        type = "text/plain"
+                        val shareText = "${wallpaper.title ?: "Wallpaper"}\n${wallpaper.url ?: ""}"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
+                    putExtra(Intent.EXTRA_SUBJECT, wallpaper.title ?: "Wallpaper")
+                }
+                val chooser = Intent.createChooser(intent, "分享壁纸")
+                // 确保 Chooser 也能获取权限
+                chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                activity.startActivity(chooser)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error sharing wallpaper", e)
+            withContext(Dispatchers.Main) {
+                Toast.makeText(activity, "分享失败", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
     private suspend fun setLiveWallpaper(
         activity: Activity, wallpaper: Wallpaper, target: WallpaperTarget, onComplete: (Boolean) -> Unit

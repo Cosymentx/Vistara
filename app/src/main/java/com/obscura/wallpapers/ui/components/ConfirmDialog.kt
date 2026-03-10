@@ -78,6 +78,7 @@ fun ConfirmDialog(
                 ), contentAlignment = Alignment.Center
         ) {
             Surface(
+                color = MaterialTheme.colorScheme.surface.copy(0.8f),
                 shape = RoundedCornerShape(28.dp),
                 modifier = Modifier
                     .fillMaxWidth(0.85f)

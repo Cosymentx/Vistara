@@ -244,13 +244,15 @@ class WallpaperPreviewViewModel @Inject constructor(
         }
     }
 
-    fun share() {
+    fun share(activity: android.app.Activity?) {
         viewModelScope.launch {
             val s = _wallpaperState.value
-            if (s is UiState.Success) {
+            if (s is UiState.Success && activity != null) {
                 try {
+                    wallpaperManager.shareWallpaper(activity, s.data, _editedBitmap.value)
                     wallpaperRepository.trackWallpaperDownload(s.data.id)
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    android.util.Log.e(TAG, "Share failed", e)
                 }
             }
         }

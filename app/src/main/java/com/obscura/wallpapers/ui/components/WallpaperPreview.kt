@@ -630,12 +630,11 @@ fun WallpaperSetOptions(
     isProcessing: Boolean = false
 ) {
     val isDark = isSystemInDarkTheme()
-//    val backgroundColor = MaterialTheme.colorScheme.background.copy(alpha = 0.5f)
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface
 
     Surface(
+        color = MaterialTheme.colorScheme.surface.copy(0.8f),
         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-//        color = backgroundColor,
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
@@ -643,7 +642,6 @@ fun WallpaperSetOptions(
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
                 .padding(top = 16.dp)
-                .navigationBarsPadding()
                 .padding(bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -812,17 +810,17 @@ fun WallpaperPreviewPreview() {
     ObscuraTheme {
         WallpaperPreview(
             wallpaper = Wallpaper(
-                id = "1",
-                title = "Beautiful Landscape",
-                url = "https://s3.us-west-2.amazonaws.com/images.unsplash.com/small/photo-1739911013984-8b3bf696a182",
-                thumbnailUrl = "https://s3.us-west-2.amazonaws.com/images.unsplash.com/small/photo-1739911013984-8b3bf696a182",
-                author = "John Doe",
-                source = "Unsplash",
-                isPremium = true,
-                isLive = false,
-                tags = listOf("nature", "landscape"),
-                resolution = Resolution(1920, 1080)
-            ),
+            id = "1",
+            title = "Beautiful Landscape",
+            url = "https://s3.us-west-2.amazonaws.com/images.unsplash.com/small/photo-1739911013984-8b3bf696a182",
+            thumbnailUrl = "https://s3.us-west-2.amazonaws.com/images.unsplash.com/small/photo-1739911013984-8b3bf696a182",
+            author = "John Doe",
+            source = "Unsplash",
+            isPremium = true,
+            isLive = false,
+            tags = listOf("nature", "landscape"),
+            resolution = Resolution(1920, 1080)
+        ),
             onBackPressed = {},
             onToggleInfo = {},
             onDownload = {},
