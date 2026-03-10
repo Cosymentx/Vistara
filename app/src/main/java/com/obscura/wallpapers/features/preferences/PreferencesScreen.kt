@@ -360,7 +360,7 @@ private fun SettingsToggleItem(
                 .padding(horizontal = 20.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            androidx.compose.foundation.layout.Box(
+            Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(40.dp)
@@ -421,7 +421,7 @@ private fun SettingsActionItem(
                 .padding(horizontal = 20.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            androidx.compose.foundation.layout.Box(
+            Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(40.dp)

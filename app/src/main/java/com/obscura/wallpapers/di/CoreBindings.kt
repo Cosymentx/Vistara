@@ -12,7 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-private val Context.dataStore by preferencesDataStore(name = "vistara_preferences")
+private val Context.dataStore by preferencesDataStore(name = "obscura_preferences")
 
 @Module
 @InstallIn(SingletonComponent::class)

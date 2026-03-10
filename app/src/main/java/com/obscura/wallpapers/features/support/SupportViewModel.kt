@@ -126,7 +126,7 @@ class SupportViewModel @Inject constructor(
         return try {
             val intent = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:$FEEDBACK_EMAIL")
-                putExtra(Intent.EXTRA_SUBJECT, "Vistara壁纸应用反馈")
+                putExtra(Intent.EXTRA_SUBJECT, "Obscura壁纸应用反馈")
                 putExtra(Intent.EXTRA_TEXT, "我想反馈以下问题：\n\n")
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }

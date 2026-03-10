@@ -28,7 +28,7 @@
     <string name="video_wallpaper_set_success">ビデオ壁紙の設定に成功しました</string>
     <string name="video_wallpaper_set_failed">ビデオ壁紙の設定に失敗しました</string>
     <string name="video_wallpaper_download_failed">ビデオのダウンロードに失敗しました</string>
-    <string name="video_wallpaper_select_guide">「Vistaraビデオ壁紙」を選択して「壁紙を設定」をクリックしてください</string>
+    <string name="video_wallpaper_select_guide">「Obscuraビデオ壁紙」を選択して「壁紙を設定」をクリックしてください</string>
 
     <!-- 設定画面 -->
     <string name="back">戻る</string>

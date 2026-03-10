@@ -295,6 +295,16 @@ class AppWallpaperManager @Inject constructor(
             val progressCallback = object : DownloadProgressCallback { override fun onProgressUpdate(progress: Float) { trySend(Pair(progress, null)) } }
             val filePath = if (wallpaper.isLive) { downloadVideoFile(wallpaper, downloadOriginalQuality, progressCallback) }
             else { downloadImageFile(wallpaper, downloadOriginalQuality, progressCallback) }
+            
+            // 增加下载完成通知
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                    notificationUtil.showDownloadCompleteNotification(wallpaper, filePath)
+                }
+            } else {
+                notificationUtil.showDownloadCompleteNotification(wallpaper, filePath)
+            }
+
             send(Pair(1f, filePath))
         } catch (e: Exception) { Log.e(TAG, "Download failed: ${e.message}"); e.printStackTrace(); send(Pair(-1f, null)); throw e }
     }

@@ -21,6 +21,6 @@
     <string name="preview_upgrade_to_unlock">アップグレードしてこの壁紙をアンロック</string>
     <string name="preview_share_wallpaper">壁紙を共有</string>
     <string name="preview_beautiful_wallpaper">美しい壁紙</string>
-    <string name="preview_share_wallpaper_text">美しい壁紙を見つけました\nタイトル: %1$s\n作者: %2$s\nソース: %3$s\n解像度: %4$d x %5$d\nVistara壁紙アプリをダウンロードして、より多くの美しい壁紙を手に入れましょう！</string>
+    <string name="preview_share_wallpaper_text">美しい壁紙を見つけました\nタイトル: %1$s\n作者: %2$s\nソース: %3$s\n解像度: %4$d x %5$d\nObscura壁紙アプリをダウンロードして、より多くの美しい壁紙を手に入れましょう！</string>
     <string name="preview_unnamed_wallpaper">名称なしの壁紙</string>
 </resources>

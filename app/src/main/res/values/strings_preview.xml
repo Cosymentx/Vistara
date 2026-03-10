@@ -22,6 +22,6 @@
     <string name="preview_upgrade_to_unlock">Upgrade to unlock this wallpaper</string>
     <string name="preview_share_wallpaper">Share wallpaper</string>
     <string name="preview_beautiful_wallpaper">Beautiful wallpaper</string>
-    <string name="preview_share_wallpaper_text">I found a beautiful wallpaper\nTitle: %1$s\nAuthor: %2$s\nSource: %3$s\nResolution: %4$d x %5$d\nDownload Vistara Wallpaper app for more beautiful wallpapers!</string>
+    <string name="preview_share_wallpaper_text">I found a beautiful wallpaper\nTitle: %1$s\nAuthor: %2$s\nSource: %3$s\nResolution: %4$d x %5$d\nDownload Obscura Wallpaper app for more beautiful wallpapers!</string>
     <string name="preview_unnamed_wallpaper">Unnamed wallpaper</string>
 </resources>

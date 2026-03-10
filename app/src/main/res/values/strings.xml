@@ -33,7 +33,7 @@
     <string name="video_wallpaper_set_success">Video wallpaper set successfully</string>
     <string name="video_wallpaper_set_failed">Failed to set video wallpaper</string>
     <string name="video_wallpaper_download_failed">Video download failed</string>
-    <string name="video_wallpaper_select_guide">Please select \"Vistara Video Wallpaper\" and click \"Set Wallpaper\"</string>
+    <string name="video_wallpaper_select_guide">Please select \"Obscura Video Wallpaper\" and click \"Set Wallpaper\"</string>
 
     <!-- Settings screen -->
     <string name="back">Back</string>

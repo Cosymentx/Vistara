@@ -21,6 +21,6 @@
     <string name="preview_upgrade_to_unlock">업그레이드하여 이 배경화면 잠금 해제</string>
     <string name="preview_share_wallpaper">배경화면 공유</string>
     <string name="preview_beautiful_wallpaper">아름다운 배경화면</string>
-    <string name="preview_share_wallpaper_text">아름다운 배경화면을 발견했어요\n제목: %1$s\n작성자: %2$s\n출처: %3$s\n해상도: %4$d x %5$d\nVistara 배경화면 앱을 다운로드하여 더 많은 아름다운 배경화면을 가져보세요!</string>
+    <string name="preview_share_wallpaper_text">아름다운 배경화면을 발견했어요\n제목: %1$s\n작성자: %2$s\n출처: %3$s\n해상도: %4$d x %5$d\nObscura 배경화면 앱을 다운로드하여 더 많은 아름다운 배경화면을 가져보세요!</string>
     <string name="preview_unnamed_wallpaper">이름 없는 배경화면</string>
 </resources>

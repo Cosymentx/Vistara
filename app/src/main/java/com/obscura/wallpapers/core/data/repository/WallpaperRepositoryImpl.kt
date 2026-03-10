@@ -750,7 +750,7 @@ class WallpaperRepositoryImpl @Inject constructor(
                 thumbnailUrl = thumbnailUrl,
                 previewUrl = "https://picsum.photos/id/$imageId/${width / 2}/${height / 2}",
                 author = "动画师 ${index + 1}",
-                source = "Vistara",
+                source = "Obscura",
                 isPremium = index % 3 == 0, // 每三个视频中有一个是高级内容
                 isLive = true,
                 tags = tags,

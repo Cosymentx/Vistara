@@ -7,7 +7,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 /**
- * Vistara应用的字体规范
+ * Obscura应用的字体规范
  * 根据Material Design 3定义
  */
 val Typography = Typography(

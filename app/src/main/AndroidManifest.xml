@@ -63,7 +63,7 @@
             android:name=".wallpaper.live.LiveWallpaperService"
             android:enabled="true"
             android:exported="true"
-            android:label="Vistara"
+            android:label="Obscura"
             android:permission="android.permission.BIND_WALLPAPER">
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />

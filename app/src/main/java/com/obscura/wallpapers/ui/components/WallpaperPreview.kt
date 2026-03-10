@@ -350,7 +350,7 @@ fun WallpaperPreview(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = stringResource(R.string.source, wallpaper.source ?: "Vistara"),
+                            text = stringResource(R.string.source, wallpaper.source ?: "Obscura"),
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.White.copy(alpha = 0.6f)
                         )

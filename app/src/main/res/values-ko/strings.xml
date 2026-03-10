@@ -33,7 +33,7 @@
     <string name="video_wallpaper_set_success">비디오 배경화면 설정 성공</string>
     <string name="video_wallpaper_set_failed">비디오 배경화면 설정 실패</string>
     <string name="video_wallpaper_download_failed">비디오 다운로드 실패</string>
-    <string name="video_wallpaper_select_guide">\"Vistara 비디오 배경화면\"을 선택하고 \"배경화면 설정\"을 클릭하세요</string>
+    <string name="video_wallpaper_select_guide">\"Obscura 비디오 배경화면\"을 선택하고 \"배경화면 설정\"을 클릭하세요</string>
 
     <!-- 설정 화면 -->
     <string name="back">뒤로</string>

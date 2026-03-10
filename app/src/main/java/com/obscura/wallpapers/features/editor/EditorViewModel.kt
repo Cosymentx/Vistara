@@ -255,7 +255,7 @@ class WallpaperEditViewModel @Inject constructor(
     private suspend fun saveToGallery(bitmap: Bitmap) {
         withContext(Dispatchers.IO) {
             val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val fileName = "Vistara_Edited_$timestamp.jpg"
+            val fileName = "Obscura_Edited_$timestamp.jpg"
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val contentValues = ContentValues().apply {

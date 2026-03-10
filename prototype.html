@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Vistara App 原型 (高级黑) v1.5 - 布局和子页面</title> <!-- Version Bump -->
+    <title>Obscura App 原型 (高级黑) v1.5 - 布局和子页面</title> <!-- Version Bump -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* Custom Premium Black Theme */
         body {
@@ -440,7 +441,8 @@
     <!-- Home Screen -->
     <div class="screen active" id="home-screen">
         <div class="top-bar">
-            <div class="spacer"></div> <span class="title">首页</span>
+            <div class="spacer"></div>
+            <span class="title">首页</span>
             <div class="spacer"></div>
         </div>
         <div class="mb-4">
@@ -448,14 +450,16 @@
         </div>
         <div class="mb-5">
             <div class="carousel-item shadow-lg">
-                <img src="https://placehold.co/380x160/8e2de2/ffffff?text=编辑推荐专题" alt="轮播图" class="w-full h-full object-cover">
+                <img src="https://placehold.co/380x160/8e2de2/ffffff?text=编辑推荐专题" alt="轮播图"
+                     class="w-full h-full object-cover">
             </div>
         </div>
         <!-- Daily Pick - Using New Style -->
         <div class="mb-5">
             <h2 class="section-title">每日精选</h2>
             <div class="daily-pick-card" onclick="showScreen('wallpaper-detail-static-screen')">
-                <img src="https://placehold.co/380x456/e76f51/fff?text=每日精选壁纸" alt="每日精选" loading="lazy">
+                <img src="https://placehold.co/380x456/e76f51/fff?text=每日精选壁纸" alt="每日精选"
+                     loading="lazy">
                 <div class="daily-pick-overlay">
                     <div class="daily-pick-title">宁静山谷</div>
                     <div class="daily-pick-author">来自：艺术家A</div>
@@ -465,34 +469,90 @@
         <div class="mb-5">
             <h2 class="section-title">探索分类</h2>
             <div class="category-rail-label">常用分类:</div>
-            <div class="category-rail"> <span class="category-item active">推荐</span> <span class="category-item">自然</span> <span class="category-item">城市</span> <span class="category-item">AMOLED</span> <span class="category-item">抽象</span> <span class="category-item">动漫</span> <span class="category-item">游戏</span> <span class="category-item">汽车</span> </div>
+            <div class="category-rail"><span class="category-item active">推荐</span> <span
+                    class="category-item">自然</span> <span class="category-item">城市</span> <span
+                    class="category-item">AMOLED</span> <span class="category-item">抽象</span>
+                <span class="category-item">动漫</span> <span class="category-item">游戏</span>
+                <span class="category-item">汽车</span></div>
         </div>
         <div class="space-y-5 flex-grow">
             <div>
                 <h2 class="section-title">热门静态</h2>
                 <div class="wallpaper-grid">
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/777/eee?text=热门1" alt="热门1" loading="lazy"> </div>
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/888/eee?text=热门2" alt="热门2" loading="lazy"> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div>
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/999/eee?text=热门3" alt="热门3" loading="lazy"> </div>
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/aaa/eee?text=热门4" alt="热门4" loading="lazy"> </div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-static-screen')"><img
+                            src="https://placehold.co/180x320/777/eee?text=热门1" alt="热门1"
+                            loading="lazy"></div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-static-screen')"><img
+                            src="https://placehold.co/180x320/888/eee?text=热门2" alt="热门2"
+                            loading="lazy">
+                        <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+                    </div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-static-screen')"><img
+                            src="https://placehold.co/180x320/999/eee?text=热门3" alt="热门3"
+                            loading="lazy"></div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-static-screen')"><img
+                            src="https://placehold.co/180x320/aaa/eee?text=热门4" alt="热门4"
+                            loading="lazy"></div>
                 </div>
             </div>
             <div>
                 <h2 class="section-title">炫酷动态</h2>
                 <div class="wallpaper-grid">
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')"> <img src="https://placehold.co/180x320/4a00e0/fff?text=动态1" alt="动态1" loading="lazy"> <div class="play-indicator"><i class="fas fa-play"></i></div> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div>
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')"> <img src="https://placehold.co/180x320/8e2de2/fff?text=动态2" alt="动态2" loading="lazy"> <div class="play-indicator"><i class="fas fa-play"></i></div> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div>
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')"> <img src="https://placehold.co/180x320/5b11f1/fff?text=动态3" alt="动态3" loading="lazy"> <div class="play-indicator"><i class="fas fa-play"></i></div> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div>
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')"> <img src="https://placehold.co/180x320/9f3ef3/fff?text=动态4" alt="动态4" loading="lazy"> <div class="play-indicator"><i class="fas fa-play"></i></div> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-live-screen')"><img
+                            src="https://placehold.co/180x320/4a00e0/fff?text=动态1" alt="动态1"
+                            loading="lazy">
+                        <div class="play-indicator"><i class="fas fa-play"></i></div>
+                        <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+                    </div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-live-screen')"><img
+                            src="https://placehold.co/180x320/8e2de2/fff?text=动态2" alt="动态2"
+                            loading="lazy">
+                        <div class="play-indicator"><i class="fas fa-play"></i></div>
+                        <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+                    </div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-live-screen')"><img
+                            src="https://placehold.co/180x320/5b11f1/fff?text=动态3" alt="动态3"
+                            loading="lazy">
+                        <div class="play-indicator"><i class="fas fa-play"></i></div>
+                        <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+                    </div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-live-screen')"><img
+                            src="https://placehold.co/180x320/9f3ef3/fff?text=动态4" alt="动态4"
+                            loading="lazy">
+                        <div class="play-indicator"><i class="fas fa-play"></i></div>
+                        <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+                    </div>
                 </div>
             </div>
             <div>
                 <h2 class="section-title">最新上传</h2>
                 <div class="wallpaper-grid">
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/bbb/eee?text=最新1" alt="最新1" loading="lazy"> </div>
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/ccc/eee?text=最新2" alt="最新2" loading="lazy"> </div>
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/ddd/eee?text=最新3" alt="最新3" loading="lazy"> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div>
-                    <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/eee/333?text=最新4" alt="最新4" loading="lazy"> </div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-static-screen')"><img
+                            src="https://placehold.co/180x320/bbb/eee?text=最新1" alt="最新1"
+                            loading="lazy"></div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-static-screen')"><img
+                            src="https://placehold.co/180x320/ccc/eee?text=最新2" alt="最新2"
+                            loading="lazy"></div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-static-screen')"><img
+                            src="https://placehold.co/180x320/ddd/eee?text=最新3" alt="最新3"
+                            loading="lazy">
+                        <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+                    </div>
+                    <div class="wallpaper-thumbnail"
+                         onclick="showScreen('wallpaper-detail-static-screen')"><img
+                            src="https://placehold.co/180x320/eee/333?text=最新4" alt="最新4"
+                            loading="lazy"></div>
                 </div>
             </div>
         </div>
@@ -501,52 +561,121 @@
     <!-- Static Library Screen -->
     <div class="screen" id="static-library-screen">
         <div class="top-bar">
-            <div class="spacer"></div> <span class="title">静态壁纸</span>
+            <div class="spacer"></div>
+            <span class="title">静态壁纸</span>
             <i class="fas fa-search action-icon" onclick="alert('打开搜索')"></i>
         </div>
         <div class="mb-4">
             <div class="category-rail-label">分类筛选:</div>
             <div class="category-rail">
-                <span class="category-item active">全部</span> <span class="category-item">自然</span> <span class="category-item">城市</span> <span class="category-item">抽象</span> <span class="category-item">插画</span> <span class="category-item">科技</span> <span class="category-item">简约</span> <span class="category-item">动物</span> <span class="category-item">食物</span>
+                <span class="category-item active">全部</span> <span
+                    class="category-item">自然</span> <span class="category-item">城市</span> <span
+                    class="category-item">抽象</span> <span class="category-item">插画</span> <span
+                    class="category-item">科技</span> <span class="category-item">简约</span> <span
+                    class="category-item">动物</span> <span class="category-item">食物</span>
             </div>
         </div>
         <div class="wallpaper-grid flex-grow">
-            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/2a9d8f/fff?text=静态1" alt="静态1" loading="lazy"> </div> <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/e9c46a/fff?text=静态2" alt="静态2" loading="lazy"> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div> <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/f4a261/fff?text=静态3" alt="静态3" loading="lazy"> </div> <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/e76f51/fff?text=静态4" alt="静态4" loading="lazy"> </div> <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/264653/fff?text=静态5" alt="静态5" loading="lazy"> </div> <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/e76f51/fff?text=静态6" alt="静态6" loading="lazy"> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')">
+                <img src="https://placehold.co/180x320/2a9d8f/fff?text=静态1" alt="静态1"
+                     loading="lazy"></div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')">
+                <img src="https://placehold.co/180x320/e9c46a/fff?text=静态2" alt="静态2"
+                     loading="lazy">
+                <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+            </div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')">
+                <img src="https://placehold.co/180x320/f4a261/fff?text=静态3" alt="静态3"
+                     loading="lazy"></div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')">
+                <img src="https://placehold.co/180x320/e76f51/fff?text=静态4" alt="静态4"
+                     loading="lazy"></div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')">
+                <img src="https://placehold.co/180x320/264653/fff?text=静态5" alt="静态5"
+                     loading="lazy"></div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')">
+                <img src="https://placehold.co/180x320/e76f51/fff?text=静态6" alt="静态6"
+                     loading="lazy">
+                <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+            </div>
         </div>
     </div>
 
     <!-- Live Library Screen -->
     <div class="screen" id="live-library-screen">
         <div class="top-bar">
-            <div class="spacer"></div> <span class="title">动态壁纸</span>
+            <div class="spacer"></div>
+            <span class="title">动态壁纸</span>
             <i class="fas fa-search action-icon" onclick="alert('打开搜索')"></i>
         </div>
         <div class="mb-4">
             <div class="category-rail-label">分类筛选:</div>
             <div class="category-rail">
-                <span class="category-item active">全部</span> <span class="category-item">抽象</span> <span class="category-item">科技感</span> <span class="category-item">自然</span> <span class="category-item">赛博朋克</span> <span class="category-item">粒子</span> <span class="category-item">流体</span> <span class="category-item">简约</span> <span class="category-item">卡通</span>
+                <span class="category-item active">全部</span> <span
+                    class="category-item">抽象</span> <span class="category-item">科技感</span>
+                <span class="category-item">自然</span> <span class="category-item">赛博朋克</span>
+                <span class="category-item">粒子</span> <span class="category-item">流体</span>
+                <span class="category-item">简约</span> <span class="category-item">卡通</span>
             </div>
         </div>
         <div class="wallpaper-grid flex-grow">
-            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')"> <img src="https://placehold.co/180x320/4a00e0/fff?text=动态A" alt="动态A" loading="lazy"> <div class="play-indicator"><i class="fas fa-play"></i></div> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div> <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')"> <img src="https://placehold.co/180x320/8e2de2/fff?text=动态B" alt="动态B" loading="lazy"> <div class="play-indicator"><i class="fas fa-play"></i></div> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div> <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')"> <img src="https://placehold.co/180x320/5b11f1/fff?text=动态C" alt="动态C" loading="lazy"> <div class="play-indicator"><i class="fas fa-play"></i></div> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div> <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')"> <img src="https://placehold.co/180x320/9f3ef3/fff?text=动态D" alt="动态D" loading="lazy"> <div class="play-indicator"><i class="fas fa-play"></i></div> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div> <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')"> <img src="https://placehold.co/180x320/7b2cbf/fff?text=动态E" alt="动态E" loading="lazy"> <div class="play-indicator"><i class="fas fa-play"></i></div> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')">
+                <img src="https://placehold.co/180x320/4a00e0/fff?text=动态A" alt="动态A"
+                     loading="lazy">
+                <div class="play-indicator"><i class="fas fa-play"></i></div>
+                <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+            </div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')">
+                <img src="https://placehold.co/180x320/8e2de2/fff?text=动态B" alt="动态B"
+                     loading="lazy">
+                <div class="play-indicator"><i class="fas fa-play"></i></div>
+                <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+            </div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')">
+                <img src="https://placehold.co/180x320/5b11f1/fff?text=动态C" alt="动态C"
+                     loading="lazy">
+                <div class="play-indicator"><i class="fas fa-play"></i></div>
+                <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+            </div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')">
+                <img src="https://placehold.co/180x320/9f3ef3/fff?text=动态D" alt="动态D"
+                     loading="lazy">
+                <div class="play-indicator"><i class="fas fa-play"></i></div>
+                <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+            </div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')">
+                <img src="https://placehold.co/180x320/7b2cbf/fff?text=动态E" alt="动态E"
+                     loading="lazy">
+                <div class="play-indicator"><i class="fas fa-play"></i></div>
+                <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+            </div>
         </div>
     </div>
 
     <!-- Wallpaper Detail (Static) -->
     <div class="screen detail-screen" id="wallpaper-detail-static-screen">
         <div class="top-bar detail-bar">
-            <i class="fas fa-arrow-left back-icon" onclick="goBack()"></i> <div class="spacer flex-grow"></div> <div class="spacer"></div> </div>
+            <i class="fas fa-arrow-left back-icon" onclick="goBack()"></i>
+            <div class="spacer flex-grow"></div>
+            <div class="spacer"></div>
+        </div>
         <div class="wallpaper-view-container">
             <div class="wallpaper-view">
                 <img src="https://placehold.co/420x800/e9c46a/fff?text=静态壁纸预览" alt="壁纸详情">
-                <div class="attribution-text"> 由 <a href="#" target="_blank">艺术家名称</a> 发布在 <a href="#" target="_blank">Unsplash</a> </div>
+                <div class="attribution-text"> 由 <a href="#" target="_blank">艺术家名称</a> 发布在
+                    <a href="#" target="_blank">Unsplash</a></div>
             </div>
             <div class="detail-actions">
-                <div class="action-item" onclick="toggleFavorite(this)"> <i class="far fa-heart"></i> <span>收藏</span> </div>
-                <div class="action-item" onclick="showScreen('editor-screen')"> <i class="fas fa-edit"></i> <span>编辑</span> </div>
-                <div class="action-item" onclick="alert('正在设为壁纸...')"> <i class="fas fa-magic"></i> <span>设壁纸</span> </div>
-                <div class="action-item" onclick="alert('开始下载...')"> <i class="fas fa-download"></i> <span>下载</span> </div>
-                <div class="action-item" onclick="alert('分享...')"> <i class="fas fa-share-alt"></i> <span>分享</span> </div>
+                <div class="action-item" onclick="toggleFavorite(this)"><i class="far fa-heart"></i>
+                    <span>收藏</span></div>
+                <div class="action-item" onclick="showScreen('editor-screen')"><i
+                        class="fas fa-edit"></i> <span>编辑</span></div>
+                <div class="action-item" onclick="alert('正在设为壁纸...')"><i
+                        class="fas fa-magic"></i> <span>设壁纸</span></div>
+                <div class="action-item" onclick="alert('开始下载...')"><i
+                        class="fas fa-download"></i> <span>下载</span></div>
+                <div class="action-item" onclick="alert('分享...')"><i class="fas fa-share-alt"></i>
+                    <span>分享</span></div>
             </div>
         </div>
     </div>
@@ -554,18 +683,29 @@
     <!-- Wallpaper Detail (Live) -->
     <div class="screen detail-screen" id="wallpaper-detail-live-screen">
         <div class="top-bar detail-bar">
-            <i class="fas fa-arrow-left back-icon" onclick="goBack()"></i> <div class="spacer flex-grow"></div> <div class="spacer"></div> </div>
+            <i class="fas fa-arrow-left back-icon" onclick="goBack()"></i>
+            <div class="spacer flex-grow"></div>
+            <div class="spacer"></div>
+        </div>
         <div class="wallpaper-view-container">
             <div class="wallpaper-view">
-                <img src="https://placehold.co/420x800/8e2de2/fff?text=动态壁纸播放中..." alt="动态壁纸详情">
+                <img src="https://placehold.co/420x800/8e2de2/fff?text=动态壁纸播放中..."
+                     alt="动态壁纸详情">
                 <div class="live-indicator"><i class="fas fa-video mr-1"></i> 动态效果预览</div>
-                <div class="attribution-text"> 由 <a href="#" target="_blank">动画师名称</a> 提供 | Premium <i class="fas fa-crown premium-icon"></i> </div>
+                <div class="attribution-text"> 由 <a href="#" target="_blank">动画师名称</a> 提供 |
+                    Premium <i class="fas fa-crown premium-icon"></i></div>
             </div>
             <div class="detail-actions">
-                <div class="action-item" onclick="toggleFavorite(this)"> <i class="far fa-heart"></i> <span>收藏</span> </div>
-                <div class="action-item premium-action" onclick="showScreen('paywall-screen')"> <i class="fas fa-magic"></i> <span>设壁纸<i class="fas fa-crown premium-icon text-xs"></i></span> </div>
-                <div class="action-item premium-action" onclick="showScreen('paywall-screen')"> <i class="fas fa-download"></i> <span>下载<i class="fas fa-crown premium-icon text-xs"></i></span> </div>
-                <div class="action-item" onclick="alert('分享...')"> <i class="fas fa-share-alt"></i> <span>分享</span> </div>
+                <div class="action-item" onclick="toggleFavorite(this)"><i class="far fa-heart"></i>
+                    <span>收藏</span></div>
+                <div class="action-item premium-action" onclick="showScreen('paywall-screen')"><i
+                        class="fas fa-magic"></i> <span>设壁纸<i
+                        class="fas fa-crown premium-icon text-xs"></i></span></div>
+                <div class="action-item premium-action" onclick="showScreen('paywall-screen')"><i
+                        class="fas fa-download"></i> <span>下载<i
+                        class="fas fa-crown premium-icon text-xs"></i></span></div>
+                <div class="action-item" onclick="alert('分享...')"><i class="fas fa-share-alt"></i>
+                    <span>分享</span></div>
             </div>
         </div>
     </div>
@@ -576,31 +716,38 @@
             <div class="profile-avatar"><i class="fas fa-user"></i></div>
             <div class="text-lg font-medium mt-1">Vistara 用户</div>
         </div>
-        <div class="upgrade-banner" onclick="showScreen('paywall-screen')"> ✨ 解锁全部特权，畅享高清视界 ✨ </div>
+        <div class="upgrade-banner" onclick="showScreen('paywall-screen')"> ✨ 解锁全部特权，畅享高清视界
+            ✨
+        </div>
         <div class="profile-list-container flex-grow">
             <!-- List items with final corrected styles -->
             <div class="feature-item" onclick="showScreen('favorites-screen')">
-                <div class="content-wrapper"> <i class="fas fa-heart icon"></i> <span>我的收藏</span> </div>
+                <div class="content-wrapper"><i class="fas fa-heart icon"></i> <span>我的收藏</span>
+                </div>
                 <i class="fas fa-chevron-right arrow"></i>
             </div>
             <div class="feature-item" onclick="showScreen('downloads-screen')">
-                <div class="content-wrapper"> <i class="fas fa-download icon"></i> <span>我的下载</span> </div>
+                <div class="content-wrapper"><i class="fas fa-download icon"></i>
+                    <span>我的下载</span></div>
                 <i class="fas fa-chevron-right arrow"></i>
             </div>
             <div class="feature-item" onclick="showScreen('auto-change-screen')">
-                <div class="content-wrapper"> <i class="fas fa-sync-alt icon"></i> <span>自动更换壁纸</span> </div>
+                <div class="content-wrapper"><i class="fas fa-sync-alt icon"></i>
+                    <span>自动更换壁纸</span></div>
                 <i class="fas fa-chevron-right arrow"></i>
             </div>
             <div class="feature-item" onclick="alert('打开设置')">
-                <div class="content-wrapper"> <i class="fas fa-cog icon"></i> <span>设置</span> </div>
+                <div class="content-wrapper"><i class="fas fa-cog icon"></i> <span>设置</span></div>
                 <i class="fas fa-chevron-right arrow"></i>
             </div>
             <div class="feature-item" onclick="alert('打开评分与反馈')">
-                <div class="content-wrapper"> <i class="fas fa-star icon"></i> <span>评分与反馈</span> </div>
+                <div class="content-wrapper"><i class="fas fa-star icon"></i>
+                    <span>评分与反馈</span></div>
                 <i class="fas fa-chevron-right arrow"></i>
             </div>
             <div class="feature-item" onclick="alert('打开关于与致谢')">
-                <div class="content-wrapper"> <i class="fas fa-info-circle icon"></i> <span>关于与致谢</span> </div>
+                <div class="content-wrapper"><i class="fas fa-info-circle icon"></i>
+                    <span>关于与致谢</span></div>
                 <i class="fas fa-chevron-right arrow"></i>
             </div>
         </div>
@@ -609,22 +756,65 @@
     <!-- Editor Screen -->
     <div class="screen" id="editor-screen">
         <div class="top-bar">
-            <i class="fas fa-times back-icon" onclick="showScreen('wallpaper-detail-static-screen')"></i>
+            <i class="fas fa-times back-icon"
+               onclick="showScreen('wallpaper-detail-static-screen')"></i>
             <span class="title">编辑壁纸</span>
-            <button class="action-button text-sm py-1 px-3 mr-1" onclick="alert('应用更改')">应用</button>
+            <button class="action-button text-sm py-1 px-3 mr-1" onclick="alert('应用更改')">应用
+            </button>
         </div>
-        <div class="editor-canvas"> <img src="https://placehold.co/380x600/e9c46a/fff?text=编辑预览" alt="编辑预览" class="max-w-full max-h-full object-contain"> </div>
-        <div class="editor-toolbar"> <div class="tool-item" onclick="alert('打开滤镜')"> <i class="fas fa-magic"></i> <span>滤镜<i class="fas fa-crown premium-icon text-xs"></i></span> </div> <div class="tool-item" onclick="alert('打开调整')"> <i class="fas fa-sliders-h"></i> <span>调整<i class="fas fa-crown premium-icon text-xs"></i></span> </div> <div class="tool-item" onclick="alert('打开模糊')"> <i class="fas fa-eraser"></i> <span>模糊<i class="fas fa-crown premium-icon text-xs"></i></span> </div> <div class="tool-item" onclick="alert('打开裁剪')"> <i class="fas fa-crop-alt"></i> <span>裁剪</span> </div> <div class="tool-item" onclick="alert('打开文字/贴纸')"> <i class="fas fa-pencil-alt"></i> <span>文字<i class="fas fa-crown premium-icon text-xs"></i></span> </div> <div class="tool-item" onclick="alert('重置更改')"> <i class="fas fa-undo"></i> <span>重置</span> </div> </div>
+        <div class="editor-canvas"><img src="https://placehold.co/380x600/e9c46a/fff?text=编辑预览"
+                                        alt="编辑预览" class="max-w-full max-h-full object-contain">
+        </div>
+        <div class="editor-toolbar">
+            <div class="tool-item" onclick="alert('打开滤镜')"><i class="fas fa-magic"></i> <span>滤镜<i
+                    class="fas fa-crown premium-icon text-xs"></i></span></div>
+            <div class="tool-item" onclick="alert('打开调整')"><i class="fas fa-sliders-h"></i>
+                <span>调整<i class="fas fa-crown premium-icon text-xs"></i></span></div>
+            <div class="tool-item" onclick="alert('打开模糊')"><i class="fas fa-eraser"></i> <span>模糊<i
+                    class="fas fa-crown premium-icon text-xs"></i></span></div>
+            <div class="tool-item" onclick="alert('打开裁剪')"><i class="fas fa-crop-alt"></i>
+                <span>裁剪</span></div>
+            <div class="tool-item" onclick="alert('打开文字/贴纸')"><i
+                    class="fas fa-pencil-alt"></i> <span>文字<i
+                    class="fas fa-crown premium-icon text-xs"></i></span></div>
+            <div class="tool-item" onclick="alert('重置更改')"><i class="fas fa-undo"></i>
+                <span>重置</span></div>
+        </div>
     </div>
 
     <!-- Paywall Screen -->
     <div class="screen no-standard-top-bar" id="paywall-screen">
-        <div class="absolute top-12 right-5 z-50"> <i class="fas fa-times text-xl text-gray-400 cursor-pointer p-2" onclick="goBack()"></i> </div>
-        <div class="text-center mb-6 pt-8"> <i class="fas fa-gem text-5xl mb-3" style="color: #8e2de2;"></i> <h2 class="text-2xl font-bold mb-2 text-white">升级到 Vistara 高级版</h2> <p class="text-gray-400">解锁全部潜能，享受极致体验</p> </div>
-        <ul class="paywall-features mb-8 px-4"> <li><i class="fas fa-check-circle"></i> 解锁全部高清壁纸 (静态 & 动态)</li> <li><i class="fas fa-check-circle"></i> 解锁所有高级编辑工具</li> <li><i class="fas fa-check-circle"></i> 解锁高级自动更换选项</li> <li><i class="fas fa-check-circle"></i> 移除所有广告 (若有)</li> <li><i class="fas fa-check-circle"></i> 更多特权持续加入...</li> </ul>
-        <div class="px-4 space-y-4 mb-6"> <div class="subscription-option recommended" onclick="alert('选择按年订阅')"> <h3>按年订阅</h3> <p class="price">¥128.00 / 年</p> <p class="save">(立省 50%)</p> </div> <div class="subscription-option" onclick="alert('选择按月订阅')"> <h3>按月订阅</h3> <p class="price">¥20.00 / 月</p> </div> <div class="subscription-option" onclick="alert('选择终身解锁')"> <h3>终身解锁</h3> <p class="price">¥388.00</p> <p class="text-sm text-gray-500">一次购买，永久有效</p> </div> </div>
-        <button class="paywall-button primary w-full mb-4 mx-auto max-w-xs" onclick="alert('启动支付流程')"> 立即解锁全部特权 </button>
-        <div class="text-center space-x-4 mb-2"> <span class="text-link" onclick="alert('恢复购买')">恢复购买</span> <span class="text-link" onclick="alert('查看服务条款')">服务条款</span> <span class="text-link" onclick="alert('查看隐私政策')">隐私政策</span> </div>
+        <div class="absolute top-12 right-5 z-50"><i
+                class="fas fa-times text-xl text-gray-400 cursor-pointer p-2"
+                onclick="goBack()"></i></div>
+        <div class="text-center mb-6 pt-8"><i class="fas fa-gem text-5xl mb-3"
+                                              style="color: #8e2de2;"></i>
+            <h2 class="text-2xl font-bold mb-2 text-white">升级到 Vistara 高级版</h2>
+            <p class="text-gray-400">解锁全部潜能，享受极致体验</p></div>
+        <ul class="paywall-features mb-8 px-4">
+            <li><i class="fas fa-check-circle"></i> 解锁全部高清壁纸 (静态 & 动态)</li>
+            <li><i class="fas fa-check-circle"></i> 解锁所有高级编辑工具</li>
+            <li><i class="fas fa-check-circle"></i> 解锁高级自动更换选项</li>
+            <li><i class="fas fa-check-circle"></i> 移除所有广告 (若有)</li>
+            <li><i class="fas fa-check-circle"></i> 更多特权持续加入...</li>
+        </ul>
+        <div class="px-4 space-y-4 mb-6">
+            <div class="subscription-option recommended" onclick="alert('选择按年订阅')"><h3>
+                按年订阅</h3>
+                <p class="price">¥128.00 / 年</p>
+                <p class="save">(立省 50%)</p></div>
+            <div class="subscription-option" onclick="alert('选择按月订阅')"><h3>按月订阅</h3>
+                <p class="price">¥20.00 / 月</p></div>
+            <div class="subscription-option" onclick="alert('选择终身解锁')"><h3>终身解锁</h3>
+                <p class="price">¥388.00</p>
+                <p class="text-sm text-gray-500">一次购买，永久有效</p></div>
+        </div>
+        <button class="paywall-button primary w-full mb-4 mx-auto max-w-xs"
+                onclick="alert('启动支付流程')"> 立即解锁全部特权
+        </button>
+        <div class="text-center space-x-4 mb-2"><span class="text-link" onclick="alert('恢复购买')">恢复购买</span>
+            <span class="text-link" onclick="alert('查看服务条款')">服务条款</span> <span
+                    class="text-link" onclick="alert('查看隐私政策')">隐私政策</span></div>
     </div>
 
     <!-- Favorites Screen -->
@@ -632,15 +822,24 @@
         <div class="top-bar">
             <i class="fas fa-arrow-left back-icon" onclick="showScreen('profile-screen')"></i>
             <span class="title">我的收藏</span>
-            <div class="spacer"></div> </div>
+            <div class="spacer"></div>
+        </div>
         <div class="flex justify-center my-4 border-b border-gray-700">
             <button class="py-2 px-6 text-white border-b-2 border-purple-500">静态</button>
             <button class="py-2 px-6 text-gray-400">动态</button>
         </div>
         <div class="wallpaper-grid flex-grow">
-            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/e9c46a/fff?text=收藏1" alt="收藏1" loading="lazy"> </div>
-            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/f4a261/fff?text=收藏2" alt="收藏2" loading="lazy"> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div>
-            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/e76f51/fff?text=收藏3" alt="收藏3" loading="lazy"> </div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')">
+                <img src="https://placehold.co/180x320/e9c46a/fff?text=收藏1" alt="收藏1"
+                     loading="lazy"></div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')">
+                <img src="https://placehold.co/180x320/f4a261/fff?text=收藏2" alt="收藏2"
+                     loading="lazy">
+                <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+            </div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')">
+                <img src="https://placehold.co/180x320/e76f51/fff?text=收藏3" alt="收藏3"
+                     loading="lazy"></div>
             <p class="col-span-2 text-center text-gray-500 mt-6">暂无更多收藏</p>
         </div>
     </div>
@@ -650,9 +849,18 @@
         <div class="top-bar">
             <i class="fas fa-arrow-left back-icon" onclick="showScreen('profile-screen')"></i>
             <span class="title">我的下载</span>
-            <div class="spacer"></div> </div>
-        <div class="wallpaper-grid flex-grow mt-4"> <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')"> <img src="https://placehold.co/180x320/2a9d8f/fff?text=下载1" alt="下载1" loading="lazy"> </div>
-            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')"> <img src="https://placehold.co/180x320/8e2de2/fff?text=下载2" alt="下载2" loading="lazy"> <div class="play-indicator"><i class="fas fa-play"></i></div> <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div> </div>
+            <div class="spacer"></div>
+        </div>
+        <div class="wallpaper-grid flex-grow mt-4">
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-static-screen')">
+                <img src="https://placehold.co/180x320/2a9d8f/fff?text=下载1" alt="下载1"
+                     loading="lazy"></div>
+            <div class="wallpaper-thumbnail" onclick="showScreen('wallpaper-detail-live-screen')">
+                <img src="https://placehold.co/180x320/8e2de2/fff?text=下载2" alt="下载2"
+                     loading="lazy">
+                <div class="play-indicator"><i class="fas fa-play"></i></div>
+                <div class="premium-badge"><i class="fas fa-crown premium-icon"></i></div>
+            </div>
             <p class="col-span-2 text-center text-gray-500 mt-6">暂无下载记录</p>
         </div>
     </div>
@@ -662,7 +870,8 @@
         <div class="top-bar">
             <i class="fas fa-arrow-left back-icon" onclick="showScreen('profile-screen')"></i>
             <span class="title">自动更换壁纸</span>
-            <div class="spacer"></div> </div>
+            <div class="spacer"></div>
+        </div>
         <div class="flex-grow mt-4 space-y-0">
             <!-- Setting items with final corrected styles -->
             <div class="setting-item">
@@ -674,19 +883,23 @@
             </div>
             <div class="setting-item">
                 <span class="label">更换频率</span>
-                <span class="value" onclick="alert('选择频率')">每天 <i class="fas fa-chevron-right"></i></span>
+                <span class="value" onclick="alert('选择频率')">每天 <i
+                        class="fas fa-chevron-right"></i></span>
             </div>
             <div class="setting-item">
                 <span class="label">更换频率 <i class="fas fa-crown premium-icon"></i></span>
-                <span class="value text-gray-600" onclick="showScreen('paywall-screen')">每小时 <i class="fas fa-chevron-right"></i></span>
+                <span class="value text-gray-600" onclick="showScreen('paywall-screen')">每小时 <i
+                        class="fas fa-chevron-right"></i></span>
             </div>
             <div class="setting-item">
                 <span class="label">更换来源</span>
-                <span class="value" onclick="alert('选择来源')">我的收藏 <i class="fas fa-chevron-right"></i></span>
+                <span class="value" onclick="alert('选择来源')">我的收藏 <i
+                        class="fas fa-chevron-right"></i></span>
             </div>
             <div class="setting-item">
                 <span class="label">更换来源 <i class="fas fa-crown premium-icon"></i></span>
-                <span class="value text-gray-600" onclick="showScreen('paywall-screen')">按分类: 自然 <i class="fas fa-chevron-right"></i></span>
+                <span class="value text-gray-600" onclick="showScreen('paywall-screen')">按分类: 自然 <i
+                        class="fas fa-chevron-right"></i></span>
             </div>
             <div class="setting-item">
                 <span class="label">仅在Wi-Fi下更换</span>
@@ -696,16 +909,21 @@
                 </label>
             </div>
 
-            <button class="action-button w-full mt-8" onclick="alert('设置已保存')">保存设置</button>
+            <button class="action-button w-full mt-8" onclick="alert('设置已保存')">保存设置
+            </button>
         </div>
     </div>
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <div class="nav-item active" data-screen="home-screen" onclick="handleNavClick(this)"> <i class="fas fa-home"></i> <span>首页</span> </div>
-        <div class="nav-item" data-screen="static-library-screen" onclick="handleNavClick(this)"> <i class="fas fa-image"></i> <span>静态</span> </div>
-        <div class="nav-item" data-screen="live-library-screen" onclick="handleNavClick(this)"> <i class="fas fa-film"></i> <span>动态</span> </div>
-        <div class="nav-item" data-screen="profile-screen" onclick="handleNavClick(this)"> <i class="fas fa-user"></i> <span>我的</span> </div>
+        <div class="nav-item active" data-screen="home-screen" onclick="handleNavClick(this)"><i
+                class="fas fa-home"></i> <span>首页</span></div>
+        <div class="nav-item" data-screen="static-library-screen" onclick="handleNavClick(this)"><i
+                class="fas fa-image"></i> <span>静态</span></div>
+        <div class="nav-item" data-screen="live-library-screen" onclick="handleNavClick(this)"><i
+                class="fas fa-film"></i> <span>动态</span></div>
+        <div class="nav-item" data-screen="profile-screen" onclick="handleNavClick(this)"><i
+                class="fas fa-user"></i> <span>我的</span></div>
     </div>
 
 </div>

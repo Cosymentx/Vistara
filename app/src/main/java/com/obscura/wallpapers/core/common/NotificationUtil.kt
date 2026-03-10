@@ -80,6 +80,10 @@ class NotificationUtil @Inject constructor(
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun showWallpaperChangedNotification(wallpaper: com.obscura.wallpapers.core.data.model.Wallpaper) {
+        // 增加开关检查
+        val showNotification = runBlocking { userPrefsRepository.getUserSettings().showWallpaperChangeNotification }
+        if (!showNotification) return
+
         val intent = Intent(context, EntryActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
