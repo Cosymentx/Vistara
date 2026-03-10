@@ -309,16 +309,18 @@ class WallpaperPreviewViewModel @Inject constructor(
                                 }
 
                                 progress >= 1f -> {
-                                    _downloadProgress.value = 1f
-                                    _isDownloading.value = false
-                                    wallpaperRepository.trackWallpaperDownload(s.data.id)
-                                    try {
-                                        Toast.makeText(
-                                            context,
-                                            context.getString(com.obscura.wallpapers.R.string.preview_download_success),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    } catch (_: Exception) {
+                                    if (_isDownloading.value) { // 只有在正在下载状态下才处理完成逻辑
+                                        _downloadProgress.value = 1f
+                                        _isDownloading.value = false
+                                        wallpaperRepository.trackWallpaperDownload(s.data.id)
+                                        try {
+                                            Toast.makeText(
+                                                context,
+                                                context.getString(com.obscura.wallpapers.R.string.preview_download_success),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        } catch (_: Exception) {
+                                        }
                                     }
                                 }
 
