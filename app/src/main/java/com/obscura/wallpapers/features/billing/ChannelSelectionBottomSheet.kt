@@ -8,7 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -55,6 +60,10 @@ fun ChannelSelectionBottomSheet(
     val secondaryTextColor =
         if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurfaceVariant
 
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val maxSheetHeight = screenHeight * 0.75f // 设置最大高度为屏幕的 75%
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -72,11 +81,13 @@ fun ChannelSelectionBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .navigationBarsPadding()
+                .heightIn(max = maxSheetHeight)
                 .background(surfaceColor)
                 .padding(horizontal = 24.dp)
-                .padding(bottom = 40.dp)
+                .padding(bottom = 32.dp)
+                .navigationBarsPadding()
         ) {
+            // 头部保持固定
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -137,15 +148,24 @@ fun ChannelSelectionBottomSheet(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            product.channels?.forEach { channel ->
-                ChannelItem(
-                    channel = channel, onClick = { onChannelSelected(channel) })
-                Spacer(modifier = Modifier.height(14.dp))
+            // 渠道列表使用 LazyColumn，并占据剩余空间
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f, fill = false) // 关键：使用 weight 使列表可滚动且不强制填满
+            ) {
+                items(product.channels ?: emptyList()) { channel ->
+                    ChannelItem(
+                        channel = channel,
+                        onClick = { onChannelSelected(channel) }
+                    )
+                    Spacer(modifier = Modifier.height(14.dp))
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 底部安全背书
+            // 底部安全背书保持固定
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -92,19 +92,43 @@ data class LoginResponse(
 
 @Serializable
 data class ProfileResponse(
-    val uid: Long? = null,
-    val nickname: String,
-    val email: String,
-    val avatar: String,
-    val expireTime: String? = null,
-    val coins: Int? = null,
-    val isWhiteList: String
+    val accessToken: String? = null,
+    val user: UserInfo? = null
+)
+
+@Serializable
+data class UserInfo(
+    val id: String? = null,
+    val nickname: String? = null,
+    val email: String? = null,
+    val avatar: String? = null,
+    val balance: String? = "0",
+    @SerialName("is_vip") val isVip: Boolean? = false,
+    @SerialName("user_vip") val userVip: UserVip? = null,
+    val userCountry: UserCountry? = null,
+    @SerialName("isRead") val isRead: String? = "0"
 ) {
-    val isPremium: Boolean get() = isWhitelisted
-    val isWhitelisted: Boolean get() = isWhiteList == "1"
-    fun apiIsPremium(): Boolean = isWhitelisted
-    fun apiIsWhitelisted(): Boolean = isWhiteList == "1"
+    val uid: Long? get() = id?.toLongOrNull()
+    val coins: Int get() = balance?.toIntOrNull() ?: 0
+    val isPremium: Boolean get() = isVip == true || userVip?.is_vip == true
 }
+
+@Serializable
+data class UserVip(
+    val expire_at: Long? = 0,
+    val is_vip: Boolean? = false,
+    val level: Int? = 0,
+    val title: String? = ""
+)
+
+@Serializable
+data class UserCountry(
+    val id: String? = null,
+    val code: String? = null,
+    val title: String? = null,
+    val currency: String? = null,
+    val symbol: String? = null
+)
 
 @Serializable
 data class CheckoutRequest(

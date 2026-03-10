@@ -12,6 +12,8 @@ import com.obscura.wallpapers.core.data.remote.ApiResult
 import com.obscura.wallpapers.core.data.remote.ApiSource
 import com.obscura.wallpapers.core.data.remote.service.ApiService
 import com.obscura.wallpapers.core.data.remote.service.ProfileResponse
+import com.obscura.wallpapers.core.data.remote.service.UserInfo
+import com.obscura.wallpapers.core.data.remote.service.UserCountry
 import com.obscura.wallpapers.core.data.remote.safeApiCall
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -44,6 +46,7 @@ class UserRepositoryImpl @Inject constructor(
         private val USER_EMAIL = stringPreferencesKey("user_email")
         private val USER_AVATAR = stringPreferencesKey("user_avatar")
         private val USER_IS_WHITELIST = stringPreferencesKey("user_is_whitelist")
+        private val USER_COUNTRY_ID = intPreferencesKey("user_country_id")
         private val OPEN_THIRD = booleanPreferencesKey("open_third")
     }
 
@@ -83,6 +86,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override val coinBalance: Flow<Int> = dataStore.data.map { preferences ->
         preferences[USER_COIN_BALANCE] ?: 0
+    }
+
+    override val countryId: Flow<Int> = dataStore.data.map { preferences ->
+        preferences[USER_COUNTRY_ID] ?: 100 // 默认值 100
     }
 
     override val userUid: Flow<String?> = dataStore.data.map { preferences ->
@@ -148,6 +155,7 @@ class UserRepositoryImpl @Inject constructor(
             preferences.remove(USER_IS_WHITELIST)
             preferences.remove(USER_COIN_BALANCE)
             preferences.remove(USER_UID)
+            preferences.remove(USER_COUNTRY_ID)
         }
     }
 
@@ -159,18 +167,22 @@ class UserRepositoryImpl @Inject constructor(
             val nickname = preferences[USER_NICKNAME]
             val email = preferences[USER_EMAIL]
             val avatar = preferences[USER_AVATAR]
-            val isWhiteList = preferences[USER_IS_WHITELIST]
+            val isVip = preferences[IS_PREMIUM_USER] ?: false
             val coins = preferences[USER_COIN_BALANCE]
             val uidStr = preferences[USER_UID]
+            val countryId = preferences[USER_COUNTRY_ID]
 
             if (email != null) {
                 ProfileResponse(
-                    uid = uidStr?.toLongOrNull(),
-                    nickname = nickname ?: "",
-                    email = email,
-                    avatar = avatar ?: "",
-                    coins = coins,
-                    isWhiteList = isWhiteList ?: "0"
+                    user = UserInfo(
+                        id = uidStr,
+                        nickname = nickname,
+                        email = email,
+                        avatar = avatar,
+                        balance = coins?.toString(),
+                        isVip = isVip,
+                        userCountry = UserCountry(id = countryId?.toString())
+                    )
                 )
             } else {
                 null
@@ -183,16 +195,18 @@ class UserRepositoryImpl @Inject constructor(
      */
     override suspend fun cacheUserProfile(profile: ProfileResponse) {
         Log.d(TAG, "缓存用户个人资料: $profile")
+        val user = profile.user ?: return
         dataStore.edit { preferences ->
-            profile.uid?.let { uid ->
-                preferences[USER_UID] = uid.toString()
+            user.id?.let { uid ->
+                preferences[USER_UID] = uid
             }
-            preferences[USER_NICKNAME] = profile.nickname
-            preferences[USER_EMAIL] = profile.email
-            preferences[USER_AVATAR] = profile.avatar
-            preferences[USER_IS_WHITELIST] = profile.isWhiteList
-            profile.coins?.let { coins ->
-                preferences[USER_COIN_BALANCE] = coins
+            preferences[USER_NICKNAME] = user.nickname ?: ""
+            preferences[USER_EMAIL] = user.email ?: ""
+            preferences[USER_AVATAR] = user.avatar ?: ""
+            preferences[IS_PREMIUM_USER] = user.isPremium
+            preferences[USER_COIN_BALANCE] = user.coins
+            user.userCountry?.id?.let { countryId ->
+                preferences[USER_COUNTRY_ID] = countryId.toIntOrNull() ?: 100
             }
         }
     }
@@ -233,8 +247,9 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCoinProducts(productType: Int): ApiResult<List<com.obscura.wallpapers.core.data.remote.service.CoinProduct>> {
+        val currentCountryId = dataStore.data.map { it[USER_COUNTRY_ID] ?: 100 }.first()
         return safeApiCall(ApiSource.BACKEND) {
-            val response = apiService.getProducts(productType)
+            val response = apiService.getProducts(productType, currentCountryId)
             if (response.isSuccess) {
                 response.data?.goldGoods ?: emptyList()
             } else {
@@ -250,13 +265,15 @@ class UserRepositoryImpl @Inject constructor(
         subType: Int,
         anchorId: Int
     ): ApiResult<com.obscura.wallpapers.core.data.remote.service.CreateOrderResponse> {
+        val currentCountryId = dataStore.data.map { it[USER_COUNTRY_ID] ?: 100 }.first()
         return safeApiCall(ApiSource.BACKEND) {
             val request = com.obscura.wallpapers.core.data.remote.service.CheckoutRequest(
                 productId = productId,
                 payType = payType,
                 channel = channel,
                 subType = subType,
-                anchorId = anchorId
+                anchorId = anchorId,
+                countryId = currentCountryId
             )
             val response = apiService.createOrder(request)
             if (response.isSuccess && response.data != null) {
@@ -285,14 +302,15 @@ class UserRepositoryImpl @Inject constructor(
         return safeApiCall(ApiSource.BACKEND) {
             val response = apiService.getProfile()
             if (response.isSuccess && response.data != null) {
+                val profile = response.data
                 // 缓存用户信息
-                cacheUserProfile(response.data)
+                cacheUserProfile(profile)
 
                 // 更新本地金币余额
-                response.data.coins.let { coins ->
-                    updateUserCoinBalance(coins ?: 0)
+                profile.user?.coins?.let { coins ->
+                    updateUserCoinBalance(coins)
                 }
-                response.data
+                profile
             } else {
                 throw Exception(response.msg)
             }

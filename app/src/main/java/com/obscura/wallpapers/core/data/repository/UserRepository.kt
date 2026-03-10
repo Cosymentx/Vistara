@@ -106,8 +106,14 @@ interface UserRepository {
     val coinBalance: Flow<Int>
 
     /**
+     * 获取用户国家ID
+     * @return 用户国家ID的Flow
+     */
+    val countryId: Flow<Int>
+
+    /**
      * 更新用户金币余额
-     * @param amount 新的余额
+     * @param amount 新s的余额
      */
     suspend fun updateCoinBalance(amount: Int)
 
