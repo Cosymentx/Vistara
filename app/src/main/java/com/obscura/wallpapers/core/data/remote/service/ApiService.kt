@@ -11,7 +11,7 @@ interface ApiService {
     @POST("/api/v1/user/green/login")
     suspend fun login(@Body request: LoginRequest): ApiResponse<LoginResponse>
 
-    @GET("/system/user/getUserInfo")
+    @GET("/api/v1/user/info")
     suspend fun getProfile(): ApiResponse<ProfileResponse>
 
     @POST("/system/order/add")
