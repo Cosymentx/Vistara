@@ -69,7 +69,7 @@ fun ChannelSelectionBottomSheet(
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         dragHandle = {
             BottomSheetDefaults.DragHandle(
-                color = surfaceColor.copy(alpha = 0.2f)
+                color = onSurfaceColor.copy(alpha = 0.2f)
             )
         },
         containerColor = surfaceColor,
@@ -207,7 +207,7 @@ fun ChannelItem(
 
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(16.dp),
         color = containerColor,
         border = BorderStroke(
             width = 1.dp, color = containerColor

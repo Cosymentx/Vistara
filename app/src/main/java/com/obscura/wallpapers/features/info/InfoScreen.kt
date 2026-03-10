@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -174,12 +175,15 @@ private fun AppInfoSection(
             items = listOf(
                 LinkEntry(
                     title = stringResource(R.string.info_user_agreement),
+                    icon = ObscuraIcons.Description,
                     onClick = onUserAgreementClick
                 ), LinkEntry(
                     title = stringResource(R.string.info_privacy_policy),
+                    icon = ObscuraIcons.Shield,
                     onClick = onPrivacyPolicyClick
                 ), LinkEntry(
                     title = stringResource(R.string.info_terms_of_service),
+                    icon = ObscuraIcons.Assignment,
                     onClick = onTermsOfServiceClick
                 )
             )
@@ -234,14 +238,14 @@ private fun LinkList(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items.forEach { entry ->
-            LinkItemGlass(title = entry.title, onClick = entry.onClick)
+            LinkItemGlass(title = entry.title, entry.icon, onClick = entry.onClick)
         }
     }
 }
 
 @Composable
 private fun LinkItemGlass(
-    title: String, onClick: () -> Unit
+    title: String, icon: ImageVector, onClick: () -> Unit
 ) {
     Surface(
         onClick = onClick,
@@ -275,7 +279,7 @@ private fun LinkItemGlass(
                     .border(1.dp, Color.White.copy(alpha = 0.16f), CircleShape)
             ) {
                 Icon(
-                    imageVector = ObscuraIcons.Info,
+                    imageVector = icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(22.dp)

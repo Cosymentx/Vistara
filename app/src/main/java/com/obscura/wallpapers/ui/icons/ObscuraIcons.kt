@@ -2076,4 +2076,130 @@ object ObscuraIcons {
                 close()
             }
         }.build()
+
+    /**
+     * 文档图标 - 用于用户协议
+     */
+    val Description: ImageVector
+        get() = ImageVector.Builder(
+            name = "description",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24f,
+            viewportHeight = 24f
+        ).apply {
+            path(fill = SolidColor(Color.Black)) {
+                moveTo(14f, 2f)
+                horizontalLineTo(6f)
+                curveToRelative(-1.1f, 0f, -1.99f, 0.9f, -1.99f, 2f)
+                lineTo(4f, 20f)
+                curveToRelative(0f, 1.1f, 0.89f, 2f, 1.99f, 2f)
+                horizontalLineTo(18f)
+                curveToRelative(1.1f, 0f, 2f, -0.9f, 2f, -2f)
+                verticalLineTo(8f)
+                lineToRelative(-6f, -6f)
+                close()
+                moveTo(16f, 18f)
+                horizontalLineTo(8f)
+                verticalLineToRelative(-2f)
+                horizontalLineToRelative(8f)
+                verticalLineToRelative(2f)
+                close()
+                moveTo(16f, 14f)
+                horizontalLineTo(8f)
+                verticalLineToRelative(-2f)
+                horizontalLineToRelative(8f)
+                verticalLineToRelative(2f)
+                close()
+                moveTo(13f, 9f)
+                verticalLineTo(3.5f)
+                lineTo(18.5f, 9f)
+                horizontalLineTo(13f)
+                close()
+            }
+        }.build()
+
+    /**
+     * 盾牌图标 - 用于隐私政策
+     */
+    val Shield: ImageVector
+        get() = ImageVector.Builder(
+            name = "shield",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24f,
+            viewportHeight = 24f
+        ).apply {
+            path(fill = SolidColor(Color.Black)) {
+                moveTo(12f, 1f)
+                lineTo(3f, 5f)
+                verticalLineToRelative(6f)
+                curveToRelative(0f, 5.55f, 3.84f, 10.74f, 9f, 12f)
+                curveToRelative(5.16f, -1.26f, 9f, -6.45f, 9f, -12f)
+                verticalLineTo(5f)
+                lineToRelative(-9f, -4f)
+                close()
+                moveTo(12f, 11.99f)
+                horizontalLineTo(19f)
+                curveToRelative(-0.47f, 4.74f, -3.53f, 8.9f, -7f, 10.01f)
+                verticalLineTo(12f)
+                horizontalLineTo(5f)
+                verticalLineTo(6.3f)
+                lineToRelative(7f, -3.11f)
+                verticalLineToRelative(8.8f)
+                close()
+            }
+        }.build()
+
+    /**
+     * 任务/协议图标 - 用于服务条款
+     */
+    val Assignment: ImageVector
+        get() = ImageVector.Builder(
+            name = "assignment",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24f,
+            viewportHeight = 24f
+        ).apply {
+            path(fill = SolidColor(Color.Black)) {
+                moveTo(19f, 3f)
+                horizontalLineToRelative(-4.18f)
+                curveTo(14.4f, 1.84f, 13.3f, 1f, 12f, 1f)
+                curveToRelative(-1.3f, 0f, -2.4f, 0.84f, -2.82f, 2f)
+                horizontalLineTo(5f)
+                curveToRelative(-1.1f, 0f, -2f, 0.9f, -2f, 2f)
+                verticalLineToRelative(14f)
+                curveToRelative(0f, 1.1f, 0.9f, 2f, 2f, 2f)
+                horizontalLineToRelative(14f)
+                curveToRelative(1.1f, 0f, 2f, -0.9f, 2f, -2f)
+                verticalLineTo(5f)
+                curveToRelative(0f, -1.1f, -0.9f, -2f, -2f, -2f)
+                close()
+                moveTo(12f, 3f)
+                curveToRelative(0.55f, 0f, 1f, 0.45f, 1f, 1f)
+                reflectiveCurveToRelative(-0.45f, 1f, -1f, 1f)
+                reflectiveCurveToRelative(-1f, -0.45f, -1f, -1f)
+                reflectiveCurveToRelative(0.45f, -1f, 1f, -1f)
+                close()
+                moveTo(14f, 17f)
+                horizontalLineTo(7f)
+                verticalLineToRelative(-2f)
+                horizontalLineToRelative(7f)
+                verticalLineToRelative(2f)
+                close()
+                moveTo(17f, 13f)
+                horizontalLineTo(7f)
+                verticalLineToRelative(-2f)
+                horizontalLineToRelative(10f)
+                verticalLineToRelative(2f)
+                close()
+                moveTo(17f, 9f)
+                horizontalLineTo(7f)
+                verticalLineTo(7f)
+                horizontalLineToRelative(10f)
+                verticalLineToRelative(2f)
+                close()
+            }
+        }.build()
 }

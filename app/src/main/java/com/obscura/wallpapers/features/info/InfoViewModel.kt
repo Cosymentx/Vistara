@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.obscura.wallpapers.R
@@ -19,7 +21,7 @@ import java.net.URLEncoder
 import javax.inject.Inject
 
 data class LinkEntry(
-    val title: String, val onClick: () -> Unit
+    val title: String, val icon: ImageVector,val onClick: () -> Unit
 )
 
 @HiltViewModel

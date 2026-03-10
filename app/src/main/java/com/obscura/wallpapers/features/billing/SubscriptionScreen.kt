@@ -161,8 +161,7 @@ fun SubscriptionScreen(
                                 onShowChannelDialog = {
                                     selectedProductForChannels = it
                                     showChannelDialog = true
-                                }
-                            )
+                                })
                         }
                     },
                     onRestorePurchases = { viewModel.restorePurchases() },
@@ -550,8 +549,8 @@ private fun PlanCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(if (isDark) Color.Black.copy(alpha = 0.45f) else MaterialTheme.colorScheme.surface)
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.15f))
             .border(
                 width = if (isSelected) 2.dp else 0.5.dp, brush = if (isSelected) {
                     Brush.linearGradient(
@@ -577,7 +576,7 @@ private fun PlanCard(
                 modifier = Modifier.align(Alignment.TopEnd)
             ) {
                 Text(
-                    text = "+${backendInfo.coins / 100} COINS",
+                    text = "+${backendInfo.coins / 100} Diamonds",
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,

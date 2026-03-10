@@ -51,7 +51,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.android.billingclient.api.ProductDetails
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
 
@@ -61,8 +60,7 @@ import com.obscura.wallpapers.ui.icons.ObscuraIcons
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoinStoreScreen(
-    onNavigateBack: () -> Unit,
-    viewModel: BillingViewModel = hiltViewModel()
+    onNavigateBack: () -> Unit, viewModel: BillingViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     var selectedPackageIndex by remember { mutableIntStateOf(-1) }
@@ -84,9 +82,7 @@ fun CoinStoreScreen(
     val cyanAccent = Color(0xFF00E5FF)
     val backgroundGradient = if (isDark) {
         listOf(
-            Color(0xFF000000),
-            Color(0xFF00151A),
-            Color(0xFF000000)
+            Color(0xFF000000), Color(0xFF00151A), Color(0xFF000000)
         )
     } else {
         listOf(
@@ -98,7 +94,11 @@ fun CoinStoreScreen(
 
     LaunchedEffect(uiState) {
         if (uiState is BillingUiState.Error) {
-            android.widget.Toast.makeText(context, (uiState as BillingUiState.Error).message, android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(
+                context,
+                (uiState as BillingUiState.Error).message,
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -113,27 +113,24 @@ fun CoinStoreScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        stringResource(R.string.coin_purchase_title),
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back),
-                            tint = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
+                Text(
+                    stringResource(R.string.coin_purchase_title),
+                    fontWeight = FontWeight.ExtraBold
                 )
+            }, navigationIcon = {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back),
+                        tint = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }, colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                titleContentColor = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
             )
-        },
-        containerColor = MaterialTheme.colorScheme.background
+            )
+        }, containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -158,8 +155,7 @@ fun CoinStoreScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(horizontal = 24.dp), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -203,14 +199,14 @@ fun CoinStoreScreen(
                 // Coin Packages
                 if (backendProducts.isNotEmpty()) {
                     backendProducts.forEachIndexed { index, product ->
-                        // 寻找对应的 Google Play 产品详情（如果存在）
                         val productDetails = availableInAppProducts.find {
                             it.productId == product.sku || it.productId == product.id?.toString()
                         }
 
-                        CoinBackendProductCard(
-                            product = product,
-                            productDetails = productDetails,
+                        CoinPackageCard(
+                            title = "${product.coins / 100} Diamonds",
+                            price = productDetails?.oneTimePurchaseOfferDetails?.formattedPrice
+                                ?: "${product.showPrice}",
                             isSelected = selectedPackageIndex == index,
                             onClick = {
                                 selectedPackageIndex = index
@@ -221,23 +217,8 @@ fun CoinStoreScreen(
                                     onShowChannelDialog = {
                                         selectedProductForChannels = it
                                         showChannelDialog = true
-                                    }
-                                )
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                } else if (!isLoadingProducts) {
-                    // 仅在非加载状态且后端无数据时，回退到 GP 本地列表
-                    availableInAppProducts.forEachIndexed { index, product ->
-                        CoinProductCard(
-                            productDetails = product,
-                            isSelected = selectedPackageIndex == index,
-                            onClick = {
-                                selectedPackageIndex = index
-                                viewModel.purchaseCoins(context as Activity, product)
-                            }
-                        )
+                                    })
+                            })
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
@@ -255,20 +236,17 @@ fun CoinStoreScreen(
             }
         }
 
-        // 全局加载遮罩
         if (isPurchasing || (isLoadingProducts && backendProducts.isEmpty())) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.6f))
-                    .clickable(enabled = false) {},
-                contentAlignment = Alignment.Center
+                    .clickable(enabled = false) {}, contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(color = cyanAccent)
             }
         }
 
-        // 渠道选择弹窗
         if (showChannelDialog && selectedProductForChannels != null) {
             ChannelSelectionBottomSheet(
                 product = selectedProductForChannels!!,
@@ -276,23 +254,16 @@ fun CoinStoreScreen(
                 onChannelSelected = { channel ->
                     showChannelDialog = false
                     viewModel.purchaseWithChannel(
-                        context as Activity,
-                        selectedProductForChannels!!,
-                        channel
+                        context as Activity, selectedProductForChannels!!, channel
                     )
-                }
-            )
+                })
         }
     }
 }
 
-
 @Composable
-private fun CoinBackendProductCard(
-    product: com.obscura.wallpapers.core.data.remote.service.CoinProduct,
-    productDetails: ProductDetails?,
-    isSelected: Boolean,
-    onClick: () -> Unit
+private fun CoinPackageCard(
+    title: String, price: String, isSelected: Boolean, onClick: () -> Unit
 ) {
     val cyanAccent = Color(0xFF00E5FF)
     val isDark = isSystemInDarkTheme()
@@ -300,31 +271,30 @@ private fun CoinBackendProductCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(if (isDark) Color.White.copy(alpha = if (isSelected) 0.12f else 0.05f) else MaterialTheme.colorScheme.surface)
+            .clip(RoundedCornerShape(16.dp))
+            .background(
+                if (isSelected) cyanAccent.copy(alpha = 0.08f)
+                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.15f)
+            )
             .border(
-                width = if (isSelected) 2.dp else 1.dp,
-                brush = if (isSelected) {
-                    Brush.linearGradient(
-                        listOf(cyanAccent, cyanAccent.copy(alpha = 0.5f))
-                    )
+                width = if (isSelected) 2.dp else 1.dp, brush = if (isSelected) {
+                    Brush.linearGradient(listOf(cyanAccent, cyanAccent.copy(alpha = 0.5f)))
                 } else {
                     Brush.linearGradient(
                         listOf(
-                            if (isDark) Color.White.copy(alpha = 0.2f) else MaterialTheme.colorScheme.outline.copy(
+                            if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(
                                 alpha = 0.1f
-                            ), if (isDark) Color.White.copy(alpha = 0.05f) else Color.Transparent
+                            ), Color.Transparent
                         )
                     )
-                },
-                shape = RoundedCornerShape(24.dp)
+                }, shape = RoundedCornerShape(16.dp)
             )
             .clickable(onClick = onClick)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(horizontal = 20.dp, vertical = 24.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -332,149 +302,33 @@ private fun CoinBackendProductCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Icon with subtle glow if selected
                 Box(contentAlignment = Alignment.Center) {
                     if (isSelected) {
                         Box(
                             modifier = Modifier
-                                .size(40.dp)
-                                .background(cyanAccent.copy(alpha = 0.2f), CircleShape)
+                                .size(42.dp)
+                                .background(cyanAccent.copy(alpha = 0.15f), CircleShape)
                         )
                     }
                     Icon(
                         imageVector = ObscuraIcons.Coin,
                         contentDescription = null,
-                        tint = if (isSelected) cyanAccent else if (isDark) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(32.dp)
+                        tint = if (isSelected) cyanAccent else if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(30.dp)
                     )
                 }
 
-                Column {
-                    Row(
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            text = "${product.coins}",
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = stringResource(R.string.coin_coins).uppercase(),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                alpha = 0.6f
-                            ),
-                            letterSpacing = 1.sp,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                    }
-
-                    Text(
-                        text = product.showInitialPrice ?: "",
-                        fontSize = 13.sp,
-                        color = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                            alpha = 0.7f
-                        ),
-                    )
-                }
+                Text(
+                    text = title,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
+                )
             }
 
             Text(
-                text = productDetails?.oneTimePurchaseOfferDetails?.formattedPrice
-                    ?: "${product.showPrice}",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = if (isSelected) cyanAccent else if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-}
-
-@Composable
-private fun CoinProductCard(
-    productDetails: ProductDetails,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    val cyanAccent = Color(0xFF00E5FF)
-    val isDark = isSystemInDarkTheme()
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(if (isDark) Color.White.copy(alpha = if (isSelected) 0.12f else 0.05f) else MaterialTheme.colorScheme.surface)
-            .border(
-                width = if (isSelected) 2.dp else 1.dp,
-                brush = if (isSelected) {
-                    Brush.linearGradient(
-                        listOf(cyanAccent, cyanAccent.copy(alpha = 0.5f))
-                    )
-                } else {
-                    Brush.linearGradient(
-                        listOf(
-                            if (isDark) Color.White.copy(alpha = 0.2f) else MaterialTheme.colorScheme.outline.copy(
-                                alpha = 0.1f
-                            ), if (isDark) Color.White.copy(alpha = 0.05f) else Color.Transparent
-                        )
-                    )
-                },
-                shape = RoundedCornerShape(24.dp)
-            )
-            .clickable(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Icon with subtle glow if selected
-                Box(contentAlignment = Alignment.Center) {
-                    if (isSelected) {
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .background(cyanAccent.copy(alpha = 0.2f), CircleShape)
-                        )
-                    }
-                    Icon(
-                        imageVector = ObscuraIcons.Coin,
-                        contentDescription = null,
-                        tint = if (isSelected) cyanAccent else if (isDark) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-
-                Column {
-                    Text(
-                        text = productDetails.name,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
-                    )
-
-                    Text(
-                        text = productDetails.description,
-                        fontSize = 12.sp,
-                        color = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                            alpha = 0.7f
-                        )
-                    )
-                }
-            }
-
-            Text(
-                text = productDetails.oneTimePurchaseOfferDetails?.formattedPrice ?: "",
-                fontSize = 22.sp,
+                text = price,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = if (isSelected) cyanAccent else if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
             )

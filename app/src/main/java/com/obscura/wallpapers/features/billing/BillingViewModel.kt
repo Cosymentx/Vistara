@@ -40,11 +40,6 @@ class BillingViewModel @Inject constructor(
     private val _isPurchasingCoins = MutableStateFlow(false)
     val isPurchasingCoins: StateFlow<Boolean> = _isPurchasingCoins.asStateFlow()
 
-    // 是否展示三方支付渠道
-    val openThird: StateFlow<Boolean> = userRepository.openThird.stateIn(
-        scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = false
-    )
-
     private val _coinPurchaseSuccess = MutableStateFlow(false)
     val coinPurchaseSuccess: StateFlow<Boolean> = _coinPurchaseSuccess.asStateFlow()
 
