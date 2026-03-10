@@ -103,10 +103,12 @@ class ApiTestViewModel @Inject constructor(
                     val loginResponse = apiService.login(loginRequest)
                     if (loginResponse.isSuccess && loginResponse.data != null) {
                         val token = loginResponse.data.accessToken
-                        addTestResult("✅ login 成功: Token=${token.take(10)}...")
+                        val openThirdValue = loginResponse.data.openThird ?: false
+                        addTestResult("✅ login 成功: Token=${token.take(10)}..., openThird=$openThirdValue")
                         // 保存 Token 到 UserRepository，触发 AuthInterceptor
                         userRepository.saveServerToken(token)
                         userRepository.updateLoginStatus(true)
+                        userRepository.saveOpenThird(openThirdValue)
                     } else {
                         addTestResult("❌ login 失败: ${loginResponse.apiMsg}")
                     }

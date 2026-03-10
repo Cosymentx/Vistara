@@ -103,11 +103,12 @@ class AuthRepositoryImpl @Inject constructor(
                         val loginResponse = result.data
                         Log.d(TAG, "登录请求成功，准备保存数据: uid=${loginResponse?.uid}, token=${loginResponse?.accessToken?.take(10)}")
                         loginResponse?.let {
+                            Log.d(TAG, "从后端更新 openThird 状态: ${loginResponse.openThird}")
                             userRepository.saveServerToken(loginResponse.accessToken)
                             userRepository.saveUserUid(loginResponse.uid?.toString() ?: "")
                             userRepository.updateLoginStatus(true)
                             userRepository.saveOpenThird(loginResponse.openThird ?: false)
-                            
+
                             // 登录成功后立即获取并缓存最新的用户信息（包括金币、昵称等）
                             userRepository.refreshUserProfile()
 

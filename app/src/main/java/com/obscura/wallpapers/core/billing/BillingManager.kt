@@ -221,17 +221,21 @@ class BillingManager @Inject constructor(
      * 购买更新回调
      */
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
+        Log.d(tag, "onPurchasesUpdated: responseCode=${billingResult.responseCode}, debugMessage=${billingResult.debugMessage}")
         when (billingResult.responseCode) {
             BillingClient.BillingResponseCode.OK -> {
+                Log.d(tag, "购买流程成功，开始处理 ${purchases?.size ?: 0} 条购买信息")
                 purchases?.let { 
                     // 这里由于无法直接确定是SUBS还是INAPP，通过商品ID列表判断
                     handlePurchases(it) 
                 }
             }
             BillingClient.BillingResponseCode.USER_CANCELED -> {
+                Log.i(tag, "用户取消购买")
                 _purchaseState.value = PurchaseState.NotPurchased
             }
             else -> {
+                Log.e(tag, "购买流程错误: ${billingResult.debugMessage}")
                 _purchaseState.value = PurchaseState.Error(
                     billingResult.debugMessage ?: "Purchase failed"
                 )
@@ -243,12 +247,15 @@ class BillingManager @Inject constructor(
      * 处理购买记录
      */
     private fun handlePurchases(purchases: List<Purchase>, isSubscription: Boolean? = null) {
+        Log.d(tag, "handlePurchases: purchasesSize=${purchases.size}, isSubscription=$isSubscription")
         if (purchases.isEmpty() && isSubscription == true) {
+            Log.d(tag, "没有订阅记录，更新 Premium 状态为 false")
             _isPremium.value = false
             return
         }
 
         for (purchase in purchases) {
+            Log.d(tag, "处理单条购买: orderId=${purchase.orderId}, state=${purchase.purchaseState}, products=${purchase.products}")
             if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                 val productId = purchase.products.firstOrNull() ?: continue
                 
@@ -258,12 +265,14 @@ class BillingManager @Inject constructor(
                 if (isSub) {
                     // 确认订阅购买
                     if (!purchase.isAcknowledged) {
+                        Log.d(tag, "检测到未确认订阅，开始 Acknowledge: $productId")
                         scope.launch { acknowledgePurchase(purchase) }
                     }
                     _isPremium.value = true
                 } else {
                     // 对于金币等消耗性产品，不在这里自动 Acknowledge 或 Consume
                     // 由业务方调用 consumePurchase 并在成功后发放奖励
+                    Log.d(tag, "检测到内购商品(金币等)，等待业务层调用 Consume: $productId")
                 }
 
                 _purchaseState.value = PurchaseState.Purchased(
@@ -272,7 +281,9 @@ class BillingManager @Inject constructor(
                     isAutoRenewing = purchase.isAutoRenewing
                 )
                 
-                Log.d(tag, "Purchase handled: $productId, isSub=$isSub")
+                Log.d(tag, "购买状态已分发: $productId, isSub=$isSub")
+            } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+                Log.d(tag, "购买处于待处理状态: ${purchase.products}")
             }
         }
     }

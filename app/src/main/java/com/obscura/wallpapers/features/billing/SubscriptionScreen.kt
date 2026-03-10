@@ -76,7 +76,6 @@ fun SubscriptionScreen(
     val availableSubscriptions by viewModel.availableSubscriptions.collectAsState()
     val backendSubscriptionProducts by viewModel.subscriptionProducts.collectAsState()
     val uiState by viewModel.subscriptionUiState.collectAsState()
-    val openThird by viewModel.openThird.collectAsState()
 
     var selectedProductIndex by remember { mutableIntStateOf(1) } // 默认选中年度订阅
     var showChannelDialog by remember { mutableStateOf(false) }
@@ -154,44 +153,15 @@ fun SubscriptionScreen(
                     onSubscribe = {
                         if (backendSubscriptionProducts.isNotEmpty() && selectedProductIndex < backendSubscriptionProducts.size) {
                             val product = backendSubscriptionProducts[selectedProductIndex]
-
-                            // 判断是否启用三方支付
-                            if (openThird && !product.channels.isNullOrEmpty()) {
-                                if (product.channels.size == 1 && product.channels[0].channel == "1") {
-                                    // 只有 Google Play 渠道，直接发起
-                                    viewModel.purchaseWithChannel(
-                                        context as Activity, product, product.channels[0]
-                                    )
-                                } else {
-                                    selectedProductForChannels = product
+                            viewModel.startPurchaseFlow(
+                                activity = context as Activity,
+                                product = product,
+                                availablePlayProducts = availableSubscriptions,
+                                onShowChannelDialog = {
+                                    selectedProductForChannels = it
                                     showChannelDialog = true
                                 }
-                            } else {
-                                // 备退方案 or 强制 Google Play (openThird == false)
-                                val matchingPlayProduct =
-                                    availableSubscriptions.find { it.productId == product.sku || it.productId == product.id?.toString() }
-                                if (matchingPlayProduct != null) {
-                                    // 使用 purchaseWithOrder 以保持后端订单同步
-                                    viewModel.purchaseWithOrder(
-                                        context as Activity, product, matchingPlayProduct
-                                    )
-                                } else {
-                                    // 如果通过 SKU 找不到，尝试通过 ID 查找
-                                    val fallbackPlayProduct =
-                                        availableSubscriptions.find { it.productId == product.id?.toString() }
-                                    if (fallbackPlayProduct != null) {
-                                        viewModel.purchaseWithOrder(
-                                            context as Activity, product, fallbackPlayProduct
-                                        )
-                                    } else {
-                                        android.widget.Toast.makeText(
-                                            context,
-                                            "Product not available in Play Store",
-                                            android.widget.Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }
+                            )
                         }
                     },
                     onRestorePurchases = { viewModel.restorePurchases() },

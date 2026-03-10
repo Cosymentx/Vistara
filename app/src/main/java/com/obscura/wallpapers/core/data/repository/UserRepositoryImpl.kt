@@ -55,9 +55,11 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveOpenThird(openThird: Boolean) {
+        Log.d(TAG, "saveOpenThird: 准备将 openThird 修改为 $openThird")
         dataStore.edit { preferences ->
             preferences[OPEN_THIRD] = openThird
         }
+        Log.d(TAG, "saveOpenThird: 修改成功")
     }
 
     override val isPremiumUser: Flow<Boolean> = dataStore.data.map { preferences ->
@@ -248,11 +250,15 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getCoinProducts(productType: Int): ApiResult<List<com.obscura.wallpapers.core.data.remote.service.CoinProduct>> {
         val currentCountryId = dataStore.data.map { it[USER_COUNTRY_ID] ?: 100 }.first()
+        Log.d(TAG, "获取产品列表: productType=$productType, countryId=$currentCountryId")
         return safeApiCall(ApiSource.BACKEND) {
             val response = apiService.getProducts(productType, currentCountryId)
             if (response.isSuccess) {
-                response.data?.goldGoods ?: emptyList()
+                val products = response.data?.goldGoods ?: emptyList()
+                Log.d(TAG, "获取产品列表成功: size=${products.size}")
+                products
             } else {
+                Log.e(TAG, "获取产品列表失败: code=${response.code}, msg=${response.msg}")
                 throw Exception(response.msg)
             }
         }
@@ -266,6 +272,7 @@ class UserRepositoryImpl @Inject constructor(
         anchorId: Int
     ): ApiResult<com.obscura.wallpapers.core.data.remote.service.CreateOrderResponse> {
         val currentCountryId = dataStore.data.map { it[USER_COUNTRY_ID] ?: 100 }.first()
+        Log.d(TAG, "创建订单请求: productId=$productId, payType=$payType, channel=$channel, countryId=$currentCountryId")
         return safeApiCall(ApiSource.BACKEND) {
             val request = com.obscura.wallpapers.core.data.remote.service.CheckoutRequest(
                 productId = productId,
@@ -277,8 +284,10 @@ class UserRepositoryImpl @Inject constructor(
             )
             val response = apiService.createOrder(request)
             if (response.isSuccess && response.data != null) {
+                Log.d(TAG, "创建订单成功: orderId=${response.data.id}, payUrl=${response.data.payUrl}")
                 response.data
             } else {
+                Log.e(TAG, "创建订单失败: code=${response.code}, msg=${response.msg}")
                 throw Exception(response.msg)
             }
         }

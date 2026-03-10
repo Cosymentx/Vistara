@@ -57,6 +57,7 @@ class BillingRepository @Inject constructor(
      * 刷新订阅状态
      */
     suspend fun refreshSubscriptionStatus() {
+        Log.d(tag, "refreshSubscriptionStatus: 正在刷新订阅状态...")
         try {
             billingManager.queryPurchases()
             
@@ -64,7 +65,10 @@ class BillingRepository @Inject constructor(
             val isPremium = billingManager.isPremium.value
             val state = billingManager.purchaseState.value
             
+            Log.d(tag, "refreshSubscriptionStatus: isPremium=$isPremium, currentState=$state")
+
             if (state is PurchaseState.Purchased && ProductType.getAllSubscriptionIds().contains(state.productId)) {
+                Log.d(tag, "检测到已购订阅: ${state.productId}, 更新本地数据库")
                 val subscription = UserSubscriptionEntity(
                     id = 1,
                     isPremium = isPremium,
@@ -77,6 +81,7 @@ class BillingRepository @Inject constructor(
                 subscriptionDao.updateSubscription(subscription)
             } else if (!isPremium) {
                 // 如果没有订阅，清除本地状态
+                Log.d(tag, "用户非高级会员，清除本地订阅状态")
                 subscriptionDao.updatePremiumStatus(false)
             }
             
@@ -90,6 +95,7 @@ class BillingRepository @Inject constructor(
      * 发起购买
      */
     suspend fun purchaseProduct(activity: Activity, productDetails: ProductDetails) {
+        Log.d(tag, "purchaseProduct: productId=${productDetails.productId}, type=${productDetails.productType}")
         billingManager.launchBillingFlow(activity, productDetails)
     }
 
@@ -97,7 +103,10 @@ class BillingRepository @Inject constructor(
      * 消耗购买 (针对金币等)
      */
     suspend fun consumePurchase(purchaseToken: String): Boolean {
-        return billingManager.consumePurchase(purchaseToken)
+        Log.d(tag, "consumePurchase: token=$purchaseToken")
+        val result = billingManager.consumePurchase(purchaseToken)
+        Log.d(tag, "consumePurchase 结果: $result")
+        return result
     }
 
     /**

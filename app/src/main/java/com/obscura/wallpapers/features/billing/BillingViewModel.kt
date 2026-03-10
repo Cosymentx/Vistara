@@ -1,6 +1,7 @@
 package com.obscura.wallpapers.features.billing
 
 import android.app.Activity
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.ProductDetails
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,6 +28,10 @@ class BillingViewModel @Inject constructor(
     private val billingRepository: BillingRepository, private val userRepository: UserRepository
 ) : ViewModel() {
 
+    companion object {
+        private const val TAG = "BillingViewModel"
+    }
+
     // UI 状态
     private val _subscriptionUiState = MutableStateFlow<BillingUiState>(BillingUiState.Idle)
     val subscriptionUiState: StateFlow<BillingUiState> = _subscriptionUiState.asStateFlow()
@@ -36,9 +42,7 @@ class BillingViewModel @Inject constructor(
 
     // 是否展示三方支付渠道
     val openThird: StateFlow<Boolean> = userRepository.openThird.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = false
+        scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = false
     )
 
     private val _coinPurchaseSuccess = MutableStateFlow(false)
@@ -46,9 +50,7 @@ class BillingViewModel @Inject constructor(
 
     // 是否为高级用户 (订阅)
     val isPremium: StateFlow<Boolean> = billingRepository.isPremiumUser.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = false
+        scope = viewModelScope, started = SharingStarted.WhileSubscribed(5000), initialValue = false
     )
 
     // 可用订阅列表
@@ -130,10 +132,10 @@ class BillingViewModel @Inject constructor(
                 if (result is ApiResult.Success) {
                     _subscriptionProducts.value = result.data
                 } else if (result is ApiResult.Error) {
-                    android.util.Log.e("BillingViewModel", "获取订阅产品失败: ${result.message}")
+                    Log.e(TAG, "获取订阅产品失败: ${result.message}")
                 }
             } catch (e: Exception) {
-                android.util.Log.e("BillingViewModel", "获取订阅产品异常", e)
+                Log.e(TAG, "获取订阅产品异常", e)
             } finally {
                 _isLoadingProducts.value = false
             }
@@ -141,6 +143,7 @@ class BillingViewModel @Inject constructor(
     }
 
     private fun handlePurchaseState(state: PurchaseState) {
+        Log.d(TAG, "handlePurchaseState: state = $state")
         when (state) {
             is PurchaseState.Purchased -> {
                 // 如果是订阅，已经在 Repository 处理了本地数据库同步
@@ -169,12 +172,15 @@ class BillingViewModel @Inject constructor(
         viewModelScope.launch {
             _isPurchasingCoins.value = true
             try {
+                Log.d(TAG, "开始发放金币奖励: productId = ${purchase.productId}")
                 // 1. 调用 BillingManager 消耗商品
                 val consumed = billingRepository.consumePurchase(purchase.purchaseToken)
+                Log.d(TAG, "消耗商品结果: consumed = $consumed")
                 if (consumed) {
                     // 2. 根据 ID 发放金币
                     val amount = ProductType.getCoinAmount(purchase.productId)
                     if (amount > 0) {
+                        Log.d(TAG, "发放金币数量: $amount")
                         userRepository.addCoins(amount)
                         _coinPurchaseSuccess.value = true
                     }
@@ -184,6 +190,7 @@ class BillingViewModel @Inject constructor(
                     _subscriptionUiState.value = BillingUiState.Error("Failed to consume purchase")
                 }
             } catch (e: Exception) {
+                Log.e(TAG, "发放奖励异常", e)
                 _subscriptionUiState.value = BillingUiState.Error("Reward distribution failed")
             } finally {
                 _isPurchasingCoins.value = false
@@ -207,10 +214,11 @@ class BillingViewModel @Inject constructor(
     }
 
     /**
-     * 发起订阅购买
+     * 发起订阅购买 (直接拉起 GP，不通过后端订单，用于保底)
      */
     fun purchaseSubscription(activity: Activity, productDetails: ProductDetails) {
         viewModelScope.launch {
+            Log.d(TAG, "直接拉起订阅(保底模式): sku = ${productDetails.productId}")
             _subscriptionUiState.value = BillingUiState.Loading
             try {
                 billingRepository.purchaseProduct(activity, productDetails)
@@ -221,16 +229,78 @@ class BillingViewModel @Inject constructor(
     }
 
     /**
-     * 发起金币购买 (内购)
+     * 发起金币购买 (内购) (直接拉起 GP，不通过后端订单，用于保底)
      */
     fun purchaseCoins(activity: Activity, productDetails: ProductDetails) {
         viewModelScope.launch {
+            Log.d(TAG, "直接拉起金币购买(保底模式): sku = ${productDetails.productId}")
             _isPurchasingCoins.value = true
             try {
                 billingRepository.purchaseProduct(activity, productDetails)
             } catch (e: Exception) {
                 _isPurchasingCoins.value = false
                 _subscriptionUiState.value = BillingUiState.Error(e.message ?: "Purchase failed")
+            }
+        }
+    }
+
+    /**
+     * 统一支付流程入口
+     * 根据 openThird 状态自动决定：是直接下单(GP) 还是 弹出渠道选择
+     */
+    fun startPurchaseFlow(
+        activity: Activity,
+        product: com.obscura.wallpapers.core.data.remote.service.CoinProduct,
+        availablePlayProducts: List<ProductDetails>,
+        onShowChannelDialog: (com.obscura.wallpapers.core.data.remote.service.CoinProduct) -> Unit
+    ) {
+        viewModelScope.launch {
+            val openThirdValue = userRepository.openThird.first()
+            Log.d(
+                TAG,
+                "startPurchaseFlow (强制从 Repo 读取): productId=${product.id}, sku=${product.sku}, openThird=$openThirdValue"
+            )
+
+            // 1. 寻找匹配的 Google Play 产品详情
+            val playProduct = availablePlayProducts.find {
+                it.productId == product.sku || it.productId == product.id?.toString()
+            }
+            Log.d(TAG, "匹配到的 GooglePlay 产品: ${playProduct?.productId ?: "未找到"}")
+
+            if (openThirdValue) {
+                // 情况 A: 开启了多渠道
+                val channels = product.channels
+                if (!channels.isNullOrEmpty()) {
+                    Log.d(TAG, "多渠道模式: 渠道数量=${channels.size}")
+
+                    if (channels.size == 1 && channels[0].channel == "1") {
+                        Log.d(TAG, "多渠道模式: 仅有 Google Play 渠道，直接下单")
+                        purchaseWithChannel(activity, product, channels[0])
+                    } else {
+                        Log.d(TAG, "多渠道模式: 显示渠道选择弹窗")
+                        onShowChannelDialog(product)
+                    }
+                } else {
+                    Log.w(TAG, "多渠道模式: 后端未返回渠道，尝试直接拉起 GP 支付(保底)")
+                    playProduct?.let {
+                        if (it.productType == com.android.billingclient.api.BillingClient.ProductType.SUBS) {
+                            purchaseSubscription(activity, it)
+                        } else {
+                            purchaseCoins(activity, it)
+                        }
+                    } ?: Log.e(TAG, "多渠道模式: 保底失败，未找到对应的 GooglePlay 产品")
+                }
+            } else {
+                // 情况 B: 关闭三方支付，强制 Google Play
+                Log.d(TAG, "强制 GP 模式")
+                if (playProduct != null) {
+                    Log.d(TAG, "强制 GP 模式: 走后端下单流程")
+                    purchaseWithOrder(
+                        activity = activity, product = product, productDetails = playProduct
+                    )
+                } else {
+                    Log.e(TAG, "强制 GP 模式: 未找到关联产品，且无可用 GooglePlay 产品详情")
+                }
             }
         }
     }
@@ -244,61 +314,75 @@ class BillingViewModel @Inject constructor(
         channel: com.obscura.wallpapers.core.data.remote.service.PayChannel
     ) {
         viewModelScope.launch {
-            // 根据产品类型设置加载状态
-            val isCoin = ProductType.getAllInAppProductIds().contains(product.sku) || 
-                         ProductType.getAllInAppProductIds().contains(product.id?.toString())
+            val isCoin = ProductType.getAllInAppProductIds()
+                .contains(product.sku) || ProductType.getAllInAppProductIds()
+                .contains(product.id?.toString())
+
+            Log.d(
+                TAG,
+                "purchaseWithChannel: channelCode=${channel.channel}, payType=${channel.payType}, isCoin=$isCoin"
+            )
+
             if (isCoin) _isPurchasingCoins.value = true
             _subscriptionUiState.value = BillingUiState.Loading
-            
+
             val productId = product.id ?: 0
             val payType = channel.payType ?: 0
             val channelCode = channel.channel ?: ""
-            
-            android.util.Log.d("BillingViewModel", "开始渠道支付下单: productId=$productId, payType=$payType, channel=$channelCode")
-            
+
             try {
-                // 1. 调用后端接口创建订单 (使用新的 CheckoutRequest 结构)
+                Log.d(
+                    TAG,
+                    "正在创建后端订单: productId=$productId, payType=$payType, channel=$channelCode"
+                )
                 val result = userRepository.createOrder(
-                    productId = productId,
-                    payType = payType,
-                    channel = channelCode
+                    productId = productId, payType = payType, channel = channelCode
                 )
                 if (result is ApiResult.Success) {
                     val orderResponse = result.data
-                    android.util.Log.d("BillingViewModel", "下单成功: orderId=${orderResponse.id}, isGooglePay=${orderResponse.apiIsGooglePay()}")
-                    
+                    Log.d(
+                        TAG,
+                        "后端下单成功: orderId=${orderResponse.id}, isGooglePay=${orderResponse.apiIsGooglePay()}"
+                    )
+
                     if (orderResponse.apiIsGooglePay()) {
-                        // 如果是 Google Play 渠道，查找对应的 ProductDetails 并发起支付
-                        val playProduct = if (ProductType.getAllInAppProductIds().contains(product.sku)) {
-                             availableInAppProducts.value.find { it.productId == product.sku }
+                        val playProduct = if (isCoin) {
+                            availableInAppProducts.value.find { it.productId == product.sku || it.productId == product.id?.toString() }
                         } else {
-                             availableSubscriptions.value.find { it.productId == product.sku }
+                            availableSubscriptions.value.find { it.productId == product.sku || it.productId == product.id?.toString() }
                         }
-                        
+
                         if (playProduct != null) {
+                            Log.d(TAG, "拉起 Google Play 支付: sku=${playProduct.productId}")
                             billingRepository.purchaseProduct(activity, playProduct)
                         } else {
-                            val errorMsg = "Play Store product not found for SKU: ${product.sku}"
-                            _subscriptionUiState.value = BillingUiState.Error(errorMsg)
+                            Log.e(TAG, "下单成功但未找到对应的 Play Store 产品: sku=${product.sku}")
+                            _subscriptionUiState.value =
+                                BillingUiState.Error("Play Store product not found")
                             _isPurchasingCoins.value = false
                         }
                     } else if (!orderResponse.payUrl.isNullOrEmpty()) {
-                        // 如果是第三方渠道且有支付链接
-                        val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(orderResponse.payUrl))
+                        Log.d(TAG, "跳转三方支付 URL: ${orderResponse.payUrl}")
+                        val intent = android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            android.net.Uri.parse(orderResponse.payUrl)
+                        )
                         activity.startActivity(intent)
                         _subscriptionUiState.value = BillingUiState.Success
                         _isPurchasingCoins.value = false
                     } else {
-                        _subscriptionUiState.value = BillingUiState.Error("Invalid payment response: No payUrl")
+                        Log.e(TAG, "后端响应异常: 无 payUrl 且非 GP 支付")
+                        _subscriptionUiState.value =
+                            BillingUiState.Error("Invalid payment response")
                         _isPurchasingCoins.value = false
                     }
                 } else if (result is ApiResult.Error) {
-                    android.util.Log.e("BillingViewModel", "下单失败: ${result.message}")
+                    Log.e(TAG, "创建后端订单失败: ${result.message}")
                     _subscriptionUiState.value = BillingUiState.Error(result.message)
                     _isPurchasingCoins.value = false
                 }
             } catch (e: Exception) {
-                android.util.Log.e("BillingViewModel", "下单异常", e)
+                Log.e(TAG, "创建订单流程异常", e)
                 _subscriptionUiState.value = BillingUiState.Error(e.message ?: "Purchase failed")
                 _isPurchasingCoins.value = false
             }
@@ -314,31 +398,30 @@ class BillingViewModel @Inject constructor(
         productDetails: ProductDetails
     ) {
         viewModelScope.launch {
-            val isCoin = ProductType.getAllInAppProductIds().contains(product.sku) || 
-                         ProductType.getAllInAppProductIds().contains(product.id?.toString())
+            val isCoin =
+                productDetails.productType == com.android.billingclient.api.BillingClient.ProductType.INAPP
+            Log.d(TAG, "purchaseWithOrder: sku=${productDetails.productId}, isCoin=$isCoin")
+
             if (isCoin) _isPurchasingCoins.value = true
             _subscriptionUiState.value = BillingUiState.Loading
-            
+
             val productId = product.id ?: 0
-            // Google Play 默认 payType=1, channel="1"
-            android.util.Log.d("BillingViewModel", "开始 GooglePlay 模式下单: productId=$productId")
-            
+
             try {
+                Log.d(TAG, "正在创建 GP 模式后端订单: productId=$productId")
                 val result = userRepository.createOrder(
-                    productId = productId,
-                    payType = 1,
-                    channel = "1"
+                    productId = productId, payType = 1, channel = "1"
                 )
                 if (result is ApiResult.Success) {
-                    android.util.Log.d("BillingViewModel", "GooglePlay 模式下单成功")
+                    Log.d(TAG, "GP 模式后端下单成功，拉起 Google Play")
                     billingRepository.purchaseProduct(activity, productDetails)
                 } else if (result is ApiResult.Error) {
-                    android.util.Log.e("BillingViewModel", "GooglePlay 模式下单失败: ${result.message}")
+                    Log.e(TAG, "GP 模式后端下单失败: ${result.message}")
                     _subscriptionUiState.value = BillingUiState.Error(result.message)
                     _isPurchasingCoins.value = false
                 }
             } catch (e: Exception) {
-                android.util.Log.e("BillingViewModel", "GooglePlay 模式下单异常", e)
+                Log.e(TAG, "GP 模式下单异常", e)
                 _isPurchasingCoins.value = false
                 _subscriptionUiState.value = BillingUiState.Error(e.message ?: "Purchase failed")
             }
@@ -354,15 +437,18 @@ class BillingViewModel @Inject constructor(
      */
     fun restorePurchases() {
         viewModelScope.launch {
+            Log.d(TAG, "开始恢复购买...")
             _subscriptionUiState.value = BillingUiState.Loading
             try {
                 val restored = billingRepository.restorePurchases()
+                Log.d(TAG, "恢复购买结果: $restored")
                 _subscriptionUiState.value = if (restored) {
                     BillingUiState.Success
                 } else {
                     BillingUiState.Error("No purchases found")
                 }
             } catch (e: Exception) {
+                Log.e(TAG, "恢复购买异常", e)
                 _subscriptionUiState.value = BillingUiState.Error(e.message ?: "Restore failed")
             }
         }

@@ -232,7 +232,7 @@ fun ChannelItem(
                         modifier = Modifier.padding(10.dp), contentAlignment = Alignment.Center
                     ) {
                         AsyncImage(
-                            model = if (channel.icon?.startsWith("http") == true) channel.icon else "https://s3.chachat888.com/${channel.icon}",
+                            model = if (channel.icon?.startsWith("http") == true) channel.icon else "https://s3.rest-edu.com/${channel.icon}",
                             contentDescription = channel.name,
                             modifier = Modifier.fillMaxSize()
                         )

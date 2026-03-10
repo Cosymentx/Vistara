@@ -71,7 +71,6 @@ fun CoinStoreScreen(
     val availableInAppProducts by viewModel.availableInAppProducts.collectAsState()
     val backendProducts by viewModel.backendProducts.collectAsState()
     val isLoadingProducts by viewModel.isLoadingProducts.collectAsState()
-    val openThird by viewModel.openThird.collectAsState()
     val uiState by viewModel.subscriptionUiState.collectAsState()
 
     var showChannelDialog by remember { mutableStateOf(false) }
@@ -216,42 +215,15 @@ fun CoinStoreScreen(
                             isSelected = selectedPackageIndex == index,
                             onClick = {
                                 selectedPackageIndex = index
-                                // 判断是否启用三方支付
-                                if (openThird && !product.channels.isNullOrEmpty()) {
-                                    if (product.channels.size == 1 && product.channels[0].channel == "1") {
-                                        // 只有 Google Play 渠道，直接发起
-                                        viewModel.purchaseWithChannel(
-                                            context as Activity,
-                                            product,
-                                            product.channels[0]
-                                        )
-                                    } else {
-                                        selectedProductForChannels = product
+                                viewModel.startPurchaseFlow(
+                                    activity = context as Activity,
+                                    product = product,
+                                    availablePlayProducts = availableInAppProducts,
+                                    onShowChannelDialog = {
+                                        selectedProductForChannels = it
                                         showChannelDialog = true
                                     }
-                                } else {
-                                    // 备退方案 or 强制 Google Play (openThird == false)
-                                    val fallbackDetails =
-                                        availableInAppProducts.find { it.productId == product.sku }
-                                    if (fallbackDetails != null) {
-                                        viewModel.purchaseWithOrder(
-                                            context as Activity,
-                                            product,
-                                            fallbackDetails
-                                        )
-                                    } else {
-                                        // 如果后端没下发 sku 或者找不到对应的 GP 产品，尝试使用 ID 下单
-                                        val productDetailsById =
-                                            availableInAppProducts.find { it.productId == product.id?.toString() }
-                                        if (productDetailsById != null) {
-                                            viewModel.purchaseWithOrder(
-                                                context as Activity,
-                                                product,
-                                                productDetailsById
-                                            )
-                                        }
-                                    }
-                                }
+                                )
                             }
                         )
                         Spacer(modifier = Modifier.height(16.dp))
