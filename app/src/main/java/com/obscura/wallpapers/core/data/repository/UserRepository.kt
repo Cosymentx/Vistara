@@ -34,7 +34,13 @@ interface UserRepository {
     /**
      * 创建订单
      */
-    suspend fun createOrder(priceId: String, paymentMethodId: String): ApiResult<com.obscura.wallpapers.core.data.remote.service.CreateOrderResponse>
+    suspend fun createOrder(
+        productId: Int,
+        payType: Int,
+        channel: String,
+        subType: Int = 0,
+        anchorId: Int = 0
+    ): ApiResult<com.obscura.wallpapers.core.data.remote.service.CreateOrderResponse>
 
     /**
      * 获取用户UID

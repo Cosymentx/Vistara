@@ -72,7 +72,7 @@ fun CoinStoreScreen(
     val backendProducts by viewModel.backendProducts.collectAsState()
     val isLoadingProducts by viewModel.isLoadingProducts.collectAsState()
     val openThird by viewModel.openThird.collectAsState()
-//    val openThird =true
+    val uiState by viewModel.subscriptionUiState.collectAsState()
 
     var showChannelDialog by remember { mutableStateOf(false) }
     var selectedProductForChannels by remember {
@@ -95,6 +95,12 @@ fun CoinStoreScreen(
             MaterialTheme.colorScheme.surface,
             MaterialTheme.colorScheme.surface
         )
+    }
+
+    LaunchedEffect(uiState) {
+        if (uiState is BillingUiState.Error) {
+            android.widget.Toast.makeText(context, (uiState as BillingUiState.Error).message, android.widget.Toast.LENGTH_SHORT).show()
+        }
     }
 
     LaunchedEffect(purchaseSuccess) {
@@ -202,7 +208,7 @@ fun CoinStoreScreen(
                     backendProducts.forEachIndexed { index, product ->
                         // 寻找对应的 Google Play 产品详情（如果存在）
                         val productDetails =
-                            availableInAppProducts.find { it.productId == product.id }
+                            availableInAppProducts.find { it.productId == product.sku || it.productId == product.id?.toString() }
 
                         CoinBackendProductCard(
                             product = product,
@@ -228,7 +234,7 @@ fun CoinStoreScreen(
                                     val fallbackDetails =
                                         availableInAppProducts.find { it.productId == product.sku }
                                     if (fallbackDetails != null) {
-                                        viewModel.purchaseCoinsWithOrder(
+                                        viewModel.purchaseWithOrder(
                                             context as Activity,
                                             product,
                                             fallbackDetails
@@ -236,9 +242,9 @@ fun CoinStoreScreen(
                                     } else {
                                         // 如果后端没下发 sku 或者找不到对应的 GP 产品，尝试使用 ID 下单
                                         val productDetailsById =
-                                            availableInAppProducts.find { it.productId == product.id }
+                                            availableInAppProducts.find { it.productId == product.id?.toString() }
                                         if (productDetailsById != null) {
-                                            viewModel.purchaseCoinsWithOrder(
+                                            viewModel.purchaseWithOrder(
                                                 context as Activity,
                                                 product,
                                                 productDetailsById

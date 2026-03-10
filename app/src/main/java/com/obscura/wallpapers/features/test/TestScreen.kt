@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
+import com.obscura.wallpapers.features.billing.ChannelSelectionBottomSheet
 import com.obscura.wallpapers.ui.components.GlassTopAppBar
 import com.obscura.wallpapers.ui.components.LocalHazeState
 import com.obscura.wallpapers.ui.components.TextInputDialog
@@ -72,6 +73,8 @@ fun TestScreen(
     val operationResult by viewModel.operationResult.collectAsState()
     val isLoginLoading by viewModel.isLoginLoading.collectAsState()
     val showLoginDialog by viewModel.showLoginDialog.collectAsState()
+    val showPaymentPreview by viewModel.showPaymentPreview.collectAsState()
+    val mockProduct by viewModel.mockProduct.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(operationResult) {
@@ -205,7 +208,7 @@ fun TestScreen(
                         ) {
                             Icon(Icons.Default.Send, null, modifier = Modifier.size(18.dp))
                             Spacer(Modifier.width(8.dp))
-                            Text("Launch Pexels API Tester")
+                            Text("Launch API Tester")
                         }
 
                         OutlinedButton(
@@ -216,9 +219,8 @@ fun TestScreen(
                             Text("Preview Server Login Dialog")
                         }
 
-                        var showPaymentDialog by remember { mutableStateOf(false) }
                         OutlinedButton(
-                            onClick = { showPaymentDialog = true },
+                            onClick = { viewModel.showPaymentPreview() },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp)
                         ) {
@@ -242,6 +244,17 @@ fun TestScreen(
             dismissText = "Cancel",
             isLoading = isLoginLoading,
             keyboardType = KeyboardType.Email
+        )
+    }
+
+    if (showPaymentPreview && mockProduct != null) {
+        ChannelSelectionBottomSheet(
+            product = mockProduct!!,
+            onDismiss = { viewModel.hidePaymentPreview() },
+            onChannelSelected = { channel ->
+                viewModel.hidePaymentPreview()
+                // 仅模拟，不触发真实支付
+            }
         )
     }
 }

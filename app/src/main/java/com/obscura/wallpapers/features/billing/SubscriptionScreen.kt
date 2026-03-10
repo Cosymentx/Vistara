@@ -66,6 +66,12 @@ fun SubscriptionScreen(
         )
     }
 
+    LaunchedEffect(uiState) {
+        if (uiState is BillingUiState.Error) {
+            android.widget.Toast.makeText(context, (uiState as BillingUiState.Error).message, android.widget.Toast.LENGTH_SHORT).show()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -127,15 +133,15 @@ fun SubscriptionScreen(
                                 }
                             } else {
                                 // 备退方案 or 强制 Google Play (openThird == false)
-                                val matchingPlayProduct = availableSubscriptions.find { it.productId == product.sku }
+                                val matchingPlayProduct = availableSubscriptions.find { it.productId == product.sku || it.productId == product.id?.toString() }
                                 if (matchingPlayProduct != null) {
-                                    // 使用 purchaseWithChannel 并指定渠道 "1" (Google Play)，以保持后端订单同步
-                                    viewModel.purchaseCoinsWithOrder(context as Activity, product, matchingPlayProduct)
+                                    // 使用 purchaseWithOrder 以保持后端订单同步
+                                    viewModel.purchaseWithOrder(context as Activity, product, matchingPlayProduct)
                                 } else {
-                                    // 如果通过 SKU 找不到，尝试直接使用 Google Play 订阅流程（不一定带后端订单）
-                                    val fallbackPlayProduct = availableSubscriptions.find { it.productId == product.id }
+                                    // 如果通过 SKU 找不到，尝试通过 ID 查找
+                                    val fallbackPlayProduct = availableSubscriptions.find { it.productId == product.id?.toString() }
                                     if (fallbackPlayProduct != null) {
-                                        viewModel.purchaseSubscription(context as Activity, fallbackPlayProduct)
+                                        viewModel.purchaseWithOrder(context as Activity, product, fallbackPlayProduct)
                                     } else {
                                         android.widget.Toast.makeText(context, "Product not available in Play Store", android.widget.Toast.LENGTH_SHORT).show()
                                     }
@@ -346,7 +352,7 @@ private fun SubscriptionContent(
         if (backendProducts.isNotEmpty()) {
             backendProducts.forEachIndexed { index, backendItem ->
                 // 尝试匹配 Google Play 的实时价格信息
-                val playProduct = availableProducts.find { it.productId == backendItem.sku }
+                val playProduct = availableProducts.find { it.productId == backendItem.sku || it.productId == backendItem.id?.toString() }
                 
                 PlanCard(
                     productDetails = playProduct,

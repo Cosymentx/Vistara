@@ -243,9 +243,21 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun createOrder(priceId: String, paymentMethodId: String): ApiResult<com.obscura.wallpapers.core.data.remote.service.CreateOrderResponse> {
+    override suspend fun createOrder(
+        productId: Int,
+        payType: Int,
+        channel: String,
+        subType: Int,
+        anchorId: Int
+    ): ApiResult<com.obscura.wallpapers.core.data.remote.service.CreateOrderResponse> {
         return safeApiCall(ApiSource.BACKEND) {
-            val request = com.obscura.wallpapers.core.data.remote.service.CreateOrderRequest(priceId, paymentMethodId)
+            val request = com.obscura.wallpapers.core.data.remote.service.CheckoutRequest(
+                productId = productId,
+                payType = payType,
+                channel = channel,
+                subType = subType,
+                anchorId = anchorId
+            )
             val response = apiService.createOrder(request)
             if (response.isSuccess && response.data != null) {
                 response.data

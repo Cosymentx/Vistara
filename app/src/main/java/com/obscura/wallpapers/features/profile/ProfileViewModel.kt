@@ -69,11 +69,11 @@ class ProfileViewModel @Inject constructor(
                         _coinBalance.value = balance
                     }
 
-                    try {
-                        userRepository.refreshUserProfile()
-                    } catch (e: Exception) {
-                        Log.e("ProfileViewModel", "刷新用户个人资料失败: ${e.message}", e)
-                    }
+//                    try {
+//                        userRepository.refreshUserProfile()
+//                    } catch (e: Exception) {
+//                        Log.e("ProfileViewModel", "刷新用户个人资料失败: ${e.message}", e)
+//                    }
                 }
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Error loading user data: ${e.message}")

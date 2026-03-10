@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.remote.service.ApiService
+import com.obscura.wallpapers.core.data.remote.service.CoinProduct
 import com.obscura.wallpapers.core.data.remote.service.LoginRequest
+import com.obscura.wallpapers.core.data.remote.service.PayChannel
 import com.obscura.wallpapers.core.data.repository.AuthRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,6 +52,12 @@ class TestViewModel @Inject constructor(
 
     private val _showLoginDialog = MutableStateFlow(false)
     val showLoginDialog: StateFlow<Boolean> = _showLoginDialog.asStateFlow()
+
+    private val _showPaymentPreview = MutableStateFlow(false)
+    val showPaymentPreview: StateFlow<Boolean> = _showPaymentPreview.asStateFlow()
+
+    private val _mockProduct = MutableStateFlow<CoinProduct?>(null)
+    val mockProduct: StateFlow<CoinProduct?> = _mockProduct.asStateFlow()
 
     init {
         checkPremiumStatus()
@@ -189,6 +197,25 @@ class TestViewModel @Inject constructor(
 
     fun hideLoginDialog() {
         _showLoginDialog.value = false
+    }
+
+    fun showPaymentPreview() {
+        _mockProduct.value = CoinProduct(
+            id = 999,
+            name = "Test 1000 Coins",
+            showPrice = "$9.99",
+            sku = "com.obscura.coins.1000",
+            channels = listOf(
+                PayChannel(channel = "1", name = "Google Play", icon = "ic_play_store"),
+                PayChannel(channel = "2", name = "Visa/Mastercard", icon = "https://cdn-icons-png.flaticon.com/512/349/349221.png"),
+                PayChannel(channel = "3", name = "PayPal", icon = "https://cdn-icons-png.flaticon.com/512/174/174861.png")
+            )
+        )
+        _showPaymentPreview.value = true
+    }
+
+    fun hidePaymentPreview() {
+        _showPaymentPreview.value = false
     }
 
     fun loginWithEmail(email: String) {

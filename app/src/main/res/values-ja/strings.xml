@@ -371,7 +371,7 @@
     <string name="test_pexels_api">Pexels APIテスト</string>
     <string name="test_unsplash_api">Unsplash APIテスト</string>
     <string name="api_test">APIテスト</string>
-    <string name="launch_pexels_api_test">Pexels APIテストを開始</string>
+    <string name="launch_api_test">APIテストを開始</string>
     <string name="user_status_test">ユーザーステータステスト</string>
     <string name="premium_user_status">プレミアムユーザーステータス</string>
     <string name="current_status_premium">現在のステータス: プレミアムユーザー</string>

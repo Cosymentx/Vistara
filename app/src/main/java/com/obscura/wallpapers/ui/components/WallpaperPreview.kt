@@ -634,7 +634,7 @@ fun WallpaperSetOptions(
 ) {
     Surface(
         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-        color = Color.Transparent, // Parent handles background/blur
+//        color = Color.Transparent, // Parent handles background/blur
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(

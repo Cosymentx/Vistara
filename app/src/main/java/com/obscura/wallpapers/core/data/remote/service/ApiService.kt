@@ -14,8 +14,8 @@ interface ApiService {
     @GET("/api/v1/user/info")
     suspend fun getProfile(): ApiResponse<ProfileResponse>
 
-    @POST("/system/order/add")
-    suspend fun createOrder(@Body request: CreateOrderRequest): ApiResponse<CreateOrderResponse>
+    @POST("/api/v1/pay/order/top_up/create")
+    suspend fun createOrder(@Body request: CheckoutRequest): ApiResponse<CreateOrderResponse>
 
     @GET("/api/v1/user/goods/gold/list")
     suspend fun getProducts(
@@ -107,22 +107,35 @@ data class ProfileResponse(
 }
 
 @Serializable
-data class CreateOrderRequest(
-    val priceId: String, val paymentMethodId: String
+data class CheckoutRequest(
+    @SerialName("product_id") val productId: Int,
+    @SerialName("pay_type") val payType: Int,
+    @SerialName("sub_type") val subType: Int = 0,
+    @SerialName("channel") val channel: String,
+    @SerialName("anchor_id") val anchorId: Int = 0,
+    @SerialName("country_id") val countryId: Int = 0
 )
 
 @Serializable
 data class CreateOrderResponse(
-    val id: String,
-    val status: String,
-    val payUrl: String? = null,
-    val priceId: String,
-    val coinsNum: Int,
-    val payMethodId: Int
+    @SerialName("payOrderId") val id: String? = null,
+    @SerialName("pay_type") val payMethodId: Int? = null,
+    @SerialName("url") val payUrl: String? = null,
+    @SerialName("product_id") val priceId: Int? = null,
+    @SerialName("pay_record") val payRecord: PayRecord? = null
 ) {
     val isGooglePay: Boolean get() = payMethodId == 1
     fun apiIsGooglePay(): Boolean = payMethodId == 1
 }
+
+@Serializable
+data class PayRecord(
+    @SerialName("Gold") val gold: Int? = null,
+    @SerialName("PayStatus") val payStatus: Int? = null,
+    @SerialName("Sku") val sku: String? = null,
+    @SerialName("PayUrl") val payUrl: String? = null,
+    @SerialName("PayOrderId") val payOrderId: String? = null
+)
 
 @Serializable
 data class ProductListResponse(
@@ -133,7 +146,7 @@ data class ProductListResponse(
 @Serializable
 data class CoinProduct(
     @SerialName("coin") val coinStr: String? = null,
-    val id: String? = null,
+    @SerialName("product_id") val id: Int? = null,
     val sku: String? = null,
     val name: String? = null,
     val title: String? = null,

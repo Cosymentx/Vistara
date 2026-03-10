@@ -345,7 +345,6 @@ fun WallpaperPreviewScreen(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .background(Color.Black.copy(alpha = 0.3f))
                                         .clickable(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null
@@ -367,7 +366,6 @@ fun WallpaperPreviewScreen(
                                                     noiseFactor = 0.15f
                                                 )
                                             )
-                                            .background(Color.White.copy(alpha = 0.05f))
                                             .clickable(enabled = false) {} // Prevent clicks from leaking to background
                                     ) {
                                         WallpaperSetOptions(

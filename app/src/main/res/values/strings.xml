@@ -367,7 +367,7 @@ Enjoy a new look every day</string>
     <string name="api_test">API Test</string>
     <string name="test_results_in_logcat" translatable="false">Test results will be displayed in Logcat</string>
     <string name="filter_tag" translatable="false">Filter tag: ApiTest</string>
-    <string name="launch_pexels_api_test">Launch Pexels API Test</string>
+    <string name="launch_api_test">Launch API Test</string>
     <string name="user_status_test">User Status Test</string>
     <string name="premium_user_status">Premium User Status</string>
     <string name="current_status_premium">Current status: Premium user</string>

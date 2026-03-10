@@ -20,7 +20,6 @@ import com.obscura.wallpapers.core.data.remote.ApiResult.Success
 import com.obscura.wallpapers.core.data.remote.adapter.PexelsApiAdapter
 import com.obscura.wallpapers.core.data.remote.adapter.UnsplashApiAdapter
 import com.obscura.wallpapers.core.data.remote.service.ApiService
-import com.obscura.wallpapers.core.data.remote.service.CreateOrderRequest
 import com.obscura.wallpapers.core.data.remote.service.LoginRequest
 import com.obscura.wallpapers.core.data.remote.service.PexelsApiService
 import com.obscura.wallpapers.core.data.remote.service.UnsplashApiService
@@ -78,6 +77,9 @@ class ApiTestViewModel @Inject constructor(
     val availableCoins = billingRepository.availableInAppProducts
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val openThird = userRepository.openThird
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
     private val _isTestingSystemApi = MutableStateFlow(false)
     val isTestingSystemApi: StateFlow<Boolean> = _isTestingSystemApi.asStateFlow()
 
@@ -125,7 +127,7 @@ class ApiTestViewModel @Inject constructor(
                 try {
                     val products = apiService.getProducts(1)
                     logSystemResult("getProducts", products)
-                    firstProductId = products.data?.goldGoods?.firstOrNull()?.id
+                    firstProductId = products.data?.goldGoods?.firstOrNull()?.id.toString()
                 } catch (e: Exception) {
                     addTestResult("❌ getProducts 抛出异常: ${e.message}")
                 }
@@ -137,11 +139,12 @@ class ApiTestViewModel @Inject constructor(
                         logSystemResult("getPaymentMethods", methods)
                         
                         // 5. 尝试下单 (使用第一个支付方式)
-                        val firstMethodId = methods.data?.firstOrNull()?.id
-                        if (firstMethodId != null) {
-                            val orderRequest = CreateOrderRequest(
-                                priceId = firstProductId,
-                                paymentMethodId = firstMethodId
+                        val firstMethod = methods.data?.firstOrNull()
+                        if (firstMethod != null) {
+                            val orderRequest = com.obscura.wallpapers.core.data.remote.service.CheckoutRequest(
+                                productId = firstProductId.toIntOrNull() ?: 287,
+                                payType = firstMethod.payMethodId,
+                                channel = firstMethod.id
                             )
                             val orderResponse = apiService.createOrder(orderRequest)
                             logSystemResult("createOrder", orderResponse)
@@ -330,6 +333,83 @@ class ApiTestViewModel @Inject constructor(
         viewModelScope.launch {
             addTestResult("🚀 发起真实支付测试: ${product.name}")
             billingRepository.purchaseProduct(activity, product)
+        }
+    }
+
+    /**
+     * 切换 openThird 开关
+     */
+    fun toggleOpenThird() {
+        viewModelScope.launch {
+            val current = openThird.value
+            userRepository.saveOpenThird(!current)
+            addTestResult(if (!current) "🌐 已开启 openThird (三方支付)" else "🔒 已关闭 openThird (仅 Google Play)")
+        }
+    }
+
+    /**
+     * 模拟完整支付流 (下单 + 支付)
+     */
+    fun testFullPurchaseFlow(activity: android.app.Activity, isCoin: Boolean) {
+        viewModelScope.launch {
+            addTestResult("🧪 开始测试${if (isCoin) "金币" else "订阅"}完整支付流...")
+            
+            // 1. 获取后端产品
+            val productsResult = userRepository.getCoinProducts(if (isCoin) 1 else 2)
+            Log.d(TAG, "测试后端产品: $productsResult")
+            if (productsResult is ApiResult.Success) {
+                Log.d(TAG, "测试后端产品: ${productsResult.data}")
+                val product = productsResult.data.firstOrNull()
+                if (product == null) {
+                    addTestResult("❌ 错误: 后端未配置产品")
+                    return@launch
+                }
+                
+                addTestResult("📦 选中后端产品: ${product.name} (ID: ${product.id}, SKU: ${product.sku})")
+
+                Log.d(TAG, "测试后端产品: $product")
+
+                // 2. 根据 openThird 逻辑模拟
+                if (openThird.value && !product.channels.isNullOrEmpty()) {
+                    addTestResult("📝 检测到 openThird=true，列出渠道: ${product.channels.joinToString { it.name ?: it.channel ?: "" }}")
+                    // 模拟选择第一个渠道
+                    val channel = product.channels.first()
+                    addTestResult("🔗 模拟选择渠道: ${channel.name ?: channel.channel}")
+                    
+                    // 下单
+                    val orderResult = userRepository.createOrder(
+                        productId = product.id ?: 0,
+                        payType = channel.payType ?: 0,
+                        channel = channel.channel ?: ""
+                    )
+                    if (orderResult is ApiResult.Success) {
+                        val order = orderResult.data
+                        addTestResult("✅ 下单成功: OrderID=${order.id}")
+                        if (order.apiIsGooglePay()) {
+                             addTestResult("🛒 唤起 Google Play 支付 (SKU: ${product.sku})")
+                        } else {
+                             addTestResult("🌐 唤起浏览器支付 (URL: ${order.payUrl?.take(20)}...)")
+                        }
+                    } else {
+                        addTestResult("❌ 下单失败: ${(orderResult as? ApiResult.Error)?.message}")
+                    }
+                } else {
+                    addTestResult("📝 检测到 openThird=false，走 Google Play 备退方案")
+                    val orderResult = userRepository.createOrder(
+                        productId = product.id ?: 0,
+                        payType = 1,
+                        channel = "1"
+                    )
+                    if (orderResult is Success) {
+                        addTestResult("✅ GooglePlay 下单成功 (ID: 1)")
+                        addTestResult("🛒 唤起 Google Play 支付 (SKU: ${product.sku})")
+                    } else {
+                        addTestResult("❌ GooglePlay 下单失败: ${(orderResult as? ApiResult.Error)?.message}")
+                    }
+                }
+            } else {
+                addTestResult("❌ 获取后端产品失败")
+            }
         }
     }
 

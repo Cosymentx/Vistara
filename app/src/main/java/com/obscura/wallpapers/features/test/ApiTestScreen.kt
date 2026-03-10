@@ -51,6 +51,7 @@ fun ApiTestScreen(
     val coinBalance by viewModel.coinBalance.collectAsState()
     val availableSubscriptions by viewModel.availableSubscriptions.collectAsState()
     val availableCoins by viewModel.availableCoins.collectAsState()
+    val openThird by viewModel.openThird.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalActivity.current as Activity
@@ -98,7 +99,14 @@ fun ApiTestScreen(
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             SimulatorButton(
-                                text = if (isPremium) "Revoke Premium" else "Grant Premium",
+                                text = if (openThird) "openThird: ON" else "openThird: OFF",
+                                icon = if (openThird) Icons.Default.Check else Icons.Default.Lock,
+                                onClick = { viewModel.toggleOpenThird() },
+                                modifier = Modifier.weight(1f),
+                                contentColor = if (openThird) Color(0xFF00E5FF) else MaterialTheme.colorScheme.onSurface
+                            )
+                            SimulatorButton(
+                                text = if (isPremium) "Revoke VIP" else "Grant VIP",
                                 icon = if (isPremium) Icons.Default.Close else Icons.Default.CheckCircle,
                                 onClick = { viewModel.toggleMockPremium() },
                                 modifier = Modifier.weight(1f),
@@ -106,6 +114,21 @@ fun ApiTestScreen(
                             )
                         }
                         
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            SimulatorButton(
+                                text = "Full Flow: Coin",
+                                icon = ObscuraIcons.Coin,
+                                onClick = { viewModel.testFullPurchaseFlow(context, true) },
+                                modifier = Modifier.weight(1f)
+                            )
+                            SimulatorButton(
+                                text = "Full Flow: Sub",
+                                icon = ObscuraIcons.Crown,
+                                onClick = { viewModel.testFullPurchaseFlow(context, false) },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             SimulatorButton(
                                 text = "Refill +100",
