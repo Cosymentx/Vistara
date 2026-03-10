@@ -277,11 +277,12 @@ class BillingViewModel @Inject constructor(
                 "startPurchaseFlow (强制从 Repo 读取): productId=${product.id}, sku=${product.sku}, openThird=$openThirdValue"
             )
 
-            // 1. 寻找匹配的 Google Play 产品详情
+            // 1. 寻找匹配的 Google Play 产品详情 (增加更灵活的匹配逻辑)
             val playProduct = availablePlayProducts.find {
-                it.productId == product.sku || it.productId == product.id?.toString()
+                it.productId == product.sku || it.productId == product.id?.toString() ||
+                (product.sku?.isNotEmpty() == true && it.productId.contains(product.sku)) // 模糊匹配 SKU
             }
-            Log.d(TAG, "匹配到的 GooglePlay 产品: ${playProduct?.productId ?: "未找到"}")
+            Log.d(TAG, "匹配到的 GooglePlay 产品: ${playProduct?.productId ?: "未找到"}, 原始产品 SKU: ${product.sku}")
 
             if (openThirdValue) {
                 // 情况 A: 开启了多渠道
@@ -297,25 +298,28 @@ class BillingViewModel @Inject constructor(
                         onShowChannelDialog(product)
                     }
                 } else {
-                    Log.w(TAG, "多渠道模式: 后端未返回渠道，尝试直接拉起 GP 支付(保底)")
+                    Log.w(TAG, "多渠道模式: 后端未返回渠道，尝试拉起 GP 支付")
                     playProduct?.let {
-                        if (it.productType == com.android.billingclient.api.BillingClient.ProductType.SUBS) {
-                            purchaseSubscription(activity, it)
-                        } else {
-                            purchaseCoins(activity, it)
-                        }
+                        purchaseWithOrder(activity, product, it)
                     } ?: Log.e(TAG, "多渠道模式: 保底失败，未找到对应的 GooglePlay 产品")
                 }
             } else {
-                // 情况 B: 关闭三方支付，强制 Google Play
+                // 情况 B: 强制 Google Play
                 Log.d(TAG, "强制 GP 模式")
                 if (playProduct != null) {
                     Log.d(TAG, "强制 GP 模式: 走后端下单流程")
                     purchaseWithOrder(
                         activity = activity, product = product, productDetails = playProduct
                     )
+                } else if (availablePlayProducts.isNotEmpty()) {
+                    // 兜底：如果没精确匹配到但列表里有 GP 商品，尝试第一个作为最后的挽救
+                    val fallbackProduct = availablePlayProducts.firstOrNull()
+                    Log.w(TAG, "强制 GP 模式: 未精确匹配到产品，尝试第一个兜底: ${fallbackProduct?.productId}")
+                    fallbackProduct?.let {
+                        purchaseWithOrder(activity = activity, product = product, productDetails = it)
+                    }
                 } else {
-                    Log.e(TAG, "强制 GP 模式: 未找到关联产品，且无可用 GooglePlay 产品详情")
+                    Log.e(TAG, "强制 GP 模式: 未找到任何可用 GooglePlay 产品详情")
                 }
             }
         }

@@ -192,11 +192,16 @@ class BillingManager @Inject constructor(
 
             // 如果是订阅，需要设置 OfferToken
             if (productDetails.productType == BillingClient.ProductType.SUBS) {
-                val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken
+                // 优化 OfferToken 选择：优先选择最合适的 Offer
+                val offerDetails = productDetails.subscriptionOfferDetails
+                val offerToken = offerDetails?.find { it.offerId == null }?.offerToken // 优先选基础方案
+                    ?: offerDetails?.firstOrNull()?.offerToken
+                
                 if (offerToken != null) {
                     builder.setOfferToken(offerToken)
                 } else {
-                    _purchaseState.value = PurchaseState.Error("No subscription offer available")
+                    Log.e(tag, "No subscription offer available for ${productDetails.productId}")
+                    _purchaseState.value = PurchaseState.Error("Subscription offer unavailable")
                     return@launch
                 }
             }
