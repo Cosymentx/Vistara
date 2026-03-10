@@ -340,6 +340,54 @@ class BillingManager @Inject constructor(
     }
 
     /**
+     * 查询指定 SKU 列表的产品详情并更新缓存
+     */
+    suspend fun queryProductDetails(productIds: List<String>, type: String) {
+        if (!ensureConnected() || productIds.isEmpty()) return
+
+        Log.d(tag, "queryProductDetails: 开始查询 $type 商品, 数量=${productIds.size}, SKUs=$productIds")
+
+        val productList = productIds.map { productId ->
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(productId)
+                .setProductType(type)
+                .build()
+        }
+
+        val params = QueryProductDetailsParams.newBuilder()
+            .setProductList(productList)
+            .build()
+
+        try {
+            val result = billingClient?.queryProductDetails(params)
+            if (result?.billingResult?.responseCode == BillingClient.BillingResponseCode.OK) {
+                val details = result.productDetailsList ?: emptyList()
+                Log.d(tag, "queryProductDetails: 查询成功, 返回 ${details.size} 条详情")
+                
+                if (type == BillingClient.ProductType.SUBS) {
+                    val current = _availableSubscriptions.value.toMutableList()
+                    details.forEach { detail ->
+                        current.removeAll { it.productId == detail.productId }
+                        current.add(detail)
+                    }
+                    _availableSubscriptions.value = current
+                } else {
+                    val current = _availableInAppProducts.value.toMutableList()
+                    details.forEach { detail ->
+                        current.removeAll { it.productId == detail.productId }
+                        current.add(detail)
+                    }
+                    _availableInAppProducts.value = current
+                }
+            } else {
+                Log.e(tag, "queryProductDetails 失败: ${result?.billingResult?.debugMessage}")
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "Error querying products in bulk", e)
+        }
+    }
+
+    /**
      * 确保计费客户端已连接
      */
     private suspend fun ensureConnected(): Boolean {

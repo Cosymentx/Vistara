@@ -110,6 +110,15 @@ class BillingViewModel @Inject constructor(
                 val result = userRepository.getCoinProducts(1)
                 if (result is ApiResult.Success) {
                     _backendProducts.value = result.data
+                    // 动态刷新 Google Play 产品详情缓存，确保价格最新
+                    val skus = result.data.mapNotNull { it.sku }.filter { it.isNotEmpty() }
+                    Log.d(TAG, "fetchBackendProducts: 获取到后端金币商品 ${result.data.size} 个, 准备同步查询 GP 价格的 SKUs: $skus")
+                    if (skus.isNotEmpty()) {
+                        billingRepository.queryProductDetails(
+                            skus,
+                            com.android.billingclient.api.BillingClient.ProductType.INAPP
+                        )
+                    }
                 } else if (result is ApiResult.Error) {
                     _subscriptionUiState.value = BillingUiState.Error(result.message)
                 }
@@ -131,6 +140,15 @@ class BillingViewModel @Inject constructor(
                 val result = userRepository.getCoinProducts(2)
                 if (result is ApiResult.Success) {
                     _subscriptionProducts.value = result.data
+                    // 动态刷新 Google Play 产品详情缓存，确保价格最新
+                    val skus = result.data.mapNotNull { it.sku }.filter { it.isNotEmpty() }
+                    Log.d(TAG, "fetchSubscriptionProducts: 获取到后端订阅商品 ${result.data.size} 个, 准备同步查询 GP 价格的 SKUs: $skus")
+                    if (skus.isNotEmpty()) {
+                        billingRepository.queryProductDetails(
+                            skus,
+                            com.android.billingclient.api.BillingClient.ProductType.SUBS
+                        )
+                    }
                 } else if (result is ApiResult.Error) {
                     Log.e(TAG, "获取订阅产品失败: ${result.message}")
                 }
@@ -199,16 +217,14 @@ class BillingViewModel @Inject constructor(
     }
 
     /**
-     * 刷新订阅状态
+     * 刷新订阅状态 (静默刷新，不阻塞 UI)
      */
     fun refreshSubscriptionStatus() {
         viewModelScope.launch {
-            _subscriptionUiState.value = BillingUiState.Loading
             try {
                 billingRepository.refreshSubscriptionStatus()
-                _subscriptionUiState.value = BillingUiState.Success
             } catch (e: Exception) {
-                _subscriptionUiState.value = BillingUiState.Error(e.message ?: "Unknown error")
+                Log.e(TAG, "refreshSubscriptionStatus failed", e)
             }
         }
     }

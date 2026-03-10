@@ -75,6 +75,7 @@ fun SubscriptionScreen(
     val isPremium by viewModel.isPremium.collectAsState()
     val availableSubscriptions by viewModel.availableSubscriptions.collectAsState()
     val backendSubscriptionProducts by viewModel.subscriptionProducts.collectAsState()
+    val isLoadingProducts by viewModel.isLoadingProducts.collectAsState()
     val uiState by viewModel.subscriptionUiState.collectAsState()
 
     var selectedProductIndex by remember { mutableIntStateOf(1) } // 默认选中年度订阅
@@ -165,7 +166,7 @@ fun SubscriptionScreen(
                         }
                     },
                     onRestorePurchases = { viewModel.restorePurchases() },
-                    isLoading = uiState is BillingUiState.Loading
+                    isLoading = isLoadingProducts && backendSubscriptionProducts.isEmpty()
                 )
             }
         }
@@ -184,7 +185,7 @@ fun SubscriptionScreen(
         }
 
         // 全局加载遮罩
-        if (uiState is BillingUiState.Loading) {
+        if (uiState is BillingUiState.Loading || (isLoadingProducts && backendSubscriptionProducts.isEmpty())) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -383,21 +384,6 @@ private fun SubscriptionContent(
                     onClick = { onProductSelected(index) })
                 Spacer(modifier = Modifier.height(16.dp))
             }
-        } else if (isLoading) {
-            // Placeholder for empty products
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(if (isDark) Color.White.copy(alpha = 0.05f) else MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Loading plans...",
-                    color = if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -424,19 +410,13 @@ private fun SubscriptionContent(
             enabled = !isLoading && backendProducts.isNotEmpty(),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
         ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp), color = Color.Black, strokeWidth = 2.dp
-                )
-            } else {
-                Text(
-                    text = stringResource(R.string.subscription_start).uppercase(),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color.Black,
-                    letterSpacing = 1.5.sp
-                )
-            }
+            Text(
+                text = stringResource(R.string.subscription_start).uppercase(),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color.Black,
+                letterSpacing = 1.5.sp
+            )
         }
 
         Spacer(modifier = Modifier.height(20.dp))

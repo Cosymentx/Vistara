@@ -54,6 +54,14 @@ class BillingRepository @Inject constructor(
     val availableInAppProducts: Flow<List<ProductDetails>> = billingManager.availableInAppProducts
 
     /**
+     * 批量查询产品详情并更新缓存
+     */
+    suspend fun queryProductDetails(productIds: List<String>, type: String) {
+        Log.d(tag, "queryProductDetails: 开始查询 $type, 数量=${productIds.size}")
+        billingManager.queryProductDetails(productIds, type)
+    }
+
+    /**
      * 刷新订阅状态
      */
     suspend fun refreshSubscriptionStatus() {

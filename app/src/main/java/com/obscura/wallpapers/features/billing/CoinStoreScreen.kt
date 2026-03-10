@@ -201,13 +201,12 @@ fun CoinStoreScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 // Coin Packages
-                if (isLoadingProducts) {
-                    CircularProgressIndicator(color = cyanAccent)
-                } else if (backendProducts.isNotEmpty()) {
+                if (backendProducts.isNotEmpty()) {
                     backendProducts.forEachIndexed { index, product ->
                         // 寻找对应的 Google Play 产品详情（如果存在）
-                        val productDetails =
-                            availableInAppProducts.find { it.productId == product.sku || it.productId == product.id?.toString() }
+                        val productDetails = availableInAppProducts.find {
+                            it.productId == product.sku || it.productId == product.id?.toString()
+                        }
 
                         CoinBackendProductCard(
                             product = product,
@@ -228,8 +227,8 @@ fun CoinStoreScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                     }
-                } else {
-                    // Fallback to static or GP only
+                } else if (!isLoadingProducts) {
+                    // 仅在非加载状态且后端无数据时，回退到 GP 本地列表
                     availableInAppProducts.forEachIndexed { index, product ->
                         CoinProductCard(
                             productDetails = product,
@@ -257,7 +256,7 @@ fun CoinStoreScreen(
         }
 
         // 全局加载遮罩
-        if (isPurchasing) {
+        if (isPurchasing || (isLoadingProducts && backendProducts.isEmpty())) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
