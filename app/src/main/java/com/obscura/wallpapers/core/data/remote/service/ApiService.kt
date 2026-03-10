@@ -20,7 +20,7 @@ interface ApiService {
     @GET("/api/v1/user/goods/gold/list")
     suspend fun getProducts(
         @retrofit2.http.Query("product_type") productQueryType: Int,
-        @retrofit2.http.Query("country_id") countryId: Int? = 0
+        @retrofit2.http.Query("country_id") countryId: Int? = 100
     ): ApiResponse<ProductListResponse>
 
     @GET("/system/method/getPayMethod/{itemName}")

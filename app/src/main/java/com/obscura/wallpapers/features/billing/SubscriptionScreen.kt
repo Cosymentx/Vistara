@@ -1,11 +1,22 @@
 package com.obscura.wallpapers.features.billing
 
 import android.app.Activity
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,19 +24,40 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.billingclient.api.ProductDetails
 import com.obscura.wallpapers.R
@@ -37,8 +69,7 @@ import com.obscura.wallpapers.ui.icons.ObscuraIcons
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubscriptionScreen(
-    onNavigateBack: () -> Unit,
-    viewModel: BillingViewModel = hiltViewModel()
+    onNavigateBack: () -> Unit, viewModel: BillingViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val isPremium by viewModel.isPremium.collectAsState()
@@ -46,17 +77,19 @@ fun SubscriptionScreen(
     val backendSubscriptionProducts by viewModel.subscriptionProducts.collectAsState()
     val uiState by viewModel.subscriptionUiState.collectAsState()
     val openThird by viewModel.openThird.collectAsState()
-    
+
     var selectedProductIndex by remember { mutableIntStateOf(1) } // 默认选中年度订阅
     var showChannelDialog by remember { mutableStateOf(false) }
-    var selectedProductForChannels by remember { mutableStateOf<com.obscura.wallpapers.core.data.remote.service.CoinProduct?>(null) }
+    var selectedProductForChannels by remember {
+        mutableStateOf<com.obscura.wallpapers.core.data.remote.service.CoinProduct?>(
+            null
+        )
+    }
 
     val isDark = isSystemInDarkTheme()
     val gradientColors = if (isDark) {
         listOf(
-            Color(0xFF0F0F1A),
-            Color(0xFF16213E),
-            Color(0xFF0F0F1A)
+            Color(0xFF0F0F1A), Color(0xFF16213E), Color(0xFF0F0F1A)
         )
     } else {
         listOf(
@@ -68,36 +101,37 @@ fun SubscriptionScreen(
 
     LaunchedEffect(uiState) {
         if (uiState is BillingUiState.Error) {
-            android.widget.Toast.makeText(context, (uiState as BillingUiState.Error).message, android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(
+                context,
+                (uiState as BillingUiState.Error).message,
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { 
-                    Text(
-                        stringResource(R.string.subscription_title),
-                        fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 1.sp
-                    ) 
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
+                title = {
+                Text(
+                    stringResource(R.string.subscription_title),
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 1.sp
                 )
+            }, navigationIcon = {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back)
+                    )
+                }
+            }, colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                titleContentColor = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface,
+                navigationIconContentColor = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
             )
-        },
-        containerColor = Color.Transparent
+            )
+        }, containerColor = Color.Transparent
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -109,8 +143,7 @@ fun SubscriptionScreen(
             if (isPremium) {
                 // 已订阅状态
                 PremiumActiveContent(
-                    onRestorePurchases = { viewModel.restorePurchases() }
-                )
+                    onRestorePurchases = { viewModel.restorePurchases() })
             } else {
                 // 未订阅状态
                 SubscriptionContent(
@@ -121,29 +154,41 @@ fun SubscriptionScreen(
                     onSubscribe = {
                         if (backendSubscriptionProducts.isNotEmpty() && selectedProductIndex < backendSubscriptionProducts.size) {
                             val product = backendSubscriptionProducts[selectedProductIndex]
-                            
+
                             // 判断是否启用三方支付
                             if (openThird && !product.channels.isNullOrEmpty()) {
                                 if (product.channels.size == 1 && product.channels[0].channel == "1") {
                                     // 只有 Google Play 渠道，直接发起
-                                    viewModel.purchaseWithChannel(context as Activity, product, product.channels[0])
+                                    viewModel.purchaseWithChannel(
+                                        context as Activity, product, product.channels[0]
+                                    )
                                 } else {
                                     selectedProductForChannels = product
                                     showChannelDialog = true
                                 }
                             } else {
                                 // 备退方案 or 强制 Google Play (openThird == false)
-                                val matchingPlayProduct = availableSubscriptions.find { it.productId == product.sku || it.productId == product.id?.toString() }
+                                val matchingPlayProduct =
+                                    availableSubscriptions.find { it.productId == product.sku || it.productId == product.id?.toString() }
                                 if (matchingPlayProduct != null) {
                                     // 使用 purchaseWithOrder 以保持后端订单同步
-                                    viewModel.purchaseWithOrder(context as Activity, product, matchingPlayProduct)
+                                    viewModel.purchaseWithOrder(
+                                        context as Activity, product, matchingPlayProduct
+                                    )
                                 } else {
                                     // 如果通过 SKU 找不到，尝试通过 ID 查找
-                                    val fallbackPlayProduct = availableSubscriptions.find { it.productId == product.id?.toString() }
+                                    val fallbackPlayProduct =
+                                        availableSubscriptions.find { it.productId == product.id?.toString() }
                                     if (fallbackPlayProduct != null) {
-                                        viewModel.purchaseWithOrder(context as Activity, product, fallbackPlayProduct)
+                                        viewModel.purchaseWithOrder(
+                                            context as Activity, product, fallbackPlayProduct
+                                        )
                                     } else {
-                                        android.widget.Toast.makeText(context, "Product not available in Play Store", android.widget.Toast.LENGTH_SHORT).show()
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            "Product not available in Play Store",
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                 }
                             }
@@ -162,9 +207,10 @@ fun SubscriptionScreen(
                 onDismiss = { showChannelDialog = false },
                 onChannelSelected = { channel ->
                     showChannelDialog = false
-                    viewModel.purchaseWithChannel(context as Activity, selectedProductForChannels!!, channel)
-                }
-            )
+                    viewModel.purchaseWithChannel(
+                        context as Activity, selectedProductForChannels!!, channel
+                    )
+                })
         }
 
         // 全局加载遮罩
@@ -173,8 +219,7 @@ fun SubscriptionScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.6f))
-                    .clickable(enabled = false) {},
-                contentAlignment = Alignment.Center
+                    .clickable(enabled = false) {}, contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(color = Color(0xFFFFD700))
             }
@@ -189,7 +234,7 @@ private fun PremiumActiveContent(
     val accentColor = Color(0xFFFFD700)
     val isDark = isSystemInDarkTheme()
     val context = LocalContext.current
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -212,9 +257,9 @@ private fun PremiumActiveContent(
                 modifier = Modifier.size(60.dp)
             )
         }
-        
+
         Spacer(modifier = Modifier.height(32.dp))
-        
+
         Text(
             text = stringResource(R.string.subscription_already_premium).uppercase(),
             fontSize = 28.sp,
@@ -223,9 +268,9 @@ private fun PremiumActiveContent(
             letterSpacing = 2.sp,
             textAlign = TextAlign.Center
         )
-        
+
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         Text(
             text = stringResource(R.string.subscription_thank_you),
             fontSize = 16.sp,
@@ -233,21 +278,27 @@ private fun PremiumActiveContent(
             textAlign = TextAlign.Center,
             lineHeight = 24.sp
         )
-        
+
         Spacer(modifier = Modifier.height(48.dp))
-        
+
         // 管理订阅按钮
         Button(
             onClick = {
                 val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
-                    data = android.net.Uri.parse("https://play.google.com/store/account/subscriptions")
+                    data =
+                        android.net.Uri.parse("https://play.google.com/store/account/subscriptions")
                     setPackage("com.android.vending")
                 }
                 try {
                     context.startActivity(intent)
                 } catch (e: Exception) {
                     // 如果没安装 Play Store，尝试通过浏览器打开
-                    context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://play.google.com/store/account/subscriptions")))
+                    context.startActivity(
+                        android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            android.net.Uri.parse("https://play.google.com/store/account/subscriptions")
+                        )
+                    )
                 }
             },
             modifier = Modifier
@@ -267,7 +318,7 @@ private fun PremiumActiveContent(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         TextButton(onClick = onRestorePurchases) {
             Text(
                 text = stringResource(R.string.restore_purchases),
@@ -276,7 +327,7 @@ private fun PremiumActiveContent(
         }
 
         Spacer(modifier = Modifier.height(32.dp))
-        
+
         // 详细说明
         SubscriptionDescriptionSection()
     }
@@ -303,7 +354,7 @@ private fun SubscriptionContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         // Header Icon with Glow
         Box(contentAlignment = Alignment.Center) {
             Box(
@@ -318,9 +369,9 @@ private fun SubscriptionContent(
                 modifier = Modifier.size(64.dp)
             )
         }
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         // 标题
         Text(
             text = stringResource(R.string.subscription_unlock_all_features).uppercase(),
@@ -331,35 +382,35 @@ private fun SubscriptionContent(
             letterSpacing = 1.sp,
             lineHeight = 38.sp
         )
-        
+
         Spacer(modifier = Modifier.height(12.dp))
-        
+
         Text(
             text = stringResource(R.string.subscription_enjoy_full_experience),
             fontSize = 15.sp,
             color = if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
-        
+
         Spacer(modifier = Modifier.height(40.dp))
-        
+
         // 功能列表
         FeaturesList()
-        
+
         Spacer(modifier = Modifier.height(40.dp))
-        
+
         // 订阅方案 - 以后端数据为准
         if (backendProducts.isNotEmpty()) {
             backendProducts.forEachIndexed { index, backendItem ->
                 // 尝试匹配 Google Play 的实时价格信息
-                val playProduct = availableProducts.find { it.productId == backendItem.sku || it.productId == backendItem.id?.toString() }
-                
+                val playProduct =
+                    availableProducts.find { it.productId == backendItem.sku || it.productId == backendItem.id?.toString() }
+
                 PlanCard(
                     productDetails = playProduct,
                     backendInfo = backendItem,
                     isSelected = index == selectedProductIndex,
-                    onClick = { onProductSelected(index) }
-                )
+                    onClick = { onProductSelected(index) })
                 Spacer(modifier = Modifier.height(16.dp))
             }
         } else if (isLoading) {
@@ -372,12 +423,15 @@ private fun SubscriptionContent(
                     .background(if (isDark) Color.White.copy(alpha = 0.05f) else MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Loading plans...", color = if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    text = "Loading plans...",
+                    color = if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         // 订阅按钮
         Button(
             onClick = onSubscribe,
@@ -385,25 +439,24 @@ private fun SubscriptionContent(
                 .fillMaxWidth()
                 .height(60.dp)
                 .border(
-                    width = 1.dp,
-                    brush = Brush.linearGradient(
-                        listOf(if (isDark) Color.White.copy(alpha = 0.5f) else Color.Transparent, Color.Transparent)
-                    ),
-                    shape = RoundedCornerShape(18.dp)
+                    width = 1.dp, brush = Brush.linearGradient(
+                        listOf(
+                            if (isDark) Color.White.copy(alpha = 0.5f) else Color.Transparent,
+                            Color.Transparent
+                        )
+                    ), shape = RoundedCornerShape(18.dp)
                 ),
             colors = ButtonDefaults.buttonColors(
                 containerColor = accentColor,
                 disabledContainerColor = accentColor.copy(alpha = 0.5f)
             ),
             shape = RoundedCornerShape(18.dp),
-            enabled = !isLoading && availableProducts.isNotEmpty(),
+            enabled = !isLoading && backendProducts.isNotEmpty(),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    color = Color.Black,
-                    strokeWidth = 2.dp
+                    modifier = Modifier.size(24.dp), color = Color.Black, strokeWidth = 2.dp
                 )
             } else {
                 Text(
@@ -415,9 +468,9 @@ private fun SubscriptionContent(
                 )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(20.dp))
-        
+
         // 恢复购买
         Text(
             text = stringResource(R.string.restore_purchases),
@@ -426,22 +479,24 @@ private fun SubscriptionContent(
             fontWeight = FontWeight.Medium,
             modifier = Modifier.clickable(onClick = onRestorePurchases)
         )
-        
+
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         // 说明文字
         Text(
             text = stringResource(R.string.subscription_auto_renew_notice),
             fontSize = 11.sp,
-            color = if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+            color = if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                alpha = 0.6f
+            ),
             textAlign = TextAlign.Center,
             lineHeight = 16.sp
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         SubscriptionDescriptionSection()
-        
+
         Spacer(modifier = Modifier.height(32.dp))
     }
 }
@@ -476,19 +531,26 @@ private fun SubscriptionDescriptionSection() {
 private fun FeaturesList() {
     val accentColor = Color(0xFFFFD700)
     val isDark = isSystemInDarkTheme()
-    
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
-            .background(if (isDark) Color.Black.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
-            .border(
-                0.5.dp, 
-                Brush.verticalGradient(listOf(if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f), Color.Transparent)),
-                RoundedCornerShape(24.dp)
+            .background(
+                if (isDark) Color.Black.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surfaceVariant.copy(
+                    alpha = 0.4f
+                )
             )
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .border(
+                0.5.dp, Brush.verticalGradient(
+                    listOf(
+                        if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.outline.copy(
+                            alpha = 0.1f
+                        ), Color.Transparent
+                    )
+                ), RoundedCornerShape(24.dp)
+            )
+            .padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         listOf(
             R.string.feature_no_ads,
@@ -534,24 +596,26 @@ private fun PlanCard(
 ) {
     val accentColor = Color(0xFFFFD700)
     val isDark = isSystemInDarkTheme()
-    
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
             .background(if (isDark) Color.Black.copy(alpha = 0.45f) else MaterialTheme.colorScheme.surface)
             .border(
-                width = if (isSelected) 2.dp else 0.5.dp,
-                brush = if (isSelected) {
+                width = if (isSelected) 2.dp else 0.5.dp, brush = if (isSelected) {
                     Brush.linearGradient(
                         listOf(accentColor, accentColor.copy(alpha = 0.3f))
                     )
                 } else {
                     Brush.linearGradient(
-                        listOf(if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f), if (isDark) Color.White.copy(alpha = 0.05f) else Color.Transparent)
+                        listOf(
+                            if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.outline.copy(
+                                alpha = 0.2f
+                            ), if (isDark) Color.White.copy(alpha = 0.05f) else Color.Transparent
+                        )
                     )
-                },
-                shape = RoundedCornerShape(20.dp)
+                }, shape = RoundedCornerShape(20.dp)
             )
             .clickable(onClick = onClick)
     ) {
@@ -563,7 +627,7 @@ private fun PlanCard(
                 modifier = Modifier.align(Alignment.TopEnd)
             ) {
                 Text(
-                    text = "+${backendInfo.coins} COINS",
+                    text = "+${backendInfo.coins / 100} COINS",
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
@@ -601,22 +665,21 @@ private fun PlanCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     // 优先显示 Google Play 格式化后的本地价格，否则显示后端配置价格
-                    val playPrice = productDetails?.subscriptionOfferDetails?.firstOrNull()
-                        ?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice
+                    val playPrice =
+                        productDetails?.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice
                     val displayPrice = playPrice ?: backendInfo.showPrice ?: ""
-                    
+
                     Text(
                         text = displayPrice,
                         fontSize = 16.sp,
                         color = if (isSelected) accentColor else if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.SemiBold
                     )
-                    
+
                     if (displayPrice.isNotEmpty()) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Surface(
-                            color = accentColor.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(4.dp)
+                            color = accentColor.copy(alpha = 0.1f), shape = RoundedCornerShape(4.dp)
                         ) {
                             Text(
                                 text = stringResource(R.string.subscription_weekly),
@@ -629,13 +692,13 @@ private fun PlanCard(
                     }
                 }
             }
-            
+
             RadioButton(
-                selected = isSelected,
-                onClick = null,
-                colors = RadioButtonDefaults.colors(
+                selected = isSelected, onClick = null, colors = RadioButtonDefaults.colors(
                     selectedColor = accentColor,
-                    unselectedColor = if (isDark) Color.White.copy(alpha = 0.3f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    unselectedColor = if (isDark) Color.White.copy(alpha = 0.3f) else MaterialTheme.colorScheme.outline.copy(
+                        alpha = 0.3f
+                    )
                 )
             )
         }

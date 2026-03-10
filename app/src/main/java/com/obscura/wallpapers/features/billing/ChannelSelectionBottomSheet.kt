@@ -206,14 +206,13 @@ fun ChannelItem(
                 Surface(
                     modifier = Modifier.size(52.dp),
                     shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.onBackground,
                     shadowElevation = 4.dp
                 ) {
                     Box(
                         modifier = Modifier.padding(10.dp), contentAlignment = Alignment.Center
                     ) {
                         AsyncImage(
-                            model = if (channel.icon?.startsWith("http") == true) channel.icon else "https://img.obscura.com/${channel.icon}",
+                            model = if (channel.icon?.startsWith("http") == true) channel.icon else "https://s3.chachat888.com/${channel.icon}",
                             contentDescription = channel.name,
                             modifier = Modifier.fillMaxSize()
                         )
