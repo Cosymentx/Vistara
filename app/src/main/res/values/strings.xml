@@ -93,6 +93,9 @@
     <string name="likes_login_required">You need to log in to use favorites list</string>
     <string name="library_login_required">You need to log in to use downloads list</string>
     <string name="cycler_login_required">You need to log in to use auto wallpaper change</string>
+    <string name="cycler_premium_required_message">Auto Wallpaper Change is a Premium feature. Subscribe to unlock this and other exclusive benefits!</string>
+    <string name="subscription_premium_feature">Premium Feature</string>
+    <string name="subscription_get_premium">Get Premium</string>
 
     <!-- About screen -->
     <string name="info_app_description">Make your phone stand out.

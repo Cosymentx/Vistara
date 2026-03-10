@@ -247,7 +247,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     composable("cycler") {
                         WallpaperCyclerScreen(
                             onBackPressed = { navController.navigateUp() },
-                            onNavigateToLogin = { navController.navigate("auth") })
+                            onNavigateToLogin = { navController.navigate("auth") },
+                            onNavigateToSubscription = { navController.navigate("subscription") })
                     }
                     composable("feedback") {
                         SupportScreen(onBackPressed = { navController.navigateUp() })

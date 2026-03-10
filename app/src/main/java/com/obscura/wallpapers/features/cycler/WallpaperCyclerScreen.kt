@@ -19,6 +19,7 @@ import androidx.compose.foundation.border
 import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -53,6 +54,7 @@ import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.model.AutoChangeFrequency
 import com.obscura.wallpapers.core.data.model.AutoChangeSource
 import com.obscura.wallpapers.core.data.model.WallpaperTarget
+import com.obscura.wallpapers.ui.components.ConfirmDialog
 import com.obscura.wallpapers.ui.components.GlassScaffold
 import com.obscura.wallpapers.ui.components.LoginPromptDialog
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
@@ -63,6 +65,7 @@ import com.obscura.wallpapers.ui.theme.stringResource
 fun WallpaperCyclerScreen(
     onBackPressed: () -> Unit,
     onNavigateToLogin: () -> Unit = {},
+    onNavigateToSubscription: () -> Unit = {},
     viewModel: WallpaperCyclerViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -76,15 +79,27 @@ fun WallpaperCyclerScreen(
     val needLogin by viewModel.needLogin.collectAsState()
     val settingsApplied by viewModel.settingsApplied.collectAsState()
 
+    val showSubscriptionDialog by viewModel.showSubscriptionDialog.collectAsState()
+
     if (needLogin) {
         LoginPromptDialog(
             onDismiss = {
-            viewModel.clearNeedLogin()
-            onBackPressed()
-        }, onConfirm = {
-            viewModel.clearNeedLogin()
-            onNavigateToLogin()
-        }, message = stringResource(R.string.cycler_login_required)
+                viewModel.clearNeedLogin()
+                onBackPressed()
+            }, onConfirm = {
+                viewModel.clearNeedLogin()
+                onNavigateToLogin()
+            }, message = stringResource(R.string.cycler_login_required)
+        )
+    }
+
+    if (showSubscriptionDialog) {
+        SubscriptionPromptDialog(
+            onDismiss = { viewModel.hideSubscription() },
+            onConfirm = {
+                viewModel.hideSubscription()
+                onNavigateToSubscription()
+            }
         )
     }
 
@@ -123,12 +138,30 @@ fun WallpaperCyclerScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(R.string.cycler_auto_change_wallpaper),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = stringResource(R.string.cycler_auto_change_wallpaper),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            if (!isPremiumUser) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.premium).uppercase(),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
                         Text(
                             text = stringResource(R.string.cycler_auto_change_wallpaper_desc),
                             style = MaterialTheme.typography.bodyMedium,
@@ -208,6 +241,21 @@ fun WallpaperCyclerScreen(
             }
         }
     }
+}
+
+@Composable
+fun SubscriptionPromptDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    ConfirmDialog(
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
+        title = stringResource(R.string.subscription_premium_feature),
+        message = stringResource(R.string.cycler_premium_required_message),
+        confirmText = stringResource(R.string.subscription_get_premium),
+        dismissText = stringResource(R.string.cancel)
+    )
 }
 
 @Composable

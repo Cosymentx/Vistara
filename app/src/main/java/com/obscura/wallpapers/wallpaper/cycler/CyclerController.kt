@@ -8,6 +8,8 @@ import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.WallpaperRepository
 import com.obscura.wallpapers.wallpaper.core.AppWallpaperManager
+import com.obscura.wallpapers.core.data.repository.UserRepository
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -18,9 +20,13 @@ class CyclerController @Inject constructor(
     private val userPrefsRepository: UserPrefsRepository,
     private val wallpaperRepository: WallpaperRepository,
     private val connectivityHelper: ConnectivityHelper,
+    private val userRepository: UserRepository,
     private val appWallpaperManager: AppWallpaperManager,
 ) {
     suspend fun performAutoChange(): Boolean = withContext(Dispatchers.IO) {
+        // 限制仅订阅用户使用自动更换壁纸
+        if (!userRepository.isPremiumUser.first()) return@withContext false
+
         val settings = userPrefsRepository.getUserSettings()
         if (!settings.autoChangeEnabled) return@withContext false
         if (settings.autoChangeWifiOnly && !connectivityHelper.hasWifi()) return@withContext false

@@ -216,7 +216,7 @@ class UserRepositoryImpl @Inject constructor(
      * 保存服务器返回的token
      */
     override suspend fun saveServerToken(token: String) {
-        android.util.Log.d("UserRepositoryImpl", "保存服务器token: $token")
+        Log.d("UserRepositoryImpl", "保存服务器token: $token")
         dataStore.edit { preferences ->
             preferences[SERVER_TOKEN] = token
         }
@@ -226,7 +226,7 @@ class UserRepositoryImpl @Inject constructor(
      * 获取服务器token
      */
     override suspend fun getServerToken(): String? {
-        val token = dataStore.data.map<Preferences, String?> { preferences ->
+        val token = dataStore.data.map { preferences ->
             preferences[SERVER_TOKEN]
         }.first()
         return token

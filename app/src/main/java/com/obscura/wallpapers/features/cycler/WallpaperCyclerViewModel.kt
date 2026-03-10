@@ -73,6 +73,9 @@ class WallpaperCyclerViewModel @Inject constructor(
     private val _settingsApplied = MutableStateFlow(false)
     val settingsApplied: StateFlow<Boolean> = _settingsApplied.asStateFlow()
 
+    private val _showSubscriptionDialog = MutableStateFlow(false)
+    val showSubscriptionDialog: StateFlow<Boolean> = _showSubscriptionDialog.asStateFlow()
+
     init {
         checkLoginStatus()
     }
@@ -106,6 +109,13 @@ class WallpaperCyclerViewModel @Inject constructor(
                 _autoChangeSource.value = userSettings.autoChangeSource
                 _autoChangeCategory.value = userSettings.autoChangeCategory
                 _autoChangeTarget.value = userSettings.autoChangeTarget
+                
+                // 再次检查权限，如果非会员开启了自动更换，则强制关闭
+                val isPremium = userRepository.isPremiumUser.first()
+                if (!isPremium && _autoChangeEnabled.value) {
+                    _autoChangeEnabled.value = false
+                    saveSettings()
+                }
             } catch (_: Exception) {
             }
         }
@@ -117,6 +127,10 @@ class WallpaperCyclerViewModel @Inject constructor(
                 val isPremium = userRepository.isPremiumUser.first()
                 _isPremiumUser.value = isPremium
                 if (!isPremium) {
+                    if (_autoChangeEnabled.value) {
+                        _autoChangeEnabled.value = false
+                        saveSettings()
+                    }
                     if (_autoChangeFrequency.value.isPremium) {
                         _autoChangeFrequency.value = AutoChangeFrequency.DAILY
                     }
@@ -134,11 +148,25 @@ class WallpaperCyclerViewModel @Inject constructor(
         _needLogin.value = false
     }
 
+    fun showSubscription() {
+        _showSubscriptionDialog.value = true
+    }
+
+    fun hideSubscription() {
+        _showSubscriptionDialog.value = false
+    }
+
     fun updateAutoChangeEnabled(enabled: Boolean) {
         if (!_isLoggedIn.value) {
             _needLogin.value = true
             return
         }
+        
+        if (enabled && !_isPremiumUser.value) {
+            showSubscription()
+            return
+        }
+
         _autoChangeEnabled.value = enabled
         saveSettings()
     }
