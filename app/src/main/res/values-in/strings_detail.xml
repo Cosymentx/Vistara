@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="author">Penulis: %1$s</string>
+    <string name="source">Sumber: %1$s</string>
+    <string name="resolution">Resolusi: %1$d x %2$d</string>
+    <string name="wallpaper_type">Tipe: %1$s</string>
+    <string name="static_wallpaper">Wallpaper Statis</string>
+    <string name="live_wallpaper">Wallpaper Live</string>
+    <string name="tags">Tag:</string>
+    <string name="download">Unduh</string>
+    <string name="share">Bagikan</string>
+    <string name="edit">Edit</string>
+    <string name="set_home_screen">Atur ke Layar Beranda</string>
+    <string name="set_lock_screen">Atur ke Layar Kunci</string>
+    <string name="set_both_screens">Atur Keduanya</string>
+    <string name="daily_featured">Pilihan Harian</string>
+    <string name="featured_wallpaper">Wallpaper Pilihan</string>
+    <string name="unknown_author">Penulis Tidak Dikenal</string>
+    <string name="wallpaper">Wallpaper</string>
+    <string name="add_to_favorites">Tambah ke favorit</string>
+    <string name="remove_from_favorites">Hapus dari favorit</string>
+    <string name="wallpaper_not_exist">Wallpaper tidak ada</string>
+    <string name="wallpaper_load_failed">Gagal memuat wallpaper</string>
+    <string name="wallpaper_set_home_success">Ditetapkan sebagai wallpaper layar beranda</string>
+    <string name="wallpaper_set_lock_success">Ditetapkan sebagai wallpaper layar kunci</string>
+    <string name="wallpaper_set_both_success">Ditetapkan sebagai wallpaper layar beranda dan layar kunci</string>
+</resources>

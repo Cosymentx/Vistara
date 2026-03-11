@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="info_title">Tentang &amp; Kredit</string>
+    <string name="info_desc">Lihat informasi aplikasi dan hak cipta</string>
+    <string name="info_app_description">Buat ponsel Anda menonjol.
+Ini adalah aplikasi wallpaper premium yang menyatukan wallpaper foto, wallpaper video, favorit, unduhan, dan wallpaper yang berganti otomatis—dirancang untuk pengguna yang menyukai gaya, gerakan, dan personalisasi.
+Temukan koleksi gambar beresolusi tinggi dan wallpaper dinamis yang halus, termasuk gaya alam, abstrak, gelap, minimalis, teknologi, dan artistik. Layar Anda akan selalu terasa segar dan unik.
+Fitur Utama\n\n
+
+✨ Wallpaper Foto HD\n
+Gambar beresolusi tinggi untuk semua ukuran layar
+Atur secara terpisah untuk layar beranda dan layar kunci\n\n
+
+🎬 Wallpaper Video Live\n
+Pemutaran halus dengan penggunaan baterai rendah
+Tambahkan gerakan dan kedalaman ke perangkat Anda\n\n
+
+❤️ Favorit\n
+Simpan wallpaper favorit Anda
+Ganti kapan saja dengan satu ketukan\n\n
+
+⬇️ Unduh ke Perangkat\n
+Simpan wallpaper secara lokal
+Gunakan bahkan saat offline\n\n
+🔁 Pengganti Wallpaper Otomatis\n
+Ganti wallpaper secara otomatis sesuai jadwal\n\n
+Nikmati tampilan baru setiap hari</string>
+    <string name="info_user_agreement">Perjanjian Pengguna</string>
+    <string name="info_privacy_policy">Kebijakan Privasi</string>
+    <string name="info_child_protection">Perjanjian Perlindungan Anak</string>
+    <string name="info_terms_of_service">Ketentuan Layanan</string>
+    <string name="info_open_source_libraries">Perpustakaan Sumber Terbuka</string>
+</resources>

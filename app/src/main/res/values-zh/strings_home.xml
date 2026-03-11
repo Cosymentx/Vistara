@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_title">发现</string>
+    <string name="home_search_icon">搜索图标</string>
+    <string name="home_search_hint">搜索高品质壁纸…</string>
+    <string name="home_loading_wallpapers">正在加载壁纸…</string>
+    <string name="home_unknown_error">未知错误</string>
+    <string name="home_refresh">刷新</string>
+    <string name="home_partial_data_loading_failed">部分数据加载失败，刷新以重试</string>
+    <string name="home_explore_categories">探索分类</string>
+    <string name="home_hot_static">热门</string>
+    <string name="home_cool_dynamic">酷炫动态</string>
+    <string name="home_latest_uploads">最新上传</string>
+    <string name="home_nature_scenery">自然风景</string>
+    <string name="home_architecture">建筑</string>
+    <string name="home_animals">动物</string>
+    <string name="home_space">太空</string>
+    <string name="home_minimal">极简</string>
+    <string name="home_no_wallpapers_found">未找到壁纸</string>
+    <string name="home_try_different_keywords">尝试不同的关键词</string>
+    <string name="home_found_results">找到 %d 个结果</string>
+    <string name="home_hot_searches">热门搜索</string>
+    <string name="home_search_tips">搜索建议</string>
+    <string name="home_use_specific_descriptions">使用具体的描述</string>
+    <string name="home_specific_description_examples">例如：高山景观、黑白抽象、城市夜景</string>
+    <string name="home_try_different_languages">尝试不同的语言</string>
+    <string name="home_english_keywords_tip">有时使用英文关键词可能会获得更多结果</string>
+    <string name="home_combine_keywords">组合关键词</string>
+    <string name="home_keyword_combination_examples">例如：极简黑白、自然绿色</string>
+    <string name="home_clear_search">清除搜索</string>
+    <string name="home_search_history">搜索历史</string>
+    <string name="home_banner_no_network">无网络连接，无法获取横幅数据</string>
+    <string name="home_banner_load_failed">获取横幅数据失败</string>
+    <string name="home_featured_wallpapers">精选壁纸</string>
+    <string name="home_discover_latest_wallpapers">发现最新最美的壁纸</string>
+    <string name="home_live_wallpapers">动态壁纸</string>
+    <string name="home_make_your_screen_come_alive">让您的屏幕生动起来</string>
+    <string name="home_no_network_wallpapers">无网络连接，无法获取壁纸</string>
+    <string name="home_failed_to_get_recommended_wallpapers">获取推荐壁纸失败</string>
+    <string name="home_failed_to_get_wallpapers">获取壁纸失败</string>
+</resources>

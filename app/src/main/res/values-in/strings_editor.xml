@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_edit_wallpaper">Edit Wallpaper</string>
+    <string name="editor_brightness">Kecerahan</string>
+    <string name="editor_contrast">Kontras</string>
+    <string name="editor_saturation">Saturasi</string>
+    <string name="editor_reset_edits">Atur Ulang</string>
+    <string name="editor_filter">Filter</string>
+    <string name="editor_loading_image">Memuat gambar…</string>
+    <string name="editor_free_crop">Potong Bebas</string>
+    <string name="editor_square">Kotak</string>
+    <string name="editor_circle">Lingkaran</string>
+    <string name="editor_crop_applied">Potongan Diterapkan</string>
+    <string name="editor_recrop">Potong Ulang</string>
+    <string name="editor_live_wallpaper_edit_not_supported">Wallpaper Live tidak dapat diedit</string>
+    <string name="editor_original">Asli</string>
+    <string name="editor_grayscale">Hitam Putih</string>
+    <string name="editor_sepia">Sepia</string>
+    <string name="editor_vintage">Vintage</string>
+    <string name="editor_cold">Dingin</string>
+    <string name="editor_warm">Hangat</string>
+    <string name="editor_purple">Ungu</string>
+    <string name="editor_blue">Biru</string>
+    <string name="editor_green">Hijau</string>
+    <string name="editor_pink">Merah Muda</string>
+    <string name="editor_orange">Oranye</string>
+    <string name="editor_crop">Potong</string>
+</resources>

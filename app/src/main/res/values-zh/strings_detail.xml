@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="author">作者: %1$s</string>
+    <string name="source">来源: %1$s</string>
+    <string name="resolution">分辨率: %1$d x %2$d</string>
+    <string name="wallpaper_type">类型: %1$s</string>
+    <string name="static_wallpaper">静态壁纸</string>
+    <string name="live_wallpaper">动态壁纸</string>
+    <string name="tags">标签:</string>
+    <string name="download">下载</string>
+    <string name="share">分享</string>
+    <string name="edit">编辑</string>
+    <string name="set_home_screen">设为主屏幕</string>
+    <string name="set_lock_screen">设为锁定屏幕</string>
+    <string name="set_both_screens">同时设置</string>
+    <string name="daily_featured">每日精选</string>
+    <string name="featured_wallpaper">精选壁纸</string>
+    <string name="unknown_author">未知作者</string>
+    <string name="wallpaper">壁纸</string>
+    <string name="add_to_favorites">添加到收藏</string>
+    <string name="remove_from_favorites">从收藏中移除</string>
+    <string name="wallpaper_not_exist">壁纸不存在</string>
+    <string name="wallpaper_load_failed">加载壁纸失败</string>
+    <string name="wallpaper_set_home_success">已设为主屏幕壁纸</string>
+    <string name="wallpaper_set_lock_success">已设为锁定屏幕壁纸</string>
+    <string name="wallpaper_set_both_success">已设为主屏幕和锁定屏幕壁纸</string>
+</resources>

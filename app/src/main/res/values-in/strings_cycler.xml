@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cycler_auto_change_wallpaper">Ganti Wallpaper Otomatis</string>
+    <string name="cycler_auto_change_wallpaper_desc">Atur frekuensi dan sumber penggantian wallpaper otomatis</string>
+    <string name="cycler_settings_applied_successfully">Pengaturan berhasil diterapkan</string>
+    <string name="cycler_login_required">Anda harus masuk untuk menggunakan ganti wallpaper otomatis</string>
+    <string name="cycler_premium_required_message">Ganti Wallpaper Otomatis adalah fitur Premium. Berlangganan untuk membuka ini dan manfaat eksklusif lainnya!</string>
+    <string name="cycler_change_settings">Ubah Pengaturan</string>
+    <string name="cycler_wifi_only_change">Ganti hanya di WiFi</string>
+    <string name="cycler_avoid_mobile_data">Hindari penggunaan data seluler</string>
+    <string name="cycler_wallpaper_source">Sumber Wallpaper</string>
+    <string name="cycler_wallpaper_target">Target Wallpaper</string>
+    <string name="cycler_apply_settings">Terapkan Pengaturan</string>
+    <string name="cycler_change_frequency">Frekuensi Perubahan</string>
+    <string name="daily">Harian</string>
+    <string name="every_twelve_hours">Setiap 12 Jam</string>
+    <string name="every_six_hours">Setiap 6 Jam</string>
+    <string name="hourly">Setiap Jam</string>
+    <string name="cycler_each_unlock">Setiap Buka Kunci</string>
+    <string name="cycler_downloaded_wallpapers">Wallpaper yang Diunduh</string>
+    <string name="cycler_specific_category">Kategori Spesifik</string>
+    <string name="cycler_trending_wallpapers">Wallpaper Populer</string>
+    <string name="cycler_home_screen_only">Hanya Layar Beranda</string>
+    <string name="cycler_lock_screen_only">Hanya Layar Kunci</string>
+</resources>

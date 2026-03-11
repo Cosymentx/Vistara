@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="collections_wallpapers_failed">获取合集壁纸失败: %1$s</string>
+    <string name="collections_introduction">合集介绍</string>
+    <string name="collections_related_tags">相关标签</string>
+    <string name="collections_premium_content">高级合集内容</string>
+    <string name="collections_upgrade_to_unlock_all">升级到高级版以解锁所有壁纸</string>
+    <string name="collections_upgrade_now">立即升级</string>
+    <string name="collections_wallpaper_list">壁纸列表</string>
+</resources>

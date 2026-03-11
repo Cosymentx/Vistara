@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="errors_loading_wallpapers">Gagal memuat wallpaper</string>
+    <string name="errors_filtering_wallpapers">Gagal memfilter wallpaper</string>
+    <string name="errors_already_premium">Anda sudah menjadi pengguna premium</string>
+    <string name="errors_billing_not_connected">Layanan pembayaran tidak terhubung, silakan coba lagi nanti</string>
+    <string name="errors_network_check">Gagal memuat, silakan periksa koneksi jaringan Anda</string>
+    <string name="common_error_loading_data">Terjadi kesalahan tidak dikenal saat memuat data</string>
+    <string name="categories_error_loading_wallpapers">Terjadi kesalahan tidak dikenal saat memuat wallpaper kategori</string>
+    <string name="common_network_request_failed">Permintaan jaringan gagal</string>
+    <string name="categories_no_network_wallpapers">Tidak ada koneksi internet, tidak dapat memuat wallpaper kategori</string>
+    <string name="categories_failed_to_get_wallpapers">Gagal memuat wallpaper kategori</string>
+    <string name="network_api_rate_limit_exceeded">Batas frekuensi akses API terlampaui, silakan coba lagi nanti</string>
+</resources>

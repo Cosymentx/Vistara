@@ -7,7 +7,9 @@ enum class AppLanguage(val code: String) {
     SYSTEM("system"),      // 系统默认
     ENGLISH("en"),   // 英文
     JAPANESE("ja"),  // 日文
-    KOREAN("ko");   // 韩文
+    KOREAN("ko"),   // 韩文
+    CHINESE("zh"),  // 中文
+    INDONESIAN("in"); // 印尼语
 
     fun apiCode(): String {
         println("apiCode")

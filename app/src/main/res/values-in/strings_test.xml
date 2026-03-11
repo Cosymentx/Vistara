@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api_test_tool">Alat Tes API</string>
+    <string name="test_tool">Alat Tes</string>
+    <string name="test_results_will_show_in_logcat" translatable="false">Hasil tes akan ditampilkan di Logcat</string>
+    <string name="filter_tag_api_test" translatable="false">Tag filter: ApiTest</string>
+    <string name="test_results" translatable="false">Hasil Tes</string>
+    <string name="testing_pexels_api" translatable="false">Mengetes Pexels API…</string>
+    <string name="testing_unsplash_api" translatable="false">Mengetes Unsplash API…</string>
+    <string name="current_status_logged_out" translatable="false">Status saat ini: Belum masuk</string>
+    <string name="test_pexels_api">Tes Pexels API</string>
+    <string name="test_unsplash_api">Tes Unsplash API</string>
+    <string name="api_test">Tes API</string>
+    <string name="test_results_in_logcat" translatable="false">Hasil tes akan ditampilkan di Logcat</string>
+    <string name="filter_tag" translatable="false">Tag filter: ApiTest</string>
+    <string name="launch_api_test">Mulai Tes API</string>
+    <string name="user_status_test">Tes Status Pengguna</string>
+    <string name="premium_user_status">Status Pengguna Premium</string>
+    <string name="current_status_premium">Status saat ini: Pengguna premium</string>
+    <string name="current_status_regular">Status saat ini: Pengguna reguler</string>
+    <string name="login_status_test">Tes Status Login</string>
+    <string name="login_status">Status Login</string>
+    <string name="current_status_logged_in">Status saat ini: Sudah masuk</string>
+    <string name="current_status_not_logged_in">Status saat ini: Belum masuk</string>
+    <string name="check_login_status_failed">Gagal mengecek status login: %1$s</string>
+    <string name="check_premium_status_failed">Gagal mengecek status pengguna: %1$s</string>
+    <string name="set_premium_success">Berhasil disetel sebagai pengguna premium</string>
+    <string name="set_premium_failed">Gagal menyetel pengguna premium: %1$s</string>
+    <string name="disable_premium_success">Berhasil menonaktifkan status pengguna premium</string>
+    <string name="disable_premium_failed">Gagal menonaktifkan status pengguna premium: %1$s</string>
+    <string name="simulate_login_success">Simulasi masuk berhasil</string>
+    <string name="simulate_login_failed">Simulasi masuk gagal: %1$s</string>
+    <string name="simulate_logout_success">Simulasi keluar berhasil</string>
+    <string name="simulate_logout_failed">Simulasi keluar gagal: %1$s</string>
+    <string name="coin_test" translatable="false">Tes Koin</string>
+    <string name="coin_test_mode" translatable="false">Mode Tes Koin</string>
+    <string name="current_coin_balance" translatable="false">Saldo koin saat ini: %d</string>
+    <string name="test_mode_enabled" translatable="false">Mode tes diaktifkan, koin bertambah 200 saat aktif, dihapus saat nonaktif</string>
+    <string name="test_mode_disabled" translatable="false">Mode tes dinonaktifkan</string>
+    <string name="test_pexels_api_complete">Tes Pexels API selesai, silakan cek log</string>
+    <string name="test_unsplash_api_complete">Tes Unsplash API selesai, silakan cek log</string>
+    <string name="test_failed">Tes gagal: %1$s</string>
+    <string name="test_title">Alat Tes</string>
+    <string name="test_desc">Tes antarmuka API dan fitur lainnya</string>
+</resources>

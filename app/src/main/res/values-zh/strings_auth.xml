@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_description">登录以同步收藏和下载</string>
+    <string name="auth_google_sign_in">使用 Google 登录</string>
+    <string name="auth_skip">跳过登录</string>
+    <string name="not_logged_in">未登录</string>
+    <string name="login">登录</string>
+    <string name="auth_login_success">登录成功</string>
+    <string name="auth_login_failed">登录失败</string>
+    <string name="auth_login_failed_with_status">登录失败: %1$s</string>
+    <string name="auth_login_failed_with_message">登录失败: %1$s</string>
+    <string name="auth_logout_success">注销成功</string>
+    <string name="auth_logout_failed">注销失败: %1$s</string>
+</resources>

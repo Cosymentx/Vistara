@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Nilai &amp; Umpan Balik</string>
+    <string name="feedback_desc">Bantu kami meningkatkan aplikasi</string>
+    <string name="feedback_direct_feedback">Umpan Balik Langsung</string>
+    <string name="feedback_your_feedback_or_suggestion">Umpan Balik atau Saran Anda</string>
+    <string name="feedback_enter_feedback_placeholder">Masukkan umpan balik atau saran Anda tentang aplikasi…</string>
+    <string name="feedback_contact_info_optional">Info Kontak (Opsional)</string>
+    <string name="feedback_email_or_other_contact">Email atau metode kontak lainnya</string>
+    <string name="feedback_submit_feedback">Kirim Umpan Balik</string>
+    <string name="feedback_rate_in_app_store">Nilai di App Store</string>
+    <string name="feedback_like_our_app_rate_us">Suka aplikasi kami? Beri kami peringkat 5 bintang!</string>
+    <string name="feedback_send_email_feedback">Kirim Umpan Balik Email</string>
+    <string name="feedback_have_questions_email_us">Ada pertanyaan atau saran? Email tim dukungan kami</string>
+</resources>

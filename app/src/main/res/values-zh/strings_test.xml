@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api_test_tool">API 测试工具</string>
+    <string name="test_tool">测试工具</string>
+    <string name="test_results_will_show_in_logcat" translatable="false">测试结果将显示在 Logcat 中</string>
+    <string name="filter_tag_api_test" translatable="false">过滤器标签: ApiTest</string>
+    <string name="test_results" translatable="false">测试结果</string>
+    <string name="testing_pexels_api" translatable="false">正在测试 Pexels API…</string>
+    <string name="testing_unsplash_api" translatable="false">正在测试 Unsplash API…</string>
+    <string name="current_status_logged_out" translatable="false">当前状态: 未登录</string>
+    <string name="test_pexels_api">测试 Pexels API</string>
+    <string name="test_unsplash_api">测试 Unsplash API</string>
+    <string name="api_test">API 测试</string>
+    <string name="test_results_in_logcat" translatable="false">测试结果将显示在 Logcat 中</string>
+    <string name="filter_tag" translatable="false">过滤器标签: ApiTest</string>
+    <string name="launch_api_test">启动 API 测试</string>
+    <string name="user_status_test">用户状态测试</string>
+    <string name="premium_user_status">高级用户状态</string>
+    <string name="current_status_premium">当前状态: 高级用户</string>
+    <string name="current_status_regular">当前状态: 普通用户</string>
+    <string name="login_status_test">登录状态测试</string>
+    <string name="login_status">登录状态</string>
+    <string name="current_status_logged_in">当前状态: 已登录</string>
+    <string name="current_status_not_logged_in">当前状态: 未登录</string>
+    <string name="check_login_status_failed">检查登录状态失败: %1$s</string>
+    <string name="check_premium_status_failed">检查用户状态失败: %1$s</string>
+    <string name="set_premium_success">成功设置为高级用户</string>
+    <string name="set_premium_failed">设置高级用户失败: %1$s</string>
+    <string name="disable_premium_success">成功取消高级用户状态</string>
+    <string name="disable_premium_failed">取消高级用户状态失败: %1$s</string>
+    <string name="simulate_login_success">模拟登录成功</string>
+    <string name="simulate_login_failed">模拟登录失败: %1$s</string>
+    <string name="simulate_logout_success">模拟注销成功</string>
+    <string name="simulate_logout_failed">模拟注销失败: %1$s</string>
+    <string name="coin_test" translatable="false">金币测试</string>
+    <string name="coin_test_mode" translatable="false">金币测试模式</string>
+    <string name="current_coin_balance" translatable="false">当前金币余额: %d</string>
+    <string name="test_mode_enabled" translatable="false">已启用测试模式，启用时增加 200 金币，禁用时清除</string>
+    <string name="test_mode_disabled" translatable="false">已禁用测试模式</string>
+    <string name="test_pexels_api_complete">Pexels API 测试完成，请检查日志</string>
+    <string name="test_unsplash_api_complete">Unsplash API 测试完成，请检查日志</string>
+    <string name="test_failed">测试失败: %1$s</string>
+    <string name="test_title">测试工具</string>
+    <string name="test_desc">测试 API 接口及其他功能</string>
+</resources>

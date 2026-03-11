@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="collections_wallpapers_failed">Gagal mendapatkan wallpaper koleksi: %1$s</string>
+    <string name="collections_introduction">Pengantar Koleksi</string>
+    <string name="collections_related_tags">Tag Terkait</string>
+    <string name="collections_premium_content">Konten Koleksi Premium</string>
+    <string name="collections_upgrade_to_unlock_all">Tingkatkan ke premium untuk membuka semua wallpaper</string>
+    <string name="collections_upgrade_now">Tingkatkan Sekarang</string>
+    <string name="collections_wallpaper_list">Daftar Wallpaper</string>
+</resources>

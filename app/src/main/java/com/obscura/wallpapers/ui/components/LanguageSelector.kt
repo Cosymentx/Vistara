@@ -145,5 +145,7 @@ private fun getLanguageText(language: AppLanguage): String {
         AppLanguage.ENGLISH -> resources.getString(R.string.settings_language_english)
         AppLanguage.JAPANESE -> resources.getString(R.string.settings_language_japanese)
         AppLanguage.KOREAN -> resources.getString(R.string.settings_language_korean)
+        AppLanguage.CHINESE -> resources.getString(R.string.settings_language_chinese)
+        AppLanguage.INDONESIAN -> resources.getString(R.string.settings_language_indonesian)
     }
 }

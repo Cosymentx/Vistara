@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="info_title">关于与致谢</string>
+    <string name="info_desc">查看应用信息和版权</string>
+    <string name="info_app_description">让您的手机脱颖而出。
+这是一款高端壁纸应用，集成了照片壁纸、视频壁纸、收藏、下载和自动更换壁纸功能——专为热爱时尚、动态和个性化的用户设计。
+探索精心挑选的高分辨率图像和流畅的动态壁纸，包括自然、抽象、深色、极简、科技和艺术风格。您的屏幕将始终保持新鲜和独特。
+核心功能\n\n
+
+✨ 高清照片壁纸\n
+适用于所有屏幕尺寸的高分辨率图像
+可分别设置主屏幕和锁定屏幕\n\n
+
+🎬 视频动态壁纸\n
+流畅播放，低电池消耗
+为您的设备增添动态和深度\n\n
+
+❤️ 收藏夹\n
+保存您喜爱的壁纸
+一键随时切换\n\n
+
+⬇️ 下载到设备\n
+本地保存壁纸
+离线也能使用\n\n
+🔁 自动壁纸更换器\n
+按计划自动切换壁纸\n\n
+每天享受新面貌</string>
+    <string name="info_user_agreement">用户协议</string>
+    <string name="info_privacy_policy">隐私政策</string>
+    <string name="info_child_protection">儿童保护协议</string>
+    <string name="info_terms_of_service">服务条款</string>
+    <string name="info_open_source_libraries">开源库</string>
+</resources>

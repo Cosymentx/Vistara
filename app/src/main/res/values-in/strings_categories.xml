@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_all">Semua</string>
+    <string name="categories_abstract">Abstrak</string>
+    <string name="categories_animals">Hewan</string>
+    <string name="categories_architecture">Arsitektur</string>
+    <string name="categories_art">Seni</string>
+    <string name="categories_cars">Mobil</string>
+    <string name="categories_city">Kota</string>
+    <string name="categories_dark">Gelap</string>
+    <string name="categories_fashion">Fashion</string>
+    <string name="categories_flowers">Bunga</string>
+    <string name="categories_food">Makanan</string>
+    <string name="categories_landscape">Pemandangan</string>
+    <string name="categories_love">Cinta</string>
+    <string name="categories_minimal">Minimalis</string>
+    <string name="categories_nature">Alam</string>
+    <string name="categories_people">Orang</string>
+    <string name="categories_space">Luar Angkasa</string>
+    <string name="categories_sports">Olahraga</string>
+    <string name="categories_technology">Teknologi</string>
+    <string name="categories_travel">Perjalanan</string>
+    <string name="categories_static">Statis</string>
+    <string name="categories_live">Live</string>
+    <string name="categories_cyberpunk">Cyberpunk</string>
+    <string name="categories_fluid">Fluida</string>
+    <string name="categories_particle">Partikel</string>
+    <string name="categories_portrait">Potret</string>
+    <string name="categories_illustration">Ilustrasi</string>
+</resources>

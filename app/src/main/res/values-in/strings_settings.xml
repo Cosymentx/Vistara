@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_desc">Sesuaikan preferensi aplikasi dan notifikasi</string>
+    <string name="settings_theme_settings">Tema</string>
+    <string name="settings_language_settings">Bahasa</string>
+    <string name="settings_notification_settings">Notifikasi</string>
+    <string name="settings_download_notification">Notifikasi Unduhan</string>
+    <string name="settings_download_notification_desc">Tampilkan notifikasi penyelesaian unduhan wallpaper</string>
+    <string name="settings_wallpaper_change_notification">Notifikasi Perubahan Wallpaper</string>
+    <string name="settings_wallpaper_change_notification_desc">Tampilkan notifikasi perubahan wallpaper otomatis</string>
+    <string name="settings_download_settings">Unduh</string>
+    <string name="settings_original_quality">Kualitas Asli</string>
+    <string name="settings_original_quality_desc">Unduh wallpaper dalam kualitas asli (file lebih besar)</string>
+    <string name="settings_clear_cache">Hapus Cache</string>
+    <string name="settings_current_cache_size">Ukuran cache saat ini: %1$s</string>
+    <string name="settings_about_app">Tentang Aplikasi</string>
+    <string name="settings_app_version">Versi Aplikasi</string>
+    <string name="settings_account_settings">Akun</string>
+    <string name="settings_clear_cache_title">Hapus Cache</string>
+    <string name="settings_clear_cache_message">Apakah Anda yakin ingin menghapus cache aplikasi? Ini akan menghapus semua gambar dan data yang disimpan.</string>
+    <string name="settings_dark_theme">Tema Gelap</string>
+    <string name="settings_dark_theme_desc">Aktifkan tema gelap untuk aplikasi</string>
+    <string name="settings_dynamic_colors">Warna Dinamis</string>
+    <string name="settings_dynamic_colors_desc">Gunakan warna dinamis sistem (khusus Android 12+)</string>
+    <string name="settings_sign_out_confirm_title">Konfirmasi Keluar</string>
+    <string name="settings_sign_out_confirm_message">Apakah Anda yakin ingin keluar dari akun Anda?</string>
+    <string name="settings_sign_out">Keluar</string>
+    <string name="settings_sign_out_desc">Keluar dari akun saat ini</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_premium_subscription">Langganan Premium</string>
+    <string name="settings_upgrade_to_premium">Tingkatkan ke Premium</string>
+    <string name="settings_upgrade_to_premium_desc">Buka semua fitur premium dan nikmati pengalaman lengkap</string>
+    <string name="settings_premium_member">Anggota Premium</string>
+    <string name="settings_premium_member_desc">Terima kasih atas dukungan Anda! Nikmati semua fitur premium</string>
+    <string name="settings_sign_out_success">Berhasil keluar</string>
+    <string name="settings_sign_out_failed">Gagal keluar: %1$s</string>
+    <string name="settings_language_system">Sistem</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_chinese">中文</string>
+    <string name="settings_language_japanese">日本語</string>
+    <string name="settings_language_korean">한국어</string>
+    <string name="settings_language_indonesian">Bahasa Indonesia</string>
+</resources>

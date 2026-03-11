@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_all">全部</string>
+    <string name="categories_abstract">抽象</string>
+    <string name="categories_animals">动物</string>
+    <string name="categories_architecture">建筑</string>
+    <string name="categories_art">艺术</string>
+    <string name="categories_cars">汽车</string>
+    <string name="categories_city">城市</string>
+    <string name="categories_dark">深色</string>
+    <string name="categories_fashion">时尚</string>
+    <string name="categories_flowers">花卉</string>
+    <string name="categories_food">美食</string>
+    <string name="categories_landscape">风景</string>
+    <string name="categories_love">情感</string>
+    <string name="categories_minimal">极简</string>
+    <string name="categories_nature">自然</string>
+    <string name="categories_people">人物</string>
+    <string name="categories_space">太空</string>
+    <string name="categories_sports">运动</string>
+    <string name="categories_technology">科技</string>
+    <string name="categories_travel">旅行</string>
+    <string name="categories_static">静态</string>
+    <string name="categories_live">动态</string>
+    <string name="categories_cyberpunk">赛博朋克</string>
+    <string name="categories_fluid">流体</string>
+    <string name="categories_particle">粒子</string>
+    <string name="categories_portrait">人像</string>
+    <string name="categories_illustration">插画</string>
+</resources>

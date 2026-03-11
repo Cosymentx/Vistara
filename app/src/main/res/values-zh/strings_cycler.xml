@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cycler_auto_change_wallpaper">自动更换壁纸</string>
+    <string name="cycler_auto_change_wallpaper_desc">设置自动更换壁纸的频率和来源</string>
+    <string name="cycler_settings_applied_successfully">设置已成功应用</string>
+    <string name="cycler_login_required">您需要登录才能使用自动更换壁纸</string>
+    <string name="cycler_premium_required_message">自动更换壁纸是高级版功能。订阅以解锁此功能及其他专属权益！</string>
+    <string name="cycler_change_settings">更改设置</string>
+    <string name="cycler_wifi_only_change">仅在 WiFi 下更换</string>
+    <string name="cycler_avoid_mobile_data">避免使用移动数据</string>
+    <string name="cycler_wallpaper_source">壁纸来源</string>
+    <string name="cycler_wallpaper_target">设置目标</string>
+    <string name="cycler_apply_settings">应用设置</string>
+    <string name="cycler_change_frequency">更换频率</string>
+    <string name="daily">每天</string>
+    <string name="every_twelve_hours">每 12 小时</string>
+    <string name="every_six_hours">每 6 小时</string>
+    <string name="hourly">每小时</string>
+    <string name="cycler_each_unlock">每次解锁</string>
+    <string name="cycler_downloaded_wallpapers">已下载的壁纸</string>
+    <string name="cycler_specific_category">指定分类</string>
+    <string name="cycler_trending_wallpapers">热门壁纸</string>
+    <string name="cycler_home_screen_only">仅主屏幕</string>
+    <string name="cycler_lock_screen_only">仅锁定屏幕</string>
+</resources>

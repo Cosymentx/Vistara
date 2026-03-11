@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preview_start_download_wallpaper">Mulai mengunduh wallpaper</string>
+    <string name="preview_download_failed_permission_denied">Tidak dapat mengunduh wallpaper: izin penyimpanan ditolak</string>
+    <string name="preview_storage_permission_required">Izin penyimpanan diperlukan</string>
+    <string name="preview_storage_permission_rationale">Untuk menyimpan wallpaper ke galeri, kami memerlukan izin penyimpanan. Silakan izinkan ini untuk mengunduh wallpaper.</string>
+    <string name="preview_grant_permission">Berikan Izin</string>
+    <string name="preview_download_failed_permission_required">Tidak dapat mengunduh wallpaper: izin penyimpanan diperlukan</string>
+    <string name="preview_favorite_login_required">Menambahkan wallpaper ke favorit memerlukan login</string>
+    <string name="preview_download_login_required">Mengunduh wallpaper memerlukan login</string>
+    <string name="preview_download_success">Tersimpan ke galeri</string>
+    <string name="preview_set_wallpaper_login_required">Mengatur wallpaper memerlukan login</string>
+    <string name="preview_edit_login_required">Mengedit wallpaper memerlukan login</string>
+    <string name="preview_set_as_wallpaper">Atur sebagai Wallpaper</string>
+    <string name="preview_setting_wallpaper">Mengatur wallpaper…</string>
+    <string name="preview_collapse_info">Sembunyikan Info</string>
+    <string name="preview_expand_info">Tampilkan Info</string>
+    <string name="preview_wallpaper">Pratinjau Wallpaper</string>
+    <string name="preview_set_as">Atur sebagai</string>
+    <string name="preview_home_screen_wallpaper">Wallpaper Layar Beranda</string>
+    <string name="preview_lock_screen_wallpaper">Wallpaper Layar Kunci</string>
+    <string name="preview_home_and_lock_screen">Layar Beranda dan Kunci</string>
+    <string name="preview_upgrade_to_unlock">Tingkatkan untuk membuka wallpaper ini</string>
+    <string name="preview_share_wallpaper">Bagikan wallpaper</string>
+    <string name="preview_beautiful_wallpaper">Wallpaper indah</string>
+    <string name="preview_share_wallpaper_text">Saya menemukan wallpaper indah\nJudul: %1$s\nPenulis: %2$s\nSumber: %3$s\nResolusi: %4$d x %5$d\nUnduh aplikasi Obscura Wallpaper untuk wallpaper indah lainnya!</string>
+    <string name="preview_unnamed_wallpaper">Wallpaper tanpa nama</string>
+</resources>

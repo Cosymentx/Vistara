@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="browser_verifying_payment_result">Memverifikasi hasil pembayaran…</string>
+    <string name="browser_payment_success_updating_account">Pembayaran berhasil, memperbarui informasi akun…</string>
+    <string name="browser_payment_verification_failed">Verifikasi pembayaran gagal</string>
+    <string name="browser_payment_success_but_update_failed">Pembayaran berhasil, tetapi gagal memperbarui informasi akun</string>
+    <string name="browser_payment_success">Pembayaran berhasil!</string>
+    <string name="browser_go_back">Kembali</string>
+</resources>

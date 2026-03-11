@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preview_start_download_wallpaper">开始下载壁纸</string>
+    <string name="preview_download_failed_permission_denied">无法下载壁纸：存储权限被拒绝</string>
+    <string name="preview_storage_permission_required">需要存储权限</string>
+    <string name="preview_storage_permission_rationale">为了将壁纸保存到相册，我们需要存储权限。请允许此权限以进行下载。</string>
+    <string name="preview_grant_permission">授予权限</string>
+    <string name="preview_download_failed_permission_required">无法下载壁纸：需要存储权限</string>
+    <string name="preview_favorite_login_required">收藏壁纸需要先登录</string>
+    <string name="preview_download_login_required">下载壁纸需要先登录</string>
+    <string name="preview_download_success">已保存到相册</string>
+    <string name="preview_set_wallpaper_login_required">设置壁纸需要先登录</string>
+    <string name="preview_edit_login_required">编辑壁纸需要先登录</string>
+    <string name="preview_set_as_wallpaper">设为壁纸</string>
+    <string name="preview_setting_wallpaper">正在设置壁纸…</string>
+    <string name="preview_collapse_info">折叠信息</string>
+    <string name="preview_expand_info">展开信息</string>
+    <string name="preview_wallpaper">预览壁纸</string>
+    <string name="preview_set_as">设置为</string>
+    <string name="preview_home_screen_wallpaper">主屏幕壁纸</string>
+    <string name="preview_lock_screen_wallpaper">锁定屏幕壁纸</string>
+    <string name="preview_home_and_lock_screen">主屏幕和锁定屏幕</string>
+    <string name="preview_upgrade_to_unlock">升级以解锁此壁纸</string>
+    <string name="preview_share_wallpaper">分享壁纸</string>
+    <string name="preview_beautiful_wallpaper">精美壁纸</string>
+    <string name="preview_share_wallpaper_text">我发现了一张精美壁纸\n标题：%1$s\n作者：%2$s\n来源：%3$s\n分辨率：%4$d x %5$d\n下载 Obscura 壁纸应用获取更多精美壁纸！</string>
+    <string name="preview_unnamed_wallpaper">未命名壁纸</string>
+</resources>

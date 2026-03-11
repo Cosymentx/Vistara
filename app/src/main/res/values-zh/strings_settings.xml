@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">设置</string>
+    <string name="settings_desc">调整应用偏好和通知</string>
+    <string name="settings_theme_settings">主题</string>
+    <string name="settings_language_settings">语言</string>
+    <string name="settings_notification_settings">通知</string>
+    <string name="settings_download_notification">下载通知</string>
+    <string name="settings_download_notification_desc">显示壁纸下载完成通知</string>
+    <string name="settings_wallpaper_change_notification">壁纸更换通知</string>
+    <string name="settings_wallpaper_change_notification_desc">显示自动更换壁纸通知</string>
+    <string name="settings_download_settings">下载</string>
+    <string name="settings_original_quality">原始质量</string>
+    <string name="settings_original_quality_desc">以原始质量下载壁纸（文件较大）</string>
+    <string name="settings_clear_cache">清除缓存</string>
+    <string name="settings_current_cache_size">当前缓存大小: %1$s</string>
+    <string name="settings_about_app">关于应用</string>
+    <string name="settings_app_version">应用版本</string>
+    <string name="settings_account_settings">账户</string>
+    <string name="settings_clear_cache_title">清除缓存</string>
+    <string name="settings_clear_cache_message">您确定要清除应用缓存吗？这将删除所有缓存的图像和数据。</string>
+    <string name="settings_dark_theme">深色模式</string>
+    <string name="settings_dark_theme_desc">启用应用的深色模式</string>
+    <string name="settings_dynamic_colors">动态色彩</string>
+    <string name="settings_dynamic_colors_desc">使用系统动态色彩（仅限 Android 12+）</string>
+    <string name="settings_sign_out_confirm_title">注销确认</string>
+    <string name="settings_sign_out_confirm_message">您确定要注销当前账户吗？</string>
+    <string name="settings_sign_out">注销</string>
+    <string name="settings_sign_out_desc">注销当前账户</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_premium_subscription">高级订阅</string>
+    <string name="settings_upgrade_to_premium">升级到高级版</string>
+    <string name="settings_upgrade_to_premium_desc">解锁所有高级功能，享受完整体验</string>
+    <string name="settings_premium_member">高级会员</string>
+    <string name="settings_premium_member_desc">感谢您的支持！尽情享受所有高级功能</string>
+    <string name="settings_sign_out_success">注销成功</string>
+    <string name="settings_sign_out_failed">注销失败: %1$s</string>
+    <string name="settings_language_system">系统</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_chinese">中文</string>
+    <string name="settings_language_japanese">日本語</string>
+    <string name="settings_language_korean">한국어</string>
+    <string name="settings_language_indonesian">Bahasa Indonesia</string>
+</resources>

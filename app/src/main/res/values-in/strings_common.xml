@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Obscura</string>
+    <string name="app_title">Obscura</string>
+    <string name="app_tagline">Wallpaper indah untuk perangkat Anda</string>
+    <string name="back">Kembali</string>
+    <string name="back_button">Kembali</string>
+    <string name="confirm">Konfirmasi</string>
+    <string name="cancel">Batal</string>
+    <string name="clear">Hapus</string>
+    <string name="close">Tutup</string>
+    <string name="common_selected">Terpilih</string>
+    <string name="save">Simpan</string>
+    <string name="reset">Atur Ulang</string>
+    <string name="apply">Terapkan</string>
+    <string name="common_retry">Coba Lagi</string>
+    <string name="common_loading">Memuat…</string>
+    <string name="common_confirm">Konfirmasi</string>
+    <string name="common_close">Tutup</string>
+    <string name="common_maybe_later">Nanti Saja</string>
+    <string name="common_unknown_error">Kesalahan tidak dikenal</string>
+    <string name="common_refresh">Segarkan</string>
+    <string name="common_end_of_list">Akhir dari daftar</string>
+    <string name="go_back">Kembali</string>
+    <string name="loading_failed">Gagal memuat</string>
+    <string name="common_login_required">Login Diperlukan</string>
+    <string name="common_login_required_message">Fitur ini memerlukan login untuk digunakan. Apakah Anda ingin pergi ke halaman login?</string>
+    <string name="common_go_to_login">Ke Halaman Login</string>
+</resources>

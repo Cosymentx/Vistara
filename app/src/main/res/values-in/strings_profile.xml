@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_discover">Temukan</string>
+    <string name="nav_photo">Foto</string>
+    <string name="nav_video">Video</string>
+    <string name="nav_profile">Profil</string>
+    <string name="my_favorites">Favorit Saya</string>
+    <string name="my_favorites_desc">Lihat semua wallpaper favorit Anda</string>
+    <string name="my_downloads">Unduhan Saya</string>
+    <string name="my_downloads_desc">Lihat semua wallpaper yang Anda unduh</string>
+    <string name="likes_login_required">Anda harus masuk untuk menggunakan daftar favorit</string>
+    <string name="library_login_required">Anda harus masuk untuk menggunakan daftar unduhan</string>
+    <string name="library_no_downloaded_wallpapers">Belum ada wallpaper yang diunduh</string>
+    <string name="library_browse_and_download_tip">Telusuri wallpaper dan klik tombol unduh, wallpaper yang diunduh akan muncul di sini</string>
+    <string name="likes_no_favorite_wallpapers">Belum ada wallpaper favorit</string>
+    <string name="likes_browse_and_favorite_tip">Telusuri wallpaper dan klik tombol favorit, wallpaper favorit akan muncul di sini</string>
+    <string name="library_login_required_to_view_downloads">Login diperlukan untuk melihat daftar unduhan</string>
+    <string name="likes_login_required_to_view_favorites">Login diperlukan untuk melihat daftar favorit</string>
+    <string name="profile_premium_member">Anggota Premium</string>
+    <string name="profile_upgrade_membership">Tingkatkan</string>
+    <string name="profile_unlock_all_features">Buka semua fitur</string>
+    <string name="profile_purchase_coins">Beli Koin</string>
+    <string name="profile_get_more_coins">Dapatkan lebih banyak koin</string>
+    <string name="profile_coin_balance">%d Koin</string>
+</resources>

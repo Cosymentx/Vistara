@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notifications_channel_wallpaper">Notifikasi Perubahan Wallpaper</string>
+    <string name="notifications_channel_wallpaper_desc">Notifikasi tentang status perubahan wallpaper otomatis</string>
+    <string name="notifications_channel_download">Notifikasi Unduhan</string>
+    <string name="notifications_channel_download_desc">Notifikasi tentang kemajuan dan penyelesaian unduhan wallpaper</string>
+    <string name="notifications_channel_live_wallpaper">Notifikasi Wallpaper Live</string>
+    <string name="notifications_channel_live_wallpaper_desc">Notifikasi tentang pengaturan wallpaper live yang tertunda</string>
+    <string name="notifications_wallpaper_changed_title">Wallpaper Diganti</string>
+    <string name="notifications_wallpaper_changed_text">Wallpaper Anda telah berhasil diganti</string>
+    <string name="notifications_download_progress_title">Mengunduh Wallpaper</string>
+    <string name="notifications_download_progress_text">Wallpaper sedang diunduh</string>
+    <string name="notifications_download_complete_title">Unduhan Wallpaper Selesai</string>
+    <string name="notifications_download_complete_text">Wallpaper telah berhasil diunduh ke perangkat Anda</string>
+    <string name="notifications_live_wallpaper_pending_title">Wallpaper Video Siap</string>
+    <string name="notifications_live_wallpaper_pending_text">Ketuk untuk mengatur "%1$s" sebagai wallpaper video Anda</string>
+</resources>

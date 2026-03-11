@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_title">Temukan</string>
+    <string name="home_search_icon">Ikon pencarian</string>
+    <string name="home_search_hint">Cari wallpaper berkualitas tinggi…</string>
+    <string name="home_loading_wallpapers">Memuat wallpaper…</string>
+    <string name="home_unknown_error">Kesalahan tidak dikenal</string>
+    <string name="home_refresh">Segarkan</string>
+    <string name="home_partial_data_loading_failed">Beberapa data gagal dimuat, segarkan untuk mencoba lagi</string>
+    <string name="home_explore_categories">Jelajahi Kategori</string>
+    <string name="home_hot_static">Populer</string>
+    <string name="home_cool_dynamic">Dinamis Keren</string>
+    <string name="home_latest_uploads">Unggahan Terbaru</string>
+    <string name="home_nature_scenery">Pemandangan Alam</string>
+    <string name="home_architecture">Arsitektur</string>
+    <string name="home_animals">Hewan</string>
+    <string name="home_space">Luar Angkasa</string>
+    <string name="home_minimal">Minimalis</string>
+    <string name="home_no_wallpapers_found">Wallpaper tidak ditemukan</string>
+    <string name="home_try_different_keywords">Coba kata kunci lain</string>
+    <string name="home_found_results">Ditemukan %d hasil</string>
+    <string name="home_hot_searches">Pencarian Populer</string>
+    <string name="home_search_tips">Tips Pencarian</string>
+    <string name="home_use_specific_descriptions">Gunakan deskripsi spesifik</string>
+    <string name="home_specific_description_examples">Contoh: pemandangan gunung, abstrak hitam putih, pemandangan kota malam</string>
+    <string name="home_try_different_languages">Coba bahasa lain</string>
+    <string name="home_english_keywords_tip">Terkadang kata kunci bahasa Inggris memberikan hasil lebih banyak</string>
+    <string name="home_combine_keywords">Gabungkan kata kunci</string>
+    <string name="home_keyword_combination_examples">Contoh: minimalis hitam putih, alam hijau</string>
+    <string name="home_clear_search">Hapus Pencarian</string>
+    <string name="home_search_history">Riwayat Pencarian</string>
+    <string name="home_banner_no_network">Tidak ada koneksi internet, tidak dapat mengambil data banner</string>
+    <string name="home_banner_load_failed">Gagal mengambil data banner</string>
+    <string name="home_featured_wallpapers">Wallpaper Pilihan</string>
+    <string name="home_discover_latest_wallpapers">Temukan wallpaper terbaru dan tercantik</string>
+    <string name="home_live_wallpapers">Wallpaper Live</string>
+    <string name="home_make_your_screen_come_alive">Hidupkan layar Anda</string>
+    <string name="home_no_network_wallpapers">Tidak ada koneksi internet, tidak dapat mengambil wallpaper</string>
+    <string name="home_failed_to_get_recommended_wallpapers">Gagal mendapatkan wallpaper rekomendasi</string>
+    <string name="home_failed_to_get_wallpapers">Gagal mendapatkan wallpaper</string>
+</resources>

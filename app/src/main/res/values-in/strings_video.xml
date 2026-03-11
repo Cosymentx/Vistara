@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="video_wallpaper_description">Gunakan video sebagai wallpaper live</string>
+    <string name="video_wallpaper_set_success">Wallpaper video berhasil diatur</string>
+    <string name="video_wallpaper_set_failed">Gagal mengatur wallpaper video</string>
+    <string name="video_wallpaper_download_failed">Gagal mengunduh video</string>
+    <string name="video_wallpaper_select_guide">Pilih \"Obscura Video Wallpaper\" dan klik \"Atur Wallpaper\"</string>
+    <string name="wallpaper_invalid_video_url">URL video tidak valid</string>
+    <string name="wallpaper_video_download_failed">Gagal mengunduh video</string>
+</resources>
