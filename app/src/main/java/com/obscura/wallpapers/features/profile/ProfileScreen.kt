@@ -150,8 +150,7 @@ fun ProfileScreen(
 
             // Section Title
             SectionHeader(
-                title = "MY GALLERY",
-                modifier = Modifier.padding(top = 8.dp)
+                title = "MY GALLERY", modifier = Modifier.padding(top = 8.dp)
             )
 
             FeatureGrid(
@@ -291,8 +290,7 @@ private fun FeatureGrid(
                     Text(
                         text = stringResource(item.titleRes),
                         style = MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp
+                            fontWeight = FontWeight.Bold, fontSize = 13.sp
                         ),
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
@@ -333,8 +331,7 @@ private fun FeatureCardList(
                         modifier = Modifier
                             .size(40.dp)
                             .background(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                CircleShape
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape
                             )
                     ) {
                         Icon(
@@ -349,8 +346,7 @@ private fun FeatureCardList(
                         Text(
                             text = stringResource(item.titleRes),
                             style = MaterialTheme.typography.bodyLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp
+                                fontWeight = FontWeight.Bold, fontSize = 15.sp
                             ),
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -415,32 +411,6 @@ private fun ProfileHeader(
                     })
         }
 
-        // Elegant Gradient Scrim
-        val isDark = isSystemInDarkTheme()
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = if (isDark) {
-                            listOf(
-                                Color.Transparent,
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.3f),
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.8f),
-                                MaterialTheme.colorScheme.background
-                            )
-                        } else {
-                            listOf(
-                                Color.White.copy(alpha = 0.1f),
-                                Color.White.copy(alpha = 0.5f),
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.9f),
-                                MaterialTheme.colorScheme.background
-                            )
-                        }
-                    )
-                )
-        )
-
         // Content
         Column(
             modifier = Modifier
@@ -465,8 +435,7 @@ private fun ProfileHeader(
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
                                         Color.Transparent
                                     )
-                                ),
-                                shape = CircleShape
+                                ), shape = CircleShape
                             )
                     )
 
@@ -474,28 +443,24 @@ private fun ProfileHeader(
                         modifier = Modifier
                             .size(90.dp)
                             .border(
-                                width = 2.dp,
-                                brush = Brush.sweepGradient(
+                                width = 2.dp, brush = Brush.sweepGradient(
                                     listOf(
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                                         MaterialTheme.colorScheme.primary,
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
                                     )
-                                ),
-                                shape = CircleShape
+                                ), shape = CircleShape
                             )
                             .graphicsLayer {
                                 rotationZ = glowAlpha * 360f // Subtle rotation
-                            }
-                    )
+                            })
                 }
 
                 Surface(
                     shape = CircleShape,
                     color = MaterialTheme.colorScheme.surface,
                     border = BorderStroke(
-                        width = 3.dp,
-                        brush = if (isPremiumUser) {
+                        width = 3.dp, brush = if (isPremiumUser) {
                             Brush.linearGradient(
                                 listOf(Color(0xFFFFD700), Color(0xFFFFA500))
                             )
@@ -551,8 +516,7 @@ private fun ProfileHeader(
             Text(
                 text = username,
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Black,
-                    letterSpacing = (-0.5).sp
+                    fontWeight = FontWeight.Black, letterSpacing = (-0.5).sp
                 ),
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
@@ -571,8 +535,7 @@ private fun ProfileHeader(
                         text = stringResource(R.string.login),
                         color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            letterSpacing = 1.sp
+                            fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp
                         ),
                         modifier = Modifier.padding(horizontal = 32.dp, vertical = 10.dp)
                     )
@@ -586,9 +549,7 @@ private fun ProfileHeader(
                     Text(
                         text = "PREMIUM MEMBER",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.Black,
-                            letterSpacing = 1.5.sp,
-                            fontSize = 10.sp
+                            fontWeight = FontWeight.Black, letterSpacing = 1.5.sp, fontSize = 10.sp
                         ),
                         color = Color(0xFFD4AF37),
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -601,17 +562,13 @@ private fun ProfileHeader(
 
 @Composable
 private fun PremiumCoinSection(
-    isPremiumUser: Boolean,
-    onSubscriptionClick: () -> Unit,
-    onCoinPurchaseClick: () -> Unit
+    isPremiumUser: Boolean, onSubscriptionClick: () -> Unit, onCoinPurchaseClick: () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
-    val cardBackground =
-        if (isDark) Color(0xFF1A1A1A).copy(alpha = 0.8f) 
-        else MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
-    val borderColor =
-        if (isDark) Color.White.copy(alpha = 0.15f) 
-        else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
+    val cardBackground = if (isDark) Color(0xFF1A1A1A).copy(alpha = 0.8f)
+    else MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+    val borderColor = if (isDark) Color.White.copy(alpha = 0.15f)
+    else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
 
     Row(
         modifier = Modifier
@@ -625,11 +582,9 @@ private fun PremiumCoinSection(
 //            color = cardBackground,
             shape = RoundedCornerShape(28.dp),
             border = BorderStroke(
-                1.5.dp,
-                if (isPremiumUser) Brush.linearGradient(
+                1.5.dp, if (isPremiumUser) Brush.linearGradient(
                     listOf(
-                        Color(0xFFFFD700),
-                        Color(0xFFFFA500)
+                        Color(0xFFFFD700), Color(0xFFFFA500)
                     )
                 )
                 else SolidColor(borderColor)
@@ -665,8 +620,8 @@ private fun PremiumCoinSection(
                     Surface(
                         modifier = Modifier.size(44.dp),
                         shape = CircleShape,
-                        color = if (isPremiumUser) Color(0xFFFFD700).copy(alpha = 0.15f) 
-                                else MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                        color = if (isPremiumUser) Color(0xFFFFD700).copy(alpha = 0.15f)
+                        else MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
@@ -682,8 +637,7 @@ private fun PremiumCoinSection(
                         text = if (isPremiumUser) stringResource(R.string.profile_premium_member)
                         else stringResource(R.string.profile_upgrade_membership),
                         style = MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 13.sp
+                            fontWeight = FontWeight.ExtraBold, fontSize = 13.sp
                         ),
                         color = if (isPremiumUser) Color(0xFFFFD700) else MaterialTheme.colorScheme.onSurface,
                         maxLines = 1
@@ -710,8 +664,7 @@ private fun PremiumCoinSection(
                         .background(
                             Brush.verticalGradient(
                                 listOf(
-                                    Color(0xFF00E5FF).copy(alpha = 0.1f),
-                                    Color.Transparent
+                                    Color(0xFF00E5FF).copy(alpha = 0.1f), Color.Transparent
                                 )
                             )
                         )
@@ -742,8 +695,7 @@ private fun PremiumCoinSection(
                     Text(
                         text = stringResource(R.string.profile_purchase_coins),
                         style = MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 13.sp
+                            fontWeight = FontWeight.ExtraBold, fontSize = 13.sp
                         ),
                         color = Color(0xFF00E5FF),
                         maxLines = 1

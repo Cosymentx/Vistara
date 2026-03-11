@@ -1,4 +1,4 @@
-package com.vistara.aestheticwalls.data.repository
+package com.obscura.wallpapers.data.repository
 
 import android.content.Context
 import androidx.datastore.core.DataStore

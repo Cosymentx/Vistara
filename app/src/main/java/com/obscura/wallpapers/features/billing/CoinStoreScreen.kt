@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -137,7 +136,6 @@ fun CoinStoreScreen(
                 .fillMaxSize()
                 .background(brush = Brush.verticalGradient(backgroundGradient))
                 .padding(paddingValues)
-                .navigationBarsPadding()
         ) {
             // Background Glow
             Box(
@@ -204,7 +202,7 @@ fun CoinStoreScreen(
                         }
 
                         CoinPackageCard(
-                            title = "${product.coins / 100} Diamonds",
+                            title = "${product.coins / 100}",
                             price = productDetails?.oneTimePurchaseOfferDetails?.formattedPrice
                                 ?: "${product.showPrice}",
                             isSelected = selectedPackageIndex == index,
@@ -294,13 +292,13 @@ private fun CoinPackageCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 24.dp),
+                .padding(horizontal = 16.dp, vertical = 24.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     if (isSelected) {
@@ -328,7 +326,7 @@ private fun CoinPackageCard(
 
             Text(
                 text = price,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = if (isSelected) cyanAccent else if (isDark) Color.White else MaterialTheme.colorScheme.onSurface
             )

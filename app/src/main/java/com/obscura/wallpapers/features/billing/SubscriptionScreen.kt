@@ -138,7 +138,6 @@ fun SubscriptionScreen(
                 .fillMaxSize()
                 .background(brush = Brush.verticalGradient(gradientColors))
                 .padding(paddingValues)
-                .navigationBarsPadding()
         ) {
             if (isPremium) {
                 // 已订阅状态
