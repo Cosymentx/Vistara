@@ -1,12 +1,13 @@
 package com.obscura.wallpapers.features.profile
 
+import app.cash.turbine.test
 import com.obscura.wallpapers.core.data.repository.AuthRepository
 import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -29,7 +30,7 @@ class ProfileViewModelTest {
     private lateinit var authRepository: AuthRepository
     private lateinit var viewModel: ProfileViewModel
 
-    private val testDispatcher = StandardTestDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setup() {
@@ -60,13 +61,15 @@ class ProfileViewModelTest {
 
         // Act
         viewModel = ProfileViewModel(userRepository, userPrefsRepository, authRepository)
-        advanceUntilIdle()
-
+        
         // Assert
         assertTrue(viewModel.isLoggedIn.value)
         assertTrue(viewModel.isPremiumUser.value)
         assertEquals("Test User", viewModel.username.value)
-        assertEquals(500, viewModel.coinBalance.value)
+        
+        viewModel.coinBalance.test {
+            assertEquals(500, awaitItem())
+        }
     }
 
     @Test

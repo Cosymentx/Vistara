@@ -3,10 +3,12 @@ package com.obscura.wallpapers.features.library
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -49,16 +51,14 @@ fun LibraryScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.my_downloads)) },
-                navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                })
+            TopAppBar(title = { Text(stringResource(R.string.my_downloads)) }, navigationIcon = {
+                IconButton(onClick = onBackPressed) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back)
+                    )
+                }
+            })
         }) { paddingValues ->
         Column(
             modifier = Modifier
@@ -74,15 +74,7 @@ fun LibraryScreen(
                 is UiState.Success -> {
                     val wallpapers = state.data
                     if (wallpapers.isEmpty()) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = stringResource(R.string.library_no_downloaded_wallpapers),
-                                style = MaterialTheme.typography.bodyLarge,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+                        EmptyDownloadContent()
                     } else {
                         WallpaperGrid(
                             wallpapers = wallpapers,
@@ -106,11 +98,38 @@ fun LibraryScreen(
                         ErrorState(
                             message = state.message
                                 ?: stringResource(R.string.errors_network_check),
-                            onRetry = { viewModel.refresh() }
-                        )
+                            onRetry = { viewModel.refresh() })
                     }
                 }
             }
         }
     }
 }
+
+@Composable
+private fun EmptyDownloadContent() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(0.3f))
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(R.string.library_no_downloaded_wallpapers),
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = stringResource(R.string.library_browse_and_download_tip),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(0.8f)
+        )
+        Spacer(modifier = Modifier.weight(0.7f))
+    }
+}
+

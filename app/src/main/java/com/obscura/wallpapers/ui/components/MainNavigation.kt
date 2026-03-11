@@ -111,22 +111,22 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                             onSearch = { query ->
                                 navController.navigate("search?query=$query")
                             },
-                            onBannerClick = { banner ->
-                                when (banner.actionType) {
-                                    BannerActionType.WALLPAPER, BannerActionType.COLLECTION -> {
-                                        banner.actionTarget?.let { wallpaperId ->
-                                            navController.navigate("preview/$wallpaperId")
-                                        }
-                                    }
-
-                                    BannerActionType.PREMIUM -> {
-                                        navController.navigate("premium")
-                                    }
-
-                                    BannerActionType.URL -> {
-                                    }
-                                }
-                            },
+//                            onBannerClick = { banner ->
+//                                when (banner.actionType) {
+//                                    BannerActionType.WALLPAPER, BannerActionType.COLLECTION -> {
+//                                        banner.actionTarget?.let { wallpaperId ->
+//                                            navController.navigate("preview/$wallpaperId")
+//                                        }
+//                                    }
+//
+//                                    BannerActionType.PREMIUM -> {
+//                                        navController.navigate("premium")
+//                                    }
+//
+//                                    BannerActionType.URL -> {
+//                                    }
+//                                }
+//                            },
                             sharedTransitionScope = this@SharedTransitionLayout,
                             animatedVisibilityScope = this@composable
                         )

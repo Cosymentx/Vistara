@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api_test_tool">API 테스트 도구</string>
+    <string name="test_tool">테스트 도구</string>
+    <string name="test_results">테스트 결과</string>
+    <string name="test_results_in_logcat">테스트 결과는 Logcat에 표시됩니다</string>
+    <string name="filter_tag">필터 태그: ApiTest</string>
+    <string name="test_pexels_api">Pexels API 테스트</string>
+    <string name="test_unsplash_api">Unsplash API 테스트</string>
+    <string name="api_test">API 테스트</string>
+    <string name="launch_api_test">API 테스트 시작</string>
+    <string name="user_status_test">사용자 상태 테스트</string>
+    <string name="premium_user_status">프리미엄 사용자 상태</string>
+    <string name="current_status_premium">현재 상태: 프리미엄 사용자</string>
+    <string name="current_status_regular">현재 상태: 일반 사용자</string>
+    <string name="login_status_test">로그인 상태 테스트</string>
+    <string name="login_status">로그인 상태</string>
+    <string name="current_status_logged_in">현재 상태: 로그인됨</string>
+    <string name="current_status_not_logged_in">현재 상태: 로그인되지 않음</string>
+    <string name="check_login_status_failed">로그인 상태 확인 실패: %1$s</string>
+    <string name="check_premium_status_failed">사용자 상태 확인 실패: %1$s</string>
+    <string name="set_premium_success">프리미엄 사용자로 성공적으로 설정되었습니다</string>
+    <string name="set_premium_failed">프리미엄 사용자 설정 실패: %1$s</string>
+    <string name="disable_premium_success">프리미엄 사용자 상태 비활성화 성공</string>
+    <string name="disable_premium_failed">프리미엄 사용자 상태 비활성화 실패: %1$s</string>
+    <string name="simulate_login_success">로그인 시뮬레이션 성공</string>
+    <string name="simulate_login_failed">로그인 시뮬레이션 실패: %1$s</string>
+    <string name="simulate_logout_success">로그아웃 시뮬레이션 성공</string>
+    <string name="simulate_logout_failed">로그아웃 시뮬레이션 실패: %1$s</string>
+    <string name="test_pexels_api_complete">Pexels API 테스트 완료, 로그를 확인하세요</string>
+    <string name="test_unsplash_api_complete">Unsplash API 테스트 완료, 로그를 확인하세요</string>
+    <string name="test_failed">테스트 실패: %1$s</string>
+    <string name="test_title">테스트 도구</string>
+    <string name="test_desc">API 인터페이스 및 기타 기능 테스트</string>
+    <string name="test_results_will_show_in_logcat" translatable="false">Test results will be displayed in Logcat</string>
+    <string name="filter_tag_api_test" translatable="false">Filter tag: ApiTest</string>
+    <string name="testing_pexels_api" translatable="false">Testing Pexels API…</string>
+    <string name="testing_unsplash_api" translatable="false">Testing Unsplash API…</string>
+    <string name="current_status_logged_out" translatable="false">Current status: Not logged in</string>
+    <string name="coin_test" translatable="false">Coin Test</string>
+    <string name="coin_test_mode" translatable="false">Coin Test Mode</string>
+    <string name="current_coin_balance" translatable="false">Current coin balance: %d</string>
+    <string name="test_mode_enabled" translatable="false">Test mode enabled, 200 coins added when enabled, cleared when disabled</string>
+    <string name="test_mode_disabled" translatable="false">Test mode disabled</string>
+</resources>

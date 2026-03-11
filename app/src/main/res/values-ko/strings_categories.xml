@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_all">전체</string>
+    <string name="categories_abstract">추상</string>
+    <string name="categories_animals">동물</string>
+    <string name="categories_architecture">건축</string>
+    <string name="categories_art">예술</string>
+    <string name="categories_cars">자동차</string>
+    <string name="categories_city">도시</string>
+    <string name="categories_dark">다크</string>
+    <string name="categories_fashion">패션</string>
+    <string name="categories_flowers">꽃</string>
+    <string name="categories_food">음식</string>
+    <string name="categories_landscape">풍경</string>
+    <string name="categories_love">사랑</string>
+    <string name="categories_minimal">미니멀</string>
+    <string name="categories_nature">자연</string>
+    <string name="categories_people">사람</string>
+    <string name="categories_space">우주</string>
+    <string name="categories_sports">스포츠</string>
+    <string name="categories_technology">기술</string>
+    <string name="categories_travel">여행</string>
+    <string name="categories_static">정적</string>
+    <string name="categories_live">동적</string>
+    <string name="categories_cyberpunk">사이버펑크</string>
+    <string name="categories_fluid">유체</string>
+    <string name="categories_particle">입자</string>
+    <string name="categories_portrait">인물</string>
+    <string name="categories_illustration">일러스트</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="video_wallpaper_description">Use video as live wallpaper</string>
+    <string name="video_wallpaper_set_success">Video wallpaper set successfully</string>
+    <string name="video_wallpaper_set_failed">Failed to set video wallpaper</string>
+    <string name="video_wallpaper_download_failed">Video download failed</string>
+    <string name="video_wallpaper_select_guide">Please select \"Obscura Video Wallpaper\" and click \"Set Wallpaper\"</string>
+    <string name="wallpaper_invalid_video_url">Invalid video URL</string>
+    <string name="wallpaper_video_download_failed">Failed to download video</string>
+</resources>

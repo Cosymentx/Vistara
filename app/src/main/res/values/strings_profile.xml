@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_discover">Discover</string>
+    <string name="nav_photo">Photos</string>
+    <string name="nav_video">Videos</string>
+    <string name="nav_profile">Profile</string>
+    <string name="my_favorites">My Favorites</string>
+    <string name="my_favorites_desc">View all your favorite wallpapers</string>
+    <string name="my_downloads">My Downloads</string>
+    <string name="my_downloads_desc">View all your downloaded wallpapers</string>
+    <string name="likes_login_required">You need to log in to use favorites list</string>
+    <string name="library_login_required">You need to log in to use downloads list</string>
+    <string name="library_no_downloaded_wallpapers">No downloaded wallpapers</string>
+    <string name="library_browse_and_download_tip">Browse wallpapers and click the download button, downloaded wallpapers will appear here</string>
+    <string name="likes_no_favorite_wallpapers">No favorite wallpapers</string>
+    <string name="likes_browse_and_favorite_tip">Browse wallpapers and click the favorite button, favorite wallpapers will appear here</string>
+    <string name="library_login_required_to_view_downloads">Login required to view downloads list</string>
+    <string name="likes_login_required_to_view_favorites">Login required to view favorites list</string>
+    <string name="profile_premium_member">Premium Member</string>
+    <string name="profile_upgrade_membership">Upgrade</string>
+    <string name="profile_unlock_all_features">Unlock all features</string>
+    <string name="profile_purchase_coins">Buy Coins</string>
+    <string name="profile_get_more_coins">Get more coins</string>
+    <string name="profile_coin_balance">%d Coins</string>
+</resources>

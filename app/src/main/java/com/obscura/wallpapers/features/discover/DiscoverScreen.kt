@@ -48,7 +48,6 @@ import com.obscura.wallpapers.ui.theme.stringResource
 fun DiscoverScreen(
     onWallpaperClick: (Wallpaper) -> Unit,
     onSearch: (String) -> Unit = {},
-    onBannerClick: (Banner) -> Unit = {},
     viewModel: DiscoverViewModel = hiltViewModel(),
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null

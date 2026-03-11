@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="browser_verifying_payment_result">支払い結果を確認中...</string>
+    <string name="browser_payment_success_updating_account">支払い成功、アカウント情報を更新中...</string>
+    <string name="browser_payment_verification_failed">支払い確認に失敗しました</string>
+    <string name="browser_payment_success_but_update_failed">支払いは成功しましたが、アカウント情報の更新に失敗しました</string>
+    <string name="browser_payment_success">支払い成功！</string>
+    <string name="browser_go_back">戻る</string>
+</resources>

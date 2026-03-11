@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_desc">Adjust app preferences and notifications</string>
+    <string name="settings_theme_settings">Theme</string>
+    <string name="settings_language_settings">Language</string>
+    <string name="settings_notification_settings">Notification</string>
+    <string name="settings_download_notification">Download Notification</string>
+    <string name="settings_download_notification_desc">Show wallpaper download completion notification</string>
+    <string name="settings_wallpaper_change_notification">Wallpaper Change Notification</string>
+    <string name="settings_wallpaper_change_notification_desc">Show auto wallpaper change notification</string>
+    <string name="settings_download_settings">Download</string>
+    <string name="settings_original_quality">Original Quality</string>
+    <string name="settings_original_quality_desc">Download wallpapers in original quality (larger files)</string>
+    <string name="settings_clear_cache">Clear Cache</string>
+    <string name="settings_current_cache_size">Current cache size: %1$s</string>
+    <string name="settings_about_app">About App</string>
+    <string name="settings_app_version">App Version</string>
+    <string name="settings_account_settings">Account</string>
+    <string name="settings_clear_cache_title">Clear Cache</string>
+    <string name="settings_clear_cache_message">Are you sure you want to clear the app cache? This will delete all cached images and data.</string>
+    <string name="settings_dark_theme">Dark Theme</string>
+    <string name="settings_dark_theme_desc">Enable dark theme for the app</string>
+    <string name="settings_dynamic_colors">Dynamic Colors</string>
+    <string name="settings_dynamic_colors_desc">Use system dynamic colors (Android 12+ only)</string>
+    <string name="settings_sign_out_confirm_title">Sign Out Confirmation</string>
+    <string name="settings_sign_out_confirm_message">Are you sure you want to sign out from your account?</string>
+    <string name="settings_sign_out">Sign Out</string>
+    <string name="settings_sign_out_desc">Sign out from current account</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_premium_subscription">Premium Subscription</string>
+    <string name="settings_upgrade_to_premium">Upgrade to Premium</string>
+    <string name="settings_upgrade_to_premium_desc">Unlock all premium features and enjoy the full experience</string>
+    <string name="settings_premium_member">Premium Member</string>
+    <string name="settings_premium_member_desc">Thank you for your support! Enjoy all premium features</string>
+    <string name="settings_sign_out_success">Sign out successful</string>
+    <string name="settings_sign_out_failed">Sign out failed: %1$s</string>
+    <string name="settings_language_system">System</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_chinese">中文</string>
+    <string name="settings_language_japanese">日本語</string>
+    <string name="settings_language_korean">한국어</string>
+    <string name="settings_language_indonesian">Bahasa Indonesia</string>
+</resources>

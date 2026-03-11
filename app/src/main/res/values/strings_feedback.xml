@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Rate &amp; Feedback</string>
+    <string name="feedback_desc">Help us improve the app</string>
+    <string name="feedback_direct_feedback">Direct Feedback</string>
+    <string name="feedback_your_feedback_or_suggestion">Your Feedback or Suggestion</string>
+    <string name="feedback_enter_feedback_placeholder">Please enter your feedback or suggestion about the app…</string>
+    <string name="feedback_contact_info_optional">Contact Info (Optional)</string>
+    <string name="feedback_email_or_other_contact">Email or other contact method</string>
+    <string name="feedback_submit_feedback">Submit Feedback</string>
+    <string name="feedback_rate_in_app_store">Rate in App Store</string>
+    <string name="feedback_like_our_app_rate_us">Like our app? Please give us a 5-star rating!</string>
+    <string name="feedback_send_email_feedback">Send Email Feedback</string>
+    <string name="feedback_have_questions_email_us">Have questions or suggestions? Email our support team</string>
+</resources>

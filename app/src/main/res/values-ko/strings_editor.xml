@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_edit_wallpaper">배경화면 편집</string>
+    <string name="editor_brightness">밝기</string>
+    <string name="editor_contrast">대비</string>
+    <string name="editor_saturation">채도</string>
+    <string name="editor_reset_edits">편집 초기화</string>
+    <string name="editor_filter">필터</string>
+    <string name="editor_loading_image">이미지 로딩 중…</string>
+    <string name="editor_free_crop">자유 자르기</string>
+    <string name="editor_square">정사각형</string>
+    <string name="editor_circle">원형</string>
+    <string name="editor_crop_applied">자르기 적용됨</string>
+    <string name="editor_recrop">다시 자르기</string>
+    <string name="editor_live_wallpaper_edit_not_supported">라이브 배경화면은 편집할 수 없습니다</string>
+    <string name="editor_original">원본</string>
+    <string name="editor_grayscale">흑백</string>
+    <string name="editor_sepia">세피아</string>
+    <string name="editor_vintage">빈티지</string>
+    <string name="editor_cold">차가운</string>
+    <string name="editor_warm">따뜻한</string>
+    <string name="editor_purple">보라색</string>
+    <string name="editor_blue">파란색</string>
+    <string name="editor_green">초록색</string>
+    <string name="editor_pink">분홍색</string>
+    <string name="editor_orange">주황색</string>
+    <string name="editor_crop">자르기</string>
+</resources>

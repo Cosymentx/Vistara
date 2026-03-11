@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="errors_loading_wallpapers">壁紙の読み込みに失敗しました</string>
+    <string name="errors_filtering_wallpapers">壁紙のフィルタリングに失敗しました</string>
+    <string name="errors_already_premium">すでにプレミアムユーザーです</string>
+    <string name="errors_billing_not_connected">決済サービスが接続されていません。後でもう一度お試しください</string>
+    <string name="errors_network_check">読み込みに失敗しました。ネットワーク接続を確認してください</string>
+    <string name="network_api_rate_limit_exceeded">API rate limit exceeded, please try again later</string>
+    <string name="common_error_loading_data">データの読み込み中に不明なエラーが発生しました</string>
+    <string name="categories_error_loading_wallpapers">カテゴリ壁紙の読み込み中に不明なエラーが発生しました</string>
+    <string name="common_network_request_failed">ネットワークリクエスト失敗</string>
+    <string name="categories_no_network_wallpapers">ネットワーク接続がなく、カテゴリ壁紙を取得できません</string>
+    <string name="categories_failed_to_get_wallpapers">カテゴリ壁紙の取得に失敗しました</string>
+</resources>

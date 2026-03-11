@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_discover">탐색</string>
+    <string name="nav_photo">사진</string>
+    <string name="nav_video">동영상</string>
+    <string name="nav_profile">프로필</string>
+    <string name="my_favorites">내 즐겨찾기</string>
+    <string name="my_favorites_desc">모든 즐겨찾기 배경화면 보기</string>
+    <string name="my_downloads">내 다운로드</string>
+    <string name="my_downloads_desc">모든 다운로드한 배경화면 보기</string>
+    <string name="likes_login_required">즐겨찾기 목록을 사용하려면 로그인해야 합니다</string>
+    <string name="library_login_required">다운로드 목록을 사용하려면 로그인해야 합니다</string>
+    <string name="library_no_downloaded_wallpapers">다운로드한 배경화면 없음</string>
+    <string name="library_browse_and_download_tip">배경화면을 탐색하고 다운로드 버튼을 클릭하면 다운로드한 배경화면이 여기에 표시됩니다</string>
+    <string name="likes_no_favorite_wallpapers">즐겨찾기 배경화면 없음</string>
+    <string name="likes_browse_and_favorite_tip">배경화면을 탐색하고 즐겨찾기 버튼을 클릭하면 즐겨찾기 배경화면이 여기에 표시됩니다</string>
+    <string name="library_login_required_to_view_downloads">다운로드 목록을 보려면 로그인이 필요합니다</string>
+    <string name="likes_login_required_to_view_favorites">즐겨찾기 목록을 보려면 로그인이 필요합니다</string>
+    <string name="profile_premium_member">프리미엄 회원</string>
+    <string name="profile_upgrade_membership">업그레이드</string>
+    <string name="profile_unlock_all_features">모든 기능 잠금 해제</string>
+    <string name="profile_purchase_coins">코인 구매</string>
+    <string name="profile_get_more_coins">더 많은 코인 획득</string>
+    <string name="profile_coin_balance">%d 코인</string>
+</resources>

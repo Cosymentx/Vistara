@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notifications_channel_wallpaper">壁紙変更通知</string>
+    <string name="notifications_channel_wallpaper_desc">壁紙の自動変更状態に関する通知</string>
+    <string name="notifications_channel_download">ダウンロード通知</string>
+    <string name="notifications_channel_download_desc">壁紙のダウンロード進行状況と完了状態に関する通知</string>
+    <string name="notifications_channel_live_wallpaper">ライブ壁紙通知</string>
+    <string name="notifications_channel_live_wallpaper_desc">保留中のライブ壁紙設定に関する通知</string>
+    <string name="notifications_wallpaper_changed_title">壁紙が変更されました</string>
+    <string name="notifications_wallpaper_changed_text">壁紙が正常に変更されました</string>
+    <string name="notifications_download_progress_title">壁紙をダウンロード中</string>
+    <string name="notifications_download_progress_text">壁紙をダウンロード中です</string>
+    <string name="notifications_download_complete_title">壁紙のダウンロードが完了しました</string>
+    <string name="notifications_download_complete_text">壁紙がデバイスに正常にダウンロードされました</string>
+    <string name="notifications_live_wallpaper_pending_title">ビデオ壁紙の準備が完了しました</string>
+    <string name="notifications_live_wallpaper_pending_text">タップして「%1$s」をビデオ壁紙として設定します</string>
+</resources>

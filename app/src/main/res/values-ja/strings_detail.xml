@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="author">作者: %1$s</string>
+    <string name="source">ソース: %1$s</string>
+    <string name="resolution">解像度: %1$d x %2$d</string>
+    <string name="wallpaper_type">タイプ: %1$s</string>
+    <string name="static_wallpaper">静止壁紙</string>
+    <string name="live_wallpaper">ライブ壁紙</string>
+    <string name="tags">タグ:</string>
+    <string name="download">ダウンロード</string>
+    <string name="share">共有</string>
+    <string name="edit">編集</string>
+    <string name="set_home_screen">ホーム画面に設定</string>
+    <string name="set_lock_screen">ロック画面に設定</string>
+    <string name="set_both_screens">両方に設定</string>
+    <string name="daily_featured">今日のおすすめ</string>
+    <string name="featured_wallpaper">おすすめ壁紙</string>
+    <string name="unknown_author">不明な作者</string>
+    <string name="wallpaper">壁紙</string>
+    <string name="add_to_favorites">お気に入りに追加</string>
+    <string name="remove_from_favorites">お気に入りから削除</string>
+    <string name="wallpaper_not_exist">壁紙が存在しません</string>
+    <string name="wallpaper_load_failed">壁紙の読み込みに失敗しました</string>
+    <string name="wallpaper_set_home_success">ホーム画面の壁紙として設定されました</string>
+    <string name="wallpaper_set_lock_success">ロック画面の壁纸として設定されました</string>
+    <string name="wallpaper_set_both_success">ホーム画面とロック画面の壁紙として設定されました</string>
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="info_title">アプリ情報と謝辞</string>
+    <string name="info_desc">アプリ情報と著作権を表示</string>
+    <string name="info_app_description">あなたのスマートフォンを、もっと美しく。
+本アプリは、画像壁紙・動画壁紙・お気に入り・ダウンロード・自動壁紙切替を備えた、プレミアム壁紙アプリです。
+自然、抽象、ダーク、ミニマル、テクノロジー、アートなど、さまざまなジャンルの高解像度壁紙を厳選。
+あなたの画面を常に新鮮でスタイリッシュに保ちます。
+主な機能\n\n
+
+✨ 高画質画像壁紙\n
+すべての画面サイズに対応
+ホーム / ロック画面に個別設定\n\n
+🎬 動画ライブ壁紙\n
+なめらかな再生、低消費電力
+画面に動きと深みをプラス\n\n
+❤️ お気に入り機能\n
+ワンタップで保存
+いつでも切り替え可能\n\n
+⬇️ ダウンロード\n
+壁紙を本体に保存
+オフラインでも使用可能\n\n
+🔁 自動壁紙チェンジャー\n
+時間指定で自動切替\n\n
+毎日新しい気分に</string>
+    <string name="info_user_agreement">ユーザー契約</string>
+    <string name="info_privacy_policy">プライバシーポリシー</string>
+    <string name="info_terms_of_service">利用規約</string>
+    <string name="info_open_source_libraries">オープンソースライブラリ</string>
+</resources>

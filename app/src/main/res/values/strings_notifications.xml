@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notifications_channel_wallpaper">Wallpaper Change Notification</string>
+    <string name="notifications_channel_wallpaper_desc">Notifications about wallpaper auto-change status</string>
+    <string name="notifications_channel_download">Download Notification</string>
+    <string name="notifications_channel_download_desc">Notifications about wallpaper download progress and completion</string>
+    <string name="notifications_channel_live_wallpaper">Live Wallpaper Notification</string>
+    <string name="notifications_channel_live_wallpaper_desc">Notifications about pending live wallpaper settings</string>
+    <string name="notifications_wallpaper_changed_title">Wallpaper Changed</string>
+    <string name="notifications_wallpaper_changed_text">Your wallpaper has been successfully changed</string>
+    <string name="notifications_download_progress_title">Downloading Wallpaper</string>
+    <string name="notifications_download_progress_text">Wallpaper is downloading</string>
+    <string name="notifications_download_complete_title">Wallpaper Download Complete</string>
+    <string name="notifications_download_complete_text">Wallpaper has been successfully downloaded to your device</string>
+    <string name="notifications_live_wallpaper_pending_title">Video Wallpaper Ready</string>
+    <string name="notifications_live_wallpaper_pending_text">Tap to set "%1$s" as your video wallpaper</string>
+</resources>

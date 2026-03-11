@@ -55,9 +55,9 @@ fun SearchBar(
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
     placeholder: String = stringResource(R.string.search_hint),
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    backgroundColor: Color = MaterialTheme.colorScheme.onSurface.copy(0.1f),
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
-    elevation: Int = 4
+    elevation: Int = 0
 ) {
     val focusManager = LocalFocusManager.current
 

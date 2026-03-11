@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_edit_wallpaper">壁紙を編集</string>
+    <string name="editor_brightness">明るさ</string>
+    <string name="editor_contrast">コントラスト</string>
+    <string name="editor_saturation">彩度</string>
+    <string name="editor_reset_edits">編集をリセット</string>
+    <string name="editor_filter">フィルター</string>
+    <string name="editor_loading_image">画像を読み込み中…</string>
+    <string name="editor_free_crop">自由に切り抜く</string>
+    <string name="editor_square">正方形</string>
+    <string name="editor_circle">円形</string>
+    <string name="editor_crop_applied">切り抜きが適用されました</string>
+    <string name="editor_recrop">再切り抜き</string>
+    <string name="editor_live_wallpaper_edit_not_supported">ライブ壁紙は編集できません</string>
+    <string name="editor_original">オリジナル</string>
+    <string name="editor_grayscale">グレースケール</string>
+    <string name="editor_sepia">セピア</string>
+    <string name="editor_vintage">ヴィンテージ</string>
+    <string name="editor_cold">コールド</string>
+    <string name="editor_warm">ウォーム</string>
+    <string name="editor_purple">パープル</string>
+    <string name="editor_blue">ブルー</string>
+    <string name="editor_green">グリーン</string>
+    <string name="editor_pink">ピンク</string>
+    <string name="editor_orange">オレンジ</string>
+    <string name="editor_crop">切り抜き</string>
+</resources>

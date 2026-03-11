@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_all">すべて</string>
+    <string name="categories_abstract">抽象</string>
+    <string name="categories_nature">自然</string>
+    <string name="categories_cyberpunk">サイバーパンク</string>
+    <string name="categories_particle">パーティクル</string>
+    <string name="categories_fluid">流体</string>
+    <string name="categories_landscape">風景</string>
+    <string name="categories_portrait">ポートレート</string>
+    <string name="categories_city">都市</string>
+    <string name="categories_illustration">イラスト</string>
+    <string name="categories_minimal">ミニマル</string>
+    <string name="categories_food">食べ物</string>
+    <string name="categories_cars">車</string>
+    <string name="categories_dark">ダーク</string>
+    <string name="categories_fashion">ファッション</string>
+    <string name="categories_flowers">花</string>
+    <string name="categories_love">恋愛</string>
+    <string name="categories_people">人物</string>
+    <string name="categories_sports">スポーツ</string>
+    <string name="categories_technology">テクノロジー</string>
+    <string name="categories_travel">旅行</string>
+    <string name="categories_animals">動物</string>
+    <string name="categories_static">静止</string>
+    <string name="categories_live">ライブ</string>
+    <string name="categories_architecture">建築</string>
+    <string name="categories_art">アート</string>
+    <string name="categories_space">宇宙</string>
+</resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_edit_wallpaper">Edit Wallpaper</string>
+    <string name="editor_brightness">Brightness</string>
+    <string name="editor_contrast">Contrast</string>
+    <string name="editor_saturation">Saturation</string>
+    <string name="editor_reset_edits">Reset Edits</string>
+    <string name="editor_filter">Filter</string>
+    <string name="editor_loading_image">Loading image…</string>
+    <string name="editor_free_crop">Free Crop</string>
+    <string name="editor_square">Square</string>
+    <string name="editor_circle">Circle</string>
+    <string name="editor_crop_applied">Crop Applied</string>
+    <string name="editor_recrop">Recrop</string>
+    <string name="editor_live_wallpaper_edit_not_supported">Live wallpapers cannot be edited</string>
+    <string name="editor_original">Original</string>
+    <string name="editor_grayscale">Grayscale</string>
+    <string name="editor_sepia">Sepia</string>
+    <string name="editor_vintage">Vintage</string>
+    <string name="editor_cold">Cold</string>
+    <string name="editor_warm">Warm</string>
+    <string name="editor_purple">Purple</string>
+    <string name="editor_blue">Blue</string>
+    <string name="editor_green">Green</string>
+    <string name="editor_pink">Pink</string>
+    <string name="editor_orange">Orange</string>
+    <string name="editor_crop">Crop</string>
+</resources>

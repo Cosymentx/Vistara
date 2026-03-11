@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="errors_loading_wallpapers">Failed to load wallpapers</string>
+    <string name="errors_filtering_wallpapers">Failed to filter wallpapers</string>
+    <string name="errors_already_premium">You are already a premium user</string>
+    <string name="errors_billing_not_connected">Payment service not connected, please try again later</string>
+    <string name="errors_network_check">Failed to load, please check your network connection</string>
+    <string name="network_api_rate_limit_exceeded">API rate limit exceeded, please try again later</string>
+    <string name="common_error_loading_data">Unknown error occurred while loading data</string>
+    <string name="categories_error_loading_wallpapers">Unknown error occurred while loading category wallpapers</string>
+    <string name="common_network_request_failed">Network request failed</string>
+    <string name="categories_no_network_wallpapers">No network connection, unable to get category wallpapers</string>
+    <string name="categories_failed_to_get_wallpapers">Failed to get category wallpapers</string>
+</resources>

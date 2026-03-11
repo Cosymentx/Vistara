@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cycler_auto_change_wallpaper">Auto Change Wallpaper</string>
+    <string name="cycler_auto_change_wallpaper_desc">Set frequency and source for auto wallpaper changes</string>
+    <string name="cycler_settings_applied_successfully">Settings applied successfully</string>
+    <string name="cycler_login_required">You need to log in to use auto wallpaper change</string>
+    <string name="cycler_premium_required_message">Auto Wallpaper Change is a Premium feature. Subscribe to unlock this and other exclusive benefits!</string>
+    <string name="cycler_change_settings">Change Settings</string>
+    <string name="cycler_wifi_only_change">Change only on WiFi</string>
+    <string name="cycler_avoid_mobile_data">Avoid using mobile data</string>
+    <string name="cycler_wallpaper_source">Wallpaper Source</string>
+    <string name="cycler_wallpaper_target">Wallpaper Target</string>
+    <string name="cycler_apply_settings">Apply Settings</string>
+    <string name="cycler_change_frequency">Change Frequency</string>
+    <string name="daily">Daily</string>
+    <string name="every_twelve_hours">Every 12 Hours</string>
+    <string name="every_six_hours">Every 6 Hours</string>
+    <string name="hourly">Hourly</string>
+    <string name="cycler_each_unlock">Each Unlock</string>
+    <string name="cycler_downloaded_wallpapers">Downloaded Wallpapers</string>
+    <string name="cycler_specific_category">Specific Category</string>
+    <string name="cycler_trending_wallpapers">Trending Wallpapers</string>
+    <string name="cycler_home_screen_only">Home Screen Only</string>
+    <string name="cycler_lock_screen_only">Lock Screen Only</string>
+    <string name="cycler_test_unlock_broadcast" translatable="false">Test Unlock Broadcast</string>
+</resources>

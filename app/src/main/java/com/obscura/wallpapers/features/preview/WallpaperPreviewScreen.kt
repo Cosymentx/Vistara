@@ -375,8 +375,12 @@ fun WallpaperPreviewScreen(
                 showPaywall = false
                 onNavigateToSubscription()
             }, onNavigateToCoinStore = {
-                showPaywall = false
-                onNavigateToCoinStore()
+                viewModel.unlockWithCoins(onSuccess = {
+                    showPaywall = false
+                }, onNavigateToCoinStore = {
+                    showPaywall = false
+                    onNavigateToCoinStore()
+                })
             })
         }
     }

@@ -9,9 +9,11 @@ import com.obscura.wallpapers.core.data.repository.UserPrefsRepository
 import com.obscura.wallpapers.core.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,8 +33,8 @@ class ProfileViewModel @Inject constructor(
     private val _isPremiumUser = MutableStateFlow(false)
     val isPremiumUser: StateFlow<Boolean> = _isPremiumUser.asStateFlow()
 
-    private val _coinBalance = MutableStateFlow(0)
-    val coinBalance: StateFlow<Int> = _coinBalance.asStateFlow()
+    val coinBalance: StateFlow<Int> = userRepository.coinBalance
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     private val _isDebugMode = MutableStateFlow(false)
     val isDebugMode: StateFlow<Boolean> = _isDebugMode.asStateFlow()
@@ -63,11 +65,6 @@ class ProfileViewModel @Inject constructor(
                     if (!name.isNullOrEmpty()) _username.value = name
                     val photoUrl = authRepository.userPhotoUrl.first()
                     _userPhotoUrl.value = photoUrl
-                    
-                    // 获取金币余额
-                    userRepository.coinBalance.collect { balance ->
-                        _coinBalance.value = balance
-                    }
 
 //                    try {
 //                        userRepository.refreshUserProfile()

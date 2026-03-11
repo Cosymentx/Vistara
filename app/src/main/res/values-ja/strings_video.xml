@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="video_wallpaper_description">ビデオをライブ壁紙として使用</string>
+    <string name="video_wallpaper_set_success">ビデオ壁紙の設定に成功しました</string>
+    <string name="video_wallpaper_set_failed">ビデオ壁紙の設定に失敗しました</string>
+    <string name="video_wallpaper_download_failed">ビデオのダウンロードに失敗しました</string>
+    <string name="video_wallpaper_select_guide">「Obscuraビデオ壁紙」を選択して「壁紙を設定」をクリックしてください</string>
+    <string name="wallpaper_invalid_video_url">無効なビデオ URL</string>
+    <string name="wallpaper_video_download_failed">ビデオのダウンロードに失敗しました</string>
+</resources>

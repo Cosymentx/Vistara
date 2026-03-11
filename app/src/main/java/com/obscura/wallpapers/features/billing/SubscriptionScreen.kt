@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -62,6 +61,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.billingclient.api.ProductDetails
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
+import androidx.core.net.toUri
 
 /**
  * 订阅页面
@@ -255,7 +255,7 @@ private fun PremiumActiveContent(
             onClick = {
                 val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
                     data =
-                        android.net.Uri.parse("https://play.google.com/store/account/subscriptions")
+                        "https://play.google.com/store/account/subscriptions".toUri()
                     setPackage("com.android.vending")
                 }
                 try {
@@ -265,7 +265,7 @@ private fun PremiumActiveContent(
                     context.startActivity(
                         android.content.Intent(
                             android.content.Intent.ACTION_VIEW,
-                            android.net.Uri.parse("https://play.google.com/store/account/subscriptions")
+                            "https://play.google.com/store/account/subscriptions".toUri()
                         )
                     )
                 }
@@ -574,13 +574,24 @@ private fun PlanCard(
                 shape = RoundedCornerShape(bottomStart = 12.dp, topEnd = 0.dp),
                 modifier = Modifier.align(Alignment.TopEnd)
             ) {
-                Text(
-                    text = "+${backendInfo.coins / 100} Diamonds",
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    Text(
+                        text = "+${backendInfo.coins / 100}",
+                        modifier = Modifier.padding(end = 4.dp),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF00E5FF)
+                    )
+                    Icon(
+                        imageVector = ObscuraIcons.Coin,
+                        contentDescription = null,
+                        tint = Color(0xFF00E5FF),
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
         }
 

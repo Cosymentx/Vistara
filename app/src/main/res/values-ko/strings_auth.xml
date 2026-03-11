@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_description">즐겨찾기와 다운로드를 동기화하려면 로그인하세요</string>
+    <string name="auth_google_sign_in">Google로 로그인</string>
+    <string name="auth_skip">로그인 건너뛰기</string>
+    <string name="not_logged_in">로그인하지 않음</string>
+    <string name="login">로그인</string>
+    <string name="auth_login_success">로그인 성공</string>
+    <string name="auth_login_failed">로그인 실패</string>
+    <string name="auth_login_failed_with_status">로그인 실패: %1$s</string>
+    <string name="auth_login_failed_with_message">로그인 실패: %1$s</string>
+    <string name="auth_logout_success">로그아웃 성공</string>
+    <string name="auth_logout_failed">로그아웃 실패: %1$s</string>
+</resources>

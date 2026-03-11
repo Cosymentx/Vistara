@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_all">All</string>
+    <string name="categories_abstract">Abstract</string>
+    <string name="categories_animals">Animals</string>
+    <string name="categories_architecture">Architecture</string>
+    <string name="categories_art">Art</string>
+    <string name="categories_cars">Cars</string>
+    <string name="categories_city">City</string>
+    <string name="categories_dark">Dark</string>
+    <string name="categories_fashion">Fashion</string>
+    <string name="categories_flowers">Flowers</string>
+    <string name="categories_food">Food</string>
+    <string name="categories_landscape">Landscape</string>
+    <string name="categories_love">Love</string>
+    <string name="categories_minimal">Minimal</string>
+    <string name="categories_nature">Nature</string>
+    <string name="categories_people">People</string>
+    <string name="categories_space">Space</string>
+    <string name="categories_sports">Sports</string>
+    <string name="categories_technology">Technology</string>
+    <string name="categories_travel">Travel</string>
+    <string name="categories_static">Static</string>
+    <string name="categories_live">Live</string>
+    <string name="categories_cyberpunk">Cyberpunk</string>
+    <string name="categories_fluid">Fluid</string>
+    <string name="categories_particle">Particle</string>
+    <string name="categories_portrait">Portrait</string>
+    <string name="categories_illustration">Illustration</string>
+</resources>

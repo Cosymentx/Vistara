@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">평가 및 피드백</string>
+    <string name="feedback_desc">앱 개선에 도움 주기</string>
+    <string name="feedback_direct_feedback">직접 피드백</string>
+    <string name="feedback_your_feedback_or_suggestion">귀하의 피드백 또는 제안</string>
+    <string name="feedback_enter_feedback_placeholder">앱에 대한 피드백이나 제안을 입력해주세요…</string>
+    <string name="feedback_contact_info_optional">연락처 정보 (선택사항)</string>
+    <string name="feedback_email_or_other_contact">이메일 또는 기타 연락 방법</string>
+    <string name="feedback_submit_feedback">피드백 제출</string>
+    <string name="feedback_rate_in_app_store">앱 스토어에서 평가하기</string>
+    <string name="feedback_like_our_app_rate_us">앱이 마음에 드시나요? 5점 평가를 부탁드립니다!</string>
+    <string name="feedback_send_email_feedback">이메일로 피드백 보내기</string>
+    <string name="feedback_have_questions_email_us">질문이나 제안이 있으신가요? 지원 팀에 이메일을 보내주세요</string>
+</resources>

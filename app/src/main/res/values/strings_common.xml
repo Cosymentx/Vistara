@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Obscura</string>
+    <string name="app_title">Obscura</string>
+    <string name="app_tagline">Beautiful wallpapers for your device</string>
+    <string name="back">Back</string>
+    <string name="back_button">Back</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="clear">Clear</string>
+    <string name="close">Close</string>
+    <string name="common_selected">Selected</string>
+    <string name="save">Save</string>
+    <string name="reset">Reset</string>
+    <string name="apply">Apply</string>
+    <string name="common_retry">Retry</string>
+    <string name="common_loading">Loading…</string>
+    <string name="common_confirm">Confirm</string>
+    <string name="common_close">Close</string>
+    <string name="common_maybe_later">Maybe Later</string>
+    <string name="common_unknown_error">Unknown error</string>
+    <string name="common_refresh">Refresh</string>
+    <string name="common_end_of_list">End of list</string>
+    <string name="go_back">Go back</string>
+    <string name="loading_failed">Loading failed</string>
+    <string name="common_login_required">Login Required</string>
+    <string name="common_login_required_message">This feature requires login to use. Would you like to go to the login page?</string>
+    <string name="common_go_to_login">Go to Login</string>
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">設定</string>
+    <string name="settings_desc">アプリの設定と通知を調整</string>
+    <string name="settings_theme_settings">テーマ</string>
+    <string name="settings_language_settings">言語</string>
+    <string name="settings_notification_settings">通知</string>
+    <string name="settings_download_notification">ダウンロード通知</string>
+    <string name="settings_download_notification_desc">壁紙のダウンロード完了通知を表示</string>
+    <string name="settings_wallpaper_change_notification">壁紙変更通知</string>
+    <string name="settings_wallpaper_change_notification_desc">自動壁紙変更通知を表示</string>
+    <string name="settings_download_settings">ダウンロード</string>
+    <string name="settings_original_quality">オリジナル品質</string>
+    <string name="settings_original_quality_desc">オリジナル品質の壁紙をダウンロード（大きいファイル）</string>
+    <string name="settings_clear_cache">キャッシュを消去</string>
+    <string name="settings_current_cache_size">現在のキャッシュサイズ: %1$s</string>
+    <string name="settings_about_app">アプリについて</string>
+    <string name="settings_app_version">アプリバージョン</string>
+    <string name="settings_account_settings">アカウント</string>
+    <string name="settings_clear_cache_title">キャッシュを消去</string>
+    <string name="settings_clear_cache_message">アプリのキャッシュを消去してもよろしいですか？これにより、キャッシュされたすべての画像とデータが削除されます。</string>
+    <string name="settings_dark_theme">ダークテーマ</string>
+    <string name="settings_dark_theme_desc">アプリのダークテーマを有効にする</string>
+    <string name="settings_dynamic_colors">ダイナミックカラー</string>
+    <string name="settings_dynamic_colors_desc">システムのダイナミックカラーを使用（Android 12+のみ）</string>
+    <string name="settings_sign_out_confirm_title">ログアウト確認</string>
+    <string name="settings_sign_out_confirm_message">現在のアカウントからログアウトしてもよろしいですか？</string>
+    <string name="settings_sign_out">ログアウト</string>
+    <string name="settings_sign_out_desc">現在のアカウントからログアウト</string>
+    <string name="settings_language">言語</string>
+    <string name="settings_premium_subscription">プレミアムサブスクリプション</string>
+    <string name="settings_upgrade_to_premium">プレミアムにアップグレード</string>
+    <string name="settings_upgrade_to_premium_desc">すべてのプレミアム機能を解除して、完全な体験をお楽しみください</string>
+    <string name="settings_premium_member">プレミアム会員</string>
+    <string name="settings_premium_member_desc">ご支援ありがとうございます！すべてのプレミアム機能をお楽しみください</string>
+    <string name="settings_sign_out_success">サインアウト成功</string>
+    <string name="settings_sign_out_failed">サインアウト失敗: %1$s</string>
+    <string name="settings_language_system">システム</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_chinese">中文</string>
+    <string name="settings_language_japanese">日本語</string>
+    <string name="settings_language_korean">한국어</string>
+    <string name="settings_language_indonesian">Bahasa Indonesia</string>
+</resources>

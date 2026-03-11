@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cycler_auto_change_wallpaper">壁紙自動変更</string>
+    <string name="cycler_auto_change_wallpaper_desc">壁紙自動変更の頻度とソースを設定</string>
+    <string name="cycler_settings_applied_successfully">設定が正常に適用されました</string>
+    <string name="cycler_login_required">壁紙自動変更を使用するにはログインが必要です</string>
+    <string name="cycler_premium_required_message">壁紙の自動変更はプレミアム機能です。これをアンロックするにはサブスクリプションに登録してください！</string>
+    <string name="cycler_change_settings">設定を変更</string>
+    <string name="cycler_wifi_only_change">WiFi接続時のみ変更</string>
+    <string name="cycler_avoid_mobile_data">モバイルデータの使用を避ける</string>
+    <string name="cycler_wallpaper_source">壁紙ソース</string>
+    <string name="cycler_wallpaper_target">壁紙ターゲット</string>
+    <string name="cycler_apply_settings">設定を適用</string>
+    <string name="cycler_change_frequency">変更頻度</string>
+    <string name="daily">毎日</string>
+    <string name="every_twelve_hours">12時間ごと</string>
+    <string name="every_six_hours">6時間ごと</string>
+    <string name="hourly">1時間ごと</string>
+    <string name="cycler_each_unlock">ロック解除ごと</string>
+    <string name="cycler_downloaded_wallpapers">ダウンロードした壁紙</string>
+    <string name="cycler_specific_category">特定のカテゴリー</string>
+    <string name="cycler_trending_wallpapers">トレンドの壁紙</string>
+    <string name="cycler_home_screen_only">ホーム画面のみ</string>
+    <string name="cycler_lock_screen_only">ロック画面のみ</string>
+    <string name="cycler_test_unlock_broadcast" translatable="false">Test Unlock Broadcast</string>
+</resources>

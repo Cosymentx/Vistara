@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="author">Author: %1$s</string>
+    <string name="source">Source: %1$s</string>
+    <string name="resolution">Resolution: %1$d x %2$d</string>
+    <string name="wallpaper_type">Type: %1$s</string>
+    <string name="static_wallpaper">Static Wallpaper</string>
+    <string name="live_wallpaper">Live Wallpaper</string>
+    <string name="tags">Tags:</string>
+    <string name="download">Download</string>
+    <string name="share">Share</string>
+    <string name="edit">Edit</string>
+    <string name="set_home_screen">Set to Home Screen</string>
+    <string name="set_lock_screen">Set to Lock Screen</string>
+    <string name="set_both_screens">Set Both</string>
+    <string name="daily_featured">Daily Featured</string>
+    <string name="featured_wallpaper">Featured Wallpaper</string>
+    <string name="unknown_author">Unknown Author</string>
+    <string name="wallpaper">Wallpaper</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="wallpaper_not_exist">Wallpaper does not exist</string>
+    <string name="wallpaper_load_failed">Failed to load wallpaper</string>
+    <string name="wallpaper_set_home_success">Set as home screen wallpaper</string>
+    <string name="wallpaper_set_lock_success">Set as lock screen wallpaper</string>
+    <string name="wallpaper_set_both_success">Set as home screen and lock screen wallpaper</string>
+</resources>

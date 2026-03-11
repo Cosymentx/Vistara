@@ -485,6 +485,28 @@ class WallpaperPreviewViewModel @Inject constructor(
                 _isLoggedIn.value = false
             }
         }
+        viewModelScope.launch {
+            userRepository.coinBalance.collect { balance ->
+                _coinBalance.value = balance
+            }
+        }
         loadWallpaper()
+    }
+
+    fun unlockWithCoins(onSuccess: () -> Unit, onNavigateToCoinStore: () -> Unit) {
+        val s = _wallpaperState.value
+        if (s is UiState.Success) {
+            val wallpaper = s.data
+            viewModelScope.launch {
+                if (userRepository.consumeCoins(wallpaper.purchasePrice)) {
+                    wallpaperRepository.markWallpaperAsPurchased(wallpaper.id)
+                    _isWallpaperPurchased.value = true
+                    onSuccess()
+                    Toast.makeText(context, R.string.purchase_success, Toast.LENGTH_SHORT).show()
+                } else {
+                    onNavigateToCoinStore()
+                }
+            }
+        }
     }
 }

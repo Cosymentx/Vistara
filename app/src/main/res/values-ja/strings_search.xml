@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Basic App Info moved to strings_common.xml -->
+    <string name="search_hint">壁紙を検索…</string>
 </resources>

@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -90,6 +91,7 @@ fun ProfileScreen(
     val username by viewModel.username.collectAsState()
     val userPhotoUrl by viewModel.userPhotoUrl.collectAsState()
     val isPremiumUser by viewModel.isPremiumUser.collectAsState()
+    val coinBalance by viewModel.coinBalance.collectAsState()
     val isDebugMode by viewModel.isDebugMode.collectAsState()
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
     val needLoginAction by viewModel.needLoginAction.collectAsState()
@@ -141,6 +143,7 @@ fun ProfileScreen(
             if (isLoggedIn) {
                 PremiumCoinSection(
                     isPremiumUser = isPremiumUser,
+                    coinBalance = coinBalance,
                     onSubscriptionClick = onSubscriptionClick,
                     onCoinPurchaseClick = onCoinPurchaseClick
                 )
@@ -473,7 +476,7 @@ private fun ProfileHeader(
                 ) {
                     if (userPhotoUrl.isNullOrEmpty()) {
                         Image(
-                            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                            painter = painterResource(id = R.drawable.ic_launcher_round),
                             contentDescription = null,
                             modifier = Modifier
                                 .fillMaxSize()
@@ -497,6 +500,7 @@ private fun ProfileHeader(
                         shape = CircleShape,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
+                            .offset(x = (-10).dp, y = (-10).dp)
                             .size(26.dp)
                             .border(2.dp, MaterialTheme.colorScheme.background, CircleShape),
                         shadowElevation = 4.dp
@@ -562,7 +566,10 @@ private fun ProfileHeader(
 
 @Composable
 private fun PremiumCoinSection(
-    isPremiumUser: Boolean, onSubscriptionClick: () -> Unit, onCoinPurchaseClick: () -> Unit
+    isPremiumUser: Boolean,
+    coinBalance: Int,
+    onSubscriptionClick: () -> Unit,
+    onCoinPurchaseClick: () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
     val cardBackground = if (isDark) Color(0xFF1A1A1A).copy(alpha = 0.8f)
@@ -693,7 +700,9 @@ private fun PremiumCoinSection(
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        text = stringResource(R.string.profile_purchase_coins),
+                        text = if (coinBalance > 0) stringResource(
+                            R.string.profile_coin_balance, coinBalance
+                        ) else stringResource(R.string.profile_purchase_coins),
                         style = MaterialTheme.typography.labelLarge.copy(
                             fontWeight = FontWeight.ExtraBold, fontSize = 13.sp
                         ),

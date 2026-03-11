@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="browser_verifying_payment_result">결제 결과 확인 중...</string>
+    <string name="browser_payment_success_updating_account">결제 성공, 계정 정보 업데이트 중...</string>
+    <string name="browser_payment_verification_failed">결제 확인 실패</string>
+    <string name="browser_payment_success_but_update_failed">결제는 성공했지만 계정 정보 업데이트에 실패했습니다</string>
+    <string name="browser_payment_success">결제 성공!</string>
+    <string name="browser_go_back">뒤로 가기</string>
+</resources>

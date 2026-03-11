@@ -86,7 +86,7 @@ fun SearchScreen(
                     onQueryChange = viewModel::updateQuery,
                     onSearch = viewModel::search,
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+//                    backgroundColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
                 )
             }
         }) { _, contentModifier ->

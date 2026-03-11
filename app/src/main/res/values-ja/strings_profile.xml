@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_discover">発見</string>
+    <string name="nav_photo">写真</string>
+    <string name="nav_video">動画</string>
+    <string name="nav_profile">プロフィール</string>
+    <string name="my_favorites">お気に入り</string>
+    <string name="my_favorites_desc">お気に入りの壁紙をすべて表示</string>
+    <string name="my_downloads">ダウンロード</string>
+    <string name="my_downloads_desc">ダウンロードした壁紙をすべて表示</string>
+    <string name="likes_login_required">お気に入りリストを使用するにはログインが必要です</string>
+    <string name="library_login_required">ダウンロードリストを使用するにはログインが必要です</string>
+    <string name="library_no_downloaded_wallpapers">ダウンロードした壁紙はありません</string>
+    <string name="library_browse_and_download_tip">壁紙を閲覧してダウンロードボタンをクリックすると、ダウンロードした壁紙がここに表示されます</string>
+    <string name="likes_no_favorite_wallpapers">お気に入りの壁紙はありません</string>
+    <string name="likes_browse_and_favorite_tip">壁紙を閲覧してお気に入りボタンをクリックすると、お気に入りの壁紙がここに表示されます</string>
+    <string name="library_login_required_to_view_downloads">ダウンロードリストを表示するにはログインが必要です</string>
+    <string name="likes_login_required_to_view_favorites">お気に入りリストを表示するにはログインが必要です</string>
+    <string name="profile_premium_member">プレミアム会員</string>
+    <string name="profile_upgrade_membership">アップグレード</string>
+    <string name="profile_unlock_all_features">すべての機能を解除</string>
+    <string name="profile_purchase_coins">コインを購入</string>
+    <string name="profile_get_more_coins">もっとコインを獲得</string>
+    <string name="profile_coin_balance">%d コイン</string>
+</resources>

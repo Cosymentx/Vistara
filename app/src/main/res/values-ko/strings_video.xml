@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="video_wallpaper_description">비디오를 라이브 배경화면으로 사용</string>
+    <string name="video_wallpaper_set_success">비디오 배경화면 설정 성공</string>
+    <string name="video_wallpaper_set_failed">비디오 배경화면 설정 실패</string>
+    <string name="video_wallpaper_download_failed">비디오 다운로드 실패</string>
+    <string name="video_wallpaper_select_guide">\"Obscura 비디오 배경화면\"을 선택하고 \"배경화면 설정\"을 클릭하세요</string>
+    <string name="wallpaper_invalid_video_url">잘못된 비디오 URL</string>
+    <string name="wallpaper_video_download_failed">비디오 다운로드 실패</string>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">評価とフィードバック</string>
+    <string name="feedback_desc">アプリの改善にご協力ください</string>
+    <string name="feedback_direct_feedback">直接フィードバック</string>
+    <string name="feedback_your_feedback_or_suggestion">あなたのフィードバックや提案</string>
+    <string name="feedback_enter_feedback_placeholder">アプリに関するフィードバックや提案を入力してください...</string>
+    <string name="feedback_contact_info_optional">連絡先情報（任意）</string>
+    <string name="feedback_email_or_other_contact">メールアドレスまたはその他の連絡方法</string>
+    <string name="feedback_submit_feedback">フィードバックを送信</string>
+    <string name="feedback_rate_in_app_store">アプリストアで評価する</string>
+    <string name="feedback_like_our_app_rate_us">アプリが気に入りましたか？5つ星の評価をお願いします！</string>
+    <string name="feedback_send_email_feedback">メールでフィードバックを送信</string>
+    <string name="feedback_have_questions_email_us">質問や提案がありますか？サポートチームにメールを送ってください</string>
+</resources>
