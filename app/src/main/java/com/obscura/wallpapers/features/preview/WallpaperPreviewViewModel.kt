@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.R
 import com.obscura.wallpapers.cache.EditedImageCache
+import com.obscura.wallpapers.core.analytics.TrackingManager
 import com.obscura.wallpapers.core.common.ImageProcessor
 import com.obscura.wallpapers.core.data.model.UiState
 import com.obscura.wallpapers.core.data.model.Wallpaper
@@ -37,6 +38,7 @@ class WallpaperPreviewViewModel @Inject constructor(
     private val wallpaperRepository: WallpaperRepository,
     private val userRepository: UserRepository,
     private val wallpaperManager: AppWallpaperManager,
+    private val trackingManager: TrackingManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -140,6 +142,9 @@ class WallpaperPreviewViewModel @Inject constructor(
                     _isPremiumUser.value = userRepository.checkPremiumStatus()
                     _isWallpaperPurchased.value = wallpaperRepository.isWallpaperPurchased(wallpaper.id)
                     _wallpaperState.value = UiState.Success(wallpaper)
+                    
+                    // 追踪壁纸查看
+                    trackingManager.trackWallpaperView(wallpaper.id, wallpaper.source)
                 } else {
                     _wallpaperState.value =
                         UiState.Error(context.getString(R.string.errors_loading_wallpapers))
@@ -164,7 +169,11 @@ class WallpaperPreviewViewModel @Inject constructor(
                 val ok = if (_isFavorite.value) {
                     wallpaperRepository.unfavoriteWallpaper(w.id)
                 } else {
-                    wallpaperRepository.favoriteWallpaper(w)
+                    val result = wallpaperRepository.favoriteWallpaper(w)
+                    if (result) {
+                        trackingManager.trackFavorite(w.id)
+                    }
+                    result
                 }
                 if (ok) _isFavorite.value = !_isFavorite.value
             }
@@ -313,6 +322,10 @@ class WallpaperPreviewViewModel @Inject constructor(
                                         _downloadProgress.value = 1f
                                         _isDownloading.value = false
                                         wallpaperRepository.trackWallpaperDownload(s.data.id)
+                                        
+                                        // 追踪下载事件
+                                        trackingManager.trackEvent("af_download", mapOf("content_id" to s.data.id))
+
                                         try {
                                             Toast.makeText(
                                                 context,

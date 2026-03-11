@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
+import com.obscura.wallpapers.core.analytics.TrackingManager
 import com.obscura.wallpapers.core.data.remote.ApiResult
 import com.obscura.wallpapers.core.data.remote.ApiSource
 import com.obscura.wallpapers.core.data.remote.service.ApiService
@@ -33,7 +34,8 @@ class AuthRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dataStore: DataStore<Preferences>,
     private val userRepository: UserRepository,
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val trackingManager: TrackingManager
 ) : AuthRepository {
 
     companion object {
@@ -114,6 +116,10 @@ class AuthRepositoryImpl @Inject constructor(
 
                             val isPremium = loginResponse.apiIsPremium()
                             userRepository.updatePremiumStatus(isPremium)
+
+                            // 统计登录事件
+                            trackingManager.setCustomerUserId(loginResponse.uid?.toString() ?: "")
+                            trackingManager.trackLogin("Google")
                         }
                         ApiResult.Success(result.data!!)
                     } else {

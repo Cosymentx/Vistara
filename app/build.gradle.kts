@@ -166,6 +166,8 @@ dependencies {
 
     debugImplementation(libs.ui.tooling)
 
+    implementation(libs.af.android.sdk)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)

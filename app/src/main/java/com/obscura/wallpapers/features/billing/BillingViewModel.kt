@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.ProductDetails
+import com.obscura.wallpapers.core.analytics.TrackingManager
 import com.obscura.wallpapers.core.billing.BillingRepository
 import com.obscura.wallpapers.core.billing.model.ProductType
 import com.obscura.wallpapers.core.billing.model.PurchaseState
@@ -25,7 +26,9 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class BillingViewModel @Inject constructor(
-    private val billingRepository: BillingRepository, private val userRepository: UserRepository
+    private val billingRepository: BillingRepository,
+    private val userRepository: UserRepository,
+    private val trackingManager: TrackingManager
 ) : ViewModel() {
 
     companion object {
@@ -165,6 +168,8 @@ class BillingViewModel @Inject constructor(
                     awardCoins(state)
                 } else {
                     _subscriptionUiState.value = BillingUiState.Success
+                    // 追踪订阅成功事件 (简化处理，假设为 USD)
+                    trackingManager.trackSubscription(state.productId, 0.0, "USD")
                 }
             }
 
@@ -196,6 +201,9 @@ class BillingViewModel @Inject constructor(
                         Log.d(TAG, "发放金币数量: $amount")
                         userRepository.addCoins(amount)
                         _coinPurchaseSuccess.value = true
+                        
+                        // 追踪金币购买成功
+                        trackingManager.trackCoinPurchase(purchase.productId, amount, 0.0, "USD")
                     }
                     // 3. 消耗成功后重置状态，防止重复处理
                     billingRepository.resetPurchaseState()
