@@ -250,6 +250,7 @@ class TestViewModel @Inject constructor(
                     userRepository.saveUserUid(loginResponse?.uid.toString())
                     userRepository.saveServerToken(loginResponse?.accessToken ?: "")
                     userRepository.updateLoginStatus(true)
+                    userRepository.saveOpenThird(false)
                     _isLoggedIn.value = true
                     saveUserInfo(
                         userId = "${loginResponse?.uid}",

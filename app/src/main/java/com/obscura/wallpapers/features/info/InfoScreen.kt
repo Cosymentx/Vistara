@@ -86,6 +86,7 @@ fun InfoScreen(
             AppInfoSection(
                 appVersion = appVersion,
                 onPrivacyPolicyClick = { viewModel.openPrivacyPolicy() },
+                onChildProtectionClick = { viewModel.openChildProtection() },
                 onTermsOfServiceClick = { viewModel.openTermsOfService() },
                 onUserAgreementClick = { viewModel.openUserAgreement() })
 
@@ -101,6 +102,7 @@ fun InfoScreen(
 private fun AppInfoSection(
     appVersion: String,
     onPrivacyPolicyClick: () -> Unit,
+    onChildProtectionClick: () -> Unit,
     onTermsOfServiceClick: () -> Unit,
     onUserAgreementClick: () -> Unit
 ) {
@@ -181,6 +183,10 @@ private fun AppInfoSection(
                     title = stringResource(R.string.info_privacy_policy),
                     icon = ObscuraIcons.Shield,
                     onClick = onPrivacyPolicyClick
+                ), LinkEntry(
+                    title = stringResource(R.string.info_child_protection),
+                    icon = ObscuraIcons.ChildCare,
+                    onClick = onChildProtectionClick
                 ), LinkEntry(
                     title = stringResource(R.string.info_terms_of_service),
                     icon = ObscuraIcons.Assignment,

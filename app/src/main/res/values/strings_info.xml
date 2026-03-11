@@ -27,6 +27,7 @@ Automatically switch wallpapers on a schedule\n\n
 Enjoy a new look every day</string>
     <string name="info_user_agreement">User Agreement</string>
     <string name="info_privacy_policy">Privacy Policy</string>
+    <string name="info_child_protection">Child Protection Agreement</string>
     <string name="info_terms_of_service">Terms of Service</string>
     <string name="info_open_source_libraries">Open Source Libraries</string>
 </resources>

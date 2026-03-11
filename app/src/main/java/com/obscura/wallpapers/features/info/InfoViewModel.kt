@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.obscura.wallpapers.R
+import com.obscura.wallpapers.core.common.AppConstants.CHILD_PROTECTION_URL
 import com.obscura.wallpapers.core.common.AppConstants.PRIVACY_POLICY_URL
 import com.obscura.wallpapers.core.common.AppConstants.TERMS_OF_SERVICE_URL
 import com.obscura.wallpapers.core.common.AppConstants.USER_AGREEMENT_URL
@@ -102,6 +103,10 @@ class InfoViewModel @Inject constructor(
 
     fun openPrivacyPolicy() {
         openInWebView(PRIVACY_POLICY_URL, context.getString(R.string.info_privacy_policy))
+    }
+
+    fun openChildProtection() {
+        openInWebView(CHILD_PROTECTION_URL, context.getString(R.string.info_child_protection))
     }
 
     fun openTermsOfService() {

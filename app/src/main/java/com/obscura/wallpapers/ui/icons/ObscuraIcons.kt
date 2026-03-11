@@ -2202,4 +2202,41 @@ object ObscuraIcons {
                 close()
             }
         }.build()
+
+    /**
+     * 儿童保护图标
+     */
+    val ChildCare: ImageVector
+        get() = ImageVector.Builder(
+            name = "child_care",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24f,
+            viewportHeight = 24f
+        ).apply {
+            path(fill = SolidColor(Color.Black)) {
+                moveTo(18.65f, 14.25f)
+                curveToRelative(-1.21f, 0f, -2.24f, 0.81f, -2.58f, 1.91f)
+                curveToRelative(-0.94f, -0.31f, -1.7f, -1.07f, -2.01f, -2.01f)
+                curveToRelative(1.1f, -0.34f, 1.91f, -1.37f, 1.91f, -2.58f)
+                curveToRelative(0f, -1.52f, -1.23f, -2.75f, -2.75f, -2.75f)
+                reflectiveCurveToRelative(-2.75f, 1.23f, -2.75f, 2.75f)
+                curveToRelative(0f, 1.21f, 0.81f, 2.24f, 1.91f, 2.58f)
+                curveToRelative(-0.31f, 0.94f, -1.07f, 1.7f, -2.01f, 2.01f)
+                curveToRelative(-0.34f, -1.1f, -1.37f, -1.91f, -2.13f, -1.91f)
+                curveToRelative(-1.52f, 0f, -2.75f, 1.23f, -2.75f, 2.75f)
+                reflectiveCurveToRelative(1.23f, 2.75f, 2.75f, 2.75f)
+                curveToRelative(1.21f, 0f, 2.24f, -0.81f, 2.58f, -1.91f)
+                curveToRelative(0.94f, 0.31f, 1.7f, 1.07f, 2.01f, 2.01f)
+                curveToRelative(-1.1f, 0.34f, -1.91f, 1.37f, -1.91f, 2.58f)
+                curveToRelative(0f, 1.52f, 1.23f, 2.75f, 2.75f, 2.75f)
+                reflectiveCurveToRelative(2.75f, -1.23f, 2.75f, -2.75f)
+                curveToRelative(0f, -1.21f, -0.81f, -2.24f, -1.91f, -2.58f)
+                curveToRelative(0.31f, -0.94f, 1.07f, -1.7f, 2.01f, -2.01f)
+                curveToRelative(0.34f, 1.1f, 1.37f, 1.91f, 2.13f, 1.91f)
+                curveToRelative(1.52f, 0f, 2.75f, -1.23f, 2.75f, -2.75f)
+                reflectiveCurveToRelative(-1.23f, -2.75f, -2.75f, -2.75f)
+                close()
+            }
+        }.build()
 }

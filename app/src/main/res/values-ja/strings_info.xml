@@ -25,6 +25,7 @@
 毎日新しい気分に</string>
     <string name="info_user_agreement">ユーザー契約</string>
     <string name="info_privacy_policy">プライバシーポリシー</string>
+    <string name="info_child_protection">児童保護協定</string>
     <string name="info_terms_of_service">利用規約</string>
     <string name="info_open_source_libraries">オープンソースライブラリ</string>
 </resources>

@@ -22,6 +22,7 @@
 매일 새로운 분위기</string>
     <string name="info_user_agreement">사용자 계약</string>
     <string name="info_privacy_policy">개인정보 처리방침</string>
+    <string name="info_child_protection">아동 보호 정책</string>
     <string name="info_terms_of_service">서비스 약관</string>
     <string name="info_open_source_libraries">오픈소스 라이브러리</string>
 </resources>
