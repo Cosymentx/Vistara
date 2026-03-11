@@ -72,8 +72,9 @@ class BillingRepository @Inject constructor(
             // 更新本地数据库 (如果是订阅)
             val isPremium = billingManager.isPremium.value
             val state = billingManager.purchaseState.value
+            val localStatus = subscriptionDao.getSubscriptionStatusOnce()
             
-            Log.d(tag, "refreshSubscriptionStatus: isPremium=$isPremium, currentState=$state")
+            Log.d(tag, "refreshSubscriptionStatus: isPremium=$isPremium, currentState=$state, localType=${localStatus?.subscriptionType}")
 
             if (state is PurchaseState.Purchased && ProductType.getAllSubscriptionIds().contains(state.productId)) {
                 Log.d(tag, "检测到已购订阅: ${state.productId}, 更新本地数据库")
@@ -88,6 +89,12 @@ class BillingRepository @Inject constructor(
                 )
                 subscriptionDao.updateSubscription(subscription)
             } else if (!isPremium) {
+                // 如果没有真实订阅，但本地是模拟测试状态，则不清除 (方便测试)
+                if (localStatus?.subscriptionType == "mock_test") {
+                    Log.d(tag, "当前为模拟测试订阅状态，跳过自动清除")
+                    return
+                }
+
                 // 如果没有订阅，清除本地状态
                 Log.d(tag, "用户非高级会员，清除本地订阅状态")
                 subscriptionDao.updatePremiumStatus(false)
@@ -133,6 +140,34 @@ class BillingRepository @Inject constructor(
             refreshSubscriptionStatus()
         }
         return restored
+    }
+
+    /**
+     * 更新本地 Premium 状态 (仅用于模拟或强制同步)
+     */
+    suspend fun updateLocalPremiumStatus(isPremium: Boolean) {
+        Log.d(tag, "updateLocalPremiumStatus: $isPremium")
+        val current = subscriptionDao.getSubscriptionStatusOnce()
+        if (current == null) {
+            subscriptionDao.updateSubscription(
+                UserSubscriptionEntity(
+                    id = 1,
+                    isPremium = isPremium,
+                    subscriptionType = if (isPremium) "mock_test" else null
+                )
+            )
+        } else {
+            if (isPremium) {
+                subscriptionDao.updateSubscription(current.copy(isPremium = true, subscriptionType = "mock_test"))
+            } else {
+                subscriptionDao.updatePremiumStatus(false)
+                // 同时清除 mock 标记，恢复正常同步逻辑
+                val updated = subscriptionDao.getSubscriptionStatusOnce()
+                if (updated?.subscriptionType == "mock_test") {
+                    subscriptionDao.updateSubscription(updated.copy(subscriptionType = null))
+                }
+            }
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obscura.wallpapers.R
+import com.obscura.wallpapers.core.billing.BillingRepository
 import com.obscura.wallpapers.core.data.remote.service.ApiService
 import com.obscura.wallpapers.core.data.remote.service.CoinProduct
 import com.obscura.wallpapers.core.data.remote.service.LoginRequest
@@ -16,7 +17,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +24,7 @@ import javax.inject.Inject
 class TestViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
+    private val billingRepository: BillingRepository,
     private val apiService: ApiService,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
@@ -82,11 +83,12 @@ class TestViewModel @Inject constructor(
     private fun checkPremiumStatus() {
         viewModelScope.launch {
             try {
-                val isPremium = userRepository.isPremiumUser.first()
-                _isPremiumUser.value = isPremium
-                Log.d(TAG, "Premium status: $isPremium")
+                userRepository.isPremiumUser.collect { isPremium ->
+                    _isPremiumUser.value = isPremium
+                    Log.d(TAG, "Premium status updated: $isPremium")
+                }
             } catch (e: Exception) {
-                Log.e(TAG, "Error checking premium status: ${e.message}")
+                Log.e(TAG, "Error observing premium status: ${e.message}")
                 _operationResult.value =
                     context.getString(R.string.check_premium_status_failed, e.message)
             }
@@ -97,9 +99,10 @@ class TestViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 userRepository.updatePremiumStatus(true)
-                _isPremiumUser.value = true
+                billingRepository.updateLocalPremiumStatus(true)
+                // _isPremiumUser will be updated by the collect in checkPremiumStatus
                 _operationResult.value = context.getString(R.string.set_premium_success)
-                Log.d(TAG, "User set to premium")
+                Log.d(TAG, "User set to premium in both repos")
             } catch (e: Exception) {
                 Log.e(TAG, "Error setting premium status: ${e.message}")
                 _operationResult.value = context.getString(R.string.set_premium_failed, e.message)
@@ -111,9 +114,10 @@ class TestViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 userRepository.updatePremiumStatus(false)
-                _isPremiumUser.value = false
+                billingRepository.updateLocalPremiumStatus(false)
+                // _isPremiumUser will be updated by the collect in checkPremiumStatus
                 _operationResult.value = context.getString(R.string.disable_premium_success)
-                Log.d(TAG, "Premium status disabled")
+                Log.d(TAG, "Premium status disabled in both repos")
             } catch (e: Exception) {
                 Log.e(TAG, "Error disabling premium status: ${e.message}")
                 _operationResult.value =

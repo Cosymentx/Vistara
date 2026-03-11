@@ -33,9 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -85,8 +83,7 @@ fun TestScreen(
     }
 
     val (contentModifier, topBar) = GlassTopAppBar(
-        title = stringResource(R.string.test_title),
-        onBackPressed = onBackPressed
+        title = stringResource(R.string.test_title), onBackPressed = onBackPressed
     )
 
     val hazeState = LocalHazeState.current ?: remember { HazeState() }
@@ -121,7 +118,8 @@ fun TestScreen(
                     ) {
                         Column {
                             Text(
-                                "Login Status", style = MaterialTheme.typography.bodyLarge,
+                                "Login Status",
+                                style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.Medium
                             )
@@ -132,11 +130,9 @@ fun TestScreen(
                             )
                         }
                         Switch(
-                            checked = isLoggedIn,
-                            onCheckedChange = { isChecked ->
+                            checked = isLoggedIn, onCheckedChange = { isChecked ->
                                 if (isChecked) viewModel.simulateLogin() else viewModel.simulateLogout()
-                            }
-                        )
+                            })
                     }
 
                     // Premium Switch
@@ -149,7 +145,7 @@ fun TestScreen(
                             Text(
                                 "Premium Access",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color =MaterialTheme.colorScheme.onSurface,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.Medium
                             )
                             Text(
@@ -159,11 +155,9 @@ fun TestScreen(
                             )
                         }
                         Switch(
-                            checked = isPremiumUser,
-                            onCheckedChange = { isChecked ->
+                            checked = isPremiumUser, onCheckedChange = { isChecked ->
                                 if (isChecked) viewModel.enablePremiumUser() else viewModel.disablePremiumUser()
-                            }
-                        )
+                            })
                     }
                 }
             }
@@ -191,8 +185,7 @@ fun TestScreen(
                         }
                         Switch(
                             checked = isCoinTestEnabled,
-                            onCheckedChange = { viewModel.toggleCoinTest() }
-                        )
+                            onCheckedChange = { viewModel.toggleCoinTest() })
                     }
                 }
             }
@@ -254,8 +247,7 @@ fun TestScreen(
             onChannelSelected = { channel ->
                 viewModel.hidePaymentPreview()
                 // 仅模拟，不触发真实支付
-            }
-        )
+            })
     }
 }
 
@@ -267,15 +259,12 @@ private fun TestStatusPanel(isLoggedIn: Boolean, isPremium: Boolean, coins: Int)
         modifier = Modifier
             .fillMaxWidth()
             .hazeEffect(
-                state = hazeState,
-                style = HazeStyle(
+                state = hazeState, style = HazeStyle(
                     tint = HazeTint(
                         if (isPremium) Color(0xFFD4AF37).copy(alpha = 0.15f) else Color.White.copy(
                             alpha = 0.15f
                         )
-                    ),
-                    blurRadius = 30.dp,
-                    noiseFactor = 0.15f
+                    ), blurRadius = 30.dp, noiseFactor = 0.15f
                 )
             )
             .background(
@@ -289,21 +278,17 @@ private fun TestStatusPanel(isLoggedIn: Boolean, isPremium: Boolean, coins: Int)
                 } else {
                     Brush.linearGradient(
                         listOf(
-                            Color.White.copy(alpha = 0.1f),
-                            Color.White.copy(alpha = 0.05f)
+                            Color.White.copy(alpha = 0.1f), Color.White.copy(alpha = 0.05f)
                         )
                     )
                 }, shape = RoundedCornerShape(24.dp)
             )
             .border(
-                1.dp,
-                Brush.linearGradient(
+                1.dp, Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.2f),
-                        Color.White.copy(alpha = 0.05f)
+                        Color.White.copy(alpha = 0.2f), Color.White.copy(alpha = 0.05f)
                     )
-                ),
-                shape = RoundedCornerShape(24.dp)
+                ), shape = RoundedCornerShape(24.dp)
             )
             .padding(20.dp)
     ) {
@@ -316,9 +301,7 @@ private fun TestStatusPanel(isLoggedIn: Boolean, isPremium: Boolean, coins: Int)
                 Text(
                     text = if (isLoggedIn) "LOGGED IN" else "GUEST",
                     style = MaterialTheme.typography.labelLarge,
-                    color = (if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface).copy(
-                        alpha = 0.7f
-                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
                     letterSpacing = 1.sp
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -334,7 +317,7 @@ private fun TestStatusPanel(isLoggedIn: Boolean, isPremium: Boolean, coins: Int)
                         text = if (isPremium) "Premium Member" else "Standard User",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -343,15 +326,13 @@ private fun TestStatusPanel(isLoggedIn: Boolean, isPremium: Boolean, coins: Int)
                 Text(
                     "COINS",
                     style = MaterialTheme.typography.labelLarge,
-                    color = (if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface).copy(
-                        alpha = 0.7f
-                    )
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = "$coins",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Black,
-                    color = if (isPremium) Color.White else MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -360,9 +341,7 @@ private fun TestStatusPanel(isLoggedIn: Boolean, isPremium: Boolean, coins: Int)
 
 @Composable
 private fun TestSectionCard(
-    title: String,
-    icon: ImageVector,
-    content: @Composable ColumnScope.() -> Unit
+    title: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(
@@ -389,8 +368,7 @@ private fun TestSectionCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .hazeEffect(
-                    state = LocalHazeState.current ?: remember { HazeState() },
-                    style = HazeStyle(
+                    state = LocalHazeState.current ?: remember { HazeState() }, style = HazeStyle(
                         tint = HazeTint(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)),
                         blurRadius = 30.dp,
                         noiseFactor = 0.15f

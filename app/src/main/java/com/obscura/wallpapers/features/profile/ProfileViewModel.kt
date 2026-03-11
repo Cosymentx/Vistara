@@ -46,8 +46,17 @@ class ProfileViewModel @Inject constructor(
     val needLoginAction: StateFlow<LoginAction?> = _needLoginAction.asStateFlow()
 
     init {
+        observePremiumStatus()
         loadUserData()
         checkDebugMode()
+    }
+
+    private fun observePremiumStatus() {
+        viewModelScope.launch {
+            userRepository.isPremiumUser.collect { isPremium ->
+                _isPremiumUser.value = isPremium
+            }
+        }
     }
 
     fun refreshUserData() {
@@ -58,8 +67,6 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _isLoggedIn.value = userRepository.checkUserLoggedIn()
-                val isPremium = userRepository.isPremiumUser.first()
-                _isPremiumUser.value = isPremium
                 if (_isLoggedIn.value) {
                     val name = authRepository.userName.first()
                     if (!name.isNullOrEmpty()) _username.value = name
