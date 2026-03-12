@@ -35,7 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.obscura.wallpapers.R
-import com.obscura.wallpapers.core.data.model.Banner
 import com.obscura.wallpapers.core.data.model.Wallpaper
 import com.obscura.wallpapers.ui.components.FeaturedWallpaperSection
 import com.obscura.wallpapers.ui.components.HomeTabScaffold

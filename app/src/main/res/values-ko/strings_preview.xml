@@ -8,6 +8,7 @@
     <string name="preview_favorite_login_required">즐겨찾기에 배경화면을 추가하려면 로그인이 필요합니다</string>
     <string name="preview_download_login_required">배경화면을 다운로드하려면 로그인이 필요합니다</string>
     <string name="preview_set_wallpaper_login_required">배경화면을 설정하려면 로그인이 필요합니다</string>
+    <string name="preview_download_success">갤러리에 저장되었습니다</string>
     <string name="preview_edit_login_required">배경화면을 편집하려면 로그인이 필요합니다</string>
     <string name="preview_set_as_wallpaper">배경화면으로 설정</string>
     <string name="preview_setting_wallpaper">배경화면 설정 중…</string>

@@ -8,6 +8,7 @@
     <string name="preview_favorite_login_required">壁紙をお気に入りに追加するにはログインが必要です</string>
     <string name="preview_download_login_required">壁紙をダウンロードするにはログインが必要です</string>
     <string name="preview_set_wallpaper_login_required">壁紙を設定するにはログインが必要です</string>
+    <string name="preview_download_success">ギャラリーに保存しました</string>
     <string name="preview_edit_login_required">壁紙を編集するにはログインが必要です</string>
     <string name="preview_set_as_wallpaper">壁紙に設定</string>
     <string name="preview_setting_wallpaper">壁紙を設定中…</string>

@@ -59,4 +59,11 @@
     <string name="purchase_failed">Purchase failed</string>
     <string name="purchase_required_for_action">This wallpaper requires %s coins to purchase. Would you like to buy coins?</string>
     <string name="feature_requires_subscription">This feature requires a subscription</string>
+    <string name="billing_complete_purchase">Complete Purchase</string>
+    <string name="billing_trusted_by_millions">Secure &amp; Reliable Payment</string>
+    <string name="billing_payment_method">PAYMENT METHOD</string>
+    <string name="billing_secured_by_encryption">Your payment is encrypted and safe</string>
+    <string name="billing_channel_recommended">Recommended</string>
+    <string name="billing_channel_instant_delivery">Fast Delivery</string>
+    <string name="billing_channel_unknown">Unknown</string>
 </resources>

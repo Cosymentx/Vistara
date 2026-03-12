@@ -59,4 +59,11 @@
     <string name="purchase_failed">Pembelian gagal</string>
     <string name="purchase_required_for_action">Wallpaper ini memerlukan %s koin untuk dibeli. Apakah Anda ingin membeli koin?</string>
     <string name="feature_requires_subscription">Fitur ini memerlukan langganan</string>
+    <string name="billing_complete_purchase">Selesaikan Pembelian</string>
+    <string name="billing_trusted_by_millions">Pembayaran Aman &amp; Terpercaya</string>
+    <string name="billing_payment_method">METODE PEMBAYARAN</string>
+    <string name="billing_secured_by_encryption">Pembayaran dienkripsi dan aman</string>
+    <string name="billing_channel_recommended">Direkomendasikan</string>
+    <string name="billing_channel_instant_delivery">Pengiriman Cepat</string>
+    <string name="billing_channel_unknown">Tidak Diketahui</string>
 </resources>

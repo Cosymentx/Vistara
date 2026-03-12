@@ -59,4 +59,11 @@
     <string name="purchase_failed">购买失败</string>
     <string name="purchase_required_for_action">此壁纸需要 %s 金币购买。是否购买金币？</string>
     <string name="feature_requires_subscription">此功能需要订阅</string>
+    <string name="billing_complete_purchase">完成购买</string>
+    <string name="billing_trusted_by_millions">安全可靠的支付环境</string>
+    <string name="billing_payment_method">支付方式</string>
+    <string name="billing_secured_by_encryption">支付流程已通过加密保护</string>
+    <string name="billing_channel_recommended">推荐</string>
+    <string name="billing_channel_instant_delivery">快速到账</string>
+    <string name="billing_channel_unknown">未知</string>
 </resources>

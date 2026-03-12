@@ -59,4 +59,11 @@
     <string name="purchase_failed">購入に失敗しました</string>
     <string name="purchase_required_for_action">この壁紙を購入するには %s コインが必要です。コインを購入しますか？</string>
     <string name="feature_requires_subscription">この機能にはサブスクリプションが必要です</string>
+    <string name="billing_complete_purchase">購入を完了する</string>
+    <string name="billing_trusted_by_millions">安心・安全な支払い</string>
+    <string name="billing_payment_method">支払い方法</string>
+    <string name="billing_secured_by_encryption">お支払いは暗号化で保護されています</string>
+    <string name="billing_channel_recommended">おすすめ</string>
+    <string name="billing_channel_instant_delivery">スピーディーな反映</string>
+    <string name="billing_channel_unknown">不明</string>
 </resources>

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,9 +41,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.obscura.wallpapers.R
 import com.obscura.wallpapers.core.data.remote.service.CoinProduct
 import com.obscura.wallpapers.core.data.remote.service.PayChannel
 import com.obscura.wallpapers.ui.icons.ObscuraIcons
+import com.obscura.wallpapers.ui.theme.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,14 +96,14 @@ fun ChannelSelectionBottomSheet(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Complete Purchase",
+                        text = stringResource(R.string.billing_complete_purchase),
                         fontSize = 26.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = onSurfaceColor,
                         letterSpacing = (-0.5).sp
                     )
                     Text(
-                        text = "Trusted by millions of users worldwide",
+                        text = stringResource(R.string.billing_trusted_by_millions),
                         fontSize = 13.sp,
                         color = secondaryTextColor,
                         modifier = Modifier.padding(top = 2.dp)
@@ -139,7 +140,7 @@ fun ChannelSelectionBottomSheet(
             Spacer(modifier = Modifier.height(36.dp))
 
             Text(
-                text = "PAYMENT METHOD",
+                text = stringResource(R.string.billing_payment_method),
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
                 color = cyanAccent.copy(alpha = 0.7f),
@@ -186,7 +187,7 @@ fun ChannelSelectionBottomSheet(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Secured by Bank-Level Encryption",
+                        text = stringResource(R.string.billing_secured_by_encryption),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         color = secondaryTextColor.copy(alpha = 0.6f)
@@ -243,7 +244,7 @@ fun ChannelItem(
 
                 Column {
                     Text(
-                        text = channel.name ?: "Unknown",
+                        text = channel.name ?: stringResource(R.string.billing_channel_unknown),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
@@ -253,7 +254,8 @@ fun ChannelItem(
                         modifier = Modifier.padding(top = 2.dp)
                     ) {
                         val statusText =
-                            if (channel.channel == "1") "Recommended" else "Instant Delivery"
+                            if (channel.channel == "1") stringResource(R.string.billing_channel_recommended) 
+                            else stringResource(R.string.billing_channel_instant_delivery)
                         val statusColor =
                             if (channel.channel == "1") cyanAccent else if (isDark) Color.White.copy(
                                 alpha = 0.4f
