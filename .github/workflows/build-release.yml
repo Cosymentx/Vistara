@@ -38,17 +38,16 @@ jobs:
       - name: Grant gradlew execute permission
         run: chmod +x gradlew
 
-      - name: Run unit tests for all modules
+      - name: Run app unit tests
         run: |
-          ./gradlew testInternalDebugUnitTest \
-            :network:testDebugUnitTest \
+          ./gradlew :app:testDebugUnitTest \
             --no-daemon \
             --stacktrace
 
-      # Kover 覆盖率报告（HTML + XML）
-      - name: Kover coverage report
+      # 当前项目未应用 Kover，执行一次完整 Debug 编译作为构建前验证
+      - name: Compile debug build
         run: |
-          ./gradlew koverHtmlReportDebug koverXmlReportDebug \
+          ./gradlew :app:assembleDebug \
             --no-daemon
 
       - name: Upload test reports
@@ -58,14 +57,14 @@ jobs:
           name: test-reports
           path: |
             **/build/reports/tests/
-            **/build/reports/kover/
+            app/build/outputs/apk/debug/
           retention-days: 7
 
   # ============================================================
-  # 阶段 2：构建 Market Release AAB + 创建 Release
+  # 阶段 2：构建 Release AAB + 创建 Release
   # ============================================================
   build-aab:
-    name: Build Market Release AAB
+    name: Build Release AAB
     runs-on: ubuntu-latest
     needs: test  # 测试通过后才构建
 
@@ -96,35 +95,35 @@ jobs:
 
       # —— 4. 从 Secret 还原 release 签名文件 ——
       # 需要提前在仓库 Settings -> Secrets -> Actions 中配置以下 4 个 Secret：
-      #   SIGNING_STORE_BASE64    : base64 编码的 app/market.jks 文件内容
-      #                             生成方式（macOS/Linux）: base64 -w 0 app/market.jks
-      #                             生成方式（Windows/PowerShell）: [Convert]::ToBase64String([IO.File]::ReadAllBytes("app\market.jks"))
+      #   SIGNING_STORE_BASE64    : base64 编码的 app/vistara.jks 文件内容
+      #                             生成方式（macOS/Linux）: base64 -w 0 app/vistara.jks
+      #                             生成方式（Windows/PowerShell）: [Convert]::ToBase64String([IO.File]::ReadAllBytes("app\vistara.jks"))
       #   SIGNING_STORE_PASSWORD  : keystore 密码
       #   SIGNING_KEY_ALIAS       : key 别名
       #   SIGNING_KEY_PASSWORD    : key 密码
       - name: Decode release keystore
         run: |
-          echo "${{ secrets.SIGNING_STORE_BASE64 }}" | base64 --decode > app/market.jks
+          echo "${{ secrets.SIGNING_STORE_BASE64 }}" | base64 --decode > app/vistara.jks
 
       - name: Verify keystore
         shell: bash
         run: |
-          keytool -list -keystore app/market.jks \
+          keytool -list -keystore app/vistara.jks \
             -storepass "${{ secrets.SIGNING_STORE_PASSWORD }}" \
             -alias "${{ secrets.SIGNING_KEY_ALIAS }}"
 
-      # —— 5. 构建 Market Release AAB ——
-      - name: Build Market Release AAB
+      # —— 5. 构建 Release AAB ——
+      - name: Build Release AAB
         env:
           # app/build.gradle.kts 中的 signingConfig 读取这些环境变量
-          SIGNING_STORE_PATH: market.jks
+          SIGNING_STORE_PATH: vistara.jks
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           # 编码设置，与本地 build-common.sh 保持一致
           GRADLE_OPTS: -Dfile.encoding=utf-8
         run: |
-          ./gradlew :app:bundleMarketRelease \
+          ./gradlew :app:bundleRelease \
             --no-daemon \
             --stacktrace
 
@@ -138,7 +137,7 @@ jobs:
           curl -L -o bundletool.jar https://github.com/google/bundletool/releases/download/${BUNDLETOOL_VERSION}/bundletool-all-${BUNDLETOOL_VERSION}.jar
 
           # 2. 自动定位生成的 AAB 文件 (避免硬编码文件名)
-          AAB_PATH=$(ls app/build/outputs/bundle/marketRelease/*.aab | head -n 1)
+          AAB_PATH=$(ls app/build/outputs/bundle/release/*.aab | head -n 1)
           echo "Found AAB at: $AAB_PATH"
 
           # 3. 使用 bundletool 生成包含所有架构的 Universal APK (APKS 格式)
@@ -147,18 +146,18 @@ jobs:
             --bundle="$AAB_PATH" \
             --output=app.apks \
             --mode=universal \
-            --ks=app/market.jks \
+            --ks=app/vistara.jks \
             --ks-pass=pass:${{ secrets.SIGNING_STORE_PASSWORD }} \
             --ks-key-alias=${{ secrets.SIGNING_KEY_ALIAS }} \
             --key-pass=pass:${{ secrets.SIGNING_KEY_PASSWORD }}
 
           # 4. 从 .apks 压缩包中提取 universal.apk 并重命名
           mkdir -p app/build/outputs/apk/
-          unzip -p app.apks universal.apk > app/build/outputs/apk/app-market-release.apk
+          unzip -p app.apks universal.apk > app/build/outputs/apk/app-release-universal.apk
 
           # 5. 清理临时生成的工具和中间产物
           rm -f bundletool.jar app.apks
-          echo "Universal APK extracted to: app/build/outputs/apk/app-market-release.apk"
+          echo "Universal APK extracted to: app/build/outputs/apk/app-release-universal.apk"
 
       # —— 7. 创建 GitHub Release 并上传 AAB 和 APK ——
       - name: Create GitHub Release
@@ -167,9 +166,9 @@ jobs:
         with:
           # 使用版本号 + 构建号作为 Tag，避免冲突
           tag_name: v${{ steps.get_version.outputs.VERSION_NAME }}-b${{ github.run_number }}
-          name: SuChat Release v${{ steps.get_version.outputs.VERSION_NAME }} (Build ${{ github.run_number }})
+          name: Vistara Release v${{ steps.get_version.outputs.VERSION_NAME }} (Build ${{ github.run_number }})
           body: |
-            ### 🚀 SuChat Market Release
+            ### 🚀 Vistara Release
             - **Version:** ${{ steps.get_version.outputs.VERSION_NAME }}
             - **Build Number:** ${{ github.run_number }}
             - **Commit:** ${{ github.sha }}
@@ -183,7 +182,7 @@ jobs:
           fail_on_unmatched_files: true
           generate_release_notes: true
           files: |
-            app/build/outputs/bundle/marketRelease/*.aab
-            app/build/outputs/apk/app-market-release.apk
+            app/build/outputs/bundle/release/*.aab
+            app/build/outputs/apk/app-release-universal.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

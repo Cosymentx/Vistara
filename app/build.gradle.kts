@@ -2,7 +2,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gradle.ksp)
     alias(libs.plugins.hilt.android)
@@ -13,9 +12,14 @@ val keystorePropertiesFile = rootProject.file("gradle.properties")
 val keystoreProperties = Properties()
 keystoreProperties.load(keystorePropertiesFile.inputStream())
 
+fun signingValue(environmentName: String, propertyName: String): String =
+    System.getenv(environmentName)?.takeIf { it.isNotBlank() }
+        ?: keystoreProperties[propertyName]?.toString()?.takeIf { it.isNotBlank() }
+        ?: throw GradleException("Missing signing value: $environmentName or $propertyName")
+
 android {
     namespace = "com.vistara.aestheticwalls"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.vistara.aestheticwalls"
@@ -29,16 +33,17 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(signingValue("SIGNING_STORE_PATH", "storeFile"))
+            storePassword = signingValue("SIGNING_STORE_PASSWORD", "storePassword")
+            keyAlias = signingValue("SIGNING_KEY_ALIAS", "keyAlias")
+            keyPassword = signingValue("SIGNING_KEY_PASSWORD", "keyPassword")
         }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
             buildConfigField(
                 "String", "UNSPLASH_API_KEY", "\"WnVAinP7jaof1NjifR_hULHSod66MMdr2bspQxyeyhw\""
@@ -83,15 +88,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
     }
 }
 
@@ -116,11 +123,10 @@ dependencies {
     implementation(libs.androidx.material.icons.core)
 
     // StaggeredGrid for waterfall layout
+    implementation(libs.glide)
     implementation(libs.compose.glide)
     // 添加Glide注解处理器
     ksp(libs.glide.compiler)
-    implementation(libs.accompanist.flowlayout)
-    implementation(libs.accompanist.swiperefresh)
 
     // Hilt
     implementation(libs.hilt.android)
@@ -145,11 +151,6 @@ dependencies {
 
     // DataStore
     implementation(libs.androidx.datastore.preferences)
-
-    // Accompanist
-    implementation(libs.accompanist.permissions)
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.drawablepainter)
 
     // Media3 for video playback
     implementation(libs.androidx.media3.exoplayer)

@@ -188,14 +188,14 @@ class BillingManager @Inject constructor(
         val subscriptionParams =
             QueryProductDetailsParams.newBuilder().setProductList(subscriptionProductList).build()
 
-        billingClient.queryProductDetailsAsync(subscriptionParams) { billingResult, productDetailsList ->
+        billingClient.queryProductDetailsAsync(subscriptionParams) { billingResult, result ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 val productDetailsMap = _productDetails.value.toMutableMap()
-                productDetailsList.forEach { productDetails ->
+                result.productDetailsList.forEach { productDetails ->
                     productDetailsMap[productDetails.productId] = productDetails
                 }
                 _productDetails.value = productDetailsMap
-                Log.d(TAG, "Subscription product details: $productDetailsList")
+                Log.d(TAG, "Subscription product details: ${result.productDetailsList}")
             } else {
                 Log.e(
                     TAG,
@@ -208,14 +208,14 @@ class BillingManager @Inject constructor(
         val inappParams =
             QueryProductDetailsParams.newBuilder().setProductList(inappProductList).build()
 
-        billingClient.queryProductDetailsAsync(inappParams) { billingResult, productDetailsList ->
+        billingClient.queryProductDetailsAsync(inappParams) { billingResult, result ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 val productDetailsMap = _productDetails.value.toMutableMap()
-                productDetailsList.forEach { productDetails ->
+                result.productDetailsList.forEach { productDetails ->
                     productDetailsMap[productDetails.productId] = productDetails
                 }
                 _productDetails.value = productDetailsMap
-                Log.d(TAG, "Inapp product details: $productDetailsList")
+                Log.d(TAG, "Inapp product details: ${result.productDetailsList}")
             } else {
                 Log.e(TAG, "Failed to query inapp product details: ${billingResult.debugMessage}")
             }

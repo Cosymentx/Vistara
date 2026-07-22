@@ -29,16 +29,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.vistara.aestheticwalls.R
 import com.vistara.aestheticwalls.data.model.UiState
 import com.vistara.aestheticwalls.data.model.WallpaperTarget
@@ -92,7 +94,10 @@ fun WallpaperDetailScreen(
     val coroutineScope = rememberCoroutineScope()
 
     // 设置沉浸式状态栏和导航栏
-    val systemUiController = rememberSystemUiController()
+    val window = activity?.window
+    val systemUiController = remember(window) {
+        window?.let { WindowCompat.getInsetsController(it, it.decorView) }
+    }
 
     // 创建SnackbarHostState
     val snackbarHostState = remember { SnackbarHostState() }
@@ -151,13 +156,9 @@ fun WallpaperDetailScreen(
             viewModel.clearWallpaperSetSuccess()
 
             // 壁纸设置成功后，重新应用沉浸式效果
-            systemUiController.setStatusBarColor(
-                color = Color.Transparent, darkIcons = false
-            )
-            systemUiController.setNavigationBarColor(
-                color = Color.Transparent, darkIcons = false
-            )
-            systemUiController.systemBarsDarkContentEnabled = false
+            systemUiController?.let { controller ->
+                applyImmersiveMode(window, controller)
+            }
         }
     }
 
@@ -191,12 +192,16 @@ fun WallpaperDetailScreen(
 
     // 使用LaunchedEffect确保系统栏设置在每次重组时都生效
     LaunchedEffect(Unit) {
-        applyImmersiveMode(systemUiController)
+        systemUiController?.let { controller ->
+            applyImmersiveMode(window, controller)
+        }
     }
 
     // 使用SideEffect确保在每次重组时都应用沉浸式效果
     SideEffect {
-        applyImmersiveMode(systemUiController)
+        systemUiController?.let { controller ->
+            applyImmersiveMode(window, controller)
+        }
     }
 
     // 使用DisposableEffect监听生命周期事件，在应用恢复时重新应用沉浸式效果
@@ -205,7 +210,9 @@ fun WallpaperDetailScreen(
         val lifecycleObserver = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME || event == Lifecycle.Event.ON_START) {
                 // 当应用恢复或开始时，重新应用沉浸式效果
-                applyImmersiveMode(systemUiController)
+                systemUiController?.let { controller ->
+                    applyImmersiveMode(window, controller)
+                }
             }
         }
         // 添加生命周期观察者
@@ -221,13 +228,17 @@ fun WallpaperDetailScreen(
     val focusManager = LocalFocusManager.current
     LaunchedEffect(focusManager) {
         // 当焦点变化时，重新应用沉浸式效果
-        applyImmersiveMode(systemUiController)
+        systemUiController?.let { controller ->
+            applyImmersiveMode(window, controller)
+        }
     }
 
     // 使用额外的LaunchedEffect来监听活动状态变化
     LaunchedEffect(activity) {
         // 当活动状态变化时，重新应用沉浸式效果
-        applyImmersiveMode(systemUiController)
+        systemUiController?.let { controller ->
+            applyImmersiveMode(window, controller)
+        }
     }
 
     // 使用Scaffold作为根布局，可以更好地控制浮动按钮
@@ -441,15 +452,14 @@ fun WallpaperDetailScreen(
  * 应用沉浸式模式
  * 设置状态栏和导航栏为透明，并使用白色图标
  */
-private fun applyImmersiveMode(systemUiController: com.google.accompanist.systemuicontroller.SystemUiController) {
-    // 设置状态栏和导航栏为完全透明
-    systemUiController.setStatusBarColor(
-        color = Color.Transparent, darkIcons = false // 使用白色图标，因为背景可能是深色
-    )
-    systemUiController.setNavigationBarColor(
-        color = Color.Transparent, darkIcons = false
-    )
+private fun applyImmersiveMode(
+    window: android.view.Window?,
+    systemUiController: WindowInsetsControllerCompat
+) {
+    window ?: return
 
-    // 设置系统栏可见性
-    systemUiController.systemBarsDarkContentEnabled = false
+    window.statusBarColor = Color.Transparent.toArgb()
+    window.navigationBarColor = Color.Transparent.toArgb()
+    systemUiController.isAppearanceLightStatusBars = false
+    systemUiController.isAppearanceLightNavigationBars = false
 }

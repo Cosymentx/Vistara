@@ -3,8 +3,8 @@ package com.vistara.aestheticwalls
 import android.app.Application
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
-import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
+import com.appsflyer.share.AppsFlyerConversionListener
 import com.vistara.aestheticwalls.data.repository.UserRepository
 import com.vistara.aestheticwalls.manager.LocaleManager
 import dagger.hilt.android.HiltAndroidApp
@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.appsflyer.share.attribution.AppsFlyerRequestListener
 
 /**
  * Vistara壁纸应用的Application类
@@ -66,8 +67,8 @@ class VistaraApp : Application() {
     private fun initAppsFlyer() {
         // 创建转化数据监听器
         val conversionDataListener = object : AppsFlyerConversionListener {
-            override fun onConversionDataSuccess(data: MutableMap<String, Any>?) {
-                data?.let { conversionData ->
+            override fun onConversionDataSuccess(data: Map<String, Any>) {
+                data.let { conversionData ->
                     Log.d(TAG, "转化数据获取成功: $conversionData")
 
                     // 获取媒体来源
@@ -95,30 +96,10 @@ class VistaraApp : Application() {
                 }
             }
 
-            override fun onConversionDataFail(error: String?) {
+            override fun onConversionDataFail(error: String) {
                 Log.e(TAG, "转化数据获取失败: $error")
             }
 
-            override fun onAppOpenAttribution(data: MutableMap<String, String>?) {
-                // 处理深度链接归因
-                data?.let { attributionData ->
-                    Log.d(TAG, "应用打开归因数据: $attributionData")
-
-                    // 获取深度链接参数
-                    val deepLinkValue = attributionData["deep_link_value"]
-                    val mediaSource = attributionData["media_source"]
-                    val campaign = attributionData["campaign"]
-
-                    // 处理深度链接
-                    deepLinkValue?.let {
-                        handleDeepLink(it)
-                    }
-                }
-            }
-
-            override fun onAttributionFailure(error: String?) {
-                Log.e(TAG, "归因失败: $error")
-            }
         }
 
         AppsFlyerLib.getInstance().apply {
@@ -131,7 +112,7 @@ class VistaraApp : Application() {
             setDebugLog(BuildConfig.DEBUG)
 
             // 开始会话
-            start(this@VistaraApp)
+            start()
         }
     }
 

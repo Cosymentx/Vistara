@@ -4,17 +4,18 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.vistara.aestheticwalls.data.remote.api.ApiService
+import com.vistara.aestheticwalls.data.remote.api.ApiResponse
 import com.vistara.aestheticwalls.data.remote.api.LoginRequest
 import com.vistara.aestheticwalls.data.remote.api.LoginResponse
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
+import org.junit.Assert.assertTrue
 import org.mockito.kotlin.*
-import retrofit2.Response
 
 @Suppress("DEPRECATION", "UNCHECKED_CAST")
 class AuthRepositoryTest {
@@ -35,6 +36,9 @@ class AuthRepositoryTest {
         // Mock DataStore
         val preferences: Preferences = mock()
         whenever(dataStore.data).thenReturn(flowOf(preferences))
+        runBlocking {
+            whenever(dataStore.updateData(any())).thenReturn(preferences)
+        }
 
         authRepository = AuthRepositoryImpl(context, dataStore, userRepository, apiService)
     }
@@ -54,14 +58,14 @@ class AuthRepositoryTest {
             on { getResult(Exception::class.java) } doReturn account
         }
 
-        val loginResponse = LoginResponse("server_token", true, "Success")
-        whenever(apiService.login(any())).thenReturn(Response.success(loginResponse))
+        val loginResponse = LoginResponse("server_token", true)
+        whenever(apiService.login(any())).thenReturn(ApiResponse(200, "Success", loginResponse))
 
         // 执行测试
         val result = authRepository.handleSignInResult(task)
 
         // 验证结果
-        assert(result)
+        assertTrue(result.isSuccess)
         verify(userRepository).updateLoginStatus(true)
         verify(userRepository).updatePremiumStatus(true)
         
@@ -89,14 +93,13 @@ class AuthRepositoryTest {
             on { getResult(Exception::class.java) } doReturn account
         }
 
-        val responseBody: ResponseBody = mock()
-        whenever(apiService.login(any())).thenReturn(Response.error(400, responseBody))
+        whenever(apiService.login(any())).thenReturn(ApiResponse(400, "Bad request", null))
 
         // 执行测试
         val result = authRepository.handleSignInResult(task)
 
         // 验证结果
-        assert(!result)
+        assertTrue(result.isError)
         
         // 验证请求参数
         verify(apiService).login(eq(LoginRequest(
@@ -106,4 +109,4 @@ class AuthRepositoryTest {
             token = "test_token"
         )))
     }
-} 
+}

@@ -1,46 +1,46 @@
 [versions]
-afAndroidSdk = "6.16.2"
-agp = "8.9.1"
-firebaseBom = "33.12.0"
-firebaseFirestore = "25.1.3"
-imagecropper = "4.6.0"
-kotlin = "2.1.20"
-coreKtx = "1.16.0"
+afAndroidSdk = "7.0.0"
+agp = "9.3.0"
+firebaseBom = "34.16.0"
+firebaseFirestore = "26.4.1"
+imagecropper = "4.7.0"
+kotlin = "2.4.10"
+coreKtx = "1.19.0"
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.10.1"
-composeBom = "2025.04.00"
-hilt = "2.56.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+lifecycleRuntimeKtx = "2.11.0"
+activityCompose = "1.13.0"
+composeBom = "2026.06.01"
+hilt = "2.60.1"
 materialIconsCore = "1.7.8"
-playServicesAdsIdentifier = "18.2.0"
-room = "2.7.0"
-retrofit = "2.11.0"
-okhttp = "4.12.0"
+playServicesAdsIdentifier = "18.3.0"
+room = "2.8.4"
+retrofit = "3.0.0"
+okhttp = "5.4.0"
 coil = "2.7.0"
-accompanist = "0.28.0"
-navigation = "2.8.9"
+navigation = "2.9.8"
 constraint = "1.1.1"
-datastore = "1.1.4"
-lifecycleViewmodel = "2.8.7"
-ksp = "2.1.20-1.0.31"
-uiTooling = "1.8.0"
-uiToolingPreview = "1.8.0"
-workRuntimeKtx = "2.10.0"
-media3 = "1.6.1"
-glideCompose = "1.0.0-beta01"
-billing = "7.1.1"
-googleAuth = "21.3.0"
-appcompat = "1.7.0"
-googleService = "4.4.2"
-mockito = "5.11.0"
+datastore = "1.2.1"
+lifecycleViewmodel = "2.11.0"
+ksp = "2.3.10"
+uiTooling = "1.11.4"
+uiToolingPreview = "1.11.4"
+workRuntimeKtx = "2.11.2"
+media3 = "1.10.1"
+glideCompose = "1.0.0-beta10"
+glide = "4.16.0"
+billing = "9.1.0"
+googleAuth = "21.6.0"
+appcompat = "1.7.1"
+googleService = "4.5.0"
+mockito = "5.23.0"
 truth = "1.4.2"
-coroutinesTest = "1.8.0"
-turbine = "1.1.0"
-mockitoKotlin = "5.2.1"
+coroutinesTest = "1.11.0"
+turbine = "1.2.1"
+mockitoKotlin = "6.3.0"
 androidxCoreTesting = "2.2.0"
-splashscreen = "1.0.1"
+splashscreen = "1.2.0"
 
 [libraries]
 af-android-sdk = { module = "com.appsflyer:af-android-sdk", version.ref = "afAndroidSdk" }
@@ -96,12 +96,6 @@ androidx-datastore-preferences-core = { group = "androidx.datastore", name = "da
 # Coil
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
-# Accompanist
-accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
-accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
-accompanist-drawablepainter = { group = "com.google.accompanist", name = "accompanist-drawablepainter", version.ref = "accompanist" }
-accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
-accompanist-swiperefresh = { group = "com.google.accompanist", name = "accompanist-swiperefresh", version.ref = "accompanist" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 
 # Media3
@@ -116,6 +110,7 @@ androidx-material = { group = "androidx.compose.material", name = "material" }
 # Compose
 compose = { group = "androidx.compose.foundation", name = "foundation" }
 compose-glide = { group = "com.github.bumptech.glide", name = "compose", version.ref = "glideCompose" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version = "4.16.0" }
 
 # Billing
