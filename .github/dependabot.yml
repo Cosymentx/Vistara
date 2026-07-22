@@ -1,0 +1,50 @@
+version: 2
+updates:
+  # Android / Kotlin / Gradle 依赖（包含 libs.versions.toml、各模块 build.gradle.kts、Gradle Wrapper）
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 8
+    labels:
+      - "dependencies"
+      - "android"
+      - "gradle"
+    commit-message:
+      prefix: "build(deps)"
+    groups:
+      kotlin-and-coroutines:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "org.jetbrains.kotlinx*"
+      androidx:
+        patterns:
+          - "androidx*"
+      firebase-and-google:
+        patterns:
+          - "com.google.firebase*"
+          - "com.google.android.gms*"
+          - "com.google*"
+      squareup-and-network:
+        patterns:
+          - "com.squareup*"
+          - "io.ktor*"
+          - "com.github.bumptech.glide*"
+
+  # GitHub Actions 依赖（workflow 中 uses: xxx@vX）
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:30"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci(deps)"
