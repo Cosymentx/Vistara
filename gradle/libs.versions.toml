@@ -17,7 +17,7 @@ materialIconsCore = "1.7.8"
 playServicesAdsIdentifier = "18.3.0"
 room = "2.8.4"
 retrofit = "3.0.0"
-okhttp = "5.4.0"
+okhttp = "5.5.0"
 coil = "2.7.0"
 navigation = "2.9.8"
 constraint = "1.1.1"
@@ -29,7 +29,7 @@ uiToolingPreview = "1.11.4"
 workRuntimeKtx = "2.11.2"
 media3 = "1.10.1"
 glideCompose = "1.0.0-beta10"
-glide = "4.16.0"
+glide = "5.0.9"
 billing = "9.1.0"
 googleAuth = "21.6.0"
 appcompat = "1.7.1"
@@ -111,7 +111,7 @@ androidx-material = { group = "androidx.compose.material", name = "material" }
 compose = { group = "androidx.compose.foundation", name = "foundation" }
 compose-glide = { group = "com.github.bumptech.glide", name = "compose", version.ref = "glideCompose" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
-glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version = "4.16.0" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version = "5.0.9" }
 
 # Billing
 google-play-billing = { group = "com.android.billingclient", name = "billing", version.ref = "billing" }
