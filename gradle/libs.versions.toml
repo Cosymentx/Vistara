@@ -1,5 +1,5 @@
 [versions]
-afAndroidSdk = "7.0.0"
+afAndroidSdk = "7.0.1"
 agp = "9.4.0"
 firebaseBom = "34.16.0"
 firebaseFirestore = "26.4.1"
